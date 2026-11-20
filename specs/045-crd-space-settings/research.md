@@ -36,6 +36,8 @@ All Technical Context items were resolved during clarification. This document ca
 
 The hook exposes `isDirty`, `markDirty()`, `clearDirty()`, `confirmSwitch(nextTab)` to the page.
 
+*(Amended 2026-10-16: About also produces dirty state — an unsaved section marks the guard dirty, and the dialog's Save / Discard call `onSaveAll` / `onResetAll`. There is no `flushPending`. The two paragraphs below are the original, never-shipped design.)*
+
 **Important scope narrowing**: Only **Layout** produces dirty state — About uses per-field autosave (Decision 3a) and never sets a dirty flag. The other six tabs commit per-action and never enter a dirty state either. `useDirtyTabGuard` is a no-op on every tab except Layout.
 
 When the admin switches from About to any other tab, the page calls `useAboutTabData().flushPending()` first so that any in-flight debounced autosave fires immediately instead of being dropped. No confirm dialog is needed on About because the user never loses data.
@@ -47,6 +49,10 @@ When the admin switches from About to any other tab, the page calls `useAboutTab
 ---
 
 ## Decision 3a — About save model: per-field autosave
+
+> *(Amended 2026-10-22: **superseded again.** About, Layout and Settings save through one tab-wide unsaved-changes bar — spec Session 2026-10-22, FR-025 – FR-026c, plan "Per-tab save semantics". **Rationale:** one save model across the settings tabs (the prototype's `SaveBar`), with a count so the admin sees how much is pending. **Discard without reload:** every participating hook already keeps a local buffer over cache-derived server values (`useAboutTabData` values vs `saved`, the Layout snapshot, the new Settings buffer), so `reset()` restores the server values in place — a reload would also drop unrelated state (scroll, open sections) and refetch everything. **Alternatives rejected:** keeping per-section Save next to the bar (two ways to save the same field); reloading the page on Discard (simpler, but loses state and flashes). **Navigation blocking** beyond tab switches needs a data router (`useBlocker`); deferred to a follow-up.)*
+
+> *(Amended 2026-10-16: **superseded — never shipped.** About saves per section: each section's shared `FieldFooter` (`@/crd/components/common/FieldFooter`) shows a Save button while the section differs from the server, then `saving` / `saved` (1800 ms flash) / `error` with Retry; Save sends only that section's patch. Visual uploads commit on file pick, classifications per action. Unsaved sections participate in the dirty-tab guard (Decision 3). Rationale: an explicit Save per section makes the commit point visible, removes the flush-on-leave machinery, and is the same footer the 097 / 098 settings tabs reuse. The original decision is kept below for the record.)*
 
 **Decision**: The About tab has NO Save Changes button and NO Reset button (FR-005a). Instead, each field autosaves:
 
@@ -123,13 +129,28 @@ Implementation:
 
 ## Decision 4a — Inline-edit hover pattern
 
-**Decision**: `InlineEditText` (shared primitive used by Layout column title, Layout column description, and any About-tab field the designer places as plain-text-with-edit) MUST render its value as plain text by default. On hover it MUST show a subtle underline on the text and a small trailing pencil icon. Clicking the text OR the pencil enters edit mode. Matches the prototype's Home-tab title affordance (the one shown with the pencil on hover).
+**Decision**: `InlineEditText` (shared primitive used by Layout column title~~,~~ and Layout column description~~, and any About-tab field the designer places as plain-text-with-edit~~ — *amended 2026-10-16: Layout tab only; every About field is a boxed `Input`*) MUST render its value as plain text by default. On hover it MUST show a subtle underline on the text and a small trailing pencil icon. Clicking the text OR the pencil enters edit mode. Matches the prototype's Home-tab title affordance (the one shown with the pencil on hover).
 
 **Rationale**: FR-006a pins this as the canonical inline-edit affordance. A single shared primitive keeps all call sites visually identical.
 
 **Alternatives considered**:
 - Always-visible pencil button: rejected — visually noisy on forms with many fields; doesn't match the prototype.
 - Click-to-edit with NO pencil hint: rejected — poor discoverability; screen-reader users need the pencil as a keyboard-focusable affordance.
+
+---
+
+## Decision 4b — About section cards + settings header identity tile *(added 2026-10-16)*
+
+**Decision**: Align with the prototype (`alkem-io/client-web-prototype` — `SpaceSettingsPage.tsx`, `SpaceSettingsAbout.tsx`, `shared/SettingsSection.tsx`):
+
+- A new reusable CRD `src/crd/components/common/SettingsSection.tsx` — a card with a coloured icon tile, an `<h3>` title, an optional description and a chevron. Every section is open by default; collapsing is purely visual (no data or save effect). *(Amended 2026-10-22: on About only Identity is open by default; the other sections start collapsed — `defaultOpen={false}`.)*
+- The About body is a stack of these sections, in order: Identity (name, tagline) · Visuals (renamed from "Space Branding") · Location (city, country) · Context (What, Why, Who) · Tags · Classifications · References & Links. The in-card "About" heading and the flat `Separator`-divided list are removed; the Preview column sits beside the stack, outside the cards; each field keeps its hint + `FieldFooter` in its section.
+- Name, Tagline and City are boxed `Input`s; `InlineEditText` is Layout-only (Decision 4a).
+- `SpaceSettingsHeader` shows a 48px square `rounded-lg` identity tile (circles are reserved for people) left of title + tagline: L1/L2 `avatar`; L0 `cardBanner` cropped square (`object-cover`); initials tile when no image. Using the L0 `cardBanner` here is an owner-approved exception to spec 100's "no `cardBanner` as avatar" rule, scoped to identity tiles in navigation chrome (this tile and the breadcrumbs, data-model.md § breadcrumbs). The public page header keeps no avatar.
+
+**Rationale**: Product-owner decision 2026-10-16 (prototype parity). Grouping long forms into labelled sections makes the tab scannable; boxed inputs make the editable fields obvious; an L0 has no `avatar` visual, so its card banner is the only identity image available.
+
+**Alternatives considered**: sections collapsed by default (rejected — hides fields and save state; *amended 2026-10-22: adopted for every About section except Identity — save state now lives in the tab-wide bar, so a collapsed section no longer hides it*); keeping inline-edit text for Name/Tagline/City (rejected — inconsistent with the boxed markdown and tag editors in the same tab); a circular tile (rejected — circles mean people).
 
 ---
 
@@ -269,7 +290,7 @@ Behavior:
 | `SpaceCard` | `src/crd/components/space/SpaceCard.tsx` | About tab Preview |
 | `pickColorFromId` | `src/crd/lib/pickColorFromId.ts` | Called by `aboutMapper.ts` for Preview accent color |
 
-Three primitives exist in the prototype but not yet under `src/crd/primitives/` and MUST be ported once and shared: `tabs.tsx`, `textarea.tsx`, `table.tsx`. One NEW shared composite: `src/crd/components/common/InlineEditText.tsx` — used by the Layout column title, column description, and per-callout title / description (four call sites, one implementation).
+Three primitives exist in the prototype but not yet under `src/crd/primitives/` and MUST be ported once and shared: `tabs.tsx`, `textarea.tsx`, `table.tsx`. One NEW shared composite: `src/crd/components/common/InlineEditText.tsx` — used by the Layout column title, column description, and per-callout title / description (four call sites, one implementation). *(Amended 2026-10-16: callouts are read-only on Layout (FR-006), so the call sites are the column title and description only; About never uses it — its fields are boxed `Input`s. A second shared composite, `src/crd/components/common/SettingsSection.tsx`, is added for the About section cards — Decision 4b.)*
 
 **Rationale**: `src/crd/CLAUDE.md` Golden Rules 2 (DRY) and Constitution Arch #6.f. Duplicating any of these would fork maintenance.
 

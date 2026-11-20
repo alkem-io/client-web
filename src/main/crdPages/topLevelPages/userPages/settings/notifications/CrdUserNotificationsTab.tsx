@@ -1,7 +1,10 @@
+import { Bot, Building2, Globe, Layers, type LucideIcon, Shield, ShieldCheck, User, Volume2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { SettingsSectionIconColor } from '@/crd/components/common/SettingsSection';
 import {
   type SoundSettingKey,
   UserNotificationsTabView,
@@ -9,6 +12,7 @@ import {
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { usePushNotificationContext } from '@/main/pushNotifications/PushNotificationProvider';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
+import type { NotificationGroupId } from './notificationPayloadBuilders';
 import { extractServerSettings, mapUserNotifications, type NotificationPrivileges } from './userNotificationsMapper';
 import useUserNotificationsTabData from './useUserNotificationsTabData';
 
@@ -57,7 +61,19 @@ const CrdUserNotificationsTab = () => {
   const serverSettings = extractServerSettings(data);
 
   const privileges: NotificationPrivileges = {
-    isPlatformAdmin: platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false,
+    // spec-clientweb-5 (2026-07-31): same re-anchoring as
+    // `useCanEditSettings` — administering another user's notification
+    // preferences is a user-record action, owned by PLATFORM_USERS_ADMIN.
+    // T013 (Slice B): PLATFORM_ADMIN dropped — Users Admin owns it alone.
+    isPlatformAdmin: [AuthorizationPrivilege.PlatformUsersAdmin].some(privilege =>
+      Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
+    ),
+    // canReceivePlatformAdminNotifications: the platform-admin switch group's own gate —
+    // visibility equals recipiency by construction (the same privilege the recipients
+    // service filters the five routed events on). Distinct from isPlatformAdmin, which
+    // still gates the space-admin and organization groups below.
+    canReceivePlatformAdminNotifications:
+      platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsAdmin) ?? false,
     isOrganizationAdmin:
       platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsOrganizationAdmin) ??
       false,
@@ -114,13 +130,31 @@ const CrdUserNotificationsTab = () => {
       pushLoading={Boolean(pushLoading)}
       pushPermissionDenied={pushPermissionState === 'denied'}
       pushRequiresPwa={Boolean(requiresPWAMode)}
+      appMode={isAppMode()}
       onPushMasterToggle={handlePushMasterToggle}
-      groups={groups}
-      soundGroup={soundGroup}
+      groups={groups.map(group => withSectionIcon(group, group.groupId))}
+      soundGroup={withSectionIcon(soundGroup, 'sound')}
       onToggle={handleToggle}
       onToggleSound={handleToggleSound}
     />
   );
+};
+
+// Section icon tile per group (spec 097 Session 2026-10-23).
+const GROUP_ICON: Record<NotificationGroupId | 'sound', { icon: LucideIcon; color: SettingsSectionIconColor }> = {
+  sound: { icon: Volume2, color: 'blue' },
+  space: { icon: Layers, color: 'purple' },
+  spaceAdmin: { icon: ShieldCheck, color: 'amber' },
+  user: { icon: User, color: 'blue' },
+  platform: { icon: Globe, color: 'green' },
+  platformAdmin: { icon: Shield, color: 'rose' },
+  organization: { icon: Building2, color: 'orange' },
+  virtualContributor: { icon: Bot, color: 'green' },
+};
+
+const withSectionIcon = <T extends object>(group: T, groupId: NotificationGroupId | 'sound') => {
+  const { icon: Icon, color } = GROUP_ICON[groupId];
+  return { ...group, icon: <Icon className="size-4" />, iconColor: color };
 };
 
 export default CrdUserNotificationsTab;

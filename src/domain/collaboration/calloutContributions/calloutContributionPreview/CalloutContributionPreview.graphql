@@ -71,6 +71,7 @@ query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false
       collaboraDocument @include(if: $includeCollaboraDocument) {
         id
         documentType
+        previewUrl
         profile {
           id
           url

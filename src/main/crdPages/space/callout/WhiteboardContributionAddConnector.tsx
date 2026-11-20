@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { CreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/graphql-schema';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
@@ -45,6 +46,7 @@ export function WhiteboardContributionAddConnector({
   const [whiteboardName, setWhiteboardName] = useState(fallbackName);
   const [editingWhiteboard, setEditingWhiteboard] = useState<CreatedWhiteboard | undefined>();
   const [createWhiteboard] = useCreateWhiteboardOnCalloutMutation();
+  const handleApolloError = useApolloErrorHandler();
 
   const handleOpen = () => {
     setWhiteboardName(fallbackName);
@@ -65,6 +67,7 @@ export function WhiteboardContributionAddConnector({
     const trimmed = whiteboardName.trim();
     if (!trimmed) return;
     const { data } = await createWhiteboard({
+      context: { skipGlobalErrorHandler: true },
       variables: {
         calloutId,
         whiteboard: {
@@ -72,7 +75,6 @@ export function WhiteboardContributionAddConnector({
         },
       },
       refetchQueries: ['CalloutDetails', 'CalloutContributions'],
-      awaitRefetchQueries: true,
     });
     onCreated?.();
     handleClose();
@@ -109,7 +111,11 @@ export function WhiteboardContributionAddConnector({
             <Button variant="outline" onClick={handleClose} disabled={creating}>
               {t('dialogs.cancel')}
             </Button>
-            <Button onClick={handleCreate} disabled={!whiteboardName.trim() || creating} aria-busy={creating}>
+            <Button
+              onClick={() => void handleCreate().catch(handleApolloError)}
+              disabled={!whiteboardName.trim() || creating}
+              aria-busy={creating}
+            >
               {t('dialogs.create')}
             </Button>
           </DialogFooter>

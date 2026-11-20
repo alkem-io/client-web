@@ -27,7 +27,6 @@ describe('mapUserOrganizations', () => {
       id: 'org-1',
       displayName: 'Alkemio Innovation Lab',
       avatarUrl: 'https://cdn/alkemio.png',
-      tagline: 'Driving collaborative innovation',
       location: 'Amsterdam, Netherlands',
       role: 'Admin',
       verified: true,

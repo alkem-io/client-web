@@ -1,0 +1,13 @@
+# 027-platform-role-redesign (T012/T013, FR-020/FR-023, A14).
+#
+# Replaces `UpdateSpacePlatformSettings`, which took `nameID` AND `visibility`
+# in one call. The server split them because they are owned by different roles:
+# visibility is Platform License Manager's (spec row 8), while renaming a space
+# is the space admin's and no global role reaches it (A17, `UPDATE_NAMEID`).
+# The admin UI therefore issues two mutations — see `AdminUpdateSpaceNameId`.
+mutation AdminUpdateSpaceVisibility($spaceId: UUID!, $visibility: SpaceVisibility!) {
+  adminUpdateSpaceVisibility(updateData: { spaceID: $spaceId, visibility: $visibility }) {
+    id
+    visibility
+  }
+}

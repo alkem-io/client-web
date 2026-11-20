@@ -1,6 +1,6 @@
-import { ChevronDown, ChevronRight, ExternalLink, File, Folder, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, ExternalLink, File, Folder, HardDrive, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@/crd/lib/utils';
+import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import { Button } from '@/crd/primitives/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/crd/primitives/table';
 
@@ -47,46 +47,48 @@ export function SpaceSettingsStorageView({
   const rows = flattenTree(tree, expandedFolderIds, 0);
 
   return (
-    <div className={cn('flex flex-col gap-6', className)}>
-      <div>
-        <h2 className="text-page-title">{t('storage.pageHeader.title')}</h2>
-        <p className="text-body text-muted-foreground mt-1">{t('storage.pageHeader.subtitle')}</p>
-      </div>
-
+    <SettingsSection
+      title={t('storage.sections.documents')}
+      icon={<HardDrive className="size-4" />}
+      iconColor="purple"
+      className={className}
+    >
       {loading ? (
         <StorageSkeletons />
       ) : rows.length === 0 ? (
-        <div className="rounded-xl border border-dashed p-8 text-center text-body text-muted-foreground">
+        <div className="rounded-lg border border-dashed p-8 text-center text-body text-muted-foreground">
           {t('storage.empty')}
         </div>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t('storage.columns.name')}</TableHead>
-              <TableHead className="w-[100px]">{t('storage.columns.size')}</TableHead>
-              <TableHead className="w-[150px]">{t('storage.columns.uploader')}</TableHead>
-              <TableHead className="w-[150px]">{t('storage.columns.date')}</TableHead>
-              <TableHead className="w-[80px]">{t('storage.columns.actions')}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {rows.map(row => (
-              <StorageRow
-                key={row.node.id}
-                node={row.node}
-                depth={row.depth}
-                isExpanded={row.node.kind === 'folder' && expandedFolderIds.has(row.node.id)}
-                onToggle={() => {
-                  if (row.node.kind === 'folder') onToggleFolder(row.node.id);
-                }}
-                onDelete={onDelete}
-              />
-            ))}
-          </TableBody>
-        </Table>
+        <div className="overflow-hidden rounded-lg border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t('storage.columns.name')}</TableHead>
+                <TableHead className="w-[100px]">{t('storage.columns.size')}</TableHead>
+                <TableHead className="w-[150px]">{t('storage.columns.uploader')}</TableHead>
+                <TableHead className="w-[150px]">{t('storage.columns.date')}</TableHead>
+                <TableHead className="w-[80px]">{t('storage.columns.actions')}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {rows.map(row => (
+                <StorageRow
+                  key={row.node.id}
+                  node={row.node}
+                  depth={row.depth}
+                  isExpanded={row.node.kind === 'folder' && expandedFolderIds.has(row.node.id)}
+                  onToggle={() => {
+                    if (row.node.kind === 'folder') onToggleFolder(row.node.id);
+                  }}
+                  onDelete={onDelete}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       )}
-    </div>
+    </SettingsSection>
   );
 }
 

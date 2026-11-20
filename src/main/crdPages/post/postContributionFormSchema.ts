@@ -19,7 +19,7 @@ export type PostReferenceRow = {
 
 export const postContributionFormSchema = object({
   displayName: displayNameValidator({ required: true }),
-  description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH, { required: true }),
+  description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
   tags: array(string().defined()).default([]),
   references: array(
     object({

@@ -1,0 +1,25 @@
+# 027 R-F.3 — the Licensing section's Organizations list (account plans).
+query licensingAdminOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+  platformAdmin {
+    organizations(first: $first, after: $after, filter: $filter) {
+      total
+      organization {
+        id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
+        profile {
+          id
+          url
+          displayName
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

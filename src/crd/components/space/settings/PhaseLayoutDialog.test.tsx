@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { PhaseLayoutDialog, type PhaseLayoutValues } from './PhaseLayoutDialog';
+import type { SidebarWidgetId } from './SpaceSettingsLayoutView.types';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -312,3 +313,110 @@ describe('PhaseLayoutDialog', () => {
     expect(screen.getByText('layout.column.sidebarDialog.emptyNote')).toBeInTheDocument();
   });
 });
+
+describe('PhaseLayoutDialog sidebar-only mode', () => {
+  const L2_WIDGETS = [
+    'intent',
+    'about',
+    'createPost',
+    'addUser',
+    'search',
+    'community',
+    'events',
+    'index',
+    'updates',
+    'virtualContributors',
+    'activity',
+  ] as const;
+
+  test('hides both switches and shows the Customize Sidebar title and help', () => {
+    renderSidebarOnly();
+    expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+    expect(screen.getByText('layout.customizeSidebar.title')).toBeInTheDocument();
+    expect(screen.getByText('layout.customizeSidebar.help')).toBeInTheDocument();
+    expect(screen.queryByText('layout.column.sidebarDialog.title')).not.toBeInTheDocument();
+  });
+
+  test('offers only the available widgets (no Create Subspace or Subspaces on L2)', () => {
+    renderSidebarOnly({ availableWidgets: L2_WIDGETS });
+    const offered = screen.getAllByRole('checkbox').map(checkbox => checkbox.getAttribute('aria-label'));
+    expect(offered).toHaveLength(L2_WIDGETS.length);
+    expect(offered).not.toContain(
+      'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.createSubspace'
+    );
+    expect(offered).not.toContain(
+      'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.subspaceLinks'
+    );
+    expect(offered).toContain(
+      'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.activity'
+    );
+  });
+
+  test('passes sidebarUnknown through untouched while the offered widgets are edited', async () => {
+    const onSave = vi.fn();
+    renderSidebarOnly({
+      availableWidgets: L2_WIDGETS,
+      onSave,
+      values: {
+        descriptionCollapsed: false,
+        showPublishDetails: true,
+        sidebar: ['intent'],
+        sidebarUnknown: [{ index: 1, value: 'SUBSPACE_LINKS' }],
+      },
+    });
+
+    await userEvent.click(
+      screen.getByRole('checkbox', {
+        name: 'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.search',
+      })
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
+
+    expect(onSave).toHaveBeenCalledWith({
+      descriptionCollapsed: false,
+      showPublishDetails: true,
+      sidebar: ['intent', 'search'],
+      sidebarUnknown: [{ index: 1, value: 'SUBSPACE_LINKS' }],
+    });
+  });
+
+  test('deselecting everything shows the whole-subspace empty note and saves an empty list', async () => {
+    const onSave = vi.fn();
+    renderSidebarOnly({
+      onSave,
+      values: { descriptionCollapsed: false, showPublishDetails: true, sidebar: ['intent'] },
+    });
+    await userEvent.click(
+      screen.getByRole('checkbox', {
+        name: 'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.intent',
+      })
+    );
+    expect(screen.getByText('layout.customizeSidebar.emptyNote')).toBeInTheDocument();
+    expect(screen.queryByText('layout.column.sidebarDialog.emptyNote')).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ sidebar: [] }));
+  });
+});
+
+function renderSidebarOnly({
+  values = defaultValues,
+  onSave = vi.fn(),
+  availableWidgets,
+}: {
+  values?: PhaseLayoutValues;
+  onSave?: (values: PhaseLayoutValues) => void;
+  availableWidgets?: readonly SidebarWidgetId[];
+} = {}) {
+  return render(
+    <PhaseLayoutDialog
+      open={true}
+      onOpenChange={vi.fn()}
+      phaseName="First phase"
+      values={values}
+      onSave={onSave}
+      sidebarSettingsEnabled={false}
+      sidebarOnly={true}
+      availableWidgets={availableWidgets}
+    />
+  );
+}

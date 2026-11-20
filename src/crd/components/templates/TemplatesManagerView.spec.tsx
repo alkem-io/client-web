@@ -5,7 +5,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest';
 import i18n from '@/core/i18n/config';
 import { render, screen } from '@/main/test/testUtils';
 import { TemplatesManagerView } from './TemplatesManagerView';
-import { TEMPLATE_TYPE_ORDER } from './types';
+import { TEMPLATE_TYPE_ORDER, type TemplateType } from './types';
 
 beforeAll(async () => {
   await i18n.changeLanguage('en');
@@ -58,5 +58,48 @@ describe('TemplatesManagerView — "Add new" dropdown per section', () => {
     await userEvent.click(createItems[createItems.length - 1]);
     expect(onCreate).toHaveBeenCalledExactlyOnceWith(type);
     expect(onImport).not.toHaveBeenCalled();
+  });
+});
+
+describe('TemplatesManagerView — "Browse General Library" in an empty section (spec 098 FR-015, 2026-10-22)', () => {
+  const card = { id: 'tpl-1', name: 'Kick-off post', description: '', tags: [], color: '#000000' };
+  const renderView = (canImport: (type: TemplateType) => boolean) => {
+    const onImport = vi.fn();
+    render(
+      <TemplatesManagerView
+        holderKind="space"
+        categories={TEMPLATE_TYPE_ORDER.map(t => ({
+          type: t,
+          templates: t === TEMPLATE_TYPE_ORDER[0] ? [{ ...card, type: t }] : [],
+        }))}
+        canCreate={() => true}
+        canEdit={() => true}
+        canDelete={() => true}
+        canImport={canImport}
+        onCreate={() => {}}
+        onImport={onImport}
+        onTemplateAction={() => {}}
+      />
+    );
+    return onImport;
+  };
+
+  it('shows one link per empty section, opening the library for that section type', async () => {
+    const onImport = renderView(() => true);
+    const links = screen.getAllByRole('button', { name: 'Browse General Library' });
+    expect(links).toHaveLength(TEMPLATE_TYPE_ORDER.length - 1);
+    await userEvent.click(links[0]);
+    expect(onImport).toHaveBeenCalledExactlyOnceWith(TEMPLATE_TYPE_ORDER[1]);
+  });
+
+  it('also shows it for a section the search filters to nothing', async () => {
+    renderView(() => true);
+    await userEvent.type(screen.getByRole('textbox', { name: /search/i }), 'zzz');
+    expect(screen.getAllByRole('button', { name: 'Browse General Library' })).toHaveLength(TEMPLATE_TYPE_ORDER.length);
+  });
+
+  it('is absent when the user may not import that type', () => {
+    renderView(() => false);
+    expect(screen.queryByRole('button', { name: 'Browse General Library' })).toBeNull();
   });
 });

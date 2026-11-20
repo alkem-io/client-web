@@ -11,47 +11,38 @@
     "account": "Account"
   },
   "dirtyGuard": {
-    "save": "Opslaan",
-    "discard": "Verwerpen en verlaten",
     "cancel": "Annuleren",
-    "tabSwitch": {
-      "title": "Niet-opgeslagen wijzigingen",
-      "description": "Je hebt niet-opgeslagen wijzigingen op dit tabblad. Sla ze op, verwerp ze of blijf op dit tabblad?"
-    },
     "navAway": {
       "title": "Niet-opgeslagen wijzigingen",
       "description": "Als je deze pagina verlaat, worden je niet-opgeslagen wijzigingen verworpen."
     }
   },
   "saveBar": {
-    "save": "Wijzigingen opslaan",
-    "discard": "Wijzigingen verwerpen",
-    "saving": "Opslaan…"
+    "lockedReason": "Sla je wijzigingen eerst op of verwerp ze"
   },
   "layout": {
     "pageHeader": {
       "title": "Layout",
-      "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van Posts."
+      "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van Posts.",
+      "subtitle_subspace": "Pas de navigatietabbladen van je Subspace aan. Hernoem, herorden en beheer toewijzingen van Posts."
     },
-    "discardChangesDialog": {
-      "title": "Wijzigingen verwerpen?",
-      "description": "Je niet-opgeslagen Layout-wijzigingen worden teruggezet naar de laatst opgeslagen staat. Dit kan niet ongedaan worden gemaakt.",
-      "confirm": "Wijzigingen verwerpen"
-    },
+    "loading": "Layout laden…",
     "column": {
       "titlePlaceholder": "Kolomtitel",
       "descriptionPlaceholder": "Beschrijf deze kolom…",
       "menu": "Kolomacties",
       "drag": "Sleep om de fase te herschikken",
-      "empty": "Nog geen callouts in deze kolom.",
+      "empty": "Nog geen Posts in deze kolom.",
+      "postCount_one": "{{count}} Post",
+      "postCount_other": "{{count}} Posts",
       "activePhase": {
         "set": "Markeer als actieve fase",
         "current": "Actieve fase (huidige)",
         "badge": "Actieve fase"
       },
       "defaultCalloutTemplate": {
-        "set": "Standaard callout-template instellen…",
-        "clear": "Standaard callout-template wissen"
+        "set": "Standaard Post-template instellen…",
+        "clear": "Standaard Post-template wissen"
       },
       "editDetails": {
         "menuLabel": "Details bewerken",
@@ -70,7 +61,7 @@
         "menuLabel": "Fase verwijderen",
         "confirm": {
           "title": "Deze fase verwijderen?",
-          "description": "Callouts die nu met deze fase zijn getagd verliezen de tag. Deze actie kan niet ongedaan worden gemaakt.",
+          "description": "Posts die nu met deze fase zijn getagd verliezen de tag. Deze actie kan niet ongedaan worden gemaakt.",
           "confirm": "Fase verwijderen",
           "cancel": "Annuleren"
         }
@@ -123,6 +114,7 @@
         "widgets": {
           "intent": "Intentie & Leads",
           "about": "Over deze Space",
+          "about_subspace": "Over deze Subspace",
           "createPost": "Post toevoegen",
           "applicationButton": "Aanmelden / Deelnemen",
           "createSubspace": "Subspace aanmaken",
@@ -134,7 +126,9 @@
           "virtualContributors": "Virtual Contributors",
           "guidelines": "Communityrichtlijnen",
           "index": "Post-index",
-          "search": "Zoeken"
+          "search": "Zoeken",
+          "community": "Community",
+          "activity": "Recente activiteit"
         }
       },
       "postTemplate": {
@@ -149,6 +143,12 @@
           "cancel": "Annuleren"
         }
       }
+    },
+    "customizeSidebar": {
+      "button": "Sidebar aanpassen",
+      "title": "Lay-out: Sidebar",
+      "help": "Kies welke widgets in de sidebar van deze subspace verschijnen en in welke volgorde. Dit geldt voor de hele subspace — elke fase toont dezelfde set.",
+      "emptyNote": "Geen widgets geselecteerd — de sidebar is leeg in deze hele subspace, in elke fase."
     },
     "addPhase": {
       "button": "Fase toevoegen",
@@ -187,6 +187,7 @@
       "applyDialog": {
         "title": "Nieuwe template toepassen",
         "description": "Je staat op het punt een nieuwe template toe te passen. Deze actie verwijdert je huidige innovation flow permanent. De bestaande Posts die aan verschillende fasen zijn gekoppeld, blijven echter behouden en worden gegroepeerd onder de eerste fase van de nieuwe opzet.<br/><br/>Kies een van de volgende opties:",
+        "sidebarNote": "De sidebar van de subspace wordt vervangen door die van de template.",
         "option1": {
           "label": "Vervangen door nieuwe flow",
           "description": "Hiermee wordt je huidige innovation flow met alle bestaande Posts verwijderd en vervangen door de nieuwe flow inclusief de template-Posts."
@@ -211,17 +212,13 @@
     },
     "row": {
       "drag": "Sleep om te herordenen",
-      "menu": "Calloutacties",
+      "menu": "Post-acties",
       "moveTo": "Verplaatsen naar",
       "viewPost": "Post bekijken",
       "noOtherColumns": "Geen andere kolommen"
     }
   },
   "community": {
-    "pageHeader": {
-      "title": "Community",
-      "subtitle": "Beheer leden, organisaties en Virtual Contributors in deze Space."
-    },
     "applications": {
       "title": "Lopende aanvragen",
       "approve": "Goedkeuren",
@@ -238,10 +235,21 @@
       "email": "E-mail",
       "date": "Datum",
       "type": "Type",
+      "offeredRole": {
+        "column": "Aangeboden rol"
+      },
       "actions": "Acties",
       "approve": "Goedkeuren",
       "reject": "Afwijzen",
-      "delete": "Verwijderen",
+      "deleteAction": {
+        "rejectAndRemove": "Aanvraag afwijzen en verwijderen",
+        "removeFromList": "Uit de lijst verwijderen",
+        "revokeInvitation": "Uitnodiging intrekken"
+      },
+      "resend": "Uitnodigingsmail opnieuw versturen",
+      "resendSuccess": "Uitnodigingsmail opnieuw verstuurd",
+      "resendThrottled": "Onlangs al opnieuw verstuurd — probeer het over enkele minuten opnieuw",
+      "resendError": "De uitnodigingsmail kon niet opnieuw worden verstuurd — probeer het opnieuw",
       "empty": "Geen lopende lidmaatschappen.",
       "noMatch": "Geen lopende lidmaatschappen komen overeen met de geselecteerde filters.",
       "filterLabel": "Filteren op status",
@@ -251,6 +259,7 @@
       "viewDialog": {
         "created": "Aangemaakt op {{date}}",
         "updated": "Bijgewerkt op {{date}}",
+        "offeredRole": "Aangeboden rol: {{role}}",
         "welcomeMessage": "Welkomstbericht",
         "noWelcomeMessage": "Geen welkomstbericht opgegeven.",
         "noAnswers": "Geen antwoorden opgegeven.",
@@ -266,9 +275,11 @@
       "status": {
         "column": "Status",
         "applicationReceived": "Aanvraag ontvangen",
+        "applicationApproving": "Wordt goedgekeurd…",
         "applicationApproved": "Aanvraag goedgekeurd",
         "applicationRejected": "Aanvraag afgewezen",
         "invited": "Uitgenodigd",
+        "invitationAccepting": "Wordt geaccepteerd…",
         "invitationAccepted": "Uitnodiging geaccepteerd",
         "invitationRejected": "Uitnodiging afgewezen",
         "invitedExternal": "Uitgenodigd (extern)"
@@ -281,6 +292,7 @@
     },
     "members": {
       "title": "Space-leden",
+      "title_subspace": "Subspace-leden",
       "search": "Leden zoeken…",
       "invite": "Uitnodigen",
       "name": "Naam",
@@ -299,7 +311,8 @@
       "dropdown": {
         "viewProfile": "Profiel bekijken",
         "changeRole": "Rol wijzigen",
-        "removeFromSpace": "Uit Space verwijderen"
+        "removeFromSpace": "Uit Space verwijderen",
+        "removeFromSpace_subspace": "Uit Subspace verwijderen"
       },
       "pagination": {
         "showing": "{{from}} tot {{to}} van {{total}} leden weergegeven",
@@ -308,7 +321,8 @@
         "next": "Volgende pagina"
       },
       "roleColumn": "Rol",
-      "export": "Exporteer volledig ledenoverzicht"
+      "export": "Exporteer volledig ledenoverzicht",
+      "exportApplications": "Exporteer alle ingediende aanvragen"
     },
     "memberSettings": {
       "title": "Lidinstellingen",
@@ -330,24 +344,18 @@
       "close": "Sluiten"
     },
     "organizations": {
+      "export": "Exporteer organisaties",
       "title": "Aangesloten organisaties",
       "name": "Naam",
       "role": "Rol",
       "actions": "Acties",
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
-      "description": "Overzicht van alle leden- en Lead-organisaties. Nodig een organisatie uit om deel te nemen, of voeg er direct een toe.",
-      "add": "Organisatie toevoegen",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
         "changeRole": "Rol wijzigen",
-        "removeFromSpace": "Uit Space verwijderen"
-      },
-      "addDialog": {
-        "title": "Organisatie toevoegen",
-        "description": "Deze organisaties worden zichtbaar als leden in deze Space en op hun organisatieprofiel.",
-        "search": "Organisaties zoeken…",
-        "empty": "Geen organisaties komen overeen met je zoekopdracht."
+        "removeFromSpace": "Uit Space verwijderen",
+        "removeFromSpace_subspace": "Uit Subspace verwijderen"
       },
       "invite": "Organisatie uitnodigen",
       "search": "Organisaties zoeken…",
@@ -368,7 +376,6 @@
       "actions": "Acties",
       "empty": "Geen Virtual Contributors.",
       "remove": "Virtual Contributor verwijderen",
-      "description": "Beheer AI-agents en bots die deelnemen aan deze Space.",
       "add": "Virtual Contributor toevoegen",
       "addExternal": "Externe Virtual Contributor uitnodigen",
       "addDialog": {
@@ -389,13 +396,15 @@
     },
     "applicationForm": {
       "title": "Aanvraagformulier",
-      "description": "Pas de vragen aan die gebruikers moeten beantwoorden wanneer ze lid willen worden van deze Space."
+      "edit": "Aanvraagformulier bewerken",
+      "optional": "Optioneel",
+      "questionNumber": "V{{number}}"
     },
     "guidelines": {
       "title": "Communityrichtlijnen",
-      "description": "Stel regels en verwachtingen voor het gedrag van leden op.",
       "hint": "Wordt aan nieuwe leden getoond bij hun lidmaatschap.",
       "placeholder": "Beschrijf de gedragscode van je Space…",
+      "placeholder_subspace": "Beschrijf de gedragscode van je Subspace…",
       "titleLabel": "Titel",
       "titlePlaceholder": "Geef je communityrichtlijnen een naam",
       "referencesLabel": "Gerelateerde links",
@@ -408,7 +417,9 @@
         "cancel": "Annuleren"
       },
       "save": "Richtlijnen opslaan",
-      "saving": "Opslaan…"
+      "saving": "Opslaan…",
+      "edit": "Richtlijnen bewerken",
+      "empty": "Nog geen communityrichtlijnen."
     },
     "confirmRemove": {
       "confirm": "Bevestigen",
@@ -426,15 +437,24 @@
       },
       "invitation": {
         "title": "Uitnodiging intrekken",
-        "description": "De lopende uitnodiging voor {{name}} intrekken?"
+        "description": "{{name}} kan deze uitnodiging niet meer accepteren en ze wordt uit de lijst verwijderd."
       },
       "applicationReject": {
         "title": "Aanvraag afwijzen",
-        "description": "De aanvraag van {{name}} om lid te worden van deze Space afwijzen?"
+        "description": "De aanvraag van {{name}} om lid te worden van deze Space afwijzen?",
+        "description_subspace": "De aanvraag van {{name}} om lid te worden van deze Subspace afwijzen?"
       },
       "applicationDelete": {
-        "title": "Aanvraag verwijderen",
-        "description": "De aanvraag van {{name}} uit de lijst verwijderen?"
+        "title": "Aanvraag afwijzen en verwijderen",
+        "description": "De aanvraag van {{name}} wordt afgewezen en uit deze lijst verwijderd. Er volgt geen lidmaatschap."
+      },
+      "resolvedDelete": {
+        "title": "Uit de lijst verwijderen",
+        "description": "Hiermee verdwijnt alleen het afgesloten verzoek van {{name}} uit deze lijst. Niemands lidmaatschap verandert."
+      },
+      "platformInvitation": {
+        "title": "Uitnodiging intrekken",
+        "description": "De uitnodiging aan {{name}} wordt geannuleerd en uit de lijst verwijderd. Ze kan niet meer worden gebruikt om lid te worden."
       }
     },
     "addDialog": {
@@ -466,16 +486,15 @@
         "invited": "Uitgenodigd",
         "invite": "Uitnodigen"
       }
+    },
+    "editDialog": {
+      "save": "Opslaan",
+      "saving": "Opslaan…"
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Subspaces",
-      "subtitle": "Bewerk de Subspaces in deze Space. Configureer standaardtemplates en bekijk alle bestaande subspaces."
-    },
     "defaultTemplate": {
       "title": "Standaard subspace-template",
-      "description": "Kies de standaardinstellingen die worden toegepast bij het maken van een nieuwe Subspace binnen deze Space.",
       "change": "Standaardtemplate wijzigen",
       "dialog": {
         "title": "Standaard subspace-template wijzigen",
@@ -560,8 +579,8 @@
       "preview": {
         "info": "Altijd inbegrepen: Over-informatie en instellingen",
         "states": "Fasen",
-        "callouts": "Callouts",
-        "noCalloutsInState": "Geen callouts in deze fase.",
+        "callouts": "Posts",
+        "noCalloutsInState": "Geen Posts in deze fase.",
         "noCalloutDescription": "Geen beschrijving",
         "subspaces": "Bevat deze subspaces"
       },
@@ -650,13 +669,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Updates van de Leads",
-      "subtitle": "Plaats aankondigingen, mijlpalen en voortgangsupdates die zichtbaar zijn voor alle leden van de Space."
+    "sections": {
+      "post": "Een update plaatsen",
+      "published": "Gepubliceerde updates"
     },
     "composer": {
       "new": "Nieuwe update",
-      "title": "Nieuwe update",
       "placeholder": "Schrijf je update…",
       "publish": "Publiceren",
       "submitting": "Publiceren…",
@@ -758,33 +776,34 @@
     }
   },
   "settings": {
-    "pageHeader": {
-      "title": "Instellingen",
-      "subtitle": "Configureer de zichtbaarheid van je Space, lidmaatschapsbeleid en toegestane ledenacties."
-    },
     "visibility": {
       "title": "Zichtbaarheid",
-      "description": "Bepaal wie deze Space kan zien en openen",
       "public": "Openbaar",
       "publicDescription": "Deze Space en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Gebruikers kunnen alleen bijdragen als ze lid zijn.",
+      "publicDescription_subspace": "Deze Subspace en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Gebruikers kunnen alleen bijdragen als ze lid zijn.",
       "private": "Privé",
       "privateDescription": "Deze Space is zichtbaar voor iedereen op het platform, maar de inhoud is alleen zichtbaar voor leden.",
-      "hint": "Houd rekening met het doel en het publiek van je Space bij het kiezen van de zichtbaarheid."
+      "privateDescription_subspace": "Deze Subspace is zichtbaar voor iedereen op het platform, maar de inhoud is alleen zichtbaar voor leden.",
+      "hint": "Houd rekening met het doel en het publiek van je Space bij het kiezen van de zichtbaarheid.",
+      "hint_subspace": "Houd rekening met het doel en het publiek van je Subspace bij het kiezen van de zichtbaarheid."
     },
     "membership": {
       "title": "Lidmaatschap",
-      "description": "Kies hoe gebruikers lid worden van je Space",
       "open": "Geen aanvraag vereist",
       "openDescription": "Alle Space-leden kunnen direct lid worden, zonder dat je hun aanvragen hoeft te beoordelen.",
+      "openDescription_subspace": "Alle leden van de bovenliggende Space kunnen direct lid worden, zonder dat je hun aanvragen hoeft te beoordelen.",
       "openHint": "Het beste voor openbare, open samenwerkings-Spaces",
+      "openHint_subspace": "Het beste voor openbare, open samenwerkings-Subspaces",
       "application": "Aanvraag vereist",
       "applicationDescription": "Als mensen lid willen worden, moeten ze het aanvraagformulier invullen. Je ontvangt hun aanvragen (zie het communitytabblad hier) en je kunt ze accepteren of afwijzen.",
       "applicationHint": "Het beste voor gecureerde Spaces met specifieke vereisten",
+      "applicationHint_subspace": "Het beste voor gecureerde Subspaces met specifieke vereisten",
       "invitation": "Alleen op uitnodiging",
       "invitationDescription": "Gebruikers kunnen alleen lid worden nadat je ze hebt uitgenodigd. Er is geen 'aanvragen'- of 'lid worden'-knop voor anderen om op te klikken.",
       "invitationHint": "Het beste voor private, beperkte samenwerkingsteams",
       "trustedApplicants": "Vertrouwde aanvragers",
-      "hostOrgTrust": "Sta leden van {{host}} toe lid te worden van deze Space zonder aanvraag."
+      "hostOrgTrust": "Sta leden van {{host}} toe lid te worden van deze Space zonder aanvraag.",
+      "hostOrgTrust_subspace": "Sta leden van {{host}} toe lid te worden van deze Subspace zonder aanvraag."
     },
     "applicationForm": {
       "title": "Aanvraagformulier",
@@ -804,12 +823,10 @@
         "description": "Weet je zeker dat je deze vraag wilt verwijderen?",
         "confirm": "Verwijderen"
       },
-      "save": "Opslaan",
-      "export": "Exporteer alle ingediende aanvragen"
+      "save": "Opslaan"
     },
     "allowedActions": {
       "title": "Toegestane acties",
-      "description": "Kies welke acties leden in deze Space kunnen uitvoeren",
       "subspaceAdminInvitations": "Subspace-lidmaatschap",
       "memberCreatePosts": "Posts maken",
       "videoCalls": "Videogesprekken",
@@ -840,16 +857,19 @@
     "userInfoVisibility": {
       "title": "Zichtbaarheid van gebruikersinformatie",
       "description": "Bepaal wie de gebruikersinformatie van leden in deze space kan zien. Organisaties en virtual contributors volgen de zichtbaarheid van de space.",
+      "description_subspace": "Bepaal wie de gebruikersinformatie van leden in deze subspace kan zien. Organisaties en virtual contributors volgen de zichtbaarheid van de subspace.",
       "followSpace": "Volg de space-zichtbaarheid",
+      "followSpace_subspace": "Volg de subspace-zichtbaarheid",
       "followSpaceDescription": "Gebruikersinformatie van leden is zichtbaar volgens de zichtbaarheid van de space.",
+      "followSpaceDescription_subspace": "Gebruikersinformatie van leden is zichtbaar volgens de zichtbaarheid van de subspace.",
       "membersOnly": "Alleen leden",
-      "membersOnlyDescription": "Alleen leden van deze space kunnen de gebruikersinformatie van leden zien."
+      "membersOnlyDescription": "Alleen leden van deze space kunnen de gebruikersinformatie van leden zien.",
+      "membersOnlyDescription_subspace": "Alleen leden van deze subspace kunnen de gebruikersinformatie van leden zien."
     }
   },
   "storage": {
-    "pageHeader": {
-      "title": "Opslag",
-      "subtitle": "Bekijk en beheer documenten die in deze Space zijn opgeslagen."
+    "sections": {
+      "documents": "Documenten"
     },
     "empty": "Nog geen documenten opgeslagen.",
     "columns": {
@@ -868,12 +888,8 @@
     }
   },
   "account": {
-    "pageHeader": {
-      "title": "Account",
-      "subtitle": "Hier vind je al je Spaces, Virtual Contributors en andere gehoste bronnen. Als je vragen hebt, neem dan gerust contact op met het Alkemio-team."
-    },
     "url": {
-      "title": "URL",
+      "title": "Space-URL",
       "hint": "De unieke URL voor deze Space. Neem contact op met Alkemio om dit te wijzigen.",
       "copy": "URL kopiëren",
       "copied": "URL gekopieerd"
@@ -882,18 +898,28 @@
       "title": "Zichtbaarheidsstatus",
       "prefix": "Deze Space staat momenteel in",
       "suffix": "modus",
-      "contact": "Voor statuswijzigingen neem je contact op met het Alkemio-team."
+      "contact": "Voor statuswijzigingen neem je contact op met het Alkemio-team.",
+      "status": {
+        "active": "Actief",
+        "archived": "Gearchiveerd",
+        "demo": "Demo",
+        "inactive": "Inactief"
+      }
     },
     "host": {
       "title": "Hostinformatie",
-      "description": "De host is de persoon of organisatie die eigenaar is van deze Space."
+      "type": {
+        "organization": "Organisatie",
+        "user": "Gebruiker",
+        "virtualContributor": "Virtual Contributor"
+      }
     },
     "plan": {
       "title": "Licentie",
-      "description": "Details van je huidige Space-abonnement",
       "featuresHeading": "Inbegrepen functies",
       "daysLeft": "Nog {{count}} dagen",
-      "changeLicense": "Licentie wijzigen"
+      "changeLicense": "Licentie wijzigen",
+      "none": "Geen actieve licentie"
     },
     "support": {
       "title": "Ondersteuning",
@@ -904,6 +930,7 @@
       "title": "Gevarenzone",
       "description": "Verwijder deze Space en alle inhoud ervan permanent.",
       "delete": "Deze Space verwijderen",
+      "deleteError": "De Space kon niet worden verwijderd. Probeer het opnieuw.",
       "deleteDialog": {
         "title": "Space verwijderen",
         "description": "Hierdoor wordt deze Space en alle inhoud ervan permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
@@ -912,35 +939,46 @@
     }
   },
   "about": {
+    "sections": {
+      "identity": "Identiteit",
+      "visuals": "Visuele elementen",
+      "context": "Context"
+    },
     "name": {
       "title": "Naam van de Space",
+      "title_subspace": "Naam van de Subspace",
       "description": "De openbare naam van je Space.",
-      "ariaLabel": "Naam van de Space"
+      "description_subspace": "De openbare naam van je Subspace."
     },
     "tagline": {
       "title": "Ondertitel",
       "description": "Een korte ondertitel die naast de Space-naam wordt weergegeven.",
-      "ariaLabel": "Ondertitel"
+      "description_subspace": "Een korte ondertitel die naast de Subspace-naam wordt weergegeven."
     },
     "branding": {
-      "title": "Branding van de Space",
-      "description": "Upload een avatar, een paginabanner (3840px breed) en een kaartbanner (416×256).",
       "noImage": "Geen afbeelding",
-      "upload": "Uploaden",
       "avatar": {
         "title": "Avatar",
+        "size": "410 × 410px",
         "hint": "Het logo van de Space.",
-        "recrop": "Huidige avatar bijsnijden"
+        "hint_subspace": "Het logo van de Subspace.",
+        "recrop": "Huidige avatar bijsnijden",
+        "upload": "Avatar uploaden"
       },
       "pageBanner": {
         "title": "Paginabanner",
-        "hint": "Wordt bovenaan de Space-pagina getoond. Gebruik een afbeelding van minimaal 1200 × 120px.",
-        "recrop": "Huidige paginabanner bijsnijden"
+        "size": "Min. 1200 × 120px",
+        "hint": "Wordt bovenaan de Space-pagina getoond.",
+        "recrop": "Huidige paginabanner bijsnijden",
+        "upload": "Paginabanner uploaden"
       },
       "cardBanner": {
-        "title": "Kaartbanner (416 × 256px)",
+        "title": "Kaartbanner",
+        "size": "416 × 256px",
         "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten.",
-        "recrop": "Huidige kaartbanner bijsnijden"
+        "hint_subspace": "Wordt weergegeven in zoekresultaten en op het overzicht van de bovenliggende Space.",
+        "recrop": "Huidige kaartbanner bijsnijden",
+        "upload": "Kaartbanner uploaden"
       },
       "cropDialog": {
         "save": "Opslaan",
@@ -962,32 +1000,41 @@
     "location": {
       "title": "Locatie",
       "description": "De stad en het land van deze Space.",
+      "description_subspace": "De stad en het land van deze Subspace.",
       "city": "Stad",
-      "country": "Land (ISO-code)"
+      "country": "Land (ISO-code)",
+      "countryPlaceholder": "Land"
     },
     "what": {
       "title": "Wat",
       "description": "Beschrijf waarover deze Space gaat.",
-      "placeholder": "Waarover gaat deze Space…"
+      "description_subspace": "Beschrijf waarover deze Subspace gaat.",
+      "placeholder": "Waarover gaat deze Space…",
+      "placeholder_subspace": "Waarover gaat deze Subspace…"
     },
     "why": {
       "title": "Waarom",
       "description": "Leg de motivatie of waarde van deze Space uit.",
-      "placeholder": "Waarom bestaat deze Space…"
+      "description_subspace": "Leg de motivatie of waarde van deze Subspace uit.",
+      "placeholder": "Waarom bestaat deze Space…",
+      "placeholder_subspace": "Waarom bestaat deze Subspace…"
     },
     "who": {
       "title": "Wie",
       "description": "Beschrijf het doelpubliek of de ideale leden.",
-      "placeholder": "Voor wie is deze Space…"
+      "placeholder": "Voor wie is deze Space…",
+      "placeholder_subspace": "Voor wie is deze Subspace…"
     },
     "tags": {
       "title": "Tags",
       "description": "Tags helpen leden je Space te ontdekken.",
+      "description_subspace": "Tags helpen leden je Subspace te ontdekken.",
       "placeholder": "Voeg een tag toe en druk op Enter"
     },
     "references": {
       "title": "Referenties en links",
       "description": "Externe links die op deze Space-pagina worden weergegeven.",
+      "description_subspace": "Externe links die op deze Subspace-pagina worden weergegeven.",
       "empty": "Nog geen referenties toegevoegd.",
       "add": "Toevoegen",
       "row": {
@@ -1004,66 +1051,61 @@
         "description": "Weet je zeker dat je \"{{name}}\" wilt verwijderen? Dit kan niet ongedaan worden gemaakt zodra je opslaat.",
         "untitled": "deze referentie",
         "confirm": "Verwijderen"
-      }
+      },
+      "titleRequired": "Voeg een titel toe om deze referentie op te slaan."
     },
     "preview": {
       "title": "VOORBEELD",
       "label": "VOORBEELD",
       "livePreview": {
         "title": "Live voorbeeld",
-        "description": "Dit voorbeeld toont hoe je Space-kaart wordt weergegeven in de \"Explore Spaces\"-directory."
+        "description": "Dit voorbeeld toont hoe je Space-kaart wordt weergegeven in de \"Explore Spaces\"-directory.",
+        "description_subspace": "Dit voorbeeld toont hoe je Subspace-kaart wordt weergegeven op het overzicht van de bovenliggende Space en in zoekresultaten."
       }
-    },
-    "inlineSave": {
-      "save": "Opslaan",
-      "saving": "Opslaan…",
-      "saved": "Opgeslagen",
-      "retry": "Opnieuw proberen"
-    },
-    "pageHeader": {
-      "title": "Over",
-      "subtitle": "Definieer het doel, de motivatie en het doelpubliek van je Space."
     }
   },
   "classifications": {
     "sectionTitle": "Classificaties",
     "sectionDescription": "Classificeer je Space met gestructureerde vocabulaires (bijv. SDG's, Sector) voor vindbaarheid en rapportage.",
+    "sectionDescription_subspace": "Classificeer je Subspace met gestructureerde vocabulaires (bijv. SDG's, Sector) voor vindbaarheid en rapportage.",
     "addButton": "Classificatie toevoegen",
     "picker": {
-      "title": "Add a classification",
-      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
-      "platformSection": "Platform-wide",
-      "spaceSection": "This Space's library",
+      "title": "Classificatie toevoegen",
+      "description": "Kies een classificatie-template om aan deze Space toe te voegen. Daarna selecteer je de waarden.",
+      "description_subspace": "Kies een classificatie-template om aan deze Subspace toe te voegen. Daarna selecteer je de waarden.",
+      "platformSection": "Platformbreed",
+      "spaceSection": "Bibliotheek van deze Space",
+      "spaceSection_subspace": "Bibliotheek van de hoofd-Space",
       "emptyState": {
-        "title": "No Classification Templates yet",
-        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+        "title": "Nog geen classificatie-templates",
+        "description": "Maak er een aan in een Template Pack of in de Template Bibliotheek van deze Space en kom dan hier terug om hem toe te voegen.",
+        "description_subspace": "Maak er een aan in een Template Pack of in de Template Bibliotheek van de hoofd-Space en kom dan hier terug om hem toe te voegen."
       },
       "conflict": {
-        "title": "That name is already in use",
-        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
-        "fieldLabel": "Display label",
-        "retry": "Add with this label"
+        "title": "Die naam is al in gebruik",
+        "description": "Deze Space heeft al een classificatie met het label \"{{label}}\". Geef de nieuwe een ander weergavelabel om ze uit elkaar te houden.",
+        "description_subspace": "Deze Subspace heeft al een classificatie met het label \"{{label}}\". Geef de nieuwe een ander weergavelabel om ze uit elkaar te houden.",
+        "fieldLabel": "Weergavelabel",
+        "retry": "Toevoegen met dit label"
       },
-      "cancel": "Cancel",
+      "cancel": "Annuleren",
       "searchPlaceholder": "Templates zoeken…",
       "noMatches": "Geen templates gevonden voor \"{{query}}\".",
       "multiSelect": "Meer",
       "singleSelect": "Eén"
     },
     "valueSelector": {
-      "noneSelected": "No values selected yet"
+      "noneSelected": "Nog geen waarden geselecteerd"
     },
     "display": {
-      "toggleLabel": "Show on the Space page",
-      "hiddenHint": "Not shown on the Space page"
+      "toggleLabel": "Tonen op de Space-pagina",
+      "toggleLabel_subspace": "Tonen op de Subspace-pagina",
+      "hiddenHint": "Niet getoond op de Space-pagina",
+      "hiddenHint_subspace": "Niet getoond op de Subspace-pagina"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Classificatie verwijderen"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Meerkeuze",
       "singleSelect": "Eén keuze",
@@ -1071,8 +1113,9 @@
       "selectedCount_other": "{{count}} geselecteerd",
       "actions": "Classificatie-acties: {{label}}",
       "selectValues": "Waarden selecteren…",
-      "deselectValue": "{{label}} deselecteren"
-    },
-    "removedConcurrently": "Deze classificatie is door iemand anders verwijderd. De lijst is vernieuwd."
+      "selectValue": "{{label}} selecteren",
+      "deselectValue": "{{label}} deselecteren",
+      "unsaved": "Niet opgeslagen"
+    }
   }
 }

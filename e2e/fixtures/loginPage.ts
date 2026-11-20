@@ -45,7 +45,9 @@ export class LoginPage {
     }
     await this.page.waitForURL(/.*login.*/);
     await this.page.getByRole('textbox', { name: /E-Mail/i }).fill(email);
-    await this.page.getByRole('textbox', { name: /Password/i }).fill(password);
+    // A native password input has no ARIA role, so it is located by its label; the anchor keeps
+    // the show/hide toggle ("Show password") out of the match.
+    await this.page.getByLabel(/^Password/).fill(password);
     await this.page.getByRole('button', { name: 'Sign in', exact: true }).click();
     await this.page.waitForURL(/.*home.*/);
   }

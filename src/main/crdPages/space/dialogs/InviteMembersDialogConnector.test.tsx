@@ -24,8 +24,16 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
 
 vi.mock('@/domain/platform/config/useConfig', () => ({ useConfig: () => ({ language: { eligible: [] } }) }));
 
+const useRoleSetApplicationsAndInvitationsMock = vi.fn(
+  (_params: { roleSetId: string | undefined; includeApplications?: boolean }) => ({
+    invitations: [],
+    inviteContributorsOnRoleSet: vi.fn(),
+    loading: false,
+  })
+);
 vi.mock('@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations', () => ({
-  default: () => ({ invitations: [], inviteContributorsOnRoleSet: vi.fn(), loading: false }),
+  default: (params: { roleSetId: string | undefined; includeApplications?: boolean }) =>
+    useRoleSetApplicationsAndInvitationsMock(params),
 }));
 
 vi.mock('@/domain/access/AvailableContributors/useRoleSetAvailableContributors', () => ({
@@ -84,8 +92,9 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 
 // Stub the presentational dialog — this test exercises the connector's data
 // wiring only, not the CRD component's rendering.
+const inviteMembersDialogMock = vi.fn((_props: Record<string, unknown>) => null);
 vi.mock('@/crd/components/community/InviteMembersDialog', () => ({
-  InviteMembersDialog: () => null,
+  InviteMembersDialog: (props: Record<string, unknown>) => inviteMembersDialogMock(props),
 }));
 
 /**
@@ -196,6 +205,73 @@ describe('mapInvitationResults', () => {
     expect(results).toEqual([{ invitee: invitees[0], outcome: 'error' }]);
   });
 
+  test('an interleaved batch keeps every outcome on its own chip and never lends a typed failure to an unmatched chip', () => {
+    const invitees: ContributorSelectorInvitee[] = [
+      { kind: 'email', email: 'new@example.com' },
+      { kind: 'user', userId: 'user-p', displayName: 'Pat' },
+      { kind: 'email', email: 'registered@example.com' },
+      { kind: 'email', email: 'pat@example.com' },
+      { kind: 'user', userId: 'user-q', displayName: 'Quinn' },
+    ];
+    const legacyResults: InvitationResultModel[] = [
+      {
+        type: RoleSetInvitationResultType.ExtraRoleLimitReached,
+        invitedActorID: 'user-q',
+      },
+      {
+        type: RoleSetInvitationResultType.InvitedToRoleSet,
+        invitedActorID: 'user-p',
+        invitedEmail: 'pat@example.com',
+        invitation: { id: 'inv-p', actor: { id: 'user-p' } },
+      },
+      {
+        // The server echoes one result per typed chip: Pat's address typed again gets its own result,
+        // sharing the invitation created for the picked user.
+        type: RoleSetInvitationResultType.InvitedToRoleSet,
+        invitedActorID: 'user-p',
+        invitedEmail: 'pat@example.com',
+        invitation: { id: 'inv-p', actor: { id: 'user-p' } },
+      },
+      {
+        type: RoleSetInvitationResultType.InvitedToRoleSet,
+        invitedActorID: 'user-r',
+        invitedEmail: 'registered@example.com',
+        invitation: { id: 'inv-r', actor: { id: 'user-r' } },
+      },
+      {
+        type: RoleSetInvitationResultType.InvitedToPlatformAndRoleSet,
+        invitedEmail: 'new@example.com',
+        platformInvitation: { id: 'pi-1', email: 'new@example.com' },
+      },
+    ];
+
+    const results = mapInvitationResults(invitees, legacyResults);
+
+    expect(results.map(r => r.outcome)).toEqual([
+      'sent',
+      'sent',
+      'sent',
+      // Pat's address typed again: it has its own echoed result, so the typed chip reports sent too.
+      'sent',
+      'extraRoleLimitReached',
+    ]);
+  });
+
+  test('identity-less legacy results are still consumed positionally', () => {
+    const invitees: ContributorSelectorInvitee[] = [
+      { kind: 'organization', id: 'org-1', displayName: 'Acme' },
+      { kind: 'organization', id: 'org-2', displayName: 'Beta' },
+    ];
+    const legacyResults: InvitationResultModel[] = [
+      { type: RoleSetInvitationResultType.OrganizationNotAcceptingInvitations },
+      { type: RoleSetInvitationResultType.OrganizationLeadRoleLimitReached },
+    ];
+    expect(mapInvitationResults(invitees, legacyResults).map(r => r.outcome)).toEqual([
+      'notAcceptingInvitations',
+      'leadLimitReached',
+    ]);
+  });
+
   test('user and email invitees keep their existing correlation and outcomes', () => {
     const invitees: ContributorSelectorInvitee[] = [
       { kind: 'user', userId: 'u1', displayName: 'Alice' },
@@ -266,5 +342,63 @@ describe('InviteMembersDialogConnector — virtualContributor fetch waits for th
     const lastCallArgs = calls[calls.length - 1][0];
     expect(lastCallArgs.level).toBe(SpaceLevel.L1);
     expect(lastCallArgs.currentMembers).toEqual([{ id: 'vc-existing' }]);
+  });
+});
+
+describe('InviteMembersDialogConnector — virtualContributor rows carry the VC avatar', () => {
+  test('passes each VC profile avatar through to the account and library rows', async () => {
+    inviteUsersDialogQueryReturn = {
+      data: {
+        lookup: {
+          space: {
+            about: { profile: { displayName: 'My Space' }, membership: { roleSetID: 'rs-1' } },
+            level: SpaceLevel.L0,
+          },
+        },
+      },
+      loading: false,
+    };
+    const vc = (id: string, uri: string) => ({ id, profile: { displayName: id, avatar: { uri } } });
+    getAvailableMock.mockResolvedValueOnce([vc('vc-account', 'https://img/account.png')] as never);
+    getAvailableInLibraryMock.mockResolvedValueOnce([vc('vc-library', 'https://img/library.png')] as never);
+
+    await act(async () => {
+      render(
+        <InviteMembersDialogConnector open={true} kind="virtualContributor" spaceId="space-1" onClose={vi.fn()} />
+      );
+    });
+
+    const calls = inviteMembersDialogMock.mock.calls;
+    const props = calls[calls.length - 1][0];
+    expect(props.vcAccountItems).toEqual([expect.objectContaining({ avatarUrl: 'https://img/account.png' })]);
+    expect(props.vcLibraryItems).toEqual([expect.objectContaining({ avatarUrl: 'https://img/library.png' })]);
+  });
+});
+
+describe('InviteMembersDialogConnector — the invitation dedupe never selects applications', () => {
+  test('reads the role set with includeApplications: false, so an inviter without GRANT still gets the invitations', async () => {
+    inviteUsersDialogQueryReturn = {
+      data: {
+        lookup: {
+          space: {
+            about: { profile: { displayName: 'My Subspace' }, membership: { roleSetID: 'rs-1' } },
+            level: SpaceLevel.L1,
+          },
+        },
+      },
+      loading: false,
+    };
+    useRoleSetApplicationsAndInvitationsMock.mockClear();
+
+    await act(async () => {
+      render(<InviteMembersDialogConnector open={true} kind="organization" spaceId="space-1" onClose={vi.fn()} />);
+    });
+
+    const calls = useRoleSetApplicationsAndInvitationsMock.mock.calls;
+    expect(calls.length).toBeGreaterThan(0);
+    for (const [params] of calls) {
+      expect(params.includeApplications).toBe(false);
+    }
+    expect(calls[calls.length - 1][0].roleSetId).toBe('rs-1');
   });
 });

@@ -26,7 +26,7 @@ function card(id: string, name: string): SpaceCardData {
   };
 }
 
-describe('SpaceCollection (feature 013 renderer)', () => {
+describe('SpaceCollection', () => {
   test('renders each subspace as a card (reuses SpaceCard, unchanged)', () => {
     render(<SpaceCollection subspaces={[card('a', 'Alpha'), card('b', 'Beta')]} />);
 
@@ -60,5 +60,46 @@ describe('SpaceCollection (feature 013 renderer)', () => {
     await user.click(screen.getByText('Alpha'));
 
     expect(onSubspaceClick).toHaveBeenCalledWith(expect.objectContaining({ id: 'a' }));
+  });
+
+  // ─── AC6 — the hidden-spaces notice (feature 084) ───────────────────────
+  test('hasHiddenSpaces renders the notice alongside the cards', () => {
+    render(<SpaceCollection subspaces={[card('a', 'Alpha')]} hasHiddenSpaces={true} />);
+
+    expect(screen.getByText('callout.spacesHidden')).toBeInTheDocument();
+    expect(screen.getByText('Alpha')).toBeInTheDocument();
+  });
+
+  test('hasHiddenSpaces renders the notice alongside the empty state (US2-AS3)', () => {
+    render(<SpaceCollection subspaces={[]} hasHiddenSpaces={true} />);
+
+    expect(screen.getByText('subspaces.empty.title')).toBeInTheDocument();
+    expect(screen.getByText('callout.spacesHidden')).toBeInTheDocument();
+  });
+
+  test('no notice when the flag is false — AUTO mode and the unwithheld case', () => {
+    render(<SpaceCollection subspaces={[card('a', 'Alpha')]} />);
+
+    expect(screen.queryByText('callout.spacesHidden')).not.toBeInTheDocument();
+  });
+
+  test('no notice while loading', () => {
+    render(<SpaceCollection subspaces={[]} loading={true} hasHiddenSpaces={true} />);
+
+    expect(screen.queryByText('callout.spacesHidden')).not.toBeInTheDocument();
+  });
+
+  test('default renders compact (3-up grid, SpaceCard) — regression net for existing consumers', () => {
+    const { container } = render(<SpaceCollection subspaces={[card('a', 'Alpha')]} />);
+    expect(container.querySelector('.md\\:grid-cols-2.lg\\:grid-cols-3')).not.toBeNull();
+  });
+
+  test('variant="expanded" reaches the reused SpaceSubspacesList and renders the rich card, not the compact grid', () => {
+    const { container } = render(
+      <SpaceCollection subspaces={[{ ...card('a', 'Alpha'), what: 'Why this subspace exists' }]} variant="expanded" />
+    );
+    expect(container.querySelector('.md\\:grid-cols-2.lg\\:grid-cols-3')).toBeNull();
+    expect(screen.getByText('Why this subspace exists')).toBeInTheDocument();
+    expect(screen.getByText('crd-space:subspaces.expandedCard.open')).toBeInTheDocument();
   });
 });

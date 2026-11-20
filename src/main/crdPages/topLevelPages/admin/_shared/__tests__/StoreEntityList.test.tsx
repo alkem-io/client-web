@@ -49,8 +49,80 @@ describe('StoreEntityList', () => {
     expect(onDelete).toHaveBeenCalledWith(expect.objectContaining({ id: 'p1' }));
   });
 
+  // 027 R-F.2 follow-up (2026-09-16, sandbox walk): Platform Support reads
+  // the pack/hub lists but holds neither DELETE nor PLATFORM_CONTENT_FULL_ACCESS
+  // on a pack, so the server refuses `deleteInnovationPack` — the button must
+  // not be offered on such a row (F9's defect shape: an action that can only
+  // fail). Rows that say nothing keep the action.
+  test('a row with canDelete=false renders no delete action; canDelete=true and undefined keep it', () => {
+    const gated: AdminStoreEntityRow[] = [
+      { ...rows[0], canDelete: false },
+      { ...rows[1], canDelete: true },
+      { id: 'p3', name: 'Pack Three', url: '/p3', listedInStore: true, searchVisibility: 'public', accountOwner: 'O' },
+    ];
+    render(<StoreEntityList rows={gated} loading={false} onDelete={vi.fn()} />);
+    const one = screen.getByRole('link', { name: 'Pack One' }).closest('tr')!;
+    const two = screen.getByRole('link', { name: 'Pack Two' }).closest('tr')!;
+    const three = screen.getByRole('link', { name: 'Pack Three' }).closest('tr')!;
+    expect(within(one).queryByRole('button', { name: 'table.delete' })).toBeNull();
+    expect(within(two).getByRole('button', { name: 'table.delete' })).toBeInTheDocument();
+    expect(within(three).getByRole('button', { name: 'table.delete' })).toBeInTheDocument();
+  });
+
   test('read-only lists (no onDelete) render no delete action', () => {
     render(<StoreEntityList rows={rows} loading={false} />);
     expect(screen.queryByRole('button', { name: 'table.delete' })).toBeNull();
+  });
+
+  describe('Promote column', () => {
+    const promoteLabel = (name: string) => `columns.promoteOf:${JSON.stringify({ name })}`;
+    const promoted: AdminStoreEntityRow[] = [
+      { ...rows[0], promote: true },
+      { ...rows[1], promote: false },
+    ];
+
+    test('without onPromoteChange there is no Promote column, even when rows carry a value', () => {
+      render(<StoreEntityList rows={promoted} loading={false} />);
+      expect(screen.queryByRole('columnheader', { name: 'columns.promoteHeader' })).toBeNull();
+      expect(screen.queryByRole('checkbox')).toBeNull();
+    });
+
+    test('with onPromoteChange and a non-null row it is the last header before Actions', () => {
+      render(<StoreEntityList rows={promoted} loading={false} onPromoteChange={vi.fn()} />);
+      const headers = screen.getAllByRole('columnheader').map(header => header.textContent);
+      expect(headers.slice(-3)).toEqual(['columns.ownerHeader', 'columns.promoteHeader', 'table.actions']);
+      expect(screen.getByRole('checkbox', { name: promoteLabel('Pack One') })).toBeChecked();
+      expect(screen.getByRole('checkbox', { name: promoteLabel('Pack Two') })).not.toBeChecked();
+    });
+
+    test('clicking a box calls onPromoteChange with the row and the next value', async () => {
+      const onPromoteChange = vi.fn();
+      render(<StoreEntityList rows={promoted} loading={false} onPromoteChange={onPromoteChange} />);
+      await userEvent.click(screen.getByRole('checkbox', { name: promoteLabel('Pack Two') }));
+      expect(onPromoteChange).toHaveBeenCalledWith(expect.objectContaining({ id: 'p2' }), true);
+    });
+
+    test('with onPromoteChange but all-null rows there is no Promote column', () => {
+      const hidden = rows.map(row => ({ ...row, promote: null }));
+      render(<StoreEntityList rows={hidden} loading={false} onPromoteChange={vi.fn()} />);
+      expect(screen.queryByRole('columnheader', { name: 'columns.promoteHeader' })).toBeNull();
+    });
+
+    test('only the row whose save is in flight is busy; the others stay usable', async () => {
+      const onPromoteChange = vi.fn();
+      render(
+        <StoreEntityList
+          rows={promoted}
+          loading={false}
+          onPromoteChange={onPromoteChange}
+          isPromoteSaving={row => row.id === 'p1'}
+        />
+      );
+      expect(screen.getByRole('checkbox', { name: promoteLabel('Pack One') })).toHaveAttribute('aria-busy', 'true');
+      const other = screen.getByRole('checkbox', { name: promoteLabel('Pack Two') });
+      expect(other).not.toHaveAttribute('aria-busy');
+      await userEvent.click(other);
+      expect(onPromoteChange).toHaveBeenCalledWith(expect.objectContaining({ id: 'p2' }), true);
+    });
   });
 });

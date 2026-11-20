@@ -3,18 +3,26 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import {
+  LONG_MARKDOWN_TEXT_LENGTH,
+  LONG_TEXT_LENGTH,
+  SPACE_ABOUT_TEXT_LENGTH,
+} from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ClassificationPickerDialog } from '@/crd/components/classification/ClassificationPickerDialog';
-import { ClassificationRemoveConfirm } from '@/crd/components/classification/ClassificationRemoveConfirm';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
+import { SaveFailedDialog } from '@/crd/components/common/SaveFailedDialog';
+import { UnsavedChangesBar } from '@/crd/components/common/UnsavedChangesBar';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { AddCommunityMemberDialog } from '@/crd/components/space/settings/AddCommunityMemberDialog';
-import { ApplicationFormEditor } from '@/crd/components/space/settings/ApplicationFormEditor';
 import { ChangeDefaultSubspaceTemplateDialog } from '@/crd/components/space/settings/ChangeDefaultSubspaceTemplateDialog';
-import { CommunityGuidelinesEditor } from '@/crd/components/space/settings/CommunityGuidelinesEditor';
 import { MemberSettingsDialog } from '@/crd/components/space/settings/MemberSettingsDialog';
 import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
+import type {
+  PendingMembershipState,
+  PendingMembershipType,
+} from '@/crd/components/space/settings/PendingMembershipsTable';
 import { SpaceSettingsAboutView } from '@/crd/components/space/settings/SpaceSettingsAboutView';
 import { SpaceSettingsAccountView } from '@/crd/components/space/settings/SpaceSettingsAccountView';
 import type { CommunityMember, CommunityOrg } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
@@ -34,13 +42,22 @@ import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionRe
 import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
+import {
+  NO_UNSAVED_CHANGES,
+  type TabUnsavedChanges,
+  toUnsavedChangesBarState,
+} from '@/main/crdPages/utils/tabUnsavedChanges';
+import { useCityOptions } from '@/main/crdPages/utils/useCityOptions';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
+import { CustomizeSidebarConnector } from '../../space/innovationFlow/CustomizeSidebarConnector';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useClassificationPicker } from './about/useClassificationPicker';
 import { useAccountTabData } from './account/useAccountTabData';
+import { ApplicationFormSection } from './community/ApplicationFormSection';
+import { CommunityGuidelinesSection } from './community/CommunityGuidelinesSection';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
-import { useAddOrganizationDialog, useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
+import { useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
 import useCommunityActionPermissions from './community/useCommunityActionPermissions';
 import { useCommunityCsvExport } from './community/useCommunityCsvExport';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
@@ -62,6 +79,12 @@ import { useSpaceSettingsAccessGuard } from './useSpaceSettingsAccessGuard';
 import { useSpaceSettingsTab } from './useSpaceSettingsTab';
 import { getVisibleSettingsTabs } from './useVisibleSettingsTabs';
 
+const ABOUT_MARKDOWN_MAX_LENGTH = {
+  what: LONG_MARKDOWN_TEXT_LENGTH,
+  why: SPACE_ABOUT_TEXT_LENGTH,
+  who: SPACE_ABOUT_TEXT_LENGTH,
+};
+
 /**
  * CrdSpaceSettingsPage — route entry for the CRD Space Settings area.
  *
@@ -70,7 +93,9 @@ import { getVisibleSettingsTabs } from './useVisibleSettingsTabs';
  * NOT render a second hero here.
  */
 export default function CrdSpaceSettingsPage() {
+  const cities = useCityOptions();
   const { t, i18n } = useTranslation('crd-spaceSettings');
+  const { t: tCommon } = useTranslation('crd-common');
   const notify = useNotification();
   const scope = useSettingsScope();
   const { id: spaceId, level, url: spaceUrl, roleSetId, communityId, accountId, loading: scopeLoading } = scope;
@@ -112,11 +137,7 @@ export default function CrdSpaceSettingsPage() {
   const userRoleChangeReason = reasonText(actionPermissions.userRoleChange);
   const organizationLeadAssignReason = reasonText(actionPermissions.organizationLeadAssign);
   const organizationRemoveReason = reasonText(actionPermissions.organizationRemove);
-  const addOrganizationReason = reasonText(actionPermissions.addOrganization);
   const addVcReason = reasonText(actionPermissions.addVirtualContributor);
-  // Inviting is a different token from adding — a space admin holds the invite privilege
-  // without the platform-admin direct-add pair — so the Invite organisation button gets
-  // its own reason rather than reusing `addOrganizationReason`.
   const inviteOrganizationsReason = reasonText(actionPermissions.invite);
   const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
   const createSubspace = useCreateSubspace(spaceId, {
@@ -200,7 +221,6 @@ export default function CrdSpaceSettingsPage() {
     defaultCalloutTemplatePicker.openPicker();
   };
 
-  const addOrgDialog = useAddOrganizationDialog({ community: community._adminRef });
   const addVCDialog = useAddVirtualContributorDialog({
     community: community._adminRef,
     spaceId,
@@ -215,20 +235,15 @@ export default function CrdSpaceSettingsPage() {
   // current route's depth, so its id IS the FR-007a "top-level Space's
   // Template Library" target — never the immediate parent's.
   const classificationPicker = useClassificationPicker(spaceContext.id);
-  const [pendingRemoveClassificationId, setPendingRemoveClassificationId] = useState<string | null>(null);
-
-  // A selection write that lost to a concurrent removal refetches silently in
-  // the hook; surface the outcome once as a toast (house pattern) and reset
-  // the flag so the next occurrence toasts again.
-  useEffect(() => {
-    if (about.classificationRemovedError) {
-      notify(t('classifications.removedConcurrently'), 'error');
-      about.dismissClassificationRemovedError();
-    }
-  }, [about.classificationRemovedError]);
+  // Staging an add needs the picked template's vocabulary, which the picker already holds.
+  const stageClassificationAdd = (templateId: string, displayLabel?: string) => {
+    const template = classificationPicker.sources.flatMap(source => source.templates).find(t => t.id === templateId);
+    if (template && about.addClassificationFromTemplate(template, displayLabel)) classificationPicker.closePicker();
+  };
 
   const csvExport = useCommunityCsvExport({
     members: community.members,
+    organizations: community.organizations,
     applications: community.applications,
     spaceDisplayName: level === 'L0' ? spaceContext.about.profile.displayName : subspace.about.profile.displayName,
     loading: community.loading,
@@ -258,6 +273,7 @@ export default function CrdSpaceSettingsPage() {
       : undefined;
   const columnMenu = useColumnMenu({
     innovationFlowId: layout.innovationFlowId,
+    includeSidebar: level === 'L0',
     collaborationId: layout.collaborationId,
     onOpenDefaultCalloutTemplatePicker: openDefaultCalloutTemplatePicker,
     callouts: layout.columns.flatMap(col =>
@@ -297,19 +313,55 @@ export default function CrdSpaceSettingsPage() {
     defaultCalloutTemplatePicker.clearSelection();
   }, [selectedDefaultCalloutTemplateId, defaultCalloutTemplateColumnId, columnMenu, defaultCalloutTemplatePicker]);
 
-  // About uses per-section inline Save, but its edits still live in a local
-  // buffer that survives a tab switch. Without the guard the admin can wander
-  // off and never notice they never hit Save, so About participates too —
-  // alongside Layout, the Application Form, and an unpublished Updates draft.
+  // The active tab's buffered fields, as the unsaved-changes bar sees them (spec 045 FR-025).
+  // Only About, Layout and Settings buffer fields; the guard forces a save or discard before a
+  // tab switch, so no other tab can still hold changes.
+  const activeUnsaved: TabUnsavedChanges =
+    activeTab === 'about'
+      ? about.unsaved
+      : activeTab === 'layout'
+        ? layout.unsaved
+        : activeTab === 'settings'
+          ? settingsTab.unsaved
+          : NO_UNSAVED_CHANGES;
+
+  // Besides the bar's count, an unsent Updates draft and an open Application Form edit keep the
+  // tab-switch guard armed, as before.
+  const hasUnsavedChanges = activeUnsaved.count > 0 || applicationForm.isDirty || updatesTab.isDirty;
+  // What the bar's Save checks, plus the Application Form's own validity — the leave dialog's
+  // Save writes both, so it must refuse whatever either would refuse.
+  const canSaveAll =
+    (activeUnsaved.count === 0 || activeUnsaved.canSave) && (!applicationForm.isDirty || applicationForm.canSave);
   useEffect(() => {
-    if (about.isDirty || layout.isDirty || applicationForm.isDirty || updatesTab.isDirty) {
+    if (hasUnsavedChanges) {
       guard.markDirty();
     } else {
       guard.clearDirty();
     }
-  }, [guard, about.isDirty, layout.isDirty, applicationForm.isDirty, updatesTab.isDirty]);
+  }, [guard, hasUnsavedChanges]);
+  // No tab switch (and so no leave dialog) while the bar's Save is writing — its Save would start
+  // a second, concurrent write and its Discard would drop a buffer that is still being saved.
+  useEffect(() => {
+    guard.setSaving(activeUnsaved.saving);
+  }, [guard, activeUnsaved.saving]);
 
-  const [layoutDiscardOpen, setLayoutDiscardOpen] = useState(false);
+  const [discardOpen, setDiscardOpen] = useState(false);
+  // Layout's View Post leaves the page; with unsaved changes it waits behind the same dialog.
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+
+  const [saveFailed, setSaveFailed] = useState(false);
+  const [reloadRequested, setReloadRequested] = useState(false);
+  // Reload only once the discarded buffers have disarmed the guard's reload confirm — the admin
+  // already chose to drop the changes, so the browser must not ask a second time.
+  useEffect(() => {
+    if (reloadRequested && !guard.isDirty) window.location.reload();
+  }, [reloadRequested, guard.isDirty]);
+
+  const saveActiveTab = async () => {
+    if (!activeUnsaved.canSave) return;
+    if (await activeUnsaved.saveAll()) notify(tCommon('unsavedChanges.saved'), 'success');
+    else setSaveFailed(true);
+  };
   // Save-and-switch is async; disable the dialog while it runs so a double
   // click can't fire duplicate saves, and keep it open if a save rejects.
   const [switchingSave, setSwitchingSave] = useState(false);
@@ -328,9 +380,10 @@ export default function CrdSpaceSettingsPage() {
   const [activeMemberSubject, setActiveMemberSubject] = useState<MemberSettingsSubject | null>(null);
   const [removeOriginatedFromDialog, setRemoveOriginatedFromDialog] = useState(false);
 
-  // The organization lead toggle drives two different mutations with two different gates:
-  // assignRoleToOrganization needs the organization pair, while un-leading goes through
-  // removeRoleFromOrganization, which is gated on GRANT alone.
+  // The organization lead toggle drives two different mutations, each with its own reason:
+  // leading goes through assignRoleToOrganization and un-leading through
+  // removeRoleFromOrganization. Both need GRANT alone for an organization already in the
+  // Space (server ruling R32).
   const organizationLeadDisabledReason = activeMemberSubject?.isLead
     ? organizationRemoveReason
     : organizationLeadAssignReason;
@@ -372,69 +425,64 @@ export default function CrdSpaceSettingsPage() {
     subspacesTab.closeSaveAsTemplate();
   }, [subspacesTab, saveAs]);
 
-  // Hash-anchor scrolling: when the page is opened with a hash like `#description`
-  // (typically from an edit pencil on the About dialog), scroll the matching
-  // element into view once the active tab's content has rendered. The single
-  // rAF defers the lookup until after the section has mounted in the DOM.
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (!hash) return;
-    const targetId = hash.slice(1);
-    const raf = requestAnimationFrame(() => {
-      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-    return () => cancelAnimationFrame(raf);
-  }, [activeTab]);
-
-  const handleConfirmSwitchSave = async () => {
-    if (switchingSave) return;
-    setSwitchingSave(true);
-    try {
-      if (about.isDirty) await about.onSaveAll();
-      if (layout.isDirty) await layout.onSave();
-      if (applicationForm.isDirty) applicationForm.onSave();
-      if (updatesTab.isDirty) await updatesTab.onSubmit();
-    } catch {
-      // A save failed — keep the dialog open so the user can retry or discard.
-      // The pending switch stays unresolved; per-section error status surfaces
-      // the failure in the tab itself.
-      setSwitchingSave(false);
+  // Leave once the changes are saved or discarded: either the pending tab switch or View Post.
+  const proceedAfterGuard = () => {
+    guard.clearDirty();
+    if (pendingNavigation) {
+      const path = pendingNavigation;
+      setPendingNavigation(null);
+      navigate(path);
       return;
     }
-    guard.clearDirty();
     const target = guard.pendingSwitch;
     guard.resolvePendingSwitch(true);
     if (target) {
       setActiveTab(target);
     }
-    setSwitchingSave(false);
-  };
-  const handleConfirmSwitchDiscard = () => {
-    about.onResetAll();
-    layout.onReset();
-    applicationForm.onReset();
-    updatesTab.onResetDraft();
-    guard.clearDirty();
-    const target = guard.pendingSwitch;
-    guard.resolvePendingSwitch(true);
-    if (target) {
-      setActiveTab(target);
-    }
-  };
-  const handleConfirmSwitchCancel = () => {
-    guard.resolvePendingSwitch(false);
   };
 
-  const handleLayoutDiscardConfirm = () => {
-    layout.onReset();
-    setLayoutDiscardOpen(false);
+  const handleConfirmSwitchSave = async () => {
+    // Invalid edits are never sent — the dialog's Save is disabled for them, as the bar's is.
+    if (switchingSave || !canSaveAll) return;
+    setSwitchingSave(true);
+    let saved = true;
+    try {
+      if (activeUnsaved.count > 0) saved = await activeUnsaved.saveAll();
+      if (saved && applicationForm.isDirty) await applicationForm.onSave();
+      if (saved && updatesTab.isDirty) await updatesTab.onSubmit();
+    } catch {
+      saved = false;
+    } finally {
+      setSwitchingSave(false);
+    }
+    if (saved) {
+      proceedAfterGuard();
+      return;
+    }
+    // Stay on this tab with the changes still buffered; the save-failed dialog takes over.
+    handleConfirmSwitchCancel();
+    setSaveFailed(true);
+  };
+  const discardAll = () => {
+    activeUnsaved.reset();
+    applicationForm.onReset();
+    updatesTab.onResetDraft();
+  };
+  const handleConfirmSwitchDiscard = () => {
+    discardAll();
+    proceedAfterGuard();
+  };
+  const handleConfirmSwitchCancel = () => {
+    setPendingNavigation(null);
+    if (guard.pendingSwitch) guard.resolvePendingSwitch(false);
   };
 
   const bootstrapping = scopeLoading || !spaceId;
 
   return (
-    <div className="flex flex-col gap-4 pt-6">
-      <div className="rounded-xl border bg-card p-6 pb-24">
+    <div className="flex flex-col gap-4 pt-2">
+      {/* Every tab lays out its own SettingsSection cards; extra room keeps the unsaved-changes bar off the last control. */}
+      <div className={activeUnsaved.count > 0 ? 'pb-24' : 'pb-12'}>
         {bootstrapping ? (
           <LoadingSpinner />
         ) : (
@@ -446,30 +494,28 @@ export default function CrdSpaceSettingsPage() {
                   level={level}
                   previewCard={about.previewCard}
                   countries={COUNTRIES}
-                  dirtyByField={about.dirtyByField}
-                  saveStatusByField={about.saveStatusByField}
+                  cityOptions={cities.options}
+                  onCityFocus={cities.onRequest}
+                  disabled={about.unsaved.saving}
+                  markdownMaxLengthByField={ABOUT_MARKDOWN_MAX_LENGTH}
                   onChange={about.onChange}
                   onUploadAvatar={about.onUploadAvatar}
                   onUploadPageBanner={about.onUploadPageBanner}
                   onUploadCardBanner={about.onUploadCardBanner}
                   onRecropVisual={about.onRecropVisual}
                   onReferencesChange={about.onReferencesChange}
+                  untitledReferenceIds={about.untitledReferenceIds}
                   onReferenceFileUpload={about.onReferenceFileUpload}
                   referenceUploadAccept={about.referenceUploadAccept}
-                  onSaveSection={section => void about.onSaveSection(section)}
                   onImageUpload={md.onImageUpload}
                   iframeAllowedUrls={md.iframeAllowedUrls}
                   onError={md.onError}
                   classifications={about.classifications}
-                  classificationSelectionPendingIds={about.classificationSelectionPendingIds}
+                  unsavedClassificationIds={about.unsavedClassificationIds}
                   onAddClassification={classificationPicker.openPicker}
-                  onSelectClassificationValues={(entryId, selectedValueIDs) =>
-                    void about.updateClassificationSelection(entryId, selectedValueIDs)
-                  }
-                  onToggleClassificationDisplay={(entryId, display) =>
-                    void about.updateClassificationDisplay(entryId, display)
-                  }
-                  onRequestRemoveClassification={setPendingRemoveClassificationId}
+                  onSelectClassificationValues={about.updateClassificationSelection}
+                  onToggleClassificationDisplay={about.updateClassificationDisplay}
+                  onRemoveClassification={about.removeClassification}
                 />
               ) : (
                 <LoadingSpinner />
@@ -484,6 +530,9 @@ export default function CrdSpaceSettingsPage() {
                 canManageTabs={true}
                 entityNoun={level === 'L0' ? 'tab' : 'phase'}
                 columns={layout.columns}
+                // The buffer seeds a render after the query settles, so an empty, error-free
+                // column list is still loading (a flow always has at least one state).
+                loading={layout.loading || (layout.columns.length === 0 && !layout.error)}
                 saveBar={layout.saveBar}
                 onReorder={layout.onReorder}
                 onReorderColumns={layout.onReorderColumns}
@@ -502,27 +551,37 @@ export default function CrdSpaceSettingsPage() {
                   } catch {
                     // already a relative path — use as-is
                   }
-                  navigate(path);
+                  if (activeUnsaved.saving) return;
+                  if (hasUnsavedChanges) setPendingNavigation(path);
+                  else navigate(path);
                 }}
-                onSave={layout.onSave}
-                onDiscardChanges={() => setLayoutDiscardOpen(true)}
+                hasUnsavedChanges={layout.isDirty}
                 columnMenuActions={columnMenu}
                 onCreatePhase={layout.onCreateState}
                 maximumNumberOfStates={layout.maximumNumberOfStates}
                 isStructureMutating={layout.isStructureMutating}
                 isReplacingFlow={isReplacingFlow}
+                columnDescriptionMaxLength={LONG_TEXT_LENGTH}
                 onImageUpload={md.onImageUpload}
                 iframeAllowedUrls={md.iframeAllowedUrls}
                 onError={md.onError}
                 headerActionsSlot={
                   level !== 'L0' ? (
-                    <LayoutReplaceFlowConnector
-                      collaborationId={layout.collaborationId}
-                      existingCalloutsCount={layout.existingCalloutsCount}
-                      disabled={layout.isDirty}
-                      onApplyComplete={layout.reseedFromServer}
-                      onImportingChange={setIsReplacingFlow}
-                    />
+                    <>
+                      <CustomizeSidebarConnector
+                        collaborationId={layout.collaborationId}
+                        innovationFlowStates={layout.innovationFlowStates}
+                        level={level}
+                        busy={layout.saveBar.kind === 'saving' || layout.isStructureMutating || isReplacingFlow}
+                      />
+                      <LayoutReplaceFlowConnector
+                        collaborationId={layout.collaborationId}
+                        existingCalloutsCount={layout.existingCalloutsCount}
+                        disabledReason={layout.isDirty ? t('saveBar.lockedReason') : undefined}
+                        onApplyComplete={layout.reseedFromServer}
+                        onImportingChange={setIsReplacingFlow}
+                      />
+                    </>
                   ) : undefined
                 }
               />
@@ -536,37 +595,12 @@ export default function CrdSpaceSettingsPage() {
                 virtualContributors={community.virtualContributors}
                 pendingOrganizationInvitations={community.pendingOrganizationInvitations}
                 applicationFormSlot={
-                  roleSetId ? (
-                    <ApplicationFormEditor
-                      description={applicationForm.description}
-                      questions={applicationForm.questions}
-                      loading={applicationForm.loading}
-                      canSave={applicationForm.canSave}
-                      onDescriptionChange={applicationForm.onDescriptionChange}
-                      onQuestionChange={applicationForm.onQuestionChange}
-                      onQuestionRequiredChange={applicationForm.onQuestionRequiredChange}
-                      onQuestionAdd={applicationForm.onQuestionAdd}
-                      onQuestionDelete={applicationForm.onQuestionDelete}
-                      onQuestionMoveUp={applicationForm.onQuestionMoveUp}
-                      onQuestionMoveDown={applicationForm.onQuestionMoveDown}
-                      onSave={applicationForm.onSave}
-                      onExportApplications={csvExport.exportApplications}
-                      exportDisabled={csvExport.exportDisabled}
-                      onImageUpload={md.onImageUpload}
-                      iframeAllowedUrls={md.iframeAllowedUrls}
-                      onError={md.onError}
-                    />
-                  ) : undefined
+                  roleSetId ? <ApplicationFormSection form={applicationForm} markdown={md} /> : undefined
                 }
                 communityGuidelinesSlot={
                   communityGuidelinesId ? (
-                    <CommunityGuidelinesEditor
-                      value={communityGuidelines.value}
-                      loading={communityGuidelines.loading}
-                      submitting={communityGuidelines.submitting}
-                      canSave={communityGuidelines.canSave}
-                      onChange={communityGuidelines.onChange}
-                      onSave={() => void communityGuidelines.onSave()}
+                    <CommunityGuidelinesSection
+                      guidelines={communityGuidelines}
                       onApplyTemplate={openGuidelinesTemplatePicker}
                       onSaveAsTemplate={() =>
                         saveAs.openSaveAs({
@@ -576,29 +610,23 @@ export default function CrdSpaceSettingsPage() {
                           references: communityGuidelines.value.references,
                         })
                       }
-                      onImageUpload={md.onImageUpload}
-                      iframeAllowedUrls={md.iframeAllowedUrls}
-                      onError={md.onError}
-                      onReferenceFileUpload={communityGuidelines.onReferenceFileUpload}
-                      referenceUploadAccept={communityGuidelines.referenceUploadAccept}
+                      markdown={md}
+                      subspace={level !== 'L0'}
                     />
                   ) : undefined
                 }
                 permissions={community.permissions}
                 addDisabledReasons={{
-                  organizations: addOrganizationReason,
                   virtualContributors: addVcReason,
                 }}
                 inviteOrganizationsDisabledReason={inviteOrganizationsReason}
                 onUserRemove={community.onUserRemove}
                 onMemberChangeRole={member => setActiveMemberSubject(buildUserSubject(member))}
-                onOrgAdd={addOrgDialog.openDialog}
                 onInviteOrganizations={() => setInviteOrganizationsOpen(true)}
                 onOrgRemove={community.onOrgRemove}
                 onOrgChangeRole={org => setActiveMemberSubject(buildOrgSubject(org))}
                 onOrgInvitationRevoke={community.onOrgInvitationRevoke}
-                onVCAdd={addVCDialog.openDialog}
-                onVCAddExternal={() => setVcExternalOpen(true)}
+                // TEMP: VCs disabled (#10398) — restore: onVCAdd={addVCDialog.openDialog} onVCAddExternal={() => setVcExternalOpen(true)}
                 onVCRemove={community.onVCRemove}
                 onPendingView={id => {
                   const target = community.pendingMemberships.find(m => m.id === id);
@@ -607,8 +635,12 @@ export default function CrdSpaceSettingsPage() {
                 onPendingApprove={community.onPendingApprove}
                 onPendingReject={community.onPendingReject}
                 onPendingDelete={community.onPendingDelete}
+                onPendingResend={community.onPendingResend}
+                resendingIds={community.resendingIds}
                 onInviteUsers={() => setInviteMembersOpen(true)}
                 onExportMembers={csvExport.exportMembers}
+                onExportApplications={roleSetId ? csvExport.exportApplications : undefined}
+                onExportOrganizations={csvExport.exportOrganizations}
                 exportDisabled={csvExport.exportDisabled}
               />
             )}
@@ -665,9 +697,10 @@ export default function CrdSpaceSettingsPage() {
                 membershipPolicy={settingsTab.membershipPolicy}
                 allowedActions={settingsTab.allowedActions}
                 hostOrganizationTrusted={settingsTab.hostOrganizationTrusted}
+                hostIsOrganization={settingsTab.hostIsOrganization}
                 providerDisplayName={settingsTab.providerDisplayName}
                 loading={settingsTab.loading}
-                updatingKeys={settingsTab.updatingKeys}
+                disabled={settingsTab.unsaved.saving}
                 onPrivacyChange={settingsTab.onPrivacyChange}
                 onMembershipPolicyChange={settingsTab.onMembershipPolicyChange}
                 onToggleAllowedAction={settingsTab.onToggleAllowedAction}
@@ -693,6 +726,14 @@ export default function CrdSpaceSettingsPage() {
           </>
         )}
       </div>
+
+      {!bootstrapping && (
+        <UnsavedChangesBar
+          state={toUnsavedChangesBarState(activeUnsaved)}
+          onSave={() => void saveActiveTab()}
+          onDiscard={() => setDiscardOpen(true)}
+        />
+      )}
 
       <ConfirmationDialog
         open={updatesTab.pendingRemoveMessage !== null}
@@ -754,34 +795,11 @@ export default function CrdSpaceSettingsPage() {
           if (!open) classificationPicker.closePicker();
         }}
         sources={classificationPicker.sources}
-        onSelectTemplate={(templateId, displayLabel) => {
-          void about.addClassificationFromTemplate(templateId, displayLabel).then(ok => {
-            if (ok) classificationPicker.closePicker();
-          });
-        }}
+        onSelectTemplate={stageClassificationAdd}
         conflict={about.classificationConflict}
-        onRetryWithLabel={(templateId, displayLabel) => {
-          void about.addClassificationFromTemplate(templateId, displayLabel).then(ok => {
-            if (ok) classificationPicker.closePicker();
-          });
-        }}
+        onRetryWithLabel={stageClassificationAdd}
         onDismissConflict={about.dismissClassificationConflict}
-        submitting={about.classificationSubmitting}
-      />
-
-      <ClassificationRemoveConfirm
-        open={pendingRemoveClassificationId !== null}
-        onOpenChange={open => {
-          if (!open) setPendingRemoveClassificationId(null);
-        }}
-        displayLabel={
-          about.classifications.find(entry => entry.id === pendingRemoveClassificationId)?.displayLabel ?? ''
-        }
-        onConfirm={() => {
-          if (!pendingRemoveClassificationId) return;
-          void about.removeClassification(pendingRemoveClassificationId);
-          setPendingRemoveClassificationId(null);
-        }}
+        subspace={level !== 'L0'}
       />
 
       <ConfirmationDialog
@@ -834,10 +852,7 @@ export default function CrdSpaceSettingsPage() {
             case 'organizationInvitationRevoke':
               return t('community.confirmRemove.invitation.title');
             case 'pendingDelete':
-              if (community.pendingRemoval.membershipType === 'application') {
-                return t('community.confirmRemove.applicationDelete.title');
-              }
-              return t('community.confirmRemove.invitation.title');
+              return t(`community.confirmRemove.${pendingDeleteCopy(community.pendingRemoval)}.title`);
             default:
               return '';
           }
@@ -852,14 +867,14 @@ export default function CrdSpaceSettingsPage() {
             case 'virtualContributor':
               return t('community.confirmRemove.virtualContributor.description', { name });
             case 'applicationReject':
-              return t('community.confirmRemove.applicationReject.description', { name });
+              return t('community.confirmRemove.applicationReject.description', {
+                name,
+                context: level === 'L0' ? undefined : 'subspace',
+              });
             case 'organizationInvitationRevoke':
               return t('community.confirmRemove.invitation.description', { name });
             case 'pendingDelete':
-              if (community.pendingRemoval.membershipType === 'application') {
-                return t('community.confirmRemove.applicationDelete.description', { name });
-              }
-              return t('community.confirmRemove.invitation.description', { name });
+              return t(`community.confirmRemove.${pendingDeleteCopy(community.pendingRemoval)}.description`, { name });
             default:
               return '';
           }
@@ -933,25 +948,6 @@ export default function CrdSpaceSettingsPage() {
       )}
 
       <AddCommunityMemberDialog
-        open={addOrgDialog.open}
-        onOpenChange={open => {
-          if (!open) addOrgDialog.closeDialog();
-        }}
-        title={t('community.organizations.addDialog.title')}
-        description={t('community.organizations.addDialog.description')}
-        searchPlaceholder={t('community.organizations.addDialog.search')}
-        candidates={addOrgDialog.candidates}
-        loading={addOrgDialog.loading}
-        search={addOrgDialog.search}
-        addedIds={addOrgDialog.addedIds}
-        addingId={addOrgDialog.addingId}
-        emptyLabel={t('community.organizations.addDialog.empty')}
-        onSearchChange={addOrgDialog.onSearchChange}
-        onAdd={id => void addOrgDialog.onAdd(id)}
-        addDisabledReason={addOrganizationReason}
-      />
-
-      <AddCommunityMemberDialog
         open={addVCDialog.open}
         onOpenChange={open => {
           if (!open) addVCDialog.closeDialog();
@@ -1016,6 +1012,7 @@ export default function CrdSpaceSettingsPage() {
         description={t('account.dangerZone.deleteDialog.description')}
         confirmLabel={t('account.dangerZone.deleteDialog.confirm')}
         cancelLabel={t('dirtyGuard.cancel')}
+        loading={accountTab.deletingSpace}
         onConfirm={accountTab.confirmDeleteSpace}
         onCancel={accountTab.cancelDeleteSpace}
       />
@@ -1036,32 +1033,46 @@ export default function CrdSpaceSettingsPage() {
       />
 
       <ConfirmationDialog
-        open={layoutDiscardOpen}
-        onOpenChange={setLayoutDiscardOpen}
+        open={discardOpen}
+        onOpenChange={setDiscardOpen}
         variant="destructive"
-        title={t('layout.discardChangesDialog.title')}
-        description={t('layout.discardChangesDialog.description')}
-        confirmLabel={t('layout.discardChangesDialog.confirm')}
+        title={tCommon('unsavedChanges.discardDialog.title', { count: activeUnsaved.count })}
+        description={tCommon('unsavedChanges.discardDialog.description')}
+        confirmLabel={tCommon('unsavedChanges.discardDialog.confirm')}
         cancelLabel={t('dirtyGuard.cancel')}
-        onConfirm={handleLayoutDiscardConfirm}
-        onCancel={() => setLayoutDiscardOpen(false)}
+        onConfirm={() => {
+          activeUnsaved.reset();
+          setDiscardOpen(false);
+        }}
+        onCancel={() => setDiscardOpen(false)}
       />
 
       <ConfirmationDialog
-        open={guard.pendingSwitch !== null}
+        open={guard.pendingSwitch !== null || pendingNavigation !== null}
         onOpenChange={open => {
           if (!open) handleConfirmSwitchCancel();
         }}
         variant="discard"
-        title={t('dirtyGuard.tabSwitch.title')}
-        description={t('dirtyGuard.tabSwitch.description')}
-        saveLabel={t('dirtyGuard.save')}
-        discardLabel={t('dirtyGuard.discard')}
+        title={tCommon('unsavedChanges.leaveDialog.title')}
+        description={tCommon('unsavedChanges.leaveDialog.description')}
+        saveLabel={tCommon('unsavedChanges.leaveDialog.save')}
+        discardLabel={tCommon('unsavedChanges.leaveDialog.discard')}
         cancelLabel={t('dirtyGuard.cancel')}
         loading={switchingSave}
+        saveDisabled={!canSaveAll}
         onSave={handleConfirmSwitchSave}
         onDiscard={handleConfirmSwitchDiscard}
         onCancel={handleConfirmSwitchCancel}
+      />
+
+      <SaveFailedDialog
+        open={saveFailed}
+        message={activeUnsaved.error}
+        onRefresh={() => {
+          discardAll();
+          setReloadRequested(true);
+        }}
+        onClose={() => setSaveFailed(false)}
       />
 
       {/* Community-guidelines + Subspace save-as both drive this shared `<TemplateFormDialog>`
@@ -1101,3 +1112,20 @@ export default function CrdSpaceSettingsPage() {
     </div>
   );
 }
+
+/**
+ * Confirmation copy for a pending-table delete, named after what the delete really does
+ * (spec 045 FR-012b): reject + remove a new application, revoke an open invitation, or
+ * only clear a closed row from the list.
+ */
+const pendingDeleteCopy = ({
+  membershipType,
+  state,
+}: {
+  membershipType: PendingMembershipType;
+  state: PendingMembershipState;
+}): 'applicationDelete' | 'invitation' | 'platformInvitation' | 'resolvedDelete' => {
+  if (membershipType === 'application') return state === 'new' ? 'applicationDelete' : 'resolvedDelete';
+  if (membershipType === 'platformInvitation') return 'platformInvitation';
+  return state === 'invited' ? 'invitation' : 'resolvedDelete';
+};

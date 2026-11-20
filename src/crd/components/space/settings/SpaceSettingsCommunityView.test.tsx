@@ -37,10 +37,8 @@ const baseProps: SpaceSettingsCommunityViewProps = {
   permissions: {
     canInvite: true,
     canInviteOrganizations: true,
-    canAddOrganizations: false,
     canAddVirtualContributors: false,
   },
-  onOrgAdd: vi.fn(),
   onInviteOrganizations: vi.fn(),
   onOrgInvitationRevoke: vi.fn(),
   onVCAdd: vi.fn(),
@@ -71,9 +69,8 @@ describe('SpaceSettingsCommunityView — organization search, invite gating, and
     expect(screen.queryByText('Beta Org')).not.toBeInTheDocument();
   });
 
-  // The invite action is GATED, never hidden — same contract as the Add organisation
-  // button beside it. Hiding it would conceal the action's existence from an admin who
-  // lacks the privilege, and flip it hidden->shown once the privilege query resolves.
+  // The invite action is GATED, never hidden: every Space admin can eventually invite, and
+  // invitation is the only way an organisation joins a Space (alkem-io/server#6623).
   test('Invite organisation button is always rendered, and disabled with a reason when the action is not permitted', async () => {
     const { rerender } = render(
       <SpaceSettingsCommunityView {...baseProps} inviteOrganizationsDisabledReason="no permission" />
@@ -144,5 +141,16 @@ describe('SpaceSettingsCommunityView — organization search, invite gating, and
     await openOrgSection();
     expect(screen.getByText('Gamma Org')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /pendingInvitations.revoke/ })).not.toBeInTheDocument();
+  });
+});
+
+describe('SpaceSettingsCommunityView — subspace wording (spec 045 FR-042)', () => {
+  test('asks for the subspace copy at L1 and the base copy at L0', () => {
+    const { unmount } = render(<SpaceSettingsCommunityView {...baseProps} level="L1" />);
+    expect(screen.getByText('community.members.title:{"context":"subspace"}')).toBeInTheDocument();
+    unmount();
+
+    render(<SpaceSettingsCommunityView {...baseProps} level="L0" />);
+    expect(screen.getByText('community.members.title:{}')).toBeInTheDocument();
   });
 });

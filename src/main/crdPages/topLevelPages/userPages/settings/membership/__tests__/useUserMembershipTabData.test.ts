@@ -88,14 +88,14 @@ describe('mapUserMembershipData', () => {
     expect(result.rows[3]).toMatchObject({ id: 'space-b', type: 'Space', role: 'Admin' });
   });
 
-  it('enriches rows with banner + tagline + url + leadUsers from the per-row enrichment map', () => {
+  it('enriches rows with avatar + url + leadUsers from the per-row enrichment map', () => {
     const enrichment = new Map([
       [
         'space-a',
         {
           displayName: 'Garden Space (rich)',
           tagline: 'Cultivating ideas',
-          bannerUrl: 'https://cdn/garden-card.jpg',
+          avatarUrl: 'https://cdn/garden-avatar.jpg',
           spaceUrl: '/space/garden',
           leadUsers: [
             { id: 'u1', displayName: 'Ada Lovelace', avatarUrl: 'https://cdn/ada.png', profileUrl: '/user/ada' },
@@ -125,8 +125,7 @@ describe('mapUserMembershipData', () => {
     expect(result.rows[0]).toMatchObject({
       id: 'space-a',
       displayName: 'Garden Space (rich)',
-      tagline: 'Cultivating ideas',
-      bannerUrl: 'https://cdn/garden-card.jpg',
+      avatarUrl: 'https://cdn/garden-avatar.jpg',
       spaceUrl: '/space/garden',
     });
     expect(result.rows[0].leadUsers).toHaveLength(2);
@@ -134,13 +133,12 @@ describe('mapUserMembershipData', () => {
     expect(result.rows[1]).toMatchObject({
       id: 'sub-a-1',
       displayName: 'Garden Patch',
-      tagline: 'Daily plantings',
       spaceUrl: '/space/garden/sub-a-1',
     });
     expect(result.rows[1].leadUsers).toHaveLength(0);
   });
 
-  it('falls back to contribution-only data (no banner/tagline) when enrichment map is empty', () => {
+  it('falls back to contribution-only data (no avatar) when enrichment map is empty', () => {
     const result = mapUserMembershipData(
       buildContributions() as never,
       buildSettings() as never,
@@ -151,8 +149,7 @@ describe('mapUserMembershipData', () => {
     expect(result.rows[0]).toMatchObject({
       id: 'space-a',
       displayName: 'Garden Space',
-      tagline: undefined,
-      bannerUrl: undefined,
+      avatarUrl: undefined,
     });
     expect(result.rows[0].leadUsers).toEqual([]);
   });

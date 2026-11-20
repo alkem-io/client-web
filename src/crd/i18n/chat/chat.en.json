@@ -6,7 +6,13 @@
   },
   "panel": {
     "title": "Chat",
-    "settings": "Notification settings"
+    "settings": "Notification settings",
+    "muteSound": "Mute chat sound",
+    "unmuteSound": "Unmute chat sound",
+    "soundToggleError": "We couldn't save the chat sound setting. Please try again.",
+    "expand": "Expand chat",
+    "collapse": "Collapse chat",
+    "reconnecting": "Reconnecting… New messages may be delayed."
   },
   "actions": {
     "cancel": "Cancel"
@@ -55,7 +61,9 @@
     "emptyHint": "Start a new message to begin chatting.",
     "noResults": "No conversations match your search.",
     "loading": "Loading conversations",
-    "draft": "Draft:"
+    "draft": "Draft:",
+    "attachmentPreview_one": "{{count}} attachment",
+    "attachmentPreview_other": "{{count}} attachments"
   },
   "guidance": {
     "beta": "Beta",
@@ -76,7 +84,9 @@
   "thread": {
     "back": "Back to conversations",
     "loading": "Loading messages",
-    "addReaction": "Add reaction"
+    "jumpToLatest": "Jump to latest messages",
+    "addReaction": "Add reaction",
+    "options": "Chat options"
   },
   "sendConfirmation": {
     "title": "Message sent",
@@ -100,5 +110,30 @@
       "messageTooLong": "Message must be {{max}} characters or fewer.",
       "sendFailed": "Could not send the message. Please try again."
     }
+  },
+  "call": {
+    "startAudio": "Start audio call",
+    "startVideo": "Start video call",
+    "active": "Call active",
+    "join": "Join",
+    "joinVideo": "Join with video",
+    "joinAudio": "Join with audio only",
+    "joinedOnThisDevice": "Already joined on this device",
+    "preparing": "Preparing your call… It will start in a moment.",
+    "dropped": "Couldn't start the call. Please try again.",
+    "overlayLabel": "Call",
+    "close": "Close call",
+    "license": "Open-source license",
+    "opensInNewTab": "opens in a new tab",
+    "leaveConfirm": {
+      "title": "Leave call?",
+      "description": "You will leave the call. The others can carry on without you.",
+      "descriptionDirect": "You will leave the call, and it ends for the other person too.",
+      "confirm": "Leave call",
+      "cancel": "Stay in call"
+    },
+    "listBadge": "Call active",
+    "callingYou": "{{name}} is calling you",
+    "groupCall": "Call in {{name}}"
   }
 }

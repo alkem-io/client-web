@@ -11,6 +11,7 @@ import {
   VisualType,
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
+import { createFormOption, createFormQuestion } from '@/crd/forms/callout/formValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { type CalloutFormValues, EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import {
@@ -50,6 +51,7 @@ describe('framingChipToServer', () => {
     expect(framingChipToServer('cta')).toBe(CalloutFramingType.Link);
     expect(framingChipToServer('image')).toBe(CalloutFramingType.MediaGallery);
     expect(framingChipToServer('poll')).toBe(CalloutFramingType.Poll);
+    expect(framingChipToServer('form')).toBe(CalloutFramingType.Form);
     expect(framingChipToServer('document')).toBe(CalloutFramingType.CollaboraDocument);
   });
 });
@@ -112,8 +114,8 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
     expect((result.input.framing.whiteboard as { content?: unknown }).content).toBeUndefined();
     expect(result.input.framing.whiteboard?.profile.displayName).toBe('My callout');
     expect(result.input.framing.whiteboard?.previewSettings).toEqual(previewSettings);
-    // Preview blobs travel out-of-band, never on the input
-    expect(result.whiteboardPreviewImages).toEqual([previewBlob]);
+    // The server copies the source's visuals; no preview travels with or after the create
+    expect(result).not.toHaveProperty('whiteboardPreviewImages');
     expect((result.input.framing.whiteboard as { previewImages?: unknown }).previewImages).toBeUndefined();
   });
 
@@ -290,6 +292,45 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
         framingChip: 'document',
         title: 'My Q3 Doc', // author typed a title before/after staging the file — irrelevant to the document's own name
         collaboraUploadFile: stagedFile,
+      }),
+      createOptions
+    );
+    expect(result.input.framing.collaboraDocument).toEqual({});
+    expect(result.collaboraUploadFile).toBe(stagedFile);
+  });
+
+  it('"document" chip with editMeta.collaboraDocumentId and no staged file copies the source document (085 FR-017)', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'document',
+        title: 'From template',
+        collaboraDocumentType: CollaboraDocumentType.Spreadsheet,
+        editMeta: {
+          framingProfileId: 'profile-1',
+          originalReferenceIds: [],
+          collaboraDocumentId: 'source-doc-1',
+        },
+      }),
+      createOptions
+    );
+    expect(result.input.framing.collaboraDocument).toEqual({ sourceCollaboraDocumentID: 'source-doc-1' });
+    expect(result.collaboraUploadFile).toBeUndefined();
+  });
+
+  it('a staged file wins over editMeta.collaboraDocumentId — branch order is the whole mutual-exclusion rule, nothing is cleared (085 §6 D13)', () => {
+    const stagedFile = new File([new Uint8Array(10)], 'override.docx', {
+      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'document',
+        title: 'From template',
+        collaboraUploadFile: stagedFile,
+        editMeta: {
+          framingProfileId: 'profile-1',
+          originalReferenceIds: [],
+          collaboraDocumentId: 'source-doc-1',
+        },
       }),
       createOptions
     );
@@ -605,24 +646,76 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
     expect(optedOut.input.sendNotification).toBe(false);
   });
 
-  it('whiteboardPreviewImages: emitted only when framing=Whiteboard AND blobs exist', () => {
-    const memoWithBlob = mapFormToCalloutCreationInput(
-      baseValues({ framingChip: 'memo', whiteboardPreviewImages: [previewBlob] }),
-      createOptions
-    );
-    expect(memoWithBlob.whiteboardPreviewImages).toBeUndefined();
-
-    const wbNoBlob = mapFormToCalloutCreationInput(
-      baseValues({ framingChip: 'whiteboard', whiteboardPreviewImages: [] }),
-      createOptions
-    );
-    expect(wbNoBlob.whiteboardPreviewImages).toBeUndefined();
-
-    const wbWithBlob = mapFormToCalloutCreationInput(
+  it('never returns preview images on create: the server copies the draft or source visuals', () => {
+    for (const values of [
       baseValues({ framingChip: 'whiteboard', whiteboardPreviewImages: [previewBlob] }),
+      baseValues({
+        framingChip: 'whiteboard',
+        whiteboardPreviewImages: [previewBlob],
+        framingWhiteboardDraft: { whiteboardID: 'draft-wb', sourceKey: 'template' },
+      }),
+    ]) {
+      expect(mapFormToCalloutCreationInput(values, createOptions)).not.toHaveProperty('whiteboardPreviewImages');
+    }
+  });
+});
+
+describe('mapFormToCalloutCreationInput / mapFormToCalloutUpdateInput — card variant', () => {
+  it('create: sends spaces for the spaces chip, expanded', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'spaces', cardVariant: 'expanded' }),
       createOptions
     );
-    expect(wbWithBlob.whiteboardPreviewImages).toEqual([previewBlob]);
+    expect(result.input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
+  });
+
+  it('create: sends spaces for the spaces chip, compact', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'spaces', cardVariant: 'compact' }),
+      createOptions
+    );
+    expect(result.input.settings?.framing?.spaces).toEqual({ cardVariant: 'COMPACT' });
+  });
+
+  it('update: sends spaces for the spaces chip', () => {
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({ framingChip: 'spaces', cardVariant: 'expanded' }),
+      updateOptions
+    );
+    expect(result.input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
+  });
+
+  it.each([
+    'contributors',
+    'whiteboard',
+    'none',
+  ] as const)('not sent for the "%s" chip — SPACES only, never reuses the contributors||spaces selection condition', chip => {
+    const created = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: chip, cardVariant: 'expanded' }),
+      createOptions
+    );
+    expect(created.input.settings?.framing?.spaces).toBeUndefined();
+    const updated = mapFormToCalloutUpdateInput(
+      baseValues({ framingChip: chip, cardVariant: 'expanded' }),
+      updateOptions
+    );
+    expect(updated.input.settings?.framing?.spaces).toBeUndefined();
+  });
+
+  it('the selection payload is byte-identical with and without the new field (independence)', () => {
+    const withCompact = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'spaces', cardVariant: 'compact', selectionMode: 'custom', selectedIds: ['a', 'b'] }),
+      createOptions
+    );
+    const withExpanded = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'spaces', cardVariant: 'expanded', selectionMode: 'custom', selectedIds: ['a', 'b'] }),
+      createOptions
+    );
+    expect(withCompact.input.settings?.framing?.selection).toEqual(withExpanded.input.settings?.framing?.selection);
+    expect(withCompact.input.settings?.framing?.selection).toEqual({
+      mode: CalloutSelectionMode.Custom,
+      selectedIds: ['a', 'b'],
+    });
   });
 });
 
@@ -1042,5 +1135,83 @@ describe('mapFormToCalloutUpdateInput — mapView', () => {
       updateOptions
     );
     expect(result.input.settings?.framing?.contributors).toBeUndefined();
+  });
+});
+
+describe('Form framing', () => {
+  const questions = [
+    createFormQuestion({ prompt: '  Your name ', explanation: '  ', required: true }),
+    createFormQuestion({
+      prompt: 'Pick',
+      explanation: 'Choose wisely',
+      type: 'MULTIPLE_CHOICE',
+      options: [createFormOption(' A '), createFormOption('B')],
+    }),
+    createFormQuestion({
+      prompt: 'Story',
+      type: 'LONG_TEXT',
+      options: [createFormOption('stale option')],
+    }),
+  ];
+
+  it('create sends framing.form with trimmed questions, no options on text kinds and no client keys', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'form',
+        formTitle: '  Q4 planning ',
+        formDescription: ' Tell us where to focus ',
+        formQuestions: questions,
+        formSettings: { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED', defaultCollapsed: true },
+      }),
+      createOptions
+    );
+
+    expect(result.input.framing.type).toBe(CalloutFramingType.Form);
+    expect(result.input.framing.form).toEqual({
+      title: 'Q4 planning',
+      description: 'Tell us where to focus',
+      questions: [
+        { prompt: 'Your name', explanation: undefined, type: 'SHORT_TEXT', required: true, options: undefined },
+        {
+          prompt: 'Pick',
+          explanation: 'Choose wisely',
+          type: 'MULTIPLE_CHOICE',
+          required: false,
+          options: [{ label: 'A' }, { label: 'B' }],
+        },
+        { prompt: 'Story', explanation: undefined, type: 'LONG_TEXT', required: false, options: undefined },
+      ],
+      settings: { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED', defaultCollapsed: true },
+    });
+    expect(JSON.stringify(result.input.framing.form)).not.toContain('key');
+  });
+
+  it('create leaves out an empty title and description and sends the default expanded state', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'form', formTitle: '   ', formDescription: '', formQuestions: questions }),
+      createOptions
+    );
+
+    expect(result.input.framing.form?.title).toBeUndefined();
+    expect(result.input.framing.form?.description).toBeUndefined();
+    expect(result.input.framing.form?.settings?.defaultCollapsed).toBe(false);
+  });
+
+  it('a non-form framing never carries framing.form', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'none', formQuestions: questions }),
+      createOptions
+    );
+    expect(result.input.framing.form).toBeUndefined();
+  });
+
+  it('update never sends the form definition through updateCallout', () => {
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({ framingChip: 'form', formQuestions: questions }),
+      updateOptions
+    );
+    expect(result.input.framing?.type).toBe(CalloutFramingType.Form);
+    expect(result.input.framing).not.toHaveProperty('form');
+    expect(JSON.stringify(result.input)).not.toContain('questions');
   });
 });

@@ -29,7 +29,7 @@ export type EditableSectionProps = {
   label: string;
   /** Optional hint rendered inside the FieldFooter slot. */
   hint?: string;
-  /** The input(s) themselves — rendered by the parent (InlineEditText, MarkdownEditor, CountryCombobox, TagsField, etc.). */
+  /** The input(s) themselves — rendered by the parent (boxed Input — amended 2026-10-16, was InlineEditText — MarkdownEditor, CountryCombobox, TagsField, etc.). */
   children: ReactNode;
   /** True when the section's draft differs from the last server-known value. Drives Save-button enablement and the dirty indicator. */
   dirty: boolean;

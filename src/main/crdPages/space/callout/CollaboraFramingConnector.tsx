@@ -43,6 +43,7 @@ export function CollaboraFramingConnector({ callout, onOpen }: CollaboraFramingC
         documentType={toCollaboraPreviewType(collaboraDocument.documentType)}
         onOpen={onOpen}
         onReplace={canReplace ? () => setReplaceOpen(true) : undefined}
+        previewImageUrl={collaboraDocument.previewUrl ?? undefined}
       />
       {canReplace && (
         <CollaboraFramingReplaceConnector

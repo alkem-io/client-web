@@ -43,12 +43,11 @@
       "settingsAriaLabel": "Open user settings"
     },
     "tabs": {
-      "resourcesHosted": "Resources Hosted",
       "leading": "Leading",
-      "memberOf": "Member Of"
+      "memberOf": "Member Of",
+      "otherResources": "Other Resources"
     },
     "sections": {
-      "spacesSubsection": "Spaces",
       "virtualContributorsSubsection": "Virtual Contributors",
       "spacesLeading": "Spaces Leading",
       "memberOf": "Member of"
@@ -64,13 +63,12 @@
       "memberCountLine_other": "{{count}} members"
     },
     "empty": {
-      "resourcesHosted": "No resources hosted yet.",
-      "leading": "Not leading any spaces yet.",
       "membership": "No memberships yet."
     },
     "vcType": "Virtual Contributor"
   },
   "orgProfile": {
+    "guestResourcesNotice": "<signUp>Sign up</signUp> on Alkemio to see the resources hosted by {{organization}}",
     "hero": {
       "settingsTooltip": "Organisation settings",
       "settingsAriaLabel": "Open organisation settings",
@@ -93,21 +91,57 @@
       "socialLinksTitle": "Social"
     },
     "tabs": {
-      "resourcesHosted": "Resources Hosted",
       "leading": "Lead Spaces",
-      "memberOf": "All Memberships"
+      "memberOf": "All Memberships",
+      "otherResources": "Other Resources"
     },
     "sections": {
-      "spacesSubsection": "Spaces",
       "virtualContributorsSubsection": "Virtual Contributors",
       "spacesLeading": "Lead Spaces",
       "memberOf": "All Memberships"
     },
-    "empty": {
-      "resourcesHosted": "No resources hosted yet.",
-      "leading": "Not leading any spaces yet."
+    "empty": {},
+    "vcType": "Virtual Contributor",
+    "associate": {
+      "join": "Join as an associate",
+      "joinCaption": "Your email domain matches this verified organisation, so you can join without applying.",
+      "apply": "Apply to associate",
+      "applyLogin": "Apply to associate",
+      "respond": "Respond to invitation",
+      "pending": "Application pending",
+      "closed": "This organisation is not currently accepting applications.",
+      "joinNotEligible": "You're not eligible to join right now — try applying instead.",
+      "joinError": "Couldn't join — try again"
     },
-    "vcType": "Virtual Contributor"
+    "applyDialog": {
+      "title": "Apply to associate with {{organizationName}}",
+      "messageLabel": "Message (optional)",
+      "messageOptional": "Tell the organisation why you'd like to associate — optional.",
+      "submit": "Submit application",
+      "submitted": "Application submitted",
+      "submittedBody": "Your application to associate with {{organizationName}} has been submitted.",
+      "submittedReview": "The organisation's admins will review it. Once it is approved you will get a notification <bell/> and be listed as an associate.",
+      "error": "Couldn't submit — try again"
+    },
+    "invitationDialog": {
+      "title": "Invitation to associate with {{organizationName}}",
+      "role": "Offered role",
+      "invitedBy": "Invited by {{name}}",
+      "accept": "Accept",
+      "decline": "Decline",
+      "withheld": "The {{role}} role could not be granted. You are an associate.",
+      "roleName": {
+        "admin": "Admin",
+        "owner": "Owner"
+      },
+      "acceptError": "Couldn't accept — try again",
+      "declineError": "Couldn't decline — try again",
+      "offeredRole": {
+        "associate": "Associate",
+        "associateAdmin": "Associate + Admin",
+        "associateOwner": "Associate + Owner"
+      }
+    }
   },
   "vcProfile": {
     "typeBadge": "Virtual Contributor",

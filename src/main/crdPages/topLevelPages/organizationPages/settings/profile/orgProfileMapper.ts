@@ -5,19 +5,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import type { OrgVerificationStatus } from '@/crd/components/contributor/settings/OrgVerifiedBadge';
 
-export type OrgProfileSectionKey =
-  | 'displayName'
-  | 'tagline'
-  | 'description'
-  | 'location'
-  | 'keywords'
-  | 'capabilities'
-  | 'contactEmail'
-  | 'domain'
-  | 'legalEntityName'
-  | 'website'
-  | 'references';
-
 export type OrgProfileVisual = {
   id: string;
   uri: string | null;

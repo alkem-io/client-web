@@ -13,6 +13,12 @@ type AccountPickerProps = {
   loading: boolean;
   selectedId?: string;
   onSelect: (accountId: string) => void;
+  /**
+   * client-1: when set, replaces the no-results line with this message
+   * (e.g. the search itself was denied) — rendered as `role="alert"` so it's
+   * announced, distinct from a plain "nothing matched" result.
+   */
+  errorText?: string;
 };
 
 /**
@@ -28,6 +34,7 @@ export function AccountPicker({
   loading,
   selectedId,
   onSelect,
+  errorText,
 }: AccountPickerProps) {
   const { t } = useTranslation('crd-admin');
 
@@ -38,10 +45,16 @@ export function AccountPicker({
       {searchTerm.length >= 2 && (
         <ul className="flex max-h-48 flex-col gap-1 overflow-y-auto">
           {loading && <li className="text-caption text-muted-foreground">{t('roleMembers.loading')}</li>}
-          {!loading && results.length === 0 && (
+          {!loading && errorText && (
+            <li role="alert" className="text-caption text-destructive">
+              {errorText}
+            </li>
+          )}
+          {!loading && !errorText && results.length === 0 && (
             <li className="text-caption text-muted-foreground">{t('transfer.noAccounts')}</li>
           )}
           {!loading &&
+            !errorText &&
             results.map(option => (
               <li key={option.id}>
                 <button

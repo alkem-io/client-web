@@ -2,6 +2,7 @@ import { Search } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
+import { Button } from '@/crd/primitives/button';
 import { Collapsible, CollapsibleContent } from '@/crd/primitives/collapsible';
 import { Input } from '@/crd/primitives/input';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -111,6 +112,17 @@ export function TemplatesManagerView({
                           </p>
                           {(canCreate(type) || canImport(type)) && (
                             <p className="text-body">{t('manager.noTemplatesHint')}</p>
+                          )}
+                          {canImport(type) && (
+                            <Button
+                              type="button"
+                              variant="link"
+                              size="sm"
+                              className="mt-2 uppercase"
+                              onClick={() => onImport(type)}
+                            >
+                              {t('manager.browseLibrary')}
+                            </Button>
                           )}
                         </div>
                       ) : (

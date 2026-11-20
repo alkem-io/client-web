@@ -4,8 +4,10 @@ import {
   useMyPushSubscriptionsLazyQuery,
   useSubscribeToPushNotificationsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { PUSH_SUBSCRIPTION_ID_KEY, PUSH_USER_DISABLED_KEY } from '@/main/pushNotifications/constants';
+import { useNativePushRegistration } from '@/main/pushNotifications/useNativePushRegistration';
 import { type PushNotificationState, usePushNotifications } from '@/main/pushNotifications/usePushNotifications';
 
 const defaultState: PushNotificationState = {
@@ -30,6 +32,11 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
   const navigate = useNavigate();
   const [fetchSubscriptions] = useMyPushSubscriptionsLazyQuery();
   const [subscribeMutation] = useSubscribeToPushNotificationsMutation();
+
+  // In app mode: capture the OS device token and bind it to this user. Mounted
+  // here, and only here, because this component mounts exactly when the session
+  // becomes authenticated — mounting IS the sign-in transition.
+  useNativePushRegistration();
 
   // Silent refresh on mount: validate/restore push subscription
   useEffect(() => {
@@ -127,8 +134,10 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
 
 export const PushNotificationProvider: FC<PropsWithChildren> = ({ children }) => {
   const { isAuthenticated } = useCurrentUserContext();
+  // A refused session is on its way to /second-factor and asks the server nothing meanwhile.
+  const { secondFactorRequired } = useAuthenticationContext();
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || secondFactorRequired) {
     return <PushNotificationContext.Provider value={defaultState}>{children}</PushNotificationContext.Provider>;
   }
 

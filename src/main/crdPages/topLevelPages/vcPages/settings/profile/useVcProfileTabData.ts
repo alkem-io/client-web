@@ -9,18 +9,22 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import type { UpdateProfileInput, UpdateVirtualContributorInput } from '@/core/apollo/generated/graphql-schema';
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
-import { SAVED_FLASH_MS } from '@/crd/components/common/FieldFooter';
 import type {
-  SectionSaveStatus,
   VcProfileFormValues,
   VcProfileReference,
-  VcProfileSectionKey,
 } from '@/crd/components/virtualContributor/settings/VCProfileTabView.types';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
+import type { TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
+import {
+  countReferenceChanges,
+  diffProfileReferences,
+  newReferenceId,
+  rebaseReferences,
+  saveProfileChanges,
+} from '../../../common/profileChanges';
 import { mapVirtualContributorToProfileFormValues } from './vcProfileMapper';
 
-const TEMP_PREFIX = 'temp-';
-const isTempId = (id: string) => id.startsWith(TEMP_PREFIX);
+const SCALAR_FIELDS = ['displayName', 'tagline', 'description'] as const;
 
 export type AvatarCropConfig = {
   aspectRatio?: number;
@@ -39,8 +43,6 @@ export type UseVcProfileTabDataResult = {
   values: VcProfileFormValues | null;
   loading: boolean;
   error: Error | null;
-  dirtyByField: Partial<Record<VcProfileSectionKey, boolean>>;
-  saveStatusByField: Partial<Record<VcProfileSectionKey, SectionSaveStatus>>;
   uploadingAvatar: boolean;
   pendingAvatarCrop: PendingAvatarCrop | null;
 
@@ -50,14 +52,16 @@ export type UseVcProfileTabDataResult = {
   onUploadAvatar: (file: File) => void;
   onAvatarCropComplete: (croppedFile: File, altText: string) => void;
   onAvatarCropCancel: () => void;
-  onSaveSection: (section: VcProfileSectionKey) => Promise<void>;
+  /** Every field is buffered and saved through the unsaved-changes bar (spec 097 Session 2026-10-22). */
+  unsaved: TabUnsavedChanges;
 };
 
 /**
- * Per-section save hook for the VC Profile tab — clone of
- * `useUserProfileTabData` (FR-160 mirror of FR-022). Same idle/saving/saved/
- * error state machine, same `SAVED_FLASH_MS = 1800` ms saved-flash, same
- * lazy-create flow for Keywords on first save, same references-batch flow.
+ * VC Profile tab data hook — saved through the tab-wide unsaved-changes bar,
+ * like `useUserProfileTabData`. Every field lives in a local buffer over the
+ * cache-derived server values (`saved`); `unsaved` counts the changed fields,
+ * `saveAll` writes them all and `reset` drops the buffer back to `saved`. The
+ * Keywords tagset is lazily created on the first Save.
  *
  * Avatar (FR-163, mirror of FR-024): file pick → opens
  * `ImageCropDialog` first; the crop dialog's onSave triggers
@@ -80,11 +84,8 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
 
   const [values, setValues] = useState<VcProfileFormValues | null>(null);
   const valuesRef = useRef<VcProfileFormValues | null>(null);
-
-  const [saveStatusByField, setSaveStatusByField] = useState<Partial<Record<VcProfileSectionKey, SectionSaveStatus>>>(
-    {}
-  );
-  const savedFlashTimers = useRef<Partial<Record<VcProfileSectionKey, ReturnType<typeof setTimeout>>>>({});
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
@@ -102,76 +103,30 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
     }
   }, [saved]);
 
-  useEffect(
-    () => () => {
-      for (const timer of Object.values(savedFlashTimers.current)) {
-        if (timer) clearTimeout(timer);
-      }
-    },
-    []
-  );
-
-  // ────────────────── Dirty map (per section) ──────────────────
-
-  const arrayEq = <T>(a: ReadonlyArray<T>, b: ReadonlyArray<T>) => JSON.stringify(a) === JSON.stringify(b);
-
-  const dirtyByField: Partial<Record<VcProfileSectionKey, boolean>> = (() => {
-    if (!values || !saved) return {};
-    return {
-      displayName: values.displayName !== saved.displayName,
-      tagline: values.tagline !== saved.tagline,
-      description: values.description !== saved.description,
-      keywords: !arrayEq(values.keywords.tags, saved.keywords.tags),
-      references: !arrayEq(values.references, saved.references),
-    };
-  })();
-
-  // ────────────────── Local mutations ──────────────────
-
-  const clearSectionErrorIfPresent = (section: VcProfileSectionKey) => {
-    setSaveStatusByField(prev => {
-      const current = prev[section];
-      if (!current || current.kind !== 'error') return prev;
-      const next = { ...prev };
-      delete next[section];
-      return next;
-    });
-  };
-
-  const onChange = (patch: Partial<VcProfileFormValues>) => {
+  const update = (apply: (base: VcProfileFormValues) => VcProfileFormValues) => {
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
-      const next = { ...base, ...patch };
+      const next = apply(base);
       valuesRef.current = next;
       return next;
     });
-    if ('displayName' in patch) clearSectionErrorIfPresent('displayName');
-    if ('tagline' in patch) clearSectionErrorIfPresent('tagline');
-    if ('description' in patch) clearSectionErrorIfPresent('description');
-    if ('keywords' in patch) clearSectionErrorIfPresent('keywords');
-    if ('references' in patch) clearSectionErrorIfPresent('references');
   };
 
+  const onChange = (patch: Partial<VcProfileFormValues>) => update(base => ({ ...base, ...patch }));
+
   // The shared ReferencesEditor manages the references list (+ its own delete-confirm) and emits the
-  // full list. New rows arrive without an `id`; assign a temp id so the per-section save diffs them
-  // as creates.
-  const onReferencesChange = (rows: ReferenceRow[]) => {
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const mapped: VcProfileReference[] = rows.map((r, i) => ({
-        id: r.id ?? `${TEMP_PREFIX}${Date.now()}-${i}`,
+  // full list. New rows arrive without an `id`; a temp id marks them as creates.
+  const onReferencesChange = (rows: ReferenceRow[]) =>
+    update(base => ({
+      ...base,
+      references: rows.map((r, i) => ({
+        id: r.id ?? newReferenceId(i),
         name: r.name,
         uri: r.uri,
         description: r.description ?? '',
-      }));
-      const next = { ...base, references: mapped };
-      valuesRef.current = next;
-      return next;
-    });
-    clearSectionErrorIfPresent('references');
-  };
+      })),
+    }));
 
   // ────────────────── Avatar (FR-163 — crop + commit) ──────────────────
 
@@ -201,13 +156,7 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
     }
     const visualId = current.avatar.id;
     setPendingAvatarCrop(null);
-    setValues(prev => {
-      const base = prev ?? valuesRef.current;
-      if (!base) return prev;
-      const next = { ...base, avatar: { ...base.avatar, altText } };
-      valuesRef.current = next;
-      return next;
-    });
+    update(base => ({ ...base, avatar: { ...base.avatar, altText } }));
     setUploadingAvatar(true);
     void uploadVisual({
       variables: {
@@ -221,188 +170,131 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
       .then(result => {
         const uploaded = result.data?.uploadImageOnVisual;
         if (uploaded) {
-          setValues(prev => {
-            const base = prev ?? valuesRef.current;
-            if (!base) return prev;
-            const next = {
-              ...base,
-              avatar: {
-                ...base.avatar,
-                uri: uploaded.uri ?? null,
-                altText: uploaded.alternativeText ?? null,
-              },
-            };
-            valuesRef.current = next;
-            return next;
-          });
+          update(base => ({
+            ...base,
+            avatar: { ...base.avatar, uri: uploaded.uri ?? null, altText: uploaded.alternativeText ?? null },
+          }));
         }
       })
       .finally(() => setUploadingAvatar(false));
   };
 
-  // ────────────────── Per-section save ──────────────────
+  // ────────────────── Save / Discard (the unsaved-changes bar) ──────────────────
 
-  const setSectionStatus = (section: VcProfileSectionKey, status: SectionSaveStatus) => {
-    setSaveStatusByField(prev => ({ ...prev, [section]: status }));
-  };
+  const changedScalars = values && saved ? SCALAR_FIELDS.filter(f => values[f] !== saved[f]) : [];
+  const keywordsChanged =
+    values !== null && saved !== null && JSON.stringify(values.keywords.tags) !== JSON.stringify(saved.keywords.tags);
+  const referenceChanges =
+    values && saved
+      ? diffProfileReferences<VcProfileReference>(values.references, saved.references)
+      : { created: [], edited: [], removed: [] };
+  const unsavedCount = changedScalars.length + (keywordsChanged ? 1 : 0) + countReferenceChanges(referenceChanges);
 
-  const flashSaved = (section: VcProfileSectionKey) => {
-    setSectionStatus(section, { kind: 'saved', at: Date.now() });
-    const existing = savedFlashTimers.current[section];
-    if (existing) clearTimeout(existing);
-    savedFlashTimers.current[section] = setTimeout(() => {
-      setSaveStatusByField(prev => {
-        const next = { ...prev };
-        delete next[section];
-        return next;
-      });
-      delete savedFlashTimers.current[section];
-    }, SAVED_FLASH_MS);
-  };
+  const canSave = values !== null && Boolean(values.displayName.trim());
 
-  const buildVcPatch = (
-    section: VcProfileSectionKey,
-    current: VcProfileFormValues
-  ): UpdateVirtualContributorInput | null => {
-    if (!vcId) return null;
-    const base: UpdateVirtualContributorInput = { ID: vcId };
-    switch (section) {
-      case 'displayName':
-        return { ...base, profileData: { displayName: current.displayName } };
-      case 'tagline':
-        return { ...base, profileData: { tagline: current.tagline } };
-      case 'description':
-        return { ...base, profileData: { description: current.description } };
-      case 'keywords':
-      case 'references':
-        return null;
+  const saveAll = async (): Promise<boolean> => {
+    const current = valuesRef.current;
+    if (!current || !saved || !vcId || unsavedCount === 0) return true;
+    setSaving(true);
+    setSaveError(null);
+
+    // One updateVirtualContributor for every changed field, the existing tagset and edited references.
+    const profileData: UpdateProfileInput = {};
+    if (current.displayName !== saved.displayName) profileData.displayName = current.displayName;
+    if (current.tagline !== saved.tagline) profileData.tagline = current.tagline;
+    if (current.description !== saved.description) profileData.description = current.description;
+    if (keywordsChanged && current.keywords.id) {
+      profileData.tagsets = [{ ID: current.keywords.id, tags: current.keywords.tags }];
     }
-  };
-
-  const saveKeywordsSection = async (current: VcProfileFormValues): Promise<void> => {
-    if (!vcId) return;
-    const tagset = current.keywords;
-
-    if (!tagset.id) {
-      if (!current.profileId) return;
-      const result = await createTagset({
-        variables: { input: { profileID: current.profileId, name: TagsetReservedName.Keywords, tags: tagset.tags } },
-      });
-      const newId = result.data?.createTagsetOnProfile?.id;
-      if (newId) {
-        setValues(prev => {
-          const base = prev ?? valuesRef.current;
-          if (!base) return prev;
-          const next = { ...base, keywords: { ...base.keywords, id: newId } };
-          valuesRef.current = next;
-          return next;
-        });
-      }
-      return;
-    }
-
-    await updateVc({
-      variables: {
-        virtualContributorData: { ID: vcId, profileData: { tagsets: [{ ID: tagset.id, tags: tagset.tags }] } },
-      },
-    });
-  };
-
-  const collectExistingReferencePatches = (current: VcProfileFormValues): UpdateProfileInput['references'] => {
-    return current.references
-      .filter(r => !isTempId(r.id) && r.id)
-      .map(r => ({
+    if (referenceChanges.edited.length) {
+      profileData.references = referenceChanges.edited.map(r => ({
         ID: r.id,
         name: r.name,
         uri: r.uri,
         description: r.description,
       }));
-  };
-
-  const collectNewReferences = (current: VcProfileFormValues): Array<VcProfileReference> =>
-    current.references.filter(r => isTempId(r.id) && r.name.trim());
-
-  const collectRemovedReferenceIds = (current: VcProfileFormValues, savedNow: VcProfileFormValues): string[] => {
-    const currentIds = new Set(current.references.map(r => r.id));
-    return savedNow.references.filter(r => r.id && !isTempId(r.id) && !currentIds.has(r.id)).map(r => r.id);
-  };
-
-  const saveReferencesSection = async (current: VcProfileFormValues, savedNow: VcProfileFormValues) => {
-    if (!vcId) return;
-
-    const existingPatches = collectExistingReferencePatches(current);
-    if (existingPatches && existingPatches.length > 0) {
-      await updateVc({
-        variables: { virtualContributorData: { ID: vcId, profileData: { references: existingPatches } } },
-      });
     }
+    const input: UpdateVirtualContributorInput = { ID: vcId, profileData };
 
-    const toCreate = collectNewReferences(current);
-    for (const ref of toCreate) {
-      await createReference({
-        variables: {
-          input: {
-            profileID: current.profileId,
-            name: ref.name || 'reference',
-            uri: ref.uri,
-            description: ref.description,
+    const result = await saveProfileChanges({
+      updateCore: Object.keys(profileData).length
+        ? () => updateVc({ variables: { virtualContributorData: input } })
+        : null,
+      tagsetsToCreate:
+        keywordsChanged && !current.keywords.id
+          ? [
+              {
+                field: 'keywords',
+                create: () =>
+                  createTagset({
+                    variables: {
+                      input: {
+                        profileID: current.profileId,
+                        name: TagsetReservedName.Keywords,
+                        tags: current.keywords.tags,
+                      },
+                    },
+                  }),
+              },
+            ]
+          : [],
+      references: referenceChanges,
+      createReference: ref =>
+        createReference({
+          variables: {
+            input: {
+              profileID: current.profileId,
+              name: ref.name || 'reference',
+              uri: ref.uri,
+              description: ref.description,
+            },
           },
-        },
-      });
+        }),
+      deleteReference: ref => deleteReference({ variables: { input: { ID: ref.id } } }),
+    });
+
+    // Rebase the buffer on the fresh server values: what saved now matches the server, what
+    // failed stays buffered so it stays counted and Save retries it.
+    // A failed refresh leaves the buffer out of step with the server (references just created would
+    // be created again on retry), so it fails the Save and the page offers a reload.
+    let refreshError: string | null = null;
+    const freshVc = (
+      await refetch().catch(err => {
+        refreshError = err instanceof Error ? err.message : String(err);
+        return null;
+      })
+    )?.data?.lookup.virtualContributor;
+    if (freshVc) {
+      const fresh = mapVirtualContributorToProfileFormValues(freshVc);
+      const next: VcProfileFormValues = { ...fresh, avatar: current.avatar };
+      if (result.coreFailed) {
+        for (const f of SCALAR_FIELDS) next[f] = current[f];
+      }
+      if ((result.coreFailed && current.keywords.id) || result.failedTagsets.length) next.keywords = current.keywords;
+      next.references = rebaseReferences(fresh.references, referenceChanges, result);
+      valuesRef.current = next;
+      setValues(next);
     }
 
-    const removedIds = collectRemovedReferenceIds(current, savedNow);
-    for (const id of removedIds) {
-      await deleteReference({ variables: { input: { ID: id } } });
-    }
+    setSaving(false);
+    const firstError = result.firstError ?? refreshError;
+    setSaveError(firstError);
+    return firstError === null;
   };
 
-  const onSaveSection = async (section: VcProfileSectionKey) => {
-    const current = valuesRef.current;
-    const savedNow = saved;
-    if (!current || !savedNow || !vcId) return;
-
-    setSectionStatus(section, { kind: 'saving' });
-
-    try {
-      if (section === 'keywords') {
-        await saveKeywordsSection(current);
-      } else if (section === 'references') {
-        await saveReferencesSection(current, savedNow);
-      } else {
-        const patch = buildVcPatch(section, current);
-        if (patch) {
-          await updateVc({ variables: { virtualContributorData: patch } });
-        }
-      }
-
-      const fresh = await refetch();
-      const freshVc = fresh.data?.lookup.virtualContributor;
-      if (freshVc) {
-        const freshValues = mapVirtualContributorToProfileFormValues(freshVc);
-        setValues(prev => {
-          const base = prev ?? valuesRef.current;
-          const merged = base ? mergeSavedSection(base, freshValues, section) : freshValues;
-          valuesRef.current = merged;
-          return merged;
-        });
-      }
-
-      flashSaved(section);
-    } catch (err) {
-      setSectionStatus(section, {
-        kind: 'error',
-        message: err instanceof Error ? err.message : 'Save failed',
-      });
+  const reset = () => {
+    if (saved) {
+      const next = { ...saved, avatar: valuesRef.current?.avatar ?? saved.avatar };
+      valuesRef.current = next;
+      setValues(next);
     }
+    setSaveError(null);
   };
 
   return {
     values,
     loading: queryLoading,
     error: queryError ?? null,
-    dirtyByField,
-    saveStatusByField,
     uploadingAvatar,
     pendingAvatarCrop,
     onChange,
@@ -410,27 +302,8 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
     onUploadAvatar,
     onAvatarCropComplete,
     onAvatarCropCancel,
-    onSaveSection,
+    unsaved: { count: unsavedCount, canSave, saving, error: saveError, saveAll, reset },
   };
-};
-
-const mergeSavedSection = (
-  buffer: VcProfileFormValues,
-  fresh: VcProfileFormValues,
-  section: VcProfileSectionKey
-): VcProfileFormValues => {
-  switch (section) {
-    case 'displayName':
-      return { ...buffer, displayName: fresh.displayName };
-    case 'tagline':
-      return { ...buffer, tagline: fresh.tagline };
-    case 'description':
-      return { ...buffer, description: fresh.description };
-    case 'keywords':
-      return { ...buffer, keywords: fresh.keywords };
-    case 'references':
-      return { ...buffer, references: fresh.references };
-  }
 };
 
 export default useVcProfileTabData;

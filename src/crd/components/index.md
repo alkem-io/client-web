@@ -77,6 +77,21 @@ multi-section filters (membership: server-side; privacy and type: client-side), 
 filter chips, responsive card grid, "Load More" pagination, and empty state. Receives
 space data and callbacks from the consumer; all data fetching is external.
 
+### SpaceCardIdentity (`space/SpaceCardIdentity.tsx`)
+
+`SpaceCardIdentity` and `SpaceCardLeads` — the compact card's identity block (banner,
+badges, avatar, name/parent/tagline/tags) and leads footer, extracted from `SpaceCard`
+so `ExpandedSpaceCard` can reuse them unchanged. `SpaceCardIdentity`
+accepts an optional `nameSlot` so a caller can render the name as a different link.
+
+### ExpandedSpaceCard (`space/ExpandedSpaceCard.tsx`)
+
+The rich (expanded) subspace card variant — the compact identity block
+plus clamped What/Why/Who excerpts (via card-safe `InlineMarkdown`) and a full-width
+leads footer with a visual "Open subspace" cue. One link per card (a stretched
+name-link); row vs. stacked layout follows the card's own measured width
+(`useElementWidth`), never a screen breakpoint.
+
 ---
 
 ## whiteboard/
@@ -120,6 +135,24 @@ Guest name prompt dialog for public whiteboard access. Welcome text, name input 
 ### WhiteboardErrorState (`whiteboard/WhiteboardErrorState.tsx`)
 
 Centered error display with AlertCircle icon, title, message, and optional retry button. Used for 404 and 500 states on the public whiteboard page.
+
+## forms/callout/
+
+### CalloutCardVariantField (`forms/callout/CalloutCardVariantField.tsx`)
+
+"Expanded card" on/off switch for a Subspaces-collection callout. Markup
+mirrors `CalloutSelectionField` (switch before label) so the two fields read as
+siblings; the description is one fixed string regardless of switch state.
+
+## hooks/
+
+### useElementWidth (`hooks/useElementWidth.ts`)
+
+Reads an element's current width via `ResizeObserver`, with a synchronous first
+measurement before paint (`useLayoutEffect` + `getBoundingClientRect`) so a
+width-driven layout never flashes its narrow-width state on a wide element before the
+observer's first callback fires. Returns `[width, ref]`; `width` is `undefined` until
+measured.
 
 ## forms/markdown/
 

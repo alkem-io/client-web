@@ -93,10 +93,11 @@
       "org": {
         "profile": "Profil",
         "account": "Compte",
-        "community": "Associés",
-        "authorization": "Autorisation",
+        "associates": "Associés",
+        "membership": "Adhésion",
         "settings": "Paramètres",
-        "invitations": "Invitations"
+        "invitations": "Invitations",
+        "authorization": "Autorisation"
       },
       "vc": {
         "profile": "Profil",
@@ -158,12 +159,13 @@
         },
         "keywords": {
           "label": "Mots-clés",
-          "hint": "Mots-clés décrivant vos intérêts. Appuyez sur Entrée pour ajouter.",
+          "hint": "Mots-clés décrivant vos intérêts. Ils apparaissent comme étiquettes sur la carte de survol de votre profil. Appuyez sur Entrée pour ajouter.",
           "placeholder": "ex. climat, gouvernance, open source"
         }
       },
       "socialLinks": {
         "title": "Liens sociaux",
+        "phoneInvalidSaveBlocked": "Corrigez le numéro de téléphone dans Liens sociaux pour enregistrer",
         "linkedinPlaceholder": "https://linkedin.com/in/votre-identifiant",
         "bskyPlaceholder": "https://bsky.app/profile/votre-identifiant",
         "githubPlaceholder": "https://github.com/votre-identifiant",
@@ -177,6 +179,9 @@
           "description": "La supprimer la retirera également de votre profil public après l'enregistrement.",
           "confirm": "Supprimer la référence"
         }
+      },
+      "references": {
+        "title": "Références"
       },
       "avatar": {
         "title": "Photo de profil",
@@ -204,17 +209,10 @@
         "filteredEmptyDescription": "Essayez d'ajuster les filtres ou la recherche.",
         "clearFilters": "Effacer les filtres"
       },
-      "menu": {
-        "viewByType": "Voir {{type}}"
-      },
       "filter": {
         "all": "Toutes",
         "spaces": "Spaces",
         "subspaces": "Subspaces"
-      },
-      "type": {
-        "space": "Space",
-        "subspace": "Subspace"
       },
       "role": {
         "admin": "Administrateur",
@@ -222,8 +220,8 @@
         "member": "Membre"
       },
       "leave": {
-        "menuItem": "Quitter",
-        "menuItemLabeled": "Quitter {{type}}",
+        "button": "Quitter",
+        "buttonAria": "Quitter {{name}}",
         "dialogTitle": "Quitter cette adhésion ?",
         "dialogDescription": "Vous êtes sur le point de quitter « {{spaceName}} ». Vous perdrez l'accès aux contenus réservés aux membres et devrez postuler à nouveau pour revenir.",
         "dialogConfirm": "Quitter",
@@ -386,7 +384,8 @@
             "label": "Clé d'accès",
             "set": "Définie",
             "notSet": "Non définie",
-            "manage": "Gérer les clés d'accès"
+            "manage": "Gérer les clés d'accès",
+            "explanation": "Vous connecte sans mot de passe. Ce n'est pas une deuxième étape."
           }
         }
       },
@@ -426,6 +425,60 @@
             "SOLE_ORGANIZATION_OWNER": "Organisation (propriétaire unique)"
           }
         }
+      },
+      "twoStep": {
+        "authenticator": {
+          "active": "Votre application d'authentification est active.",
+          "codeLabel": "Code de l'application",
+          "confirm": "Confirmer",
+          "explanation": "Une application sur votre téléphone, comme Google Authenticator, Microsoft Authenticator ou 1Password, affiche un nouveau code à six chiffres toutes les 30 secondes.",
+          "qrAlt": "Code QR pour votre application d'authentification",
+          "removeDescription": "Vous ne pourrez plus vous connecter avec les codes de cette application.",
+          "removeTitle": "Supprimer l'application d'authentification ?",
+          "secretLabel": "Clé :",
+          "setUp": "Configurez une application d'authentification : scannez le code QR avec l'application ou saisissez la clé à la main, puis tapez le code qu'elle affiche.",
+          "title": "Application d'authentification"
+        },
+        "description": "Ajoutez une deuxième étape à la connexion : après votre mot de passe, vous confirmez aussi avec votre téléphone ou une clé de sécurité.",
+        "lastFactorWarning": "C'est votre dernier second facteur. La validation en deux étapes est obligatoire pour vous : vous devrez en configurer un nouveau à votre prochaine connexion.",
+        "neverShare": "Un code n'est jamais lu à voix haute ni envoyé à quiconque, et Alkemio ne vous le demandera jamais. Ne partagez pas vos codes.",
+        "recoveryCodes": {
+          "active": "Vous avez des codes de récupération.",
+          "confirm": "J'ai enregistré ces codes",
+          "copied": "Copié",
+          "copy": "Copier les codes",
+          "copyFailed": "La copie a échoué. Sélectionnez les codes et copiez-les vous-même.",
+          "download": "Télécharger les codes",
+          "explanation": "Des codes à usage unique pour quand vous ne pouvez pas utiliser votre application ou votre clé. Chaque code fonctionne une fois.",
+          "generate": "Générer des codes de récupération",
+          "needsFactor": "Configurez d'abord une application d'authentification ou une clé de sécurité.",
+          "regenerate": "Régénérer",
+          "regenerateDescription": "Vos codes de récupération actuels ne fonctionneront plus.",
+          "regenerateTitle": "Générer de nouveaux codes de récupération ?",
+          "remove": "Supprimer les codes de récupération",
+          "removeDescription": "Vous ne pourrez plus vous connecter avec un code de récupération.",
+          "removeTitle": "Supprimer vos codes de récupération ?",
+          "shownOnce": "Conservez ces codes en lieu sûr dès maintenant. Ils ne seront plus affichés.",
+          "title": "Codes de récupération"
+        },
+        "remove": "Supprimer",
+        "secondWay": {
+          "added": "Votre second moyen de passer la deuxième étape est configuré. Reconnectez-vous pour qu'il soit pris en compte.",
+          "needed": "Votre compte a besoin d'un second moyen de passer la deuxième étape : une application d'authentification, une autre clé de sécurité ou des codes de récupération. Ajoutez-en un ci-dessous, puis reconnectez-vous.",
+          "suggested": "La validation en deux étapes est activée. Ajoutez maintenant un second moyen de passer la deuxième étape (une application d'authentification, une autre clé de sécurité ou des codes de récupération) pour pouvoir encore vous connecter si vous perdez celui-ci."
+        },
+        "securityKeys": {
+          "add": "Ajouter une clé de sécurité",
+          "empty": "Aucune clé de sécurité ajoutée pour l'instant.",
+          "explanation": "Utilisez une clé d'accès enregistrée dans votre gestionnaire de mots de passe ou sur cet appareil (Face ID, Touch ID, Windows Hello), ou une clé physique comme une YubiKey. Votre navigateur vous demande laquelle utiliser.",
+          "nameLabel": "Nom de la clé",
+          "nameRequired": "Saisissez un nom pour la clé.",
+          "removeDescription": "Vous ne pourrez plus vous connecter avec cette clé.",
+          "removeNamed": "Supprimer {{name}}",
+          "removeTitle": "Supprimer la clé de sécurité « {{name}} » ?",
+          "title": "Clés d'accès et clés de sécurité"
+        },
+        "title": "Validation en deux étapes"
       }
     },
     "settings": {
@@ -508,11 +561,11 @@
       "rows": {
         "space": {
           "communicationUpdates": "Recevoir une notification lorsqu'une nouvelle communication est partagée dans une communauté",
-          "collaborationCalloutPublished": "Recevoir une notification lorsqu'un callout est publié dans une communauté dont je suis membre",
+          "collaborationCalloutPublished": "Recevoir une notification lorsqu'une publication est publiée dans une communauté dont je suis membre",
           "collaborationCalloutReaction": "Recevoir une notification lorsque quelqu'un réagit à mon Post avec un emoji",
-          "collaborationCalloutPostContributionComment": "Recevoir une notification lorsqu'un commentaire est ajouté à une publication que je suis",
-          "collaborationCalloutContributionCreated": "Recevoir une notification lorsqu'une nouvelle contribution est créée sur un callout",
-          "collaborationCalloutComment": "Recevoir une notification lorsqu'un nouveau commentaire est ajouté à un callout que je suis",
+          "collaborationCalloutPostContributionComment": "Recevoir une notification lorsque quelqu'un commente une contribution que j'ai créée",
+          "collaborationCalloutContributionCreated": "Recevoir une notification lorsqu'une nouvelle contribution est ajoutée à une publication",
+          "collaborationCalloutComment": "Recevoir une notification lorsqu'un nouveau commentaire est ajouté à une publication dans une communauté dont je suis membre",
           "communityCalendarEvents": "Recevoir des notifications pour les événements du calendrier de la communauté",
           "collaborationPollVoteCastOnOwnPoll": "Recevoir une notification lorsqu'on vote dans mon sondage",
           "collaborationPollVoteCastOnPollIVotedOn": "Recevoir une notification lorsqu'on vote dans un sondage où j'ai voté",
@@ -523,9 +576,10 @@
           "communityApplicationReceived": "Recevoir une notification lorsqu'une nouvelle candidature à la communauté est soumise",
           "communityNewMember": "Recevoir une notification lorsqu'un nouveau membre rejoint la communauté",
           "communityInvitationResponse": "Recevoir une notification lorsqu'une personne accepte ou refuse une invitation à un Space que vous administrez",
-          "collaborationCalloutContributionCreated": "Recevoir une notification lorsqu'une nouvelle contribution est créée sur un callout",
+          "collaborationCalloutContributionCreated": "Recevoir une notification lorsqu'une nouvelle contribution est ajoutée à une publication",
           "communicationMessageReceived": "Recevoir une notification lorsqu'un message de la communauté est reçu",
-          "userEmailChanged": "Recevoir une notification lorsque l'adresse e-mail de connexion d'un membre d'un Space que vous administrez est modifiée"
+          "userEmailChanged": "Recevoir une notification lorsque l'adresse e-mail de connexion d'un membre d'un Space que vous administrez est modifiée",
+          "collaborationCalloutFormResponseReceived": "Recevoir une notification lorsque quelqu'un envoie une réponse à un formulaire dans un Espace que vous administrez"
         },
         "user": {
           "commentReply": "Recevoir une notification lorsque quelqu'un répond à mon commentaire",
@@ -534,10 +588,12 @@
           "conversationMessageDirect": "Recevoir une notification lorsque quelqu'un m'envoie un message de chat direct (1:1)",
           "conversationMessageGroup": "Recevoir une notification lorsque quelqu'un publie dans un chat de groupe dont je suis membre",
           "membershipInvitationReceived": "Recevoir une notification lorsque quelqu'un m'invite à rejoindre une communauté",
-          "membershipCommunityJoined": "Recevoir une notification lorsque je rejoins un nouveau Space"
+          "membershipCommunityJoined": "Recevoir une notification lorsque je rejoins un nouveau Space",
+          "membershipOrganizationAssociateInvitationReceived": "Recevoir une notification lorsque je suis invité(e) à m’associer à une organisation",
+          "membershipOrganizationAssociateApplicationDecided": "Recevoir une notification lorsqu’une organisation statue sur ma candidature d’association"
         },
         "platform": {
-          "forumDiscussionComment": "Recevoir une notification lorsqu'un nouveau commentaire est ajouté à une discussion que je suis",
+          "forumDiscussionComment": "Recevoir une notification lorsque quelqu'un commente une discussion que j'ai créée",
           "forumDiscussionCreated": "Recevoir une notification lorsqu'une nouvelle discussion de plateforme est créée"
         },
         "platformAdmin": {
@@ -550,7 +606,10 @@
         "organization": {
           "adminMentioned": "Recevoir une notification lorsque mon organisation est mentionnée",
           "adminMessageReceived": "Recevoir les messages directs adressés à mon organisation",
-          "adminSpaceCommunityInvitation": "Recevoir une notification lorsqu'une organisation que j'administre est invitée à rejoindre un espace, et lorsqu'elle le rejoint"
+          "adminSpaceCommunityInvitation": "Recevoir une notification lorsqu'une organisation que j'administre est invitée à rejoindre un espace, et lorsqu'elle le rejoint",
+          "adminAssociateInvitationResponse": "Recevoir une notification lorsque quelqu’un répond à une invitation à s’associer à une organisation que j’administre",
+          "adminAssociateApplicationReceived": "Recevoir une notification lorsque quelqu’un postule pour s’associer à une organisation que j’administre",
+          "adminAssociateJoined": "Recevoir une notification lorsque quelqu’un rejoint en tant qu’associé une organisation que j’administre"
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Recevoir une notification lorsqu'un manager VC est invité à rejoindre une communauté"
@@ -563,25 +622,25 @@
     },
     "organizations": {
       "pageTitle": "Organisations",
+      "myOrganizations": "Mes organisations",
       "searchPlaceholder": "Rechercher des organisations...",
       "createButton": "Créer une organisation",
+      "createDescription": "Créez une nouvelle organisation pour collaborer avec votre équipe.",
+      "newOrganization": "Nouvelle organisation",
       "summary": "Affichage de {{shown}} organisations sur {{total}}",
       "empty": "Vous n'êtes encore associé à aucune organisation.",
       "filteredEmptyTitle": "Aucune organisation trouvée",
       "filteredEmptyDescription": "Essayez un autre nom ou une autre localisation.",
       "clearSearch": "Effacer la recherche",
       "verified": "Vérifiée",
-      "associates": "Associés",
       "associatesCount": "{{count}} associés",
       "role": {
         "admin": "Administrateur",
         "associate": "Associé"
       },
-      "menu": {
-        "viewProfile": "Voir le profil",
-        "disassociate": "Se désassocier"
-      },
       "disassociate": {
+        "button": "Se désassocier",
+        "buttonAria": "Se désassocier de {{name}}",
         "dialogTitle": "Vous désassocier de cette organisation ?",
         "dialogDescription": "Vous êtes sur le point de quitter « {{name}} ». Vous perdrez votre rôle d'associé et les permissions associées.",
         "dialogConfirm": "Se désassocier",
@@ -591,22 +650,17 @@
     },
     "account": {
       "pageTitle": "Compte",
-      "helpBanner": "Vous pouvez voir vos ressources actives et gérer les limites d'allocation de votre compte.",
       "spaces": {
-        "title": "Spaces hébergés",
-        "createButton": "Créer un Space"
+        "title": "Spaces hébergés"
       },
       "virtualContributors": {
-        "title": "Contributeurs virtuels",
-        "createButton": "Ajouter un contributeur"
+        "title": "Contributeurs virtuels"
       },
       "innovationPacks": {
-        "title": "Packs de modèles",
-        "createButton": "Nouveau pack"
+        "title": "Packs de modèles"
       },
       "innovationHubs": {
-        "title": "Pages d'accueil personnalisées",
-        "createButton": "Nouvelle page"
+        "title": "Pages d'accueil personnalisées"
       },
       "actions": {
         "view": "Voir",
@@ -618,6 +672,9 @@
         "title": "Supprimer cette ressource ?",
         "description": "Ceci supprimera définitivement « {{name}} ». Cette action est irréversible.",
         "confirm": "Supprimer"
+      },
+      "dangerZone": {
+        "title": "Zone de danger"
       }
     },
     "assistant": {
@@ -641,7 +698,6 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Profil",
       "identity": {
         "title": "Identité",
         "displayName": {
@@ -672,7 +728,7 @@
         },
         "keywords": {
           "label": "Mots-clés",
-          "hint": "Sujets sur lesquels votre organisation travaille. Appuyez sur Entrée pour ajouter.",
+          "hint": "Sujets sur lesquels votre organisation travaille. Ils apparaissent comme étiquettes sur la carte de survol de votre organisation. Appuyez sur Entrée pour ajouter.",
           "placeholder": "ex. climat, gouvernance, open source"
         },
         "capabilities": {
@@ -718,6 +774,9 @@
           "confirm": "Supprimer la référence"
         }
       },
+      "references": {
+        "title": "Références"
+      },
       "logo": {
         "title": "Logo",
         "changeButton": "Changer le logo",
@@ -732,22 +791,17 @@
     },
     "account": {
       "pageTitle": "Compte",
-      "helpBanner": "Vous pouvez voir les ressources actives de votre organisation et gérer les limites d'allocation.",
       "spaces": {
-        "title": "Spaces hébergés",
-        "createButton": "Créer un Space"
+        "title": "Spaces hébergés"
       },
       "virtualContributors": {
-        "title": "Contributeurs virtuels",
-        "createButton": "Ajouter un contributeur"
+        "title": "Contributeurs virtuels"
       },
       "innovationPacks": {
-        "title": "Packs de modèles",
-        "createButton": "Nouveau pack"
+        "title": "Packs de modèles"
       },
       "innovationHubs": {
-        "title": "Pages d'accueil personnalisées",
-        "createButton": "Nouvelle page"
+        "title": "Pages d'accueil personnalisées"
       },
       "actions": {
         "view": "Voir",
@@ -762,7 +816,6 @@
       }
     },
     "community": {
-      "pageTitle": "Communauté",
       "title": "Associés",
       "description": "Gérez qui est associé à cette organisation. Ajoutez de nouveaux associés depuis la liste des utilisateurs disponibles ; retirer un associé révoque son rôle dans l'organisation.",
       "currentAssociatesTitle": "Associés actuels",
@@ -778,6 +831,134 @@
       "removeConfirmAssociate": "Retirer {{name}} en tant qu'associé",
       "removeSuccess": "Associé retiré",
       "removeError": "Échec — réessayez"
+    },
+    "membership": {
+      "title": "Adhésions aux Spaces",
+      "searchPlaceholder": "Rechercher des adhésions...",
+      "empty": "Cette organisation n'est encore membre d'aucun Space.",
+      "summary": "Affichage de {{shown}} adhésions sur {{total}}",
+      "filteredEmptyTitle": "Aucune adhésion trouvée",
+      "filteredEmptyDescription": "Essayez d'ajuster les filtres ou la recherche.",
+      "clearFilters": "Effacer les filtres",
+      "filter": {
+        "all": "Toutes",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "role": {
+        "lead": "Lead",
+        "member": "Membre"
+      },
+      "leave": {
+        "button": "Quitter",
+        "buttonAria": "Quitter {{name}}",
+        "dialogTitle": "Quitter cette adhésion ?",
+        "dialogDescription": "Votre organisation est sur le point de quitter « {{spaceName}} » et tous ses sous-espaces, en renonçant à tous les rôles qu'elle y occupe, y compris celui de Lead. Elle perdra l'accès aux contenus réservés aux membres et devrait être invitée à nouveau pour revenir.",
+        "dialogConfirm": "Quitter",
+        "success": "Adhésion quittée",
+        "error": "Échec — réessayez",
+        "forbidden": "Seuls les administrateurs et propriétaires de cette organisation peuvent quitter un espace"
+      },
+      "ledBy": "Animé par :",
+      "ledByAria": "{{count}} animateurs de communauté",
+      "leadsMore": "et {{count}} de plus"
+    },
+    "settings": {
+      "pageTitle": "Paramètres",
+      "title": "Paramètres de l'organisation",
+      "membership": {
+        "title": "Adhésion",
+        "allowSpaceInvitationsLabel": "Autoriser les espaces à inviter cette organisation",
+        "allowSpaceInvitationsCaption": "Une fois activé, les administrateurs d'espace peuvent inviter cette organisation à rejoindre leur communauté d'espace.",
+        "allowDomainLabel": "Autoriser les utilisateurs correspondant à ce domaine à rejoindre",
+        "allowDomainCaption": "Les utilisateurs dont le domaine de messagerie correspond au domaine vérifié de cette organisation peuvent rejoindre en tant qu’associé en un clic.",
+        "allowApplicationsLabel": "Autoriser les utilisateurs à postuler pour devenir associé",
+        "allowApplicationsCaption": "Lorsque désactivé, le profil public de l’organisation n’offre aucune action de candidature ; les candidatures en attente restent listées et décidables."
+      },
+      "privacy": {
+        "title": "Confidentialité",
+        "contributionRolesLabel": "Afficher publiquement les rôles de contribution",
+        "contributionRolesCaption": "Lorsque activé, les attributions de rôles de l'organisation (Administrateur, Propriétaire, Associé) sont visibles sur le profil public."
+      },
+      "errorToast": "Échec de l'enregistrement de la préférence — réessayez",
+      "security": {
+        "requireSecondFactorCaption": "Les propriétaires, administrateurs et associés de cette organisation doivent utiliser un second facteur à la connexion. Ils ont 14 jours pour le configurer.",
+        "requireSecondFactorLabel": "Exiger la validation en deux étapes pour les membres",
+        "title": "Sécurité",
+        "turnOffTitle": "Ne plus exiger la validation en deux étapes ?",
+        "turnOffDescription": "Les membres n'auront plus besoin d'un second facteur pour se connecter. Si vous réactivez l'exigence, ils disposeront de 14 nouveaux jours pour le configurer.",
+        "turnOffConfirm": "Ne plus exiger"
+      }
+    },
+    "invitations": {
+      "title": "Invitations aux espaces",
+      "empty": "Aucune invitation à un espace en attente.",
+      "invitedBy": "Invité par {{name}}",
+      "invitedByUnknown": "Invité par un administrateur d'espace",
+      "date": "Date",
+      "role": "Rôle",
+      "roleMember": "Membre",
+      "roleMemberLead": "Membre + Lead",
+      "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}",
+      "accept": "Accepter",
+      "decline": "Refuser",
+      "acceptConfirmTitle": "Accepter cette invitation ?",
+      "acceptConfirmBody": "Votre organisation rejoindra {{spaceName}} en tant que {{role}}.",
+      "acceptConfirmAction": "Accepter l'invitation",
+      "declineConfirmTitle": "Refuser cette invitation ?",
+      "declineConfirmBody": "{{spaceName}} sera informé que votre organisation a refusé. Cette action est irréversible — un administrateur du Space devrait envoyer une nouvelle invitation.",
+      "declineConfirmAction": "Refuser l'invitation",
+      "errorToast": "Impossible de mettre à jour l'invitation — réessayez"
+    },
+    "associates": {
+      "title": "Associés",
+      "description": "Toutes les personnes associées à cette organisation — associés, admins et propriétaires — avec la possibilité de modifier les rôles, d’inviter de nouveaux associés et de gérer les candidatures et invitations en attente.",
+      "invite": "Inviter",
+      "empty": "Aucun associé pour l’instant.",
+      "badge": {
+        "associate": "Associé",
+        "admin": "Admin",
+        "owner": "Propriétaire"
+      },
+      "editAriaLabel": "Modifier {{name}}",
+      "editor": {
+        "title": "Modifier {{name}}",
+        "description": "Modifiez les rôles que {{name}} détient dans cette organisation, ou retirez cette personne.",
+        "associateLabel": "Associé",
+        "associateCaption": "Le rôle de base — requis pour détenir également Admin ou Propriétaire.",
+        "adminLabel": "Admin",
+        "ownerLabel": "Propriétaire",
+        "remove": "Retirer de l’organisation",
+        "removeConfirmTitle": "Retirer {{name}} de l’organisation ?",
+        "removeConfirmBody": "{{name}} perdra tous les rôles qu’il/elle détient dans cette organisation.",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "removeSuccess": "{{name}} a été retiré(e) de l’organisation",
+        "removeError": "Impossible de retirer {{name}} — réessayez",
+        "saveError": "Impossible d’enregistrer les modifications — réessayez"
+      },
+      "errors": {
+        "limitAdmin": "Une organisation peut avoir au maximum 6 admins",
+        "limitOwner": "Une organisation peut avoir au maximum 3 propriétaires",
+        "minOwner": "Une organisation doit conserver au moins un propriétaire",
+        "generic": "Une erreur est survenue — réessayez"
+      },
+      "pending": {
+        "title": "Candidatures et invitations en attente",
+        "empty": "Aucune candidature ni invitation en attente.",
+        "offeredRole": {
+          "associate": "Associé",
+          "associateAdmin": "Associé + Admin",
+          "associateOwner": "Associé + Propriétaire"
+        },
+        "rejectConfirmTitle": "Refuser la candidature de {{name}} ?",
+        "rejectConfirmBody": "{{name}} sera informé du refus et pourra postuler à nouveau plus tard.",
+        "rejectConfirm": "Refuser la candidature",
+        "revokeConfirmTitle": "Révoquer l’invitation envoyée à {{name}} ?",
+        "revokeConfirmBody": "L’invitation sera retirée. {{name}} ne pourra plus l’accepter.",
+        "revokeConfirm": "Révoquer l’invitation",
+        "actionError": "Action impossible — réessayez"
+      }
     },
     "authorization": {
       "pageTitle": "Autorisation",
@@ -811,44 +992,6 @@
       "removeSuccessAdmin": "Rôle d'administrateur retiré",
       "removeSuccessOwner": "Rôle de propriétaire retiré",
       "removeError": "Échec du retrait du rôle — réessayez"
-    },
-    "settings": {
-      "pageTitle": "Paramètres",
-      "title": "Paramètres de l'organisation",
-      "membership": {
-        "title": "Adhésion",
-        "allowDomainLabel": "Autoriser les utilisateurs ayant le domaine de l'organisation à rejoindre",
-        "allowDomainCaption": "Lorsque activé, les utilisateurs dont le domaine de l'e-mail correspond à celui de l'organisation peuvent rejoindre sans invitation.",
-        "allowSpaceInvitationsLabel": "Autoriser les espaces à inviter cette organisation",
-        "allowSpaceInvitationsCaption": "Une fois activé, les administrateurs d'espace peuvent inviter cette organisation à rejoindre leur communauté d'espace."
-      },
-      "privacy": {
-        "title": "Confidentialité",
-        "contributionRolesLabel": "Afficher publiquement les rôles de contribution",
-        "contributionRolesCaption": "Lorsque activé, les attributions de rôles de l'organisation (Administrateur, Propriétaire, Associé) sont visibles sur le profil public."
-      },
-      "errorToast": "Échec de l'enregistrement de la préférence — réessayez"
-    },
-    "invitations": {
-      "pageTitle": "Invitations",
-      "title": "Invitations aux espaces",
-      "empty": "Aucune invitation à un espace en attente.",
-      "invitedBy": "Invité par {{name}}",
-      "invitedByUnknown": "Invité par un administrateur d'espace",
-      "date": "Date",
-      "role": "Rôle",
-      "roleMember": "Membre",
-      "roleMemberLead": "Membre + Lead",
-      "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}",
-      "accept": "Accepter",
-      "decline": "Refuser",
-      "acceptConfirmTitle": "Accepter cette invitation ?",
-      "acceptConfirmBody": "Votre organisation rejoindra {{spaceName}} en tant que {{role}}.",
-      "acceptConfirmAction": "Accepter l'invitation",
-      "declineConfirmTitle": "Refuser cette invitation ?",
-      "declineConfirmBody": "{{spaceName}} sera informé que votre organisation a refusé. Cette action est irréversible — un administrateur du Space devrait envoyer une nouvelle invitation.",
-      "declineConfirmAction": "Refuser l'invitation",
-      "errorToast": "Impossible de mettre à jour l'invitation — réessayez"
     }
   },
   "vc": {
@@ -898,7 +1041,7 @@
       },
       "keywords": {
         "label": "Mots-clés",
-        "hint": "Ajoutez des mots-clés pour aider les utilisateurs à découvrir ce Contributeur Virtuel.",
+        "hint": "Ajoutez des mots-clés pour aider les utilisateurs à découvrir ce Contributeur Virtuel. Ils apparaissent comme étiquettes sur sa carte de survol.",
         "placeholder": "Ajoutez un mot-clé et appuyez sur Entrée"
       },
       "socialLinks": {
@@ -1012,6 +1155,7 @@
         "innovationPacksTooltip": "Vous avez créé {{usage}} sur les {{limit}} Template Packs disponibles dans votre compte.",
         "innovationHubsTooltip": "Vous avez créé {{usage}} sur les {{limit}} pages d'accueil personnalisées disponibles dans votre compte."
       },
+      "empty": "Rien ici pour le moment.",
       "kebabAriaLabel": "Plus d'actions",
       "createNewSpace": {
         "ariaLabel": "Créer un nouveau Space",

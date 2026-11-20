@@ -37,6 +37,9 @@ export type CrdApplySpaceTemplateDialogProps = {
    * nothing to delete so the confirm is skipped.
    */
   existingCalloutsCount?: number;
+  /** Adds a note that the template's sidebar replaces the current one (subspaces: the
+   *  sidebar is the first phase's list, which the template replaces). */
+  showSidebarNote?: boolean;
 };
 
 const OPTIONS = [
@@ -73,6 +76,7 @@ export function CrdApplySpaceTemplateDialog({
   onClose,
   onConfirm,
   existingCalloutsCount = 0,
+  showSidebarNote = false,
 }: CrdApplySpaceTemplateDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const [selectedOption, setSelectedOption] = useState<FlowReplaceOption>(ADD_TEMPLATE_POSTS);
@@ -127,6 +131,9 @@ export function CrdApplySpaceTemplateDialog({
                 components={{ b: <strong />, br: <br /> }}
               />
             </p>
+            {showSidebarNote && (
+              <p className="text-caption text-muted-foreground">{t('layout.replaceFlow.applyDialog.sidebarNote')}</p>
+            )}
 
             <RadioGroup
               value={selectedOption}

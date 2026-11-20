@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import type { OrganizationSettingsQuery } from '@/core/apollo/generated/graphql-schema';
 import { mapOrgSettings } from './orgSettingsMapper';
 
-const buildData = (settings?: Partial<{ allowSpaceInvitations: boolean }>): OrganizationSettingsQuery => ({
+const buildData = (
+  settings?: Partial<{ allowSpaceInvitations: boolean; allowApplications: boolean; secondFactorRequired: boolean }>
+): OrganizationSettingsQuery => ({
   lookup: {
     organization: {
       id: 'org-1',
@@ -10,8 +12,10 @@ const buildData = (settings?: Partial<{ allowSpaceInvitations: boolean }>): Orga
         membership: {
           allowUsersMatchingDomainToJoin: true,
           allowSpaceInvitations: settings?.allowSpaceInvitations ?? true,
+          allowApplications: settings?.allowApplications ?? true,
         },
         privacy: { contributionRolesPubliclyVisible: true },
+        security: { secondFactorRequired: settings?.secondFactorRequired ?? false },
       },
     },
   },
@@ -31,5 +35,17 @@ describe('mapOrgSettings — allowSpaceInvitations (T015)', () => {
     const mapped = mapOrgSettings(buildData());
     expect(mapped.allowUsersMatchingDomainToJoin).toBe(true);
     expect(mapped.contributionRolesPubliclyVisible).toBe(true);
+  });
+
+  it('reads allowApplications off the query when present, defaulting to true (062)', () => {
+    expect(mapOrgSettings(buildData({ allowApplications: false })).allowApplications).toBe(false);
+    expect(mapOrgSettings(buildData({ allowApplications: true })).allowApplications).toBe(true);
+    expect(mapOrgSettings(undefined).allowApplications).toBe(true);
+  });
+
+  it('reads secondFactorRequired off the query, defaulting to off', () => {
+    expect(mapOrgSettings(buildData({ secondFactorRequired: true })).secondFactorRequired).toBe(true);
+    expect(mapOrgSettings(buildData()).secondFactorRequired).toBe(false);
+    expect(mapOrgSettings(undefined).secondFactorRequired).toBe(false);
   });
 });

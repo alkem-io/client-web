@@ -1,0 +1,58 @@
+import type { ComponentProps } from 'react';
+import { isAppMode } from '@/core/appMode/isAppMode';
+import { ChatThreadView } from '@/crd/components/chat/ChatThreadView';
+import { type SendEvent, useConversationAttachments } from './attachments/useConversationAttachments';
+import { useConversationStorageConfig } from './attachments/useConversationStorageConfig';
+
+type Props = Omit<ComponentProps<typeof ChatThreadView>, 'onSendMessage'> & {
+  conversationId: string;
+  roomId: string | undefined;
+  attachmentsAllowed: boolean;
+  sendEvent: SendEvent;
+  onClearDraft: () => void;
+  onRestoreDraft: (text: string) => void;
+};
+
+/** The connector keys this component by conversation, giving each draft its own lifetime. */
+export function ConversationThread({
+  conversationId,
+  roomId,
+  attachmentsAllowed,
+  sendEvent,
+  onClearDraft,
+  onRestoreDraft,
+  ...view
+}: Props) {
+  const { storageConfig } = useConversationStorageConfig(conversationId);
+  const files = useConversationAttachments(
+    attachmentsAllowed ? storageConfig : undefined,
+    roomId ? { roomID: roomId } : undefined
+  );
+  const sendWithDraft: SendEvent = async (text, attachmentUpload) => {
+    if (attachmentUpload) return sendEvent(text, attachmentUpload);
+    onClearDraft();
+    let confirmed: boolean | undefined;
+    try {
+      confirmed = await sendEvent(text);
+      return confirmed;
+    } finally {
+      if (!confirmed) onRestoreDraft(text);
+    }
+  };
+  return (
+    <ChatThreadView
+      {...view}
+      // The iOS shell opens every `_blank` link in Safari, whose separate cookie jar would leave
+      // a link back to the platform signed out, so in the app those stay in the WebView.
+      newTabLinks={isAppMode() ? 'external' : 'all'}
+      isSending={view.isSending || files.isSending}
+      onSendMessage={text => files.send(text, sendWithDraft, () => {})}
+      attachmentsEnabled={files.enabled}
+      attachments={files.attachments}
+      onAttachFiles={files.attachFiles}
+      onRemoveAttachment={files.removeAttachment}
+      attachmentError={files.error}
+      acceptMimeTypes={files.accept}
+    />
+  );
+}

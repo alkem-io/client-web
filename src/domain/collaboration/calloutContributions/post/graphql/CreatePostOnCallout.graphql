@@ -1,9 +1,10 @@
-mutation CreatePostOnCallout($calloutId: UUID!, $post: CreatePostInput!, $taskColumn: String) {
+mutation CreatePostOnCallout($calloutId: UUID!, $post: CreatePostInput!, $taskColumn: String, $sendNotification: Boolean) {
   createContributionOnCallout(contributionData: {
     calloutID: $calloutId,
     type: POST,
     post: $post,
-    taskColumn: $taskColumn
+    taskColumn: $taskColumn,
+    sendNotification: $sendNotification
   }) {
     post {
       id

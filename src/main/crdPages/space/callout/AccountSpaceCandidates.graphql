@@ -1,0 +1,13 @@
+query AccountSpaceCandidates($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      accountSpaces {
+        id
+        displayName
+        level
+        parentSpaceID
+      }
+    }
+  }
+}

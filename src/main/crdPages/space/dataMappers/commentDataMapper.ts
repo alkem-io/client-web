@@ -3,8 +3,11 @@ import { ActorType, AuthorizationPrivilege } from '@/core/apollo/generated/graph
 import type { CommentData, CommentReaction } from '@/crd/components/comment/types';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { mapMessageAttachments } from '@/main/userMessaging/models';
+import { keywordTags, mapContributorPreview } from './contributorPreviewMapper';
+import { contributorTypeFromActor } from './contributorType';
 
-type RoomWithMessages = Pick<CommentsWithMessagesModel, 'messages' | 'authorization'>;
+type RoomWithMessages = Pick<CommentsWithMessagesModel, 'messages' | 'authorization' | 'attachmentBucketId'>;
 
 type MapRoomToCommentDataOptions = {
   currentUserId?: string;
@@ -29,23 +32,44 @@ export function mapRoomToCommentData(
   const messageIds = new Set(room.messages.map(message => message.id));
 
   const comments: CommentData[] = room.messages.map(message => {
-    const authorId = message.sender?.id;
+    const sender = message.sender;
+    const authorId = sender?.id;
     const canDelete = canDeleteAny || (Boolean(currentUserId) && authorId === currentUserId);
+    const kind = contributorTypeFromActor(sender?.type);
+    const preview =
+      sender?.profile && kind
+        ? mapContributorPreview(
+            sender.id,
+            kind,
+            { ...sender.profile, keywords: keywordTags(sender.profile.tagsets) },
+            currentUserId
+          )
+        : undefined;
 
     return {
       id: message.id,
-      author: {
-        id: authorId ?? 'unknown',
-        name: message.sender?.profile?.displayName ?? 'Unknown',
-        avatarUrl: message.sender?.profile?.avatar?.uri,
-        profileUrl: message.sender?.profile?.url,
-        isVirtualContributor: message.sender?.type === ActorType.VirtualContributor,
-      },
+      author: preview
+        ? {
+            id: preview.id,
+            name: preview.name,
+            avatarUrl: preview.avatarUrl,
+            profileUrl: preview.href,
+            isVirtualContributor: preview.type === 'virtualContributor',
+            preview,
+          }
+        : {
+            id: authorId ?? 'unknown',
+            name: sender?.profile?.displayName ?? 'Unknown',
+            avatarUrl: sender?.profile?.avatar?.uri,
+            profileUrl: sender?.profile?.url,
+            isVirtualContributor: sender?.type === ActorType.VirtualContributor,
+          },
       content: message.message,
       timestamp: formatTimeElapsed(new Date(message.timestamp), t, 'long'),
       timestampMs: message.timestamp,
       parentId: message.threadID,
       reactions: mapReactions(message.reactions, currentUserId),
+      attachments: mapMessageAttachments(message.attachments, room?.attachmentBucketId),
       canDelete,
     };
   });

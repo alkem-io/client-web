@@ -11,6 +11,7 @@ type ContributorModel = {
     displayName: string;
     url: string;
     description?: string;
+    tagline?: string;
     avatar?: VisualModel;
     tagsets?: TagsetModel[];
     location?: {
@@ -23,6 +24,7 @@ type ContributorModel = {
 export type CommentsWithMessagesModel = {
   id: string;
   messagesCount: number;
+  attachmentBucketId?: string | null;
   authorization?: { myPrivileges?: AuthorizationPrivilege[] };
   messages: {
     id: string;
@@ -34,6 +36,14 @@ export type CommentsWithMessagesModel = {
       emoji: string;
       timestamp: number;
       sender?: { id: string; profile?: { displayName: string } };
+    }[];
+    attachments?: {
+      externalReference?: string | null;
+      displayName: string;
+      mimeType?: string;
+      size?: number;
+      width?: number;
+      height?: number;
     }[];
     sender?: ContributorModel;
   }[];

@@ -1,4 +1,4 @@
-import type { CommentAuthor, CommentReaction } from '@/crd/components/comment/types';
+import type { CommentAuthor, CommentReaction, MessageAttachment } from '@/crd/components/comment/types';
 
 /** A single avatar shown in a group composite avatar. */
 export type ChatMemberAvatar = {
@@ -18,6 +18,10 @@ export type ChatListItem = {
   /** Members for the group composite avatar (excludes the current user). */
   memberAvatars?: ChatMemberAvatar[];
   lastMessagePreview?: string;
+  /** How many media attachments the last message carried (feature 013). A
+   *  media-only message has no `lastMessagePreview`, so the row falls back to
+   *  an attachment label instead of rendering a blank line. */
+  lastMessageAttachmentCount?: number;
   /** Unsent text for this conversation — shown instead of `lastMessagePreview`. */
   draftPreview?: string;
   /** Pre-formatted relative-time display string for the last message. */
@@ -25,6 +29,8 @@ export type ChatListItem = {
   unreadCount: number;
   /** True for the Guidance row; sorts first while search is empty. */
   pinned?: boolean;
+  /** A call is running in this conversation. */
+  hasActiveCall?: boolean;
 };
 
 /** A single message in a thread. Shape compatible with the comment system. */
@@ -33,11 +39,13 @@ export type ChatMessage = {
   /** Undefined for synthetic/system messages. */
   author?: CommentAuthor;
   content: string;
-  /** Pre-formatted relative-time display string. */
-  timestamp: string;
-  /** Raw epoch milliseconds; sort key. Synthetic intro uses 0 to sort first. */
+  /** Epoch milliseconds; sort key and the source of every time shown in the
+   *  thread. Synthetic intro uses 0 to sort first and carries no time. */
   timestampMs: number;
   reactions: CommentReaction[];
+  /** Media attachments on this message (feature 013). Empty/omitted when the
+   *  feature is off or the message has none. */
+  attachments?: MessageAttachment[];
   /** Authored by the current user → right-aligned bubble. */
   isOwn: boolean;
   /** Optimistic send, not yet confirmed by the server. */

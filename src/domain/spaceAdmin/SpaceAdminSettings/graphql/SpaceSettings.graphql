@@ -6,6 +6,7 @@ query SpaceSettings($spaceId: UUID!) {
         id
         provider {
           id
+          type
           profile {
             id
             displayName

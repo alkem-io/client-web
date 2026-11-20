@@ -9,6 +9,7 @@ import {
   mapReactionsToCommentReactions,
   sortUnifiedConversations,
   type UnifiedConversation,
+  withActiveCallsFirst,
 } from './dataMapper';
 
 const GUIDANCE_VC = 'vc-guidance';
@@ -21,7 +22,6 @@ const makeConversation = (overrides: Partial<UnifiedConversation> = {}): Unified
   displayName: 'Conversation',
   avatarUri: undefined,
   unreadCount: 0,
-  messagesCount: 0,
   createdDate: new Date(0),
   lastMessage: undefined,
   members: [],
@@ -54,11 +54,11 @@ describe('sortUnifiedConversations', () => {
     const newly = makeConversation({ id: 'new', createdDate: new Date(2) });
     const older = makeConversation({
       id: 'older',
-      lastMessage: { id: 'm1', message: 'hi', timestamp: 100, reactions: [] },
+      lastMessage: { id: 'm1', message: 'hi', timestamp: 100, reactions: [], attachments: [] },
     });
     const newer = makeConversation({
       id: 'newer',
-      lastMessage: { id: 'm2', message: 'yo', timestamp: 200, reactions: [] },
+      lastMessage: { id: 'm2', message: 'yo', timestamp: 200, reactions: [], attachments: [] },
     });
 
     const sorted = sortUnifiedConversations([older, newly, newer, guidance], 'new');
@@ -84,8 +84,6 @@ describe('mapReactionsToCommentReactions', () => {
 });
 
 describe('mapMessageToChatMessage', () => {
-  const formatTimestamp = (ms: number) => `t:${ms}`;
-
   it('marks own messages and maps sender to an author', () => {
     const msg: ConversationMessage = {
       id: 'm1',
@@ -93,9 +91,10 @@ describe('mapMessageToChatMessage', () => {
       timestamp: 500,
       sender: { id: ME, displayName: 'Me', avatarUri: undefined },
       reactions: [],
+      attachments: [],
     };
-    const result = mapMessageToChatMessage(msg, { currentUserId: ME, formatTimestamp });
-    expect(result).toMatchObject({ id: 'm1', isOwn: true, timestamp: 't:500', timestampMs: 500 });
+    const result = mapMessageToChatMessage(msg, { currentUserId: ME });
+    expect(result).toMatchObject({ id: 'm1', isOwn: true, timestampMs: 500 });
     expect(result.author).toMatchObject({ id: ME, name: 'Me' });
   });
 
@@ -106,8 +105,9 @@ describe('mapMessageToChatMessage', () => {
       timestamp: 1,
       sender: { id: 'other', displayName: 'Other' },
       reactions: [],
+      attachments: [],
     };
-    expect(mapMessageToChatMessage(msg, { currentUserId: ME, formatTimestamp }).isOwn).toBe(false);
+    expect(mapMessageToChatMessage(msg, { currentUserId: ME }).isOwn).toBe(false);
   });
 });
 
@@ -121,7 +121,7 @@ describe('injectGuidanceIntro', () => {
   });
 
   it('prepends the intro before existing messages', () => {
-    const existing = [{ id: 'm1', content: 'hi', timestamp: 't', timestampMs: 1, reactions: [], isOwn: false }];
+    const existing = [{ id: 'm1', content: 'hi', timestampMs: 1, reactions: [], isOwn: false }];
     const result = injectGuidanceIntro(existing, { text: 'Welcome', author });
     expect(result.map(m => m.id)).toEqual([GUIDANCE_INTRO_ID, 'm1']);
   });
@@ -136,5 +136,29 @@ describe('mapMemberToCommentAuthor virtual contributor flag', () => {
       displayName: 'Guidance',
     });
     expect(author.isVirtualContributor).toBe(true);
+  });
+});
+
+describe('withActiveCallsFirst', () => {
+  it('moves conversations with a running call to the top, below the pinned one, keeping the order otherwise', () => {
+    const items = [
+      { id: 'pinned', pinned: true },
+      { id: 'recent' },
+      { id: 'older-call', hasActiveCall: true },
+      { id: 'older' },
+      { id: 'oldest-call', hasActiveCall: true },
+    ];
+    expect(withActiveCallsFirst(items, null).map(item => item.id)).toEqual([
+      'pinned',
+      'older-call',
+      'oldest-call',
+      'recent',
+      'older',
+    ]);
+  });
+
+  it('keeps the newly-created conversation directly below the pinned one', () => {
+    const items = [{ id: 'pinned', pinned: true }, { id: 'new' }, { id: 'call', hasActiveCall: true }];
+    expect(withActiveCallsFirst(items, 'new').map(item => item.id)).toEqual(['pinned', 'new', 'call']);
   });
 });

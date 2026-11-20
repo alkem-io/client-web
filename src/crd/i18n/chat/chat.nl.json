@@ -6,7 +6,13 @@
   },
   "panel": {
     "title": "Chat",
-    "settings": "Meldingsinstellingen"
+    "settings": "Meldingsinstellingen",
+    "muteSound": "Chatgeluid dempen",
+    "unmuteSound": "Chatgeluid aanzetten",
+    "soundToggleError": "We konden de instelling voor het chatgeluid niet opslaan. Probeer het opnieuw.",
+    "expand": "Chat vergroten",
+    "collapse": "Chat verkleinen",
+    "reconnecting": "Opnieuw verbinden… Nieuwe berichten kunnen vertraagd zijn."
   },
   "actions": {
     "cancel": "Annuleren"
@@ -55,7 +61,9 @@
     "emptyHint": "Begin een nieuw bericht om te chatten.",
     "noResults": "Geen gesprekken komen overeen met je zoekopdracht.",
     "loading": "Gesprekken laden",
-    "draft": "Concept:"
+    "draft": "Concept:",
+    "attachmentPreview_one": "{{count}} bijlage",
+    "attachmentPreview_other": "{{count}} bijlagen"
   },
   "guidance": {
     "beta": "Bèta",
@@ -76,7 +84,9 @@
   "thread": {
     "back": "Terug naar gesprekken",
     "loading": "Berichten laden",
-    "addReaction": "Reactie toevoegen"
+    "jumpToLatest": "Naar de nieuwste berichten",
+    "addReaction": "Reactie toevoegen",
+    "options": "Chatopties"
   },
   "sendConfirmation": {
     "title": "Bericht verzonden",
@@ -100,5 +110,30 @@
       "messageTooLong": "Bericht mag maximaal {{max}} tekens bevatten.",
       "sendFailed": "Kon het bericht niet verzenden. Probeer het opnieuw."
     }
+  },
+  "call": {
+    "startAudio": "Audiogesprek starten",
+    "startVideo": "Videogesprek starten",
+    "active": "Gesprek actief",
+    "join": "Deelnemen",
+    "joinVideo": "Deelnemen met video",
+    "joinAudio": "Alleen met audio deelnemen",
+    "joinedOnThisDevice": "Al deelgenomen op dit apparaat",
+    "preparing": "Gesprek wordt voorbereid… Het start zo meteen.",
+    "dropped": "Kon het gesprek niet starten. Probeer het opnieuw.",
+    "overlayLabel": "Gesprek",
+    "close": "Gesprek sluiten",
+    "license": "Opensourcelicentie",
+    "opensInNewTab": "opent in een nieuw tabblad",
+    "leaveConfirm": {
+      "title": "Gesprek verlaten?",
+      "description": "Je verlaat het gesprek. De anderen kunnen zonder jou verder.",
+      "descriptionDirect": "Je verlaat het gesprek, en het gesprek eindigt ook voor de ander.",
+      "confirm": "Gesprek verlaten",
+      "cancel": "In gesprek blijven"
+    },
+    "listBadge": "Gesprek actief",
+    "callingYou": "{{name}} belt je",
+    "groupCall": "Gesprek in {{name}}"
   }
 }

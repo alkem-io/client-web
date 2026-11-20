@@ -5,6 +5,7 @@ import {
   useReplyToMessageMutation,
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import type { RoomMessageAttachmentInput } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { refreshRoomMessagesCount } from './refreshRoomMessagesCount';
@@ -88,7 +89,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
     },
   });
 
-  const handlePostMessage = (message: string) => {
+  const handlePostMessage = (message: string, attachmentUpload?: RoomMessageAttachmentInput) => {
     const requiredRoomId = ensurePresence(roomId, 'roomId');
 
     return postMessage({
@@ -96,12 +97,21 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
         messageData: {
           roomID: requiredRoomId,
           message,
+          attachmentUpload,
         },
       },
     });
   };
 
-  const handleReply = ({ threadId, messageText }: { threadId: string; messageText: string }) => {
+  const handleReply = ({
+    threadId,
+    messageText,
+    attachmentUpload,
+  }: {
+    threadId: string;
+    messageText: string;
+    attachmentUpload?: RoomMessageAttachmentInput;
+  }) => {
     const requiredRoomId = ensurePresence(roomId, 'roomId');
 
     return postReply({
@@ -109,6 +119,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
         roomId: requiredRoomId,
         message: messageText,
         threadId,
+        attachmentUpload,
       },
     });
   };

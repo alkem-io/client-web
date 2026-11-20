@@ -6,41 +6,11 @@ subscription ConversationEvents {
         id
         room {
           id
+          attachmentBucketId
           type
           displayName
           avatarUrl
           createdDate
-          unreadCount
-          messagesCount
-          lastMessage {
-            id
-            message
-            timestamp
-            sender {
-              id
-              type
-              profile {
-                id
-                displayName
-                avatar: visual(type: AVATAR) {
-                  id
-                  uri
-                }
-              }
-            }
-            reactions {
-              id
-              emoji
-              timestamp
-              sender {
-                id
-                profile {
-                  id
-                  displayName
-                }
-              }
-            }
-          }
         }
         members {
           id
@@ -56,41 +26,13 @@ subscription ConversationEvents {
           }
         }
       }
-      message {
-        id
-        message
-        timestamp
-        sender {
-          id
-          type
-          profile {
-            id
-            displayName
-            avatar: visual(type: AVATAR) {
-              id
-              uri
-            }
-          }
-        }
-        reactions {
-          id
-          emoji
-          timestamp
-          sender {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-        }
-      }
     }
     conversationUpdated {
       conversation {
         id
         room {
           id
+          attachmentBucketId
           displayName
           avatarUrl
         }
@@ -122,46 +64,6 @@ subscription ConversationEvents {
         id
       }
       removedMemberID
-    }
-    messageReceived {
-      roomId
-      message {
-        id
-        message
-        timestamp
-        sender {
-          id
-          type
-          profile {
-            id
-            displayName
-            avatar: visual(type: AVATAR) {
-              id
-              uri
-            }
-          }
-        }
-        reactions {
-          id
-          emoji
-          timestamp
-          sender {
-            id
-            profile {
-              id
-              displayName
-            }
-          }
-        }
-      }
-    }
-    messageRemoved {
-      roomId
-      messageId
-    }
-    readReceiptUpdated {
-      roomId
-      lastReadEventId
     }
   }
 }

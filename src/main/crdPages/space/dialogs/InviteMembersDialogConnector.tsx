@@ -71,8 +71,14 @@ export type InviteMembersDialogConnectorProps = {
  * neither an `invitation` nor a `platformInvitation` to match on.
  *
  * The legacy fallbacks below (match on the created entity, then consume the
- * next id-less result positionally) are kept only for a server that predates
- * those fields; they are unreachable against a current server.
+ * next identity-less result positionally) are kept only for a server that
+ * predates those fields; they are unreachable against a current server. The
+ * positional fallback never claims a result that carries any identity or
+ * created entity: such a result belongs to the chip it names, so a chip that
+ * matched nothing reports an error instead of borrowing another invitee's
+ * outcome. The server echoes one result per submitted chip, so an address
+ * typed for a person who is also picked gets its own result (sharing the same
+ * invitation) and reports the same outcome as the picked chip.
  * Exported for unit testing (T007).
  */
 export const mapInvitationResults = (
@@ -106,7 +112,8 @@ export const mapInvitationResults = (
           : invitee.kind === 'email'
             ? take(r => r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase())
             : undefined);
-    const legacyResult = matched ?? take(r => !r.invitation && !r.platformInvitation);
+    const legacyResult =
+      matched ?? take(r => !r.invitedActorID && !r.invitedEmail && !r.invitation && !r.platformInvitation);
     if (!legacyResult) {
       return { invitee, outcome: 'error' as const };
     }
@@ -127,7 +134,9 @@ export const mapInvitationResults = (
                   ? 'notAcceptingInvitations'
                   : legacyResult.type === RoleSetInvitationResultType.OrganizationLeadRoleLimitReached
                     ? 'leadLimitReached'
-                    : 'error';
+                    : legacyResult.type === RoleSetInvitationResultType.ExtraRoleLimitReached
+                      ? 'extraRoleLimitReached'
+                      : 'error';
     const notice: InvitationResult['notice'] =
       legacyResult.notice === RoleSetInvitationResultNotice.OrganizationHasNoAdministrators
         ? 'noAdministrators'
@@ -143,12 +152,19 @@ const INVITE_PAGE_SIZE = 20;
 // Inlined here to avoid coupling the CRD connector to a Yup schema we don't otherwise use.
 const EMAIL_REGEX =
   /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]{2,}(?:[a-z0-9-]*[a-z0-9])?$/i;
-const isValidEmail = (value: string): boolean => EMAIL_REGEX.test(value.trim().toLowerCase());
+// Shared with the organization invite connector so both dialogs accept exactly what the server's
+// @IsEmail accepts and flag the rest as invalid chips instead of failing the whole batch.
+export const isValidEmail = (value: string): boolean => EMAIL_REGEX.test(value.trim().toLowerCase());
 
 const ROLE_TO_NAME: Record<InviteRole, RoleName> = {
   Member: RoleName.Member,
   Lead: RoleName.Lead,
   Admin: RoleName.Admin,
+  // Associate/Owner are never offered on a Space-target invite (organization target only,
+  // 062) — the shared role type is exhaustive, so this map needs an entry even though these
+  // two are unreachable here.
+  Associate: RoleName.Associate,
+  Owner: RoleName.Owner,
 };
 
 /**
@@ -333,11 +349,15 @@ export function InviteMembersDialogConnector({
   const [orgLoading, setOrgLoading] = useState(false);
   // Organizations with an already-open invitation (`invited` state) are excluded — sending
   // another invite would just hit ALREADY_INVITED_TO_ROLE_SET.
+  //
+  // Only the invitations are needed here. `applications` is gated on GRANT server-side, so
+  // selecting it too would turn a FORBIDDEN for an inviter without GRANT (a subspace admin
+  // allowed to invite) into a null role set and silently disable this dedupe.
   const {
     invitations: existingInvitations,
     inviteContributorsOnRoleSet,
     loading: loadingRoleSet,
-  } = useRoleSetApplicationsAndInvitations({ roleSetId });
+  } = useRoleSetApplicationsAndInvitations({ roleSetId, includeApplications: false });
   // "Open" must mean the same thing here as in the Member Organisations >
   // Pending invitations list (`useCommunityTabData.isOpenOrganizationInvitation`):
   // 'invited' PLUS the brief in-flight 'accepting'. Excluding only 'invited'
@@ -410,9 +430,10 @@ export function InviteMembersDialogConnector({
   const [vcLoading, setVcLoading] = useState(false);
   const [vcBusyId, setVcBusyId] = useState<string | null>(null);
   const [vcPreviewData, setVcPreviewData] = useState<VcPreviewData | undefined>(undefined);
-  const toVcItem = (vc: { id: string; profile?: { displayName: string } }): VcInviteItem => ({
+  const toVcItem = (vc: VirtualContributorFullFragment): VcInviteItem => ({
     id: vc.id,
     displayName: vc.profile?.displayName ?? '',
+    avatarUrl: vc.profile?.avatar?.uri,
   });
   const toVcPreviewData = (vc: VirtualContributorFullFragment): VcPreviewData => ({
     id: vc.id,
@@ -565,6 +586,9 @@ export function InviteMembersDialogConnector({
     parentNotAuthorized: t('inviteMembers.results.parentNotAuthorized'),
     notAcceptingInvitations: t('inviteMembers.results.notAcceptingInvitations'),
     leadLimitReached: t('inviteMembers.results.leadLimitReached'),
+    // Never rendered on a Space-target invite (organization target only, 062) — the shared
+    // outcome type is exhaustive, so this row needs a value even though it is unreachable here.
+    extraRoleLimitReached: t('inviteMembers.results.extraRoleLimitReached'),
     error: t('inviteMembers.results.error'),
   } satisfies Record<InvitationResult['outcome'], string>;
 

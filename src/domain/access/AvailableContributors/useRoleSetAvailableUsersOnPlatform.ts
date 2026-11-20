@@ -1,6 +1,6 @@
 import { usePlatformRoleAvailableUsersQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { Identifiable } from '@/core/utils/Identifiable';
-import { AVAILABLE_USERS_PAGE_SIZE, type AvailableUsersResponse } from './common';
+import { AVAILABLE_USERS_PAGE_SIZE, type AvailableUsersResponse, resolvePageSize } from './common';
 
 type useRoleSetAvailableUsersOnPlatformParams = {
   usersAlreadyInRole?: Identifiable[];
@@ -38,14 +38,14 @@ const useRoleSetAvailableUsersOnPlatform = ({
   const pageInfo = data?.usersPaginated.pageInfo;
   const hasMore = pageInfo?.hasNextPage ?? false;
 
-  const fetchMore = async (itemsNumber = AVAILABLE_USERS_PAGE_SIZE) => {
+  const fetchMore = async (itemsNumber?: unknown) => {
     if (!data) {
       return;
     }
 
     await fetchMoreRaw({
       variables: {
-        first: itemsNumber,
+        first: resolvePageSize(itemsNumber, AVAILABLE_USERS_PAGE_SIZE),
         after: pageInfo?.endCursor,
         filter: { displayName: filter },
       },

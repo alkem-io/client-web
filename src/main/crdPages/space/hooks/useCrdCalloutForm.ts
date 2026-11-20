@@ -3,13 +3,25 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
-import { MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { LONG_MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import {
+  createFormQuestion,
+  DEFAULT_FORM_SETTINGS,
+  FORM_DESCRIPTION_MAX_LENGTH,
+  FORM_OPTIONS_MAX,
+  FORM_OPTIONS_MIN,
+  FORM_QUESTIONS_MAX,
+  FORM_QUESTIONS_MIN,
+  FORM_TITLE_MAX_LENGTH,
+} from '@/crd/forms/callout/formValues';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { MAX_POLL_OPTIONS, MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
 import type {
   AllowedActors,
   ContributionDefaults,
   ContributorCollectionConfig,
+  FormQuestionValue,
+  FormSettingsValue,
   FramingChip,
   LinkRow,
   ReferenceRow,
@@ -23,6 +35,12 @@ import {
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import {
+  FORM_QUESTION_ERROR_PREFIX,
+  FORM_QUESTIONS_ERROR_KEY,
+  type FormValidationCode,
+  validateFormQuestions,
+} from './formQuestionsValidation';
 
 // Re-export the form-shape types so existing `@/main/*` consumers can keep
 // importing them from this hook. New code should import directly from
@@ -31,6 +49,8 @@ export type {
   AllowedActors,
   ContributionDefaults,
   ContributorCollectionConfig,
+  FormQuestionValue,
+  FormSettingsValue,
   FramingChip,
   LinkRow,
   ReferenceRow,
@@ -70,6 +90,11 @@ export type CalloutFormValues = {
    * mode but preserved for re-enabling custom later.
    */
   selectedIds: string[];
+  /**
+   * Card variant for a Subspaces-collection callout. Meaningful only
+   * when `framingChip === 'spaces'`. Off by default (`'compact'`).
+   */
+  cardVariant: 'compact' | 'expanded';
   memoMarkdown: string;
   linkUrl: string;
   linkDisplayName: string;
@@ -79,6 +104,14 @@ export type CalloutFormValues = {
   pollAllowCustomOptions: boolean;
   pollHideResultsUntilVoted: boolean;
   pollShowVoterAvatars: boolean;
+  /** Form framing: the optional plain-text title of the Form ('' when unset). */
+  formTitle: string;
+  /** Form framing: the optional plain-text description of the Form ('' when unset). */
+  formDescription: string;
+  /** Form framing: the ordered question list. Only meaningful when `framingChip === 'form'`. */
+  formQuestions: FormQuestionValue[];
+  /** Form framing: response visibility, mode, open/closed state and initial collapse. */
+  formSettings: FormSettingsValue;
   whiteboardContent: string;
   /**
    * True once the user has opened the whiteboard editor and saved (drew OR deliberately
@@ -133,16 +166,25 @@ export type CalloutFormValues = {
   // Footer
   notifyMembers: boolean;
   /**
-   * Edit-mode only: server id of the `default` tagset on the framing profile,
-   * captured at prefill time. Used by the update mapper to emit the correct
-   * `UpdateTagsetInput`. `undefined` on create.
+   * Server ids captured at prefill time — the `default` tagset on the framing profile (used by
+   * the update mapper to emit the correct `UpdateTagsetInput`), the framing sub-entities, and
+   * `collaboraDocumentId`, which the apply-a-template path carries into a *create*. `undefined`
+   * on a blank create.
    */
   editMeta?: {
     framingProfileTagsetId?: string;
     framingLinkId?: string;
     pollId?: string;
+    /** Server id of the Form definition; present only on a Form framing. */
+    formId?: string;
     memoId?: string;
     whiteboardId?: string;
+    /**
+     * Server id of an existing Collabora document to copy content from. Set only by
+     * `loadCalloutTemplateFormValues` (applying a Callout template), and read by
+     * `mapFormToCalloutCreationInput` to emit `sourceCollaboraDocumentID`.
+     */
+    collaboraDocumentId?: string;
     mediaGalleryId?: string;
     originalMediaGalleryVisualIds?: string[];
     originalMediaGallerySortOrders?: Record<string, number>;
@@ -169,6 +211,24 @@ export const referenceRowErrors = (errors: CalloutFormErrors): Record<string, st
   return out;
 };
 
+/**
+ * Form-builder errors in the `FormQuestionsEditor` contract: `title` / `description` for the Form header,
+ * `questions` for the list-level rule and `<index>.prompt|explanation|options|options.<optionIndex>` per
+ * question. `validate()` namespaces them under `formTitle`, `formDescription` and `formQuestions`, so the
+ * connector strips the prefix here.
+ */
+export const formQuestionErrors = (errors: CalloutFormErrors): Record<string, string | undefined> => {
+  const out: Record<string, string | undefined> = {};
+  for (const key of Object.keys(errors)) {
+    if (key === 'formTitle') out.title = errors[key];
+    else if (key === 'formDescription') out.description = errors[key];
+    else if (key === FORM_QUESTIONS_ERROR_KEY) out.questions = errors[key];
+    else if (key.startsWith(FORM_QUESTION_ERROR_PREFIX))
+      out[key.slice(FORM_QUESTION_ERROR_PREFIX.length)] = errors[key];
+  }
+  return out;
+};
+
 const createInitialPollOptions = (): PollOptionValue[] =>
   Array.from({ length: MIN_POLL_OPTIONS }, () => ({ text: '' }));
 
@@ -189,6 +249,8 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   // Selection defaults: AUTO mode, no ids (feature 025 FR-002 default).
   selectionMode: 'auto',
   selectedIds: [],
+  // Card variant default: compact.
+  cardVariant: 'compact',
   memoMarkdown: '',
   linkUrl: '',
   linkDisplayName: '',
@@ -198,6 +260,10 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   pollAllowCustomOptions: false,
   pollHideResultsUntilVoted: false,
   pollShowVoterAvatars: true,
+  formTitle: '',
+  formDescription: '',
+  formQuestions: [createFormQuestion()],
+  formSettings: DEFAULT_FORM_SETTINGS,
   whiteboardContent: EmptyWhiteboardString,
   whiteboardEdited: false,
   whiteboardPreviewImages: [],
@@ -245,7 +311,8 @@ type ValidationCode =
   | 'referenceUrlInvalid'
   | 'linkRowTitleRequired'
   | 'linkRowUrlInvalid'
-  | 'contributorTypesRequired';
+  | 'contributorTypesRequired'
+  | `form.${FormValidationCode}`;
 
 export type UseCrdCalloutFormResult = {
   values: CalloutFormValues;
@@ -265,7 +332,9 @@ export type UseCrdCalloutFormResult = {
  *   `prefill` always wins over these — the overrides only seed the empty form.
  */
 export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>): UseCrdCalloutFormResult {
-  const { t } = useTranslation('crd-space');
+  // `crd-space` stays first, so it remains the default namespace for every bare
+  // key below; `crd-common` is added only so the shared validation copy is reachable.
+  const { t } = useTranslation(['crd-space', 'crd-common']);
   const [initialValues, setInitialValues] = useState<CalloutFormValues>(() => ({
     ...EMPTY_CALLOUT_FORM_VALUES,
     ...initialOverrides,
@@ -296,7 +365,11 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
       case 'maxMid':
         return t('validation.maxMid', { count: MID_TEXT_LENGTH, ...params });
       case 'maxMarkdown':
-        return t('validation.maxMarkdown', { count: MARKDOWN_TEXT_LENGTH, ...params });
+        // Deliberately no figure: the rule measures the raw markdown source, so any
+        // number quoted here would not match the text length the author perceives;
+        // the editor's own counter (which also counts the markdown) shows the figure.
+        // This is the same count-free message the Post description already shows.
+        return t('crd-common:components.wysiwyg-editor.validation.maxLength');
       case 'minPollOptions':
         return t('validation.minPollOptions', { count: MIN_POLL_OPTIONS, ...params });
       case 'maxPollOptions':
@@ -314,6 +387,34 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
       case 'contributorTypesRequired':
         return t('validation.contributorTypesRequired');
       default:
+        if (code.startsWith('form.')) return translateFormValidationMessage(code.slice('form.'.length));
+        return code;
+    }
+  };
+
+  const translateFormValidationMessage = (code: string): string => {
+    switch (code as FormValidationCode) {
+      case 'questionsMin':
+        return t('formForm.validation.questionsMin', { count: FORM_QUESTIONS_MIN });
+      case 'questionsMax':
+        return t('formForm.validation.questionsMax', { count: FORM_QUESTIONS_MAX });
+      case 'promptRequired':
+        return t('formForm.validation.promptRequired');
+      case 'promptMax':
+        return t('formForm.validation.promptMax');
+      case 'explanationMax':
+        return t('formForm.validation.explanationMax');
+      case 'optionsMin':
+        return t('formForm.validation.optionsMin', { count: FORM_OPTIONS_MIN });
+      case 'optionsMax':
+        return t('formForm.validation.optionsMax', { count: FORM_OPTIONS_MAX });
+      case 'optionRequired':
+        return t('formForm.validation.optionRequired');
+      case 'optionMax':
+        return t('formForm.validation.optionMax');
+      case 'optionsDuplicate':
+        return t('formForm.validation.optionsDuplicate');
+      default:
         return code;
     }
   };
@@ -322,7 +423,10 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
   // required, min 3, max SMALL_TEXT_LENGTH, no spaces-only.
   const schema = yup.object().shape({
     title: yup.string().trim().required('required').min(3, 'minDisplayName').max(SMALL_TEXT_LENGTH, 'maxSmall'),
-    description: yup.string().max(MARKDOWN_TEXT_LENGTH, 'maxMarkdown').notRequired(),
+    // The callout body and the Post contribution body are the same server field
+    // (`UpdateProfileInput.description`, allowed up to 65568 characters), so they
+    // share the same client ceiling.
+    description: yup.string().max(LONG_MARKDOWN_TEXT_LENGTH, 'maxMarkdown').notRequired(),
   });
 
   const validateFraming = (v: CalloutFormValues, next: CalloutFormErrors) => {
@@ -376,6 +480,20 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
     }
   };
 
+  const validateForm = (v: CalloutFormValues, next: CalloutFormErrors) => {
+    if (v.framingChip !== 'form') return;
+    // No server reason code exists for these two limits: the messages are local.
+    if (v.formTitle.trim().length > FORM_TITLE_MAX_LENGTH) {
+      next.formTitle = t('formForm.titleTooLong', { count: FORM_TITLE_MAX_LENGTH });
+    }
+    if (v.formDescription.trim().length > FORM_DESCRIPTION_MAX_LENGTH) {
+      next.formDescription = t('formForm.descriptionTooLong', { count: FORM_DESCRIPTION_MAX_LENGTH });
+    }
+    for (const [key, code] of Object.entries(validateFormQuestions(v.formQuestions))) {
+      next[key] = translateValidationMessage(`form.${code}`);
+    }
+  };
+
   const validateReferences = (v: CalloutFormValues, next: CalloutFormErrors) => {
     v.referenceRows.forEach((row, idx) => {
       const uri = row.uri.trim();
@@ -417,6 +535,7 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
       }
     }
     validateFraming(values, next);
+    validateForm(values, next);
     validateReferences(values, next);
     validatePrePopulateLinks(values, next);
     setErrors(next);
@@ -425,10 +544,18 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
 
   const setField = <K extends keyof CalloutFormValues>(key: K, value: CalloutFormValues[K]) => {
     setValuesState(prev => ({ ...prev, [key]: value }));
-    if (errors[key]) {
+    // Form question errors are keyed by list index, so any edit of the list invalidates all of them.
+    const hasFormQuestionErrors =
+      key === 'formQuestions' && Object.keys(errors).some(k => k.startsWith(FORM_QUESTIONS_ERROR_KEY));
+    if (errors[key] || hasFormQuestionErrors) {
       setErrors(prev => {
         const copy: CalloutFormErrors = { ...prev };
         delete copy[key];
+        if (key === 'formQuestions') {
+          for (const k of Object.keys(copy)) {
+            if (k.startsWith(FORM_QUESTION_ERROR_PREFIX)) delete copy[k];
+          }
+        }
         return copy;
       });
     }

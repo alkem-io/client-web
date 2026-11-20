@@ -3,7 +3,12 @@ import {
   ActorType,
   CalloutAllowedActors,
   CalloutContributionType,
+  CalloutFormQuestionType,
+  CalloutFormResponseMode,
+  CalloutFormResponseVisibility,
+  CalloutFormState,
   CalloutFramingType,
+  CalloutSelectionMode,
   type CalloutTemplateContentFragment,
   CalloutVisibility,
   CollaboraDocumentType,
@@ -14,6 +19,7 @@ import {
   TagsetType,
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
+import { createFormOption, createFormQuestion } from '@/crd/forms/callout/formValues';
 import { type CalloutFormValues, EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 import {
@@ -95,6 +101,57 @@ describe('calloutFormValuesToCreateCalloutInput', () => {
     expect(input.framing.poll?.options).toEqual(['A', 'B']);
   });
 
+  it('carries the Form definition without question or option ids, settings as-is', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({
+        framingChip: 'form',
+        formTitle: ' Sign-up ',
+        formDescription: 'Tell us',
+        formQuestions: [
+          createFormQuestion({ id: 'q-1', prompt: 'Name', type: 'SHORT_TEXT', required: true }),
+          createFormQuestion({
+            id: 'q-2',
+            prompt: 'Track',
+            type: 'SINGLE_CHOICE',
+            options: [createFormOption('A', 'o-1'), createFormOption('B', 'o-2')],
+          }),
+        ],
+        formSettings: { visibility: 'MEMBERS', responseMode: 'MULTIPLE', state: 'CLOSED', defaultCollapsed: true },
+        editMeta: { framingProfileId: 'fp-1', originalReferenceIds: [], formId: 'form-1' },
+      }),
+      fallbacks
+    );
+    expect(input.framing.type).toBe(CalloutFramingType.Form);
+    expect(input.framing.form).toEqual({
+      title: 'Sign-up',
+      description: 'Tell us',
+      questions: [
+        {
+          prompt: 'Name',
+          explanation: undefined,
+          type: CalloutFormQuestionType.ShortText,
+          required: true,
+          options: undefined,
+        },
+        {
+          prompt: 'Track',
+          explanation: undefined,
+          type: CalloutFormQuestionType.SingleChoice,
+          required: false,
+          options: [{ label: 'A' }, { label: 'B' }],
+        },
+      ],
+      settings: {
+        visibility: CalloutFormResponseVisibility.Members,
+        responseMode: CalloutFormResponseMode.Multiple,
+        state: CalloutFormState.Closed,
+        defaultCollapsed: true,
+      },
+    });
+    expect(JSON.stringify(input)).not.toContain('q-1');
+    expect(JSON.stringify(input)).not.toContain('o-1');
+  });
+
   it('carries the Collabora blank-create document type for document framing', () => {
     const input = calloutFormValuesToCreateCalloutInput(
       values({ framingChip: 'document', collaboraDocumentType: CollaboraDocumentType.Spreadsheet }),
@@ -131,6 +188,27 @@ describe('calloutFormValuesToUpdateCalloutEntityInput', () => {
   it('does not add a memo body for non-memo framing', () => {
     const input = calloutFormValuesToUpdateCalloutEntityInput(values({ framingChip: 'none', memoMarkdown: 'x' }), 'c1');
     expect(input.framing?.memoContent).toBeUndefined();
+  });
+
+  // A template's stored `enabled` is an independent server field the template form never reads.
+  // An API caller can store `enabled: false` beside Members or Admins; a metadata-only save of the
+  // loaded template must carry the stored actors and comments, never a re-derived `enabled`.
+  it.each([
+    [CalloutContributionType.CollaboraDocument, CalloutAllowedActors.Admins],
+    [CalloutContributionType.CollaboraDocument, CalloutAllowedActors.Members],
+    [CalloutContributionType.CollaboraDocument, CalloutAllowedActors.None],
+    [CalloutContributionType.Link, CalloutAllowedActors.Members],
+  ])('a closed %s template (actors %s) saves its actors and comments without enabled', (type, actors) => {
+    const frag = baseFragment();
+    frag.settings.contribution.enabled = false;
+    frag.settings.contribution.allowedTypes = [type];
+    frag.settings.contribution.canAddContributions = actors;
+
+    const input = calloutFormValuesToUpdateCalloutEntityInput(
+      { ...EMPTY_CALLOUT_FORM_VALUES, ...calloutTemplateContentToFormValues(frag) },
+      'callout-1'
+    );
+    expect(input.settings?.contribution).toEqual({ canAddContributions: actors, commentsEnabled: true });
   });
 });
 
@@ -465,6 +543,63 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(v.editMeta?.pollId).toBe('p-1');
   });
 
+  it('reconstructs the Form definition, settings and form id', () => {
+    const v = calloutTemplateContentToFormValues(
+      baseFragment({
+        type: CalloutFramingType.Form,
+        form: {
+          __typename: 'CalloutForm',
+          id: 'form-1',
+          title: 'Sign-up',
+          description: undefined,
+          questions: [
+            {
+              __typename: 'CalloutFormQuestion',
+              id: 'q-1',
+              prompt: 'Track',
+              explanation: 'Pick one',
+              type: CalloutFormQuestionType.MultipleChoice,
+              required: true,
+              options: [{ __typename: 'CalloutFormQuestionOption', id: 'o-1', label: 'A' }],
+            },
+          ],
+          settings: {
+            __typename: 'CalloutFormSettings',
+            visibility: CalloutFormResponseVisibility.Members,
+            responseMode: CalloutFormResponseMode.Single,
+            state: CalloutFormState.Open,
+            defaultCollapsed: true,
+          },
+        },
+      })
+    );
+    expect(v.framingChip).toBe('form');
+    expect(v.formTitle).toBe('Sign-up');
+    expect(v.formDescription).toBe('');
+    expect(v.formQuestions).toHaveLength(1);
+    expect(v.formQuestions?.[0]).toMatchObject({
+      id: 'q-1',
+      prompt: 'Track',
+      explanation: 'Pick one',
+      type: 'MULTIPLE_CHOICE',
+      required: true,
+    });
+    expect(v.formQuestions?.[0].options.map(o => [o.id, o.label])).toEqual([['o-1', 'A']]);
+    expect(v.formSettings).toEqual({
+      visibility: 'MEMBERS',
+      responseMode: 'SINGLE',
+      state: 'OPEN',
+      defaultCollapsed: true,
+    });
+    expect(v.editMeta?.formId).toBe('form-1');
+  });
+
+  it('leaves the Form fields at their defaults for a non-Form template', () => {
+    const v = calloutTemplateContentToFormValues(baseFragment());
+    expect(v.formQuestions).toBeUndefined();
+    expect(v.editMeta?.formId).toBeUndefined();
+  });
+
   it('reconstructs the Collabora document type', () => {
     const v = calloutTemplateContentToFormValues(
       baseFragment({
@@ -509,6 +644,24 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(calloutTemplateContentToFormValues(frag).responseType).toBe('none');
   });
 
+  it('reads a Documents template as the "document" response type, keeping actors and comments', () => {
+    const frag = baseFragment();
+    frag.settings.contribution.allowedTypes = [CalloutContributionType.CollaboraDocument];
+    frag.settings.contribution.canAddContributions = CalloutAllowedActors.Admins;
+    frag.settings.contribution.commentsEnabled = false;
+
+    const v = calloutTemplateContentToFormValues(frag);
+    expect(v.responseType).toBe('document');
+    expect(v.allowedActors).toEqual({ members: false, admins: true });
+    expect(v.contributionCommentsEnabled).toBe(false);
+  });
+
+  it('reads a Memo template as the "memo" response type', () => {
+    const frag = baseFragment();
+    frag.settings.contribution.allowedTypes = [CalloutContributionType.Memo];
+    expect(calloutTemplateContentToFormValues(frag).responseType).toBe('memo');
+  });
+
   // Spec D14, 2026-05-18 — the response-type chip derives from `allowedTypes[0]` ALONE.
   // `enabled` and `canAddContributions` are an orthogonal "who-can-add" concern that maps
   // to the actor switches, not to the chip. AND-ing the chip on `enabled` would silently
@@ -540,5 +693,71 @@ describe('calloutTemplateContentToFormValues', () => {
     frag.settings.contribution.canAddContributions = CalloutAllowedActors.None;
     expect(calloutTemplateContentToFormValues(frag).responseType).toBe('whiteboard');
     expect(calloutTemplateContentToFormValues(frag).allowedActors).toEqual({ members: false, admins: false });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Card variant
+// ---------------------------------------------------------------------------
+
+describe('calloutTemplateContentToFormValues — cardVariant hydration', () => {
+  it('EXPANDED ⇒ "expanded"', () => {
+    const frag = baseFragment();
+    frag.settings.framing.spaces = { __typename: 'CalloutSpacesSettings', cardVariant: 'EXPANDED' as never };
+    expect(calloutTemplateContentToFormValues(frag).cardVariant).toBe('expanded');
+  });
+
+  it('null / absent spaces ⇒ "compact"', () => {
+    const v = calloutTemplateContentToFormValues(baseFragment());
+    expect(v.cardVariant).toBe('compact');
+  });
+});
+
+describe('calloutFormValuesToCreateCalloutInput — cardVariant', () => {
+  it('carries settings.framing.spaces for the spaces chip', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip: 'spaces', cardVariant: 'expanded' }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
+  });
+
+  it('omits it for a non-spaces chip', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip: 'none', cardVariant: 'expanded' }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.spaces).toBeUndefined();
+  });
+});
+
+describe('callout template mappers — a manual selection never reaches a template (FR-006)', () => {
+  // A template has no host space, so the server rejects any template input carrying a CUSTOM
+  // selection. "Save as template" prefills from a live callout, which may well have one.
+  const manual = { selectionMode: 'custom', selectedIds: ['space-1', 'space-2'] } as const;
+
+  it.each(['spaces', 'contributors'] as const)('create resets a %s selection to AUTO with no ids', framingChip => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip, cardVariant: 'expanded', ...manual, selectedIds: [...manual.selectedIds] }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.selection).toEqual({ mode: CalloutSelectionMode.Auto, selectedIds: [] });
+  });
+
+  it('create keeps the card variant while resetting the selection', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip: 'spaces', cardVariant: 'expanded', ...manual, selectedIds: [...manual.selectedIds] }),
+      fallbacks
+    );
+    expect(input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
+  });
+
+  it('update resets a manual selection to AUTO with no ids', () => {
+    const input = calloutFormValuesToUpdateCalloutEntityInput(
+      values({ framingChip: 'spaces', cardVariant: 'expanded', ...manual, selectedIds: [...manual.selectedIds] }),
+      'c1'
+    );
+    expect(input.settings?.framing?.selection).toEqual({ mode: CalloutSelectionMode.Auto, selectedIds: [] });
+    expect(input.settings?.framing?.spaces).toEqual({ cardVariant: 'EXPANDED' });
   });
 });

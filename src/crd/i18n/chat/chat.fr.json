@@ -6,7 +6,13 @@
   },
   "panel": {
     "title": "Chat",
-    "settings": "Paramètres de notification"
+    "settings": "Paramètres de notification",
+    "muteSound": "Couper le son du chat",
+    "unmuteSound": "Réactiver le son du chat",
+    "soundToggleError": "Impossible d'enregistrer le réglage du son du chat. Veuillez réessayer.",
+    "expand": "Agrandir le chat",
+    "collapse": "Réduire le chat",
+    "reconnecting": "Reconnexion… Les nouveaux messages peuvent être retardés."
   },
   "actions": {
     "cancel": "Annuler"
@@ -55,7 +61,9 @@
     "emptyHint": "Commencez un nouveau message pour discuter.",
     "noResults": "Aucune conversation ne correspond à votre recherche.",
     "loading": "Chargement des conversations",
-    "draft": "Brouillon :"
+    "draft": "Brouillon :",
+    "attachmentPreview_one": "{{count}} pièce jointe",
+    "attachmentPreview_other": "{{count}} pièces jointes"
   },
   "guidance": {
     "beta": "Bêta",
@@ -76,7 +84,9 @@
   "thread": {
     "back": "Retour aux conversations",
     "loading": "Chargement des messages",
-    "addReaction": "Ajouter une réaction"
+    "jumpToLatest": "Aller aux derniers messages",
+    "addReaction": "Ajouter une réaction",
+    "options": "Options du chat"
   },
   "sendConfirmation": {
     "title": "Message envoyé",
@@ -100,5 +110,30 @@
       "messageTooLong": "Le message doit comporter au maximum {{max}} caractères.",
       "sendFailed": "Impossible d'envoyer le message. Veuillez réessayer."
     }
+  },
+  "call": {
+    "startAudio": "Démarrer un appel audio",
+    "startVideo": "Démarrer un appel vidéo",
+    "active": "Appel en cours",
+    "join": "Rejoindre",
+    "joinVideo": "Rejoindre avec la vidéo",
+    "joinAudio": "Rejoindre en audio uniquement",
+    "joinedOnThisDevice": "Déjà rejoint sur cet appareil",
+    "preparing": "Préparation de l’appel… Il commence dans un instant.",
+    "dropped": "Impossible de démarrer l’appel. Veuillez réessayer.",
+    "overlayLabel": "Appel",
+    "close": "Fermer l’appel",
+    "license": "Licence open source",
+    "opensInNewTab": "ouvre un nouvel onglet",
+    "leaveConfirm": {
+      "title": "Quitter l’appel ?",
+      "description": "Vous allez quitter l’appel. Les autres peuvent continuer sans vous.",
+      "descriptionDirect": "Vous allez quitter l’appel, et il se terminera aussi pour l’autre personne.",
+      "confirm": "Quitter l’appel",
+      "cancel": "Rester dans l’appel"
+    },
+    "listBadge": "Appel en cours",
+    "callingYou": "{{name}} vous appelle",
+    "groupCall": "Appel dans {{name}}"
   }
 }

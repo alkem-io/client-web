@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  useCalloutCommentsRevalidateQuery,
   useCalloutContributionQuery,
   useDeleteContributionMutation,
   useMemoMarkdownLazyQuery,
@@ -27,6 +28,8 @@ import useCalloutContributions from '@/domain/collaboration/calloutContributions
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
+import { useMessageContributor } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
+import type { MemoSigningRestoreIntent } from '@/main/ui/layout/MemoSigningReturnContext';
 import {
   getCalloutContributionType,
   mapCalloutDetailsToDialogData,
@@ -38,6 +41,7 @@ import {
   mapContributionToLinkItem,
 } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
+import { CalloutFramingFormConnector } from './CalloutFramingFormConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { CalloutReactionsConnector } from './CalloutReactionsConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
@@ -59,6 +63,7 @@ import { MemoFramingConnector } from './MemoFramingConnector';
 import { PostContributionAddConnector } from './PostContributionAddConnector';
 import { PostContributionConnector } from './PostContributionConnector';
 import { SpaceCollectionConnector } from './SpaceCollectionConnector';
+import { cardVariantFromServer } from './spaceCollectionCardVariant';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
 import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
 import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
@@ -81,6 +86,8 @@ type CalloutDetailDialogConnectorProps = {
    * it and every dialog it spawns (edit, delete, share) must stack above it.
    */
   elevated?: boolean;
+  memoSigningRestore?: MemoSigningRestoreIntent;
+  onMemoSigningRestoreConsumed?: (attemptId: string, focusTarget?: HTMLElement) => void;
 };
 
 function ContributionsSlot({
@@ -270,6 +277,8 @@ export function CalloutDetailDialogConnector({
   initialPostId,
   moveActions,
   elevated = false,
+  memoSigningRestore,
+  onMemoSigningRestoreConsumed,
 }: CalloutDetailDialogConnectorProps) {
   const { t, i18n } = useTranslation('crd-space');
   // Over the fullscreen board (z-[100]) the detail dialog sits at z-[110], and
@@ -282,6 +291,7 @@ export function CalloutDetailDialogConnector({
   const initialIsWhiteboard = contributionType === CalloutContributionType.Whiteboard;
   const initialIsDocument = open && contributionType === CalloutContributionType.CollaboraDocument;
 
+  const onMessageContributor = useMessageContributor();
   const [whiteboardContributionId, setWhiteboardContributionId] = useState<string | undefined>(
     initialIsWhiteboard ? initialContributionId : undefined
   );
@@ -307,6 +317,7 @@ export function CalloutDetailDialogConnector({
   // preview inside the dialog body (MUI parity).
   const [postEditOpen, setPostEditOpen] = useState(false);
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [refreshAfterSigningAttemptId, setRefreshAfterSigningAttemptId] = useState<string>();
   const [signedCopiesMemoId, setSignedCopiesMemoId] = useState<string>();
   const [framingCollaboraOpen, setFramingCollaboraOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -320,6 +331,19 @@ export function CalloutDetailDialogConnector({
   const [deleteContribution] = useDeleteContributionMutation();
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const consumedSigningRestore = useRef<string | undefined>(undefined);
+  const [restoringAttemptId, setRestoringAttemptId] = useState<string>();
+
+  const restoreContributionId =
+    memoSigningRestore?.kind === 'contribution' ? memoSigningRestore.contributionId : undefined;
+  const {
+    data: restoreContributionData,
+    loading: restoreContributionLoading,
+    error: restoreContributionError,
+  } = useCalloutContributionQuery({
+    variables: { contributionId: restoreContributionId ?? '', includeMemo: true },
+    skip: !open || !restoreContributionId || contributionType !== CalloutContributionType.Memo,
+  });
 
   // CrdMemoDialog writes the editor content to Apollo cache on close for instant preview updates.
   // Schedule a delayed server fetch as a safety net to reconcile with the canonical server markdown
@@ -337,6 +361,7 @@ export function CalloutDetailDialogConnector({
       }, 2500);
     }
     setFramingMemoOpen(false);
+    setRefreshAfterSigningAttemptId(undefined);
   };
 
   // Clear the pending refresh on unmount — otherwise an unmount during the
@@ -376,6 +401,72 @@ export function CalloutDetailDialogConnector({
     // grid card itself owns the navigation.
   }, [open, initialContributionId, initialMemoId, initialPostId, contributionType]);
 
+  useEffect(() => {
+    if (!open || !memoSigningRestore || consumedSigningRestore.current === memoSigningRestore.attemptId) return;
+
+    if (memoSigningRestore.calloutId !== callout.id) {
+      consumedSigningRestore.current = memoSigningRestore.attemptId;
+      onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+      return;
+    }
+
+    if (memoSigningRestore.kind === 'framing') {
+      consumedSigningRestore.current = memoSigningRestore.attemptId;
+      if (callout.framing.memo?.id !== memoSigningRestore.memoId) {
+        onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+        return;
+      }
+      setRestoringAttemptId(memoSigningRestore.attemptId);
+      setRefreshAfterSigningAttemptId(memoSigningRestore.refreshMemo ? memoSigningRestore.attemptId : undefined);
+      setFramingMemoOpen(true);
+      return;
+    }
+
+    if (
+      contributionType !== CalloutContributionType.Memo ||
+      initialContributionId !== memoSigningRestore.contributionId
+    ) {
+      consumedSigningRestore.current = memoSigningRestore.attemptId;
+      onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+      return;
+    }
+    if (restoreContributionLoading) return;
+
+    consumedSigningRestore.current = memoSigningRestore.attemptId;
+    const loadedContribution = restoreContributionData?.lookup.contribution;
+    if (
+      restoreContributionError ||
+      !loadedContribution ||
+      loadedContribution.id !== memoSigningRestore.contributionId ||
+      loadedContribution.memo?.id !== memoSigningRestore.memoId
+    ) {
+      onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
+      return;
+    }
+
+    setRestoringAttemptId(memoSigningRestore.attemptId);
+    setMemoContributionId(loadedContribution.id);
+    setMemoId(loadedContribution.memo.id);
+    setRefreshAfterSigningAttemptId(memoSigningRestore.refreshMemo ? memoSigningRestore.attemptId : undefined);
+  }, [
+    callout.id,
+    callout.framing.memo?.id,
+    contributionType,
+    initialContributionId,
+    memoSigningRestore,
+    onMemoSigningRestoreConsumed,
+    open,
+    restoreContributionData,
+    restoreContributionError,
+    restoreContributionLoading,
+  ]);
+
+  const handleRestoredEditorMounted = (focusTarget: HTMLElement) => {
+    if (!restoringAttemptId) return;
+    onMemoSigningRestoreConsumed?.(restoringAttemptId, focusTarget);
+    setRestoringAttemptId(undefined);
+  };
+
   // Reset per-contribution state whenever the dialog closes so reopening
   // starts from the fresh initial values rather than stale selections from
   // the previous session.
@@ -391,6 +482,7 @@ export function CalloutDetailDialogConnector({
     setDocumentEditorOpen(false);
     setPostEditOpen(false);
     setSignedCopiesMemoId(undefined);
+    setRefreshAfterSigningAttemptId(undefined);
   }, [
     open,
     initialContributionId,
@@ -404,6 +496,9 @@ export function CalloutDetailDialogConnector({
 
   const hasPoll = callout.framing.type === CalloutFramingType.Poll;
   const pollSlot = hasPoll ? <CalloutPollConnector callout={callout} /> : undefined;
+
+  const hasFormFraming = callout.framing.type === CalloutFramingType.Form && !!callout.framing.form;
+  const formFramingSlot = hasFormFraming ? <CalloutFramingFormConnector callout={callout} /> : undefined;
 
   const hasWhiteboardFraming = callout.framing.type === CalloutFramingType.Whiteboard && !!callout.framing.whiteboard;
   const whiteboardFramingSlot = hasWhiteboardFraming ? <WhiteboardFramingConnector callout={callout} /> : undefined;
@@ -456,7 +551,13 @@ export function CalloutDetailDialogConnector({
   // Spaces-collection body (feature 013) — the host space's subspaces as cards.
   // Rendered in the detail dialog just like the inline feed card (LazyCalloutItem).
   const hasSpaces = callout.framing.type === CalloutFramingType.Spaces;
-  const spacesFramingSlot = hasSpaces ? <SpaceCollectionConnector calloutId={callout.id} /> : undefined;
+  const spacesFramingSlot = hasSpaces ? (
+    <SpaceCollectionConnector
+      calloutId={callout.id}
+      cardVariant={cardVariantFromServer(callout.settings.framing.spaces?.cardVariant)}
+      selectionMode={callout.settings.framing.selection?.mode}
+    />
+  ) : undefined;
 
   // Omit the slot entirely when the callout has no reactions summary (the server
   // module may not be deployed), or when commenting is turned off for the callout —
@@ -743,11 +844,16 @@ export function CalloutDetailDialogConnector({
     memoContributionId && memoId ? (
       <MemoContributionConnector
         open={true}
+        calloutId={callout.id}
         contributionId={memoContributionId}
         memoId={memoId}
+        refreshAfterSigningAttemptId={refreshAfterSigningAttemptId}
+        editorMountKey={restoringAttemptId}
+        onEditorMounted={handleRestoredEditorMounted}
         onClose={() => {
           setMemoContributionId(undefined);
           setMemoId(undefined);
+          setRefreshAfterSigningAttemptId(undefined);
         }}
       />
     ) : null;
@@ -770,6 +876,17 @@ export function CalloutDetailDialogConnector({
         // Closing the edit dialog returns to the read-only preview — only
         // explicit close on the preview itself clears the selection.
         onClose={() => setPostEditOpen(false)}
+        // A saved task must hand the user back to the board. On a board
+        // (elevated) this dialog is a single-task layer over the columns, so
+        // stopping at the read-only preview would keep covering the very
+        // columns the user is trying to get back to. A non-board callout keeps
+        // its contributions grid behind the edit dialog, so the preview there
+        // is a useful landing spot and stays.
+        onUpdated={() => {
+          if (elevated) {
+            onOpenChange(false);
+          }
+        }}
         // Deleting the post must clear the inline preview too — otherwise the
         // grid refreshes without the post but the preview keeps rendering its
         // cached snapshot, making it look like the deletion failed.
@@ -795,6 +912,10 @@ export function CalloutDetailDialogConnector({
         open={true}
         memoId={framingMemoId}
         isContribution={false}
+        refreshAfterSigningAttemptId={refreshAfterSigningAttemptId}
+        signingOrigin={{ kind: 'framing', calloutId: callout.id }}
+        editorMountKey={restoringAttemptId}
+        onEditorMounted={handleRestoredEditorMounted}
         onClose={() => handleFramingMemoClose()}
       />
     ) : null;
@@ -855,6 +976,18 @@ export function CalloutDetailDialogConnector({
   const postCommentsRoomId = selectedPost?.comments?.id;
   const activeCommentsRoomId = isPostSelected ? postCommentsRoomId : callout.comments?.id;
   const activeRoomData = isPostSelected ? undefined : callout.comments;
+  // The callout-level thread renders `callout.comments` from whichever
+  // cache-first query loaded the callout, and the live room subscription only
+  // carries messages posted while it is open. Re-read just that room on every
+  // open so comments added since the callout was last loaded show up. The
+  // result lands in the same normalized Room, so the cached thread stays on
+  // screen until it arrives; `network-only` because this query's own data is
+  // never rendered, only its cache write matters.
+  useCalloutCommentsRevalidateQuery({
+    variables: { calloutId: callout.id },
+    skip: !open || isPostSelected || !callout.comments?.id,
+    fetchPolicy: 'network-only',
+  });
   // Pre-load count fallback for case 2c — when comments are disabled and the live thread isn't
   // mounted yet, this seeds the dialog's `showDiscussion` rule so the section stays hidden
   // until/unless we actually have messages.
@@ -868,6 +1001,7 @@ export function CalloutDetailDialogConnector({
           onOpenChange={onOpenChange}
           {...elevatedDialog}
           focusedPost={elevated && isPostSelected}
+          editing={postEditOpen}
           callout={{
             ...mapCalloutDetailsToDialogData(callout, t),
             commentCount: isPostSelected ? postMessagesCount : undefined,
@@ -875,6 +1009,7 @@ export function CalloutDetailDialogConnector({
           commentsSlot={<p className="text-body text-muted-foreground">{t('comments.empty')}</p>}
           commentsEnabled={activeCommentsEnabled}
           pollSlot={pollSlot}
+          formFramingSlot={formFramingSlot}
           whiteboardFramingSlot={whiteboardFramingSlot}
           memoFramingSlot={memoFramingSlot}
           mediaGalleryFramingSlot={mediaGalleryFramingSlot}
@@ -913,6 +1048,7 @@ export function CalloutDetailDialogConnector({
         calloutId={callout.id}
         contributionId={isPostSelected ? postContributionId : undefined}
         roomData={activeRoomData}
+        onMessageContributor={onMessageContributor}
         // In the focused-task dialog on a board (elevated, z-[110]) the comment
         // delete-confirmation would otherwise open behind it and block the UI —
         // lift it to the same nested tier as the dialog's other confirmations.
@@ -931,6 +1067,10 @@ export function CalloutDetailDialogConnector({
             onOpenChange={onOpenChange}
             {...elevatedDialog}
             focusedPost={elevated && isPostSelected}
+            // The post/task edit dialog opens over this one; its comment surface stays
+            // out of the way until the user saves or cancels. The comments connector
+            // above stays mounted throughout, so the count returns unchanged.
+            editing={postEditOpen}
             callout={{
               ...mapCalloutDetailsToDialogData(callout, t),
               // While the live thread is still loading, fall back to the post's `messagesCount`
@@ -947,6 +1087,7 @@ export function CalloutDetailDialogConnector({
             contributionsCount={callout.contributions.length}
             selectedContributionSlot={selectedContributionSlot}
             pollSlot={pollSlot}
+            formFramingSlot={formFramingSlot}
             whiteboardFramingSlot={whiteboardFramingSlot}
             memoFramingSlot={memoFramingSlot}
             mediaGalleryFramingSlot={mediaGalleryFramingSlot}

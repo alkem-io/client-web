@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { ConnectedAccountsView } from '../ConnectedAccountsView';
@@ -38,9 +38,9 @@ describe('UserSecurityTabView', () => {
           state={loadingState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
-          deleteAccountCard={null}
         />
       );
 
@@ -52,9 +52,9 @@ describe('UserSecurityTabView', () => {
           state={readyState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
-          deleteAccountCard={null}
         />
       );
 
@@ -92,9 +92,9 @@ describe('UserSecurityTabView', () => {
           state={errorState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
-          deleteAccountCard={null}
         />
       );
 
@@ -112,50 +112,6 @@ describe('UserSecurityTabView', () => {
     }
   );
 
-  it.each<[string, UserSecurityViewState]>([
-    ['loading', { kind: 'loading' }],
-    ['error', { kind: 'error' }],
-    ['ready', { kind: 'ready', hasPassword: true, hasWebauthn: false }],
-  ])(
-    "renders the Delete-account slot in the '%s' state (spec-cw-3, FR-001) — the app-store-mandated " +
-      'deletion entry point is self-contained and must never disappear because an unrelated Kratos ' +
-      'settings-flow load is slow or failed',
-    (_label, state) => {
-      render(
-        <UserSecurityTabView
-          state={state}
-          passwordForm={null}
-          webauthnForm={null}
-          mcpApiKeysCard={null}
-          connectedAccountsSection={null}
-          deleteAccountCard={<div data-testid="delete-account-card-probe">delete card</div>}
-        />
-      );
-
-      expect(screen.getByTestId('delete-account-card-probe')).toBeInTheDocument();
-    }
-  );
-
-  // The one deliberate exception to the rule above. `sessionExpired` is not a
-  // failure to load the Security tab — it means the identity-provider session
-  // is gone, so a deletion attempted from here could not satisfy the server's
-  // session-age gate anyway. Offering the entry point would be a dead end, so
-  // it is withheld on purpose rather than by oversight.
-  it('withholds the Delete-account slot in the lapsed-session state, where deletion could not succeed', () => {
-    render(
-      <UserSecurityTabView
-        state={{ kind: 'sessionExpired', reauthHref: '/logout' }}
-        passwordForm={null}
-        webauthnForm={null}
-        mcpApiKeysCard={null}
-        connectedAccountsSection={null}
-        deleteAccountCard={<div data-testid="delete-account-card-probe">delete card</div>}
-      />
-    );
-
-    expect(screen.queryByTestId('delete-account-card-probe')).not.toBeInTheDocument();
-  });
-
   it(
     'renders the lapsed-identity-provider-session state with a way out rather than the generic ' +
       "'try refreshing' card — refreshing provably cannot mint a new identity-provider session, " +
@@ -168,9 +124,9 @@ describe('UserSecurityTabView', () => {
           state={sessionExpiredState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={null}
-          deleteAccountCard={null}
         />
       );
 
@@ -187,4 +143,23 @@ describe('UserSecurityTabView', () => {
       expect(action).toHaveAttribute('href', '/logout');
     }
   );
+
+  it('scrolls to the two-step section when the reminder link lands before the section has loaded', async () => {
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView;
+    globalThis.history.replaceState(null, '', '/user/me/settings/security#two-step-verification');
+    const readyState: UserSecurityViewState = { kind: 'ready', hasPassword: true, hasWebauthn: false };
+    const props = { passwordForm: null, webauthnForm: null, mcpApiKeysCard: null, connectedAccountsSection: null };
+
+    const { rerender } = render(
+      <UserSecurityTabView state={readyState} twoStepVerificationSection={null} {...props} />
+    );
+    expect(scrollIntoView).not.toHaveBeenCalled();
+
+    rerender(<UserSecurityTabView state={readyState} twoStepVerificationSection={<p>two-step</p>} {...props} />);
+
+    await waitFor(() => expect(scrollIntoView).toHaveBeenCalledTimes(1));
+    expect(scrollIntoView.mock.contexts[0]).toHaveAttribute('id', 'two-step-verification');
+    globalThis.history.replaceState(null, '', '/');
+  });
 });

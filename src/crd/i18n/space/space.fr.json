@@ -1,9 +1,9 @@
 {
   "common": {
-    "Callout": "Appel",
-    "callout": "appel",
-    "Callouts": "Appels",
-    "callouts": "appels"
+    "Callout": "Publication",
+    "callout": "publication",
+    "Callouts": "Publications",
+    "callouts": "publications"
   },
   "banner": {
     "homeSpace": "Espace principal",
@@ -67,6 +67,8 @@
   },
   "sidebar": {
     "aboutSpace": "À propos de cet Espace",
+    "community": "Communauté",
+    "recentActivity": "Activité récente",
     "subspaces": "Sous-espaces",
     "showAll": "Tout afficher",
     "create": "Créer",
@@ -286,7 +288,7 @@
     "linkDeleteAriaLabel": "Supprimer le lien",
     "linkDelete": "Supprimer le lien",
     "linkDeleteConfirmTitle": "Supprimer ce lien ?",
-    "linkDeleteConfirmDescription": "Le lien sera définitivement supprimé de ce $t(common.callout). Cette action est irréversible.",
+    "linkDeleteConfirmDescription": "Le lien sera définitivement supprimé de cette publication. Cette action est irréversible.",
     "addPost": "Ajouter une publication",
     "createPost": "Créer une publication",
     "editPost": "Modifier la publication",
@@ -308,12 +310,14 @@
     "postUnsavedCloseDescription": "Vous avez des modifications non enregistrées. Si vous fermez maintenant, elles seront perdues.",
     "postUnsavedCloseConfirm": "Annuler les modifications",
     "postUnsavedCloseCancel": "Continuer la modification",
-    "uploadAfterCreateFailed": "Le $t(common.callout) a été créé mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition du $t(common.callout).",
+    "uploadAfterCreateFailed": "La publication a été créée mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition de la publication.",
     "pollOptionsSaveFailed": "Certaines modifications des options du sondage n'ont pas pu être enregistrées. Vous pouvez réessayer depuis cette boîte de dialogue.",
     "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
-    "updateFailed": "Les modifications du $t(common.callout) n'ont pas pu être enregistrées. Veuillez réessayer.",
+    "updateFailed": "Les modifications de la publication n'ont pas pu être enregistrées. Veuillez réessayer.",
     "contributors": "Contributeurs",
-    "subspaces": "Sous-espaces"
+    "subspaces": "Sous-espaces",
+    "spacesHidden": "Certains espaces de cet aperçu ne sont pas affichés car vous n’y avez pas accès.",
+    "form": "Formulaire"
   },
   "contribution": {
     "edit": "Modifier",
@@ -330,7 +334,6 @@
     "edit": "Modifier",
     "memo": "Mémo",
     "richTextEditor": "Éditeur de texte enrichi",
-    "comingSoon": "Bientôt disponible",
     "memoPlaceholder": "Rédigez votre mémo…",
     "memoOpenHint": "Le contenu du mémo se modifie dans sa propre fenêtre.",
     "openMemo": "Ouvrir le mémo",
@@ -375,6 +378,12 @@
       "title": "Aucun sous-espace trouvé",
       "description": "Aucun sous-espace ne correspond à votre recherche ou filtre actuel.",
       "clearFilters": "Effacer les filtres"
+    },
+    "expandedCard": {
+      "what": "Quoi",
+      "why": "Pourquoi",
+      "who": "Qui",
+      "open": "Ouvrir le sous-espace"
     }
   },
   "about": {
@@ -469,11 +478,11 @@
     "moveFailed": "Impossible de réorganiser. Veuillez réessayer."
   },
   "visibilityChange": {
-    "publishTitle": "Publier ce $t(common.callout) ?",
-    "publishDescription": "Le $t(common.callout) deviendra visible pour chaque membre de l'espace.",
+    "publishTitle": "Mettre en ligne cette publication ?",
+    "publishDescription": "La publication deviendra visible pour chaque membre de l'espace.",
     "publishConfirm": "Publier",
-    "unpublishTitle": "Remettre ce $t(common.callout) en brouillon ?",
-    "unpublishDescription": "Le $t(common.callout) ne sera plus visible pour les membres de l'espace.",
+    "unpublishTitle": "Remettre cette publication en brouillon ?",
+    "unpublishDescription": "La publication ne sera plus visible pour les membres de l'espace.",
     "unpublishConfirm": "Remettre en brouillon",
     "notifyMembers": "Avertir les membres de l'espace",
     "saveFailed": "Impossible de modifier la visibilité. Veuillez réessayer."
@@ -481,16 +490,16 @@
   "sortContributions": {
     "title": "Trier les contributions",
     "description": "Glissez pour réorganiser. Le nouvel ordre s'applique à l'enregistrement.",
-    "empty": "Ce $t(common.callout) n'a encore aucune contribution à trier.",
+    "empty": "Cette publication n'a encore aucune contribution à trier.",
     "confirm": "Enregistrer l'ordre",
     "dragHandle": "Glisser pour réorganiser",
     "saveFailed": "Impossible d'enregistrer le nouvel ordre. Veuillez réessayer."
   },
   "deleteCallout": {
-    "title": "Supprimer ce $t(common.callout) ?",
+    "title": "Supprimer cette publication ?",
     "description": "« {{title}} » sera définitivement supprimé. Cette action est irréversible.",
     "confirm": "Supprimer",
-    "confirmAll": "Supprimer l’$t(common.callout) et tout son contenu",
+    "confirmAll": "Supprimer la publication et tout son contenu",
     "headerContributions_one": "{{count}} contribution sera supprimée",
     "headerContributions_other": "{{count}} contributions seront supprimées",
     "headerRich": "{{content}} sera supprimé(e)",
@@ -507,14 +516,19 @@
       "whiteboard": "Le tableau blanc",
       "memo": "Le mémo",
       "mediaGallery": "La galerie multimédia",
-      "document": "Le document"
+      "document": "Le document",
+      "form": "Le formulaire"
     },
     "moreLinks_one": "et {{count}} autre lien",
     "moreLinks_other": "et {{count}} autres liens",
     "comments_one": "{{count}} commentaire sera supprimé",
     "comments_other": "{{count}} commentaires seront supprimés",
-    "success": "La $t(common.callout) « {{title}} » a été supprimée.",
-    "saveFailed": "Impossible de supprimer le $t(common.callout). Veuillez réessayer."
+    "success": "La publication « {{title}} » a été supprimée.",
+    "saveFailed": "Impossible de supprimer la publication. Veuillez réessayer.",
+    "headerRichForm_one": "Le formulaire et sa {{count}} réponse seront supprimés",
+    "headerRichForm_other": "Le formulaire et ses {{count}} réponses seront supprimés",
+    "headerRichFormContributions_one": "Le formulaire, ses réponses et {{count}} contribution seront supprimés",
+    "headerRichFormContributions_other": "Le formulaire, ses réponses et {{count}} contributions seront supprimés"
   },
   "deleteTask": {
     "title": "Supprimer cette tâche ?"
@@ -573,7 +587,8 @@
     "publishedLabel": "Publié",
     "draftLabel": "Brouillon",
     "notifyMembers": "Notifier les membres de l'espace",
-    "titleRequiredHint": "Ajoutez un titre à votre $t(common.callout) pour continuer",
+    "titleRequiredHint": "Ajoutez un titre à votre publication pour continuer",
+    "descriptionTooLongHint": "Raccourcissez la description pour continuer : elle dépasse la longueur autorisée",
     "saveDraft": "Enregistrer le brouillon",
     "save": "Enregistrer",
     "publish": "Publier",
@@ -591,7 +606,7 @@
     "addOption": "Ajouter une option",
     "removeOption": "Supprimer l'option",
     "allowComments": "Autoriser les commentaires",
-    "allowCommentsDescription": "Les membres peuvent publier des commentaires sur le cadrage du $t(common.callout).",
+    "allowCommentsDescription": "Les membres peuvent publier des commentaires sur le cadrage de la publication.",
     "titleCharacterCount": "{{current}}/{{max}}",
     "selection": {
       "label": "Sélection manuelle",
@@ -600,20 +615,46 @@
         "customDescription": "Affiche uniquement les contributeurs que vous sélectionnez."
       },
       "spaces": {
+        "fieldTitle": "Espaces affichés dans cette $t(common.callout)",
+        "switchLabel": "Choisir les espaces manuellement",
         "autoDescription": "Affiche automatiquement tous les sous-espaces et se met à jour lorsqu’ils sont ajoutés ou supprimés.",
-        "customDescription": "Affiche uniquement les sous-espaces que vous sélectionnez ci-dessous."
+        "customDescription": "Affiche uniquement les espaces que vous sélectionnez ci-dessous."
+      },
+      "spacePicker": {
+        "searchPlaceholder": "Rechercher des espaces dans ce compte…",
+        "searchAriaLabel": "Rechercher des espaces dans ce compte",
+        "noMatches": "Aucun espace de ce compte ne correspond à votre recherche.",
+        "accountEmpty": "Ce compte n’a aucun autre espace.",
+        "loadFailed": "La liste des espaces n’a pas pu être chargée.",
+        "chipsEmpty": "Aucun espace sélectionné pour l’instant. Recherchez ci-dessous pour en ajouter.",
+        "chipContext": "dans {{parentName}}",
+        "badgeInThisSpace": "Dans cet espace",
+        "badgeCalloutIsHere": "La $t(common.callout) est ici",
+        "noneSelected": "Aucun espace sélectionné",
+        "selectedCount_one": "{{count}} espace sélectionné",
+        "selectedCount_other": "{{count}} espaces sélectionnés",
+        "clearSelection": "Effacer la sélection",
+        "levelSpace": "Espace",
+        "levelSubspace": "Sous-espace",
+        "levelSubsubspace": "Sous-sous-espace",
+        "pathSubLine": "{{level}} dans {{path}}",
+        "removeInParentAriaLabel": "Supprimer {{name}}, dans {{parentName}}"
       },
       "noLongerAvailable": "Plus disponible",
       "searchPlaceholder": "Rechercher des membres…",
       "searchAriaLabel": "Rechercher des membres",
-      "searchSubspacePlaceholder": "Rechercher des sous-espaces…",
-      "searchSubspaceAriaLabel": "Rechercher des sous-espaces",
       "noResults": "Aucun résultat correspondant",
       "loading": "Chargement…",
       "loadMore": "Chargement de plus…",
       "removeAriaLabel": "Supprimer {{name}}",
       "clearSearch": "Effacer la recherche"
-    }
+    },
+    "cardVariant": {
+      "label": "Carte étendue",
+      "description": "Affiche la carte complète avec le Quoi, Pourquoi et Qui du sous-espace - plus de contexte, plus de hauteur."
+    },
+    "moreFramingTypes": "Plus",
+    "moreFramingTypesHeading": "Plus à ajouter"
   },
   "contributionSettings": {
     "heading": "Réponses",
@@ -633,7 +674,7 @@
     "setDefaults": "Définir les valeurs par défaut",
     "prePopulate": {
       "heading": "Pré-remplir la collection",
-      "description": "Ajoutez des liens qui apparaîtront dès que ce $t(common.callout) sera créé.",
+      "description": "Ajoutez des liens qui apparaîtront dès que cette publication sera créée.",
       "empty": "Pas encore de liens pré-remplis.",
       "titleLabel": "Titre",
       "titlePlaceholder": "Titre du lien",
@@ -644,10 +685,12 @@
       "addRow": "Ajouter un autre lien",
       "removeRow": "Supprimer le lien",
       "attachFile": "Joindre un fichier"
-    }
+    },
+    "moreTypes": "Plus",
+    "moreTypesHeading": "Plus de façons de répondre"
   },
   "responseDefaults": {
-    "srDescription": "Configurez les valeurs par défaut des nouvelles contributions de ce $t(common.callout).",
+    "srDescription": "Configurez les valeurs par défaut des nouvelles contributions de cette publication.",
     "title": {
       "post": "Valeurs par défaut des publications",
       "memo": "Valeurs par défaut des mémos",
@@ -713,7 +756,9 @@
         "unauthenticated": "Connectez-vous pour modifier ce mémo.",
         "contentUpdatePolicy": "Vous n'avez pas la permission de modifier ce mémo. Demandez au propriétaire, <ownerlink>{{ownerName}}</ownerlink>, de modifier les paramètres de partage.",
         "contentUpdatePolicyNoOwner": "Vous n'avez pas la permission de modifier ce mémo. Le propriétaire n'est plus disponible — demandez à un administrateur de l'espace de modifier les paramètres de partage.",
-        "noMembership": "Seuls les membres de cet espace peuvent modifier ce mémo. Rejoignez l'espace pour contribuer."
+        "noMembership": "Seuls les membres de cet espace peuvent modifier ce mémo. Rejoignez l'espace pour contribuer.",
+        "multiUserNotAllowed": "Vous ne pouvez pas modifier ce mémo car dans cet espace, une seule personne à la fois peut le modifier.",
+        "roomCapacityReached": "Vous ne pouvez pas modifier ce mémo car le nombre maximal de personnes pouvant le modifier en même temps est atteint."
       }
     },
     "errors": {
@@ -735,30 +780,50 @@
     },
     "signing": {
       "title": "Signer le mémo",
-      "description": "Vérifiez la copie PDF exacte avant de démarrer la session de signature. Chaque PDF signé est une copie distincte ; le mémo reste modifiable.",
+      "description": "Vérifiez le PDF qui sera utilisé pour cette tentative de signature.",
       "previewTitle": "Aperçu de signature du mémo",
-      "openPreview": "Ouvrir l’aperçu PDF",
+      "openPreview": "Ouvrir dans un nouvel onglet",
       "continue": "Continuer vers Cleverbase",
       "continuing": "Redirection vers Cleverbase",
       "signedCopies": "Copies signées",
       "signedCopiesCount": "Copies signées ({{count}})",
       "unknownSigner": "Signataire inconnu",
-      "savedTitle": "Copie signée enregistrée",
-      "snapshotExplanation": "Cette copie signée est un instantané figé. Les modifications ultérieures du mémo ne la changent pas.",
-      "historyDescription": "Chaque PDF signé est une copie distincte ; le mémo reste modifiable. Les modifications ultérieures ne changent pas une copie signée existante.",
+      "savedTitle": "C’est signé",
+      "snapshotExplanation": "Votre document signé est prêt.",
+      "resultTitle": "Résultat de la signature",
+      "whatHappensNext": "Ce qui va se passer",
+      "steps": {
+        "provider": {
+          "title": "Cleverbase s’ouvre",
+          "description": "Cet onglet ouvre le service utilisé pour la session de signature."
+        },
+        "identity": {
+          "title": "Vous confirmez votre identité",
+          "description": "Cleverbase vous demande d’utiliser votre méthode d’identité liée."
+        },
+        "return": {
+          "title": "Vous revenez dans Alkemio",
+          "description": "Après la session, Alkemio affiche le résultat de votre tentative de signature."
+        }
+      },
+      "editableTitle": "Le mémo reste modifiable",
+      "editableDescription": "La signature crée une copie PDF distincte et ne change pas les droits de modification du mémo.",
+      "cleverbaseRequired": "Liez Cleverbase avant de signer.",
+      "connectCleverbase": "Comment lier Cleverbase",
+      "historyDescription": "Chaque ligne est une copie PDF signée. Le mémo reste modifiable.",
+      "historyCount": "Copies signées : {{count}}",
       "historyLoading": "Chargement des copies signées",
       "historyError": "Les copies signées n’ont pas pu être chargées",
       "historyEmpty": "Aucune copie signée n’a encore été enregistrée",
-      "recorded": "Enregistré",
-      "openPdf": "Ouvrir le PDF",
+      "recorded": "Signé",
+      "openSignedPdf": "Ouvrir le PDF signé",
       "download": "Télécharger",
       "downloadFailed": "Le PDF signé n’a pas pu être téléchargé",
-      "backToMemo": "Retour au mémo",
-      "standardTools": "Les PDF téléchargés peuvent être vérifiés indépendamment avec des outils PDF standard.",
+      "standardTools": "Les PDF téléchargés peuvent être contrôlés avec des outils compatibles avec les signatures PDF.",
       "verify": "Vérifier la signature",
       "verification": {
         "checking": "Vérification de la signature",
-        "verified": "Le PDF n’a pas été modifié",
+        "verified": "Signature cryptographique vérifiée",
         "invalid": "Signature non valide",
         "unavailable": "Vérification impossible"
       },
@@ -768,7 +833,7 @@
         "preview": "Vérifiez le PDF exact avant de continuer",
         "continuing": "Ouverture de la session de signature",
         "checking": "Vérification du résultat de la signature",
-        "pending": "La signature est toujours en cours. Rechargez cette page pour vérifier à nouveau.",
+        "pending": "La signature est toujours en cours. Fermez ce résultat, puis ouvrez plus tard les copies signées du mémo concerné pour vérifier si une copie a été finalisée.",
         "signed": "Le PDF a été signé avec succès",
         "cancelled": "La signature a été annulée",
         "failed": "Le PDF n’a pas pu être signé",
@@ -777,6 +842,13 @@
         "continue-error": "La session de signature n’a pas pu démarrer. Préparez une nouvelle copie et réessayez.",
         "return-error": "Le résultat de la signature n’a pas pu être chargé"
       }
+    },
+    "downloadPdf": {
+      "button": "Télécharger le PDF",
+      "tooltip": "Télécharger en PDF",
+      "busy": "Le service PDF est occupé, veuillez réessayer dans un instant.",
+      "tooLarge": "Ce mémo est trop volumineux ou contient du contenu qui ne peut pas être exporté en PDF.",
+      "failed": "Le téléchargement du PDF a échoué."
     }
   },
   "callToAction": {
@@ -869,8 +941,10 @@
     "previous": "Image précédente",
     "next": "Image suivante",
     "goToImage": "Aller à l'image {{index}}",
+    "goToVideo": "Aller à la vidéo {{index}}",
     "thumbnailsLabel": "Miniatures d'images",
     "download": "Télécharger l'image",
+    "downloadVideo": "Télécharger la vidéo",
     "fullscreen": "Passer en plein écran",
     "exitFullscreen": "Quitter le plein écran",
     "emptyState": {
@@ -890,9 +964,8 @@
     }
   },
   "postSnippet": {
-    "readMore": "… Lire la suite",
-    "readLess": "Réduire",
-    "seeFullDescription": "Voir la description complète"
+    "readMore": "Lire la suite",
+    "showLess": "Afficher moins"
   },
   "postPreview": {
     "createdBy": "Créé par",
@@ -944,7 +1017,22 @@
     "empty": "Pas encore de commentaires",
     "unknownUser": "Utilisateur inconnu",
     "signInToComment": "Connectez-vous pour commenter, répondre ou réagir.",
-    "cantComment": "Vous n'avez pas la permission de commenter, répondre ou réagir ici."
+    "cantComment": "Vous n'avez pas la permission de commenter, répondre ou réagir ici.",
+    "attachments": {
+      "attach": "Joindre des fichiers",
+      "addImage": "Ajouter une image",
+      "dropHint": "Déposez les fichiers pour les joindre",
+      "stagedListLabel": "Fichiers à envoyer",
+      "removeAttachment": "Retirer {{name}}",
+      "uploading": "Téléversement…",
+      "uploadFailed": "Échec du téléversement. Envoyez à nouveau pour réessayer, ou supprimez le fichier.",
+      "failed": "Échec du téléversement",
+      "sendUnconfirmed": "L’envoi n’a pas été confirmé. Vérifiez la conversation avant d’envoyer à nouveau.",
+      "errorTooMany_one": "Vous ne pouvez joindre qu’un seul fichier.",
+      "errorTooMany_other": "Vous pouvez joindre jusqu’à {{count}} fichiers.",
+      "errorTooLarge": "{{name}} dépasse {{max}} Mo.",
+      "errorUnsupportedType": "{{name}} a un type de fichier non pris en charge."
+    }
   },
   "dialogs": {
     "cancel": "Annuler",
@@ -958,7 +1046,7 @@
     },
     "deleteFraming": {
       "title": "Supprimer le contenu de cadrage ?",
-      "description": "Le contenu de cadrage de ce $t(common.callout) va être supprimé. Cette action est irréversible.",
+      "description": "Le contenu de cadrage de cette publication va être supprimé. Cette action est irréversible.",
       "confirm": "Supprimer",
       "cancel": "Conserver"
     },
@@ -1074,6 +1162,17 @@
     "viewMap": "Carte",
     "expandMap": "Agrandir la carte",
     "closeMap": "Fermer la carte",
+    "card": {
+      "taglineFallback": "Cet utilisateur n'a pas renseigné son sous-titre.",
+      "associates_one": "{{count}} associé dans cette organisation",
+      "associates_other": "{{count}} associés dans cette organisation",
+      "actions": "Actions pour {{name}}",
+      "viewProfile": "Voir le profil",
+      "message": "Message",
+      "website": "Visiter le site web de {{name}} (ouvre un nouvel onglet)",
+      "opensInNewTab": "ouvre un nouvel onglet",
+      "joined": "A rejoint cet espace en {{date}}"
+    },
     "types": {
       "user": "Personnes",
       "organization": "Organisations",
@@ -1103,6 +1202,12 @@
       "mapAriaLabel": "Aperçu de la carte des contributeurs — faites glisser et zoomez pour définir la vue fixe",
       "captureHint": "Faites glisser et zoomez la carte, puis cliquez sur « Utiliser la vue actuelle » pour fixer la position de départ.",
       "controlAriaLabel": "Paramètres de vue carte"
+    },
+    "preview": {
+      "virtualContributor": "Contributeur virtuel",
+      "viewOwnProfile": "Voir votre profil",
+      "close": "Fermer",
+      "description": "Aperçu du profil"
     }
   },
   "spaceCollection": {
@@ -1121,5 +1226,181 @@
   },
   "parentStack": {
     "goTo": "Aller à {{name}}"
+  },
+  "formForm": {
+    "validation": {
+      "questionsMin": "Au moins {{count}} question est requise",
+      "questionsMax": "Au maximum {{count}} questions sont autorisées",
+      "promptRequired": "Le texte de la question est obligatoire",
+      "promptMax": "Le texte de la question est trop long",
+      "explanationMax": "L'explication est trop longue",
+      "optionsMin": "Au moins {{count}} options sont requises",
+      "optionsMax": "Au maximum {{count}} options sont autorisées",
+      "optionRequired": "Le texte de l'option est obligatoire",
+      "optionMax": "Le texte de l'option est trop long",
+      "optionsDuplicate": "Les options doivent être différentes les unes des autres"
+    },
+    "questionsHeading": "Formulaire",
+    "questionsDescription": "Posez des questions et recueillez les réponses",
+    "questionNumber": "Question {{number}}",
+    "promptPlaceholder": "Que souhaitez-vous demander ?",
+    "explanationLabel": "Explication (facultatif)",
+    "explanationPlaceholder": "Aidez les gens à comprendre la question",
+    "typeLabel": "Type de réponse",
+    "type": {
+      "SHORT_TEXT": "Texte court",
+      "LONG_TEXT": "Texte long",
+      "SINGLE_CHOICE": "Choix unique",
+      "MULTIPLE_CHOICE": "Choix multiple"
+    },
+    "required": "Obligatoire",
+    "dragQuestion": "Déplacer la question {{number}}",
+    "addQuestion": "Ajouter une question",
+    "removeQuestion": "Supprimer la question",
+    "removeQuestionConfirm": {
+      "title": "Supprimer cette question ?",
+      "description": "La question sera supprimée du formulaire.",
+      "descriptionWithText": "« {{text}} » sera supprimée du formulaire."
+    },
+    "optionsHeading": "Options",
+    "optionLabel": "Option {{number}}",
+    "addOption": "Ajouter une option",
+    "removeOption": "Supprimer l'option",
+    "dragOption": "Déplacer l'option {{number}}",
+    "removeOptionConfirm": {
+      "title": "Supprimer cette option ?",
+      "description": "L’option sera supprimée de la question.",
+      "descriptionWithText": "« {{text}} » sera supprimée de la question."
+    },
+    "settingsButton": "Paramètres du formulaire",
+    "settings": {
+      "title": "Paramètres du formulaire",
+      "visibilityHeading": "Qui peut voir les réponses",
+      "visibility": {
+        "ADMINS": "Administrateurs uniquement",
+        "MEMBERS": "Membres de l'espace"
+      },
+      "visibilityHelp": {
+        "ADMINS": "Seuls les administrateurs de cet espace peuvent lire toutes les réponses. Tous les autres ne voient que les leurs.",
+        "MEMBERS": "Les membres de cet espace peuvent lire toutes les réponses."
+      },
+      "responseModeHeading": "Réponses par personne",
+      "responseMode": {
+        "SINGLE": "Une réponse par personne",
+        "MULTIPLE": "Plusieurs réponses par personne"
+      },
+      "stateOpen": "Ouvert aux réponses",
+      "stateHelp": "Les formulaires fermés n’acceptent plus de nouvelles réponses.",
+      "defaultCollapsed": "Afficher le formulaire replié par défaut",
+      "defaultCollapsedHelp": "Les lecteurs peuvent toujours le déplier",
+      "widenConfirm": {
+        "title": "Afficher les réponses aux membres ?",
+        "description_one": "Les membres de {{space}} pourront lire la {{count}} réponse existante, même si elle a été envoyée lorsque seuls les administrateurs pouvaient la voir.",
+        "description_other": "Les membres de {{space}} pourront lire les {{count}} réponses existantes, y compris celles envoyées lorsque seuls les administrateurs pouvaient les voir.",
+        "descriptionNoCount": "Les membres de {{space}} pourront lire toutes les réponses existantes, y compris celles envoyées lorsque seuls les administrateurs pouvaient les voir.",
+        "confirm": "Afficher les réponses aux membres"
+      }
+    },
+    "errors": {
+      "saveFailed": "Le formulaire n'a pas pu être enregistré. Veuillez réessayer.",
+      "FORM_UNKNOWN_QUESTION_ID": "Le formulaire a changé entre-temps. Rechargez et réessayez.",
+      "FORM_UNKNOWN_OPTION_ID": "Le formulaire a changé entre-temps. Rechargez et réessayez.",
+      "FORM_QUESTIONS_COUNT": "Un formulaire nécessite entre 1 et 50 questions.",
+      "FORM_OPTIONS_COUNT": "Une question à choix nécessite entre 2 et 20 options.",
+      "FORM_OPTIONS_DUPLICATE": "Les options doivent être différentes les unes des autres."
+    },
+    "title": "Titre du formulaire (facultatif)",
+    "titlePlaceholder": "Donnez un titre au formulaire",
+    "description": "Description (facultatif)",
+    "descriptionPlaceholder": "Expliquez de quoi parle ce formulaire",
+    "titleTooLong": "Le titre du formulaire peut comporter au maximum {{count}} caractères",
+    "descriptionTooLong": "La description du formulaire peut comporter au maximum {{count}} caractères",
+    "typeChangeHint": "Les réponses existantes conservent leur format d’origine"
+  },
+  "formFillIn": {
+    "requiredMarker": "obligatoire",
+    "noticeAdmins": "Seuls les administrateurs de {{space}} peuvent voir votre réponse",
+    "noticeMembers": "Les membres de {{space}} peuvent voir votre réponse",
+    "submit": "Envoyer le formulaire",
+    "answerPlaceholder": "Saisissez votre réponse...",
+    "resetConfirm": {
+      "title": "Réinitialiser vos réponses ?",
+      "description": "Tout ce que vous avez saisi dans ce formulaire sera effacé.",
+      "confirm": "Réinitialiser"
+    },
+    "submitting": "Envoi…",
+    "closedBadge": "Fermé",
+    "draftBadge": "Non publié",
+    "closedNotice": "Ce formulaire est fermé et n'accepte plus de réponses.",
+    "draftNotice": "Vous pourrez répondre une fois cette publication publiée.",
+    "cannotRespond": "Vous n'avez pas l'autorisation de répondre à ce formulaire.",
+    "requiredError": "Cette question est obligatoire",
+    "noAnswer": "Pas de réponse",
+    "success": "Votre réponse a été envoyée.",
+    "withdrawn": "Votre réponse a été retirée.",
+    "withdrawFailed": "Votre réponse n'a pas pu être retirée. Veuillez réessayer.",
+    "visibilityChanged": "Les personnes pouvant voir les réponses ont changé — vérifiez et envoyez à nouveau.",
+    "errors": {
+      "generic": "Votre réponse n'a pas pu être envoyée. Veuillez réessayer.",
+      "FORM_RESPONSE_ALREADY_EXISTS": "Vous avez déjà répondu à ce formulaire.",
+      "FORM_CLOSED": "Ce formulaire est fermé et n'accepte plus de réponses.",
+      "CALLOUT_NOT_PUBLISHED": "Ce formulaire n'est pas encore publié.",
+      "FORM_ANSWER_REQUIRED": "Veuillez répondre à toutes les questions obligatoires.",
+      "FORM_ANSWER_TOO_LONG": "Une de vos réponses est trop longue.",
+      "FORM_ANSWER_UNKNOWN_QUESTION": "Le formulaire a changé pendant que vous répondiez. Vérifiez et envoyez à nouveau.",
+      "FORM_ANSWER_DUPLICATE_QUESTION": "Le formulaire a changé pendant que vous répondiez. Vérifiez et envoyez à nouveau.",
+      "FORM_ANSWER_TYPE_MISMATCH": "Le formulaire a changé pendant que vous répondiez. Vérifiez et envoyez à nouveau.",
+      "FORM_ANSWER_INVALID_OPTION": "Une des options choisies n'existe plus. Vérifiez et envoyez à nouveau.",
+      "FORM_ANSWER_SELECTION_COUNT": "Veuillez choisir un nombre valide d'options."
+    },
+    "ownResponses": {
+      "heading": "Vos réponses",
+      "loadEarlier": "Afficher les réponses précédentes",
+      "responseNumber": "Réponse {{number}}",
+      "submittedOn": "Envoyée le {{date}}",
+      "withdraw": "Retirer",
+      "withdrawConfirm": {
+        "title": "Retirer cette réponse ?",
+        "description": "Votre réponse sera supprimée. Cette action est irréversible.",
+        "confirm": "Retirer"
+      }
+    },
+    "untitled": "Formulaire",
+    "questionCount_one": "{{count}} question",
+    "questionCount_other": "{{count}} questions",
+    "expand": "Déplier le formulaire",
+    "collapse": "Replier le formulaire",
+    "cancel": "Annuler"
+  },
+  "formResponses": {
+    "viewAction": "Voir les réponses ({{count}})",
+    "dialogTitle": "Réponses au formulaire",
+    "respondent": "Répondant",
+    "submitted": "Envoyée",
+    "actions": "Actions",
+    "noAnswer": "Pas de réponse",
+    "deletedUser": "Utilisateur supprimé",
+    "removedQuestion": "question supprimée",
+    "loadMore": "Charger plus",
+    "loadingMore": "Chargement…",
+    "empty": "Aucune réponse pour le moment.",
+    "showing": "{{shown}} sur {{total}} affichées",
+    "open": "Ouvrir la réponse",
+    "delete": "Supprimer la réponse",
+    "deleteConfirm": {
+      "title": "Supprimer cette réponse ?",
+      "description": "La réponse sera définitivement supprimée.",
+      "confirm": "Supprimer"
+    },
+    "singleTitle": "Réponse de {{name}}",
+    "deleteFailed": "La réponse n'a pas pu être supprimée. Veuillez réessayer.",
+    "loadFailed": "Les réponses n'ont pas pu être chargées.",
+    "exportCsv": "Exporter en CSV",
+    "exporting": "Exportation…",
+    "exportFailed": "Les réponses n’ont pas pu être exportées. Veuillez réessayer.",
+    "csv": {
+      "submitter": "Envoyé par",
+      "submittedDate": "Envoyé le"
+    }
   }
 }

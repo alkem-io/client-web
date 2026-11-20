@@ -8,9 +8,8 @@ type InlineWhiteboardPreviewBaseProps = {
   /** Alt text used when the preview image is shown. */
   imageAlt?: string;
   /**
-   * Rendered thumbnail of the saved whiteboard content. Set after the user has
-   * edited the whiteboard in `CrdSingleUserWhiteboardDialog` — the dialog hands
-   * back preview blobs that the connector converts to an object URL.
+   * Rendered thumbnail of the saved whiteboard content — in create mode the
+   * draft's stored preview, which the editor uploads when it closes.
    */
   previewImageUrl?: string;
   disabled?: boolean;

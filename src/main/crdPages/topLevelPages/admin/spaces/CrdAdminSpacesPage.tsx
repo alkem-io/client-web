@@ -3,17 +3,23 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminSpacesListQuery,
+  useAdminUpdateSpaceNameIdMutation,
+  useAdminUpdateSpacePromoteMutation,
+  useAdminUpdateSpaceVisibilityMutation,
   useDeleteSpaceMutation,
   usePlatformAdminSpacesListQuery,
-  useUpdateSpacePlatformSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AdminSearchableTable, type AdminTableColumn } from '@/crd/components/admin/AdminSearchableTable';
 import { AccountOwnerCell } from '@/crd/components/admin/columns/AccountOwnerCell';
+import { PromoteCheckboxCell } from '@/crd/components/admin/columns/PromoteCheckboxCell';
 import { VisibilityChipCell, type VisibilityChipTone } from '@/crd/components/admin/columns/VisibilityChipCell';
 import { SpaceSettingsDialog } from '@/crd/components/admin/spaces/SpaceSettingsDialog';
 import { Button } from '@/crd/primitives/button';
+import useCanManageLicensePlans from '@/domain/platformAdmin/domain/licensing/useCanManageLicensePlans';
+import { usePendingRows } from '../_shared/usePendingRows';
 import { useAdminListSearch } from '../useAdminListSearch';
 import { SpaceLicensePlansDialog } from './SpaceLicensePlansDialog';
 import { type AdminSpaceRow, mapSpaceToRow } from './spaceListMapper';
@@ -29,6 +35,9 @@ const CrdAdminSpacesPage = () => {
   const { t } = useTranslation('crd-admin');
   const { t: tApp } = useTranslation();
   const notify = useNotification();
+  const guard = usePermissionDeniedNotifier();
+  const promoteRows = usePendingRows();
+  const canManageLicensePlans = useCanManageLicensePlans();
   // `errorPolicy: 'all'` so one space with a corrupt server-side authorization
   // policy on its nested `about.provider` (AUTHORIZATION_INVALID_POLICY) doesn't
   // blank the whole list. GraphQL nulls just that field and returns partial
@@ -42,10 +51,23 @@ const CrdAdminSpacesPage = () => {
     onCompleted: () => notify(tApp('pages.admin.space.notifications.space-removed'), 'success'),
   });
 
-  const [updateSpaceSettings, { loading: savingSettings }] = useUpdateSpacePlatformSettingsMutation({
+  // 027-platform-role-redesign (T013, FR-020): the single
+  // `updateSpacePlatformSettings` mutation is gone — visibility and alias are
+  // owned by different roles, so they are two calls now. Visibility is Platform
+  // License Manager's (spec row 8); the alias is a protected `nameID` update
+  // requiring `UPDATE_NAMEID`, which no global platform role holds (A17).
+  const [updateSpaceVisibility, { loading: savingVisibility }] = useAdminUpdateSpaceVisibilityMutation({
     refetchQueries: [refetchPlatformAdminSpacesListQuery()],
     awaitRefetchQueries: true,
   });
+  const [updateSpaceNameId, { loading: savingNameId }] = useAdminUpdateSpaceNameIdMutation({
+    refetchQueries: [refetchPlatformAdminSpacesListQuery()],
+    awaitRefetchQueries: true,
+  });
+  const savingSettings = savingVisibility || savingNameId;
+  // No refetch: the mutation selects `{ id promote }`, so Apollo updates the
+  // cached row in place and the checkbox re-renders from it.
+  const [updatePromote] = useAdminUpdateSpacePromoteMutation();
 
   const rows = (data?.platformAdmin.spaces ?? []).map(mapSpaceToRow);
   const { searchTerm, onSearchTermChange, filteredRows } = useAdminListSearch(rows);
@@ -67,13 +89,37 @@ const CrdAdminSpacesPage = () => {
 
   const saveSettings = () => {
     if (!settingsSpace) return;
-    void updateSpaceSettings({
-      variables: {
-        spaceId: settingsSpace.id,
-        nameId: draftNameId.trim(),
-        visibility: draftVisibility as SpaceVisibility,
-      },
-    }).then(() => setSettingsSpaceId(null));
+    const nextNameId = draftNameId.trim();
+    // Send the alias update ONLY when it actually changed. It requires a
+    // privilege the visibility change does not (A17's `UPDATE_NAMEID`), so an
+    // unconditional call would fail the whole save for a platform operator who
+    // is not also an admin of this space — and renaming repoints every inbound
+    // link, which is precisely why FR-020 made it a protected field.
+    const nameIdChanged = nextNameId !== settingsSpace.nameId;
+    const visibilityChanged = draftVisibility !== settingsSpace.visibility;
+
+    // Each call goes through `guard` so a permission-denied rejection gets its
+    // toast; the dialog closes only when every sent mutation succeeded.
+    void (async () => {
+      if (visibilityChanged) {
+        await guard(() =>
+          updateSpaceVisibility({
+            variables: {
+              spaceId: settingsSpace.id,
+              visibility: draftVisibility as SpaceVisibility,
+            },
+          })
+        );
+      }
+      if (nameIdChanged) {
+        await guard(() =>
+          updateSpaceNameId({
+            variables: { spaceId: settingsSpace.id, nameId: nextNameId },
+          })
+        );
+      }
+      setSettingsSpaceId(null);
+    })().catch(() => {});
   };
 
   const visibilityLabels: Record<SpaceVisibility, string> = {
@@ -99,6 +145,26 @@ const CrdAdminSpacesPage = () => {
     },
     { header: t('columns.ownerHeader'), render: row => <AccountOwnerCell owner={row.accountOwner} /> },
   ];
+  // The server returns `promote` only to viewers who may manage it, so the
+  // column follows the data rather than a client-side copy of the role rule.
+  if (rows.some(row => row.promote != null)) {
+    columns.push({
+      header: t('columns.promoteHeader'),
+      render: row =>
+        row.promote == null ? null : (
+          <PromoteCheckboxCell
+            checked={row.promote}
+            name={row.name}
+            saving={promoteRows.isPending(row.id)}
+            onCheckedChange={next => {
+              void promoteRows
+                .run(row.id, () => guard(() => updatePromote({ variables: { spaceId: row.id, promote: next } })))
+                .catch(() => {});
+            }}
+          />
+        ),
+    });
+  }
 
   return (
     <>
@@ -112,31 +178,34 @@ const CrdAdminSpacesPage = () => {
         pageSize={10}
         rowActions={row => (
           <>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t('spaces.editSettings')}
-              disabled={!row.canUpdate}
-              onClick={() => openSettings(row)}
-            >
-              <Settings2 aria-hidden="true" className="size-4" />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t('licensePlans.manage')}
-              onClick={() => setLicenseSpaceId(row.id)}
-            >
-              <SlidersHorizontal aria-hidden="true" className="size-4" />
-            </Button>
+            {row.canEditPlatformSettings && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={t('spaces.editSettings')}
+                onClick={() => openSettings(row)}
+              >
+                <Settings2 aria-hidden="true" className="size-4" />
+              </Button>
+            )}
+            {canManageLicensePlans && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={t('licensePlans.manage')}
+                onClick={() => setLicenseSpaceId(row.id)}
+              >
+                <SlidersHorizontal aria-hidden="true" className="size-4" />
+              </Button>
+            )}
           </>
         )}
         onDelete={row => {
           void deleteSpace({ variables: { spaceId: row.id } });
         }}
-        canDelete={row => row.canUpdate}
+        canDelete={row => row.canDelete}
       />
 
       <SpaceSettingsDialog
@@ -151,7 +220,7 @@ const CrdAdminSpacesPage = () => {
         onVisibilityChange={setDraftVisibility}
         onSave={saveSettings}
         saving={savingSettings}
-        canUpdate={settingsSpace?.canUpdate ?? false}
+        canUpdate={settingsSpace?.canEditPlatformSettings ?? false}
       />
 
       <SpaceLicensePlansDialog

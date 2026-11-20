@@ -1,15 +1,13 @@
 import { useApolloClient } from '@apollo/client';
 import type { Editor } from '@tiptap/react';
-import { FileSignature } from 'lucide-react';
+import { Download, FileSignature, Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useContinueMemoSigningMutation,
-  useMemoSigningAttemptQuery,
   usePrepareMemoSigningMutation,
   useUpdateMemoDisplayNameMutation,
   useUserSecurityAuthenticationMethodsQuery,
-  useVerifyMemoSignatureLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthenticationType,
@@ -28,27 +26,27 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { MemoCollabFooter } from '@/crd/components/memo/MemoCollabFooter';
 import { MemoDisplayName } from '@/crd/components/memo/MemoDisplayName';
 import { MemoEditorShell } from '@/crd/components/memo/MemoEditorShell';
-import type { MemoSignatureDocument, MemoSignatureView } from '@/crd/components/memo/MemoSigningDialog';
 import { MemoSigningDialog } from '@/crd/components/memo/MemoSigningDialog';
 import { CollaborativeMarkdownEditor } from '@/crd/forms/markdown/CollaborativeMarkdownEditor';
 import type { CollabProviderLike, YDocLike } from '@/crd/forms/markdown/collabProviderTypes';
 import { htmlToMarkdown } from '@/crd/forms/markdown/markdownConverter';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
-import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
-import { formatAbsoluteDateTime } from '@/crd/lib/dateTimeFormat';
 import { Button } from '@/crd/primitives/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { withCloseFinalizing } from '@/main/crdPages/closeFinalizing';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
-import { downloadMemoSignaturePdf } from '@/main/crdPages/memo/downloadMemoSignaturePdf';
 import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import { mapMemoFooterProps } from '@/main/crdPages/memo/memoFooterMapper';
 import { useCrdMemoProvider } from '@/main/crdPages/memo/useCrdMemoProvider';
+import { useMemoPdfDownload } from '@/main/crdPages/memo/useMemoPdfDownload';
 import { useMemoSigningFlow } from '@/main/crdPages/memo/useMemoSigningFlow';
 import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollaborationSettings';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import type { MemoSigningOrigin } from '@/main/ui/layout/memoSigningReturnStorage';
 
 type CrdMemoDialogProps = {
   open: boolean;
@@ -57,6 +55,10 @@ type CrdMemoDialogProps = {
   /** True when this is a memo contribution (deletable), false for framing */
   isContribution?: boolean;
   onDelete?: () => Promise<void> | void;
+  signingOrigin?: Pick<MemoSigningOrigin, 'kind' | 'calloutId' | 'contributionId'>;
+  refreshAfterSigningAttemptId?: string;
+  editorMountKey?: string;
+  onEditorMounted?: (focusTarget: HTMLElement) => void;
 };
 
 export const updateMemoMarkdownCache = (
@@ -79,8 +81,18 @@ export const canStartMemoSigning = (
   entitlements.includes(LicenseEntitlementType.SpaceFlagMemoSigning) &&
   authenticationMethods?.includes(AuthenticationType.Cleverbase) === true;
 
-export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
-  const { t, i18n } = useTranslation('crd-space');
+export function CrdMemoDialog({
+  open,
+  memoId,
+  onClose,
+  isContribution = false,
+  onDelete,
+  signingOrigin,
+  refreshAfterSigningAttemptId,
+  editorMountKey,
+  onEditorMounted,
+}: CrdMemoDialogProps) {
+  const { t } = useTranslation('crd-space');
   const { t: tCommon } = useTranslation('crd-common');
   useRegisterFullscreenEditor(open);
   const client = useApolloClient();
@@ -88,6 +100,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const { memo, loading, refreshMemo } = useMemoManager({ id: memoId });
   const editorRef = useRef<Editor | null>(null);
   const { isAuthenticated } = useAuthenticationContext();
+  const { loading: currentUserLoading, userModel } = useCurrentUserContext();
   const {
     data: authenticationMethodsData,
     loading: authenticationMethodsLoading,
@@ -108,10 +121,15 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     connectionStatus,
     synced,
     isReadOnly,
+    readOnlyCode,
     memberCount,
     connectedUsers,
     user,
   } = useCrdMemoProvider({ collaborationId: memoId });
+  const { download: downloadMemoPdf, downloading: downloadingPdf } = useMemoPdfDownload(
+    memo?.id,
+    provider ? () => provider.requestDurability() : undefined
+  );
 
   // Memo images upload into the memo's own storage bucket (where collaborators have FileUpload),
   // not the ambient space bucket. Mirrors the legacy MUI `MemoDialog`, which passed the memo's
@@ -136,25 +154,14 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const [closeBlocked, setCloseBlocked] = useState(false);
   const [closeFinalizing, setCloseFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [returnAttemptId, setReturnAttemptId] = useState(() =>
-    new URLSearchParams(globalThis.location.search).get('signingAttemptId')
-  );
-  const [signingDialogOpen, setSigningDialogOpen] = useState(Boolean(returnAttemptId));
+  const [signingDialogOpen, setSigningDialogOpen] = useState(false);
   const [signedCopiesDialogOpen, setSignedCopiesDialogOpen] = useState(false);
-  const [downloadingDocumentIds, setDownloadingDocumentIds] = useState<ReadonlySet<string>>(() => new Set());
   const refreshedAttemptId = useRef<string | undefined>(undefined);
+  const notifiedEditorMountKey = useRef<string | undefined>(undefined);
   const closeInFlight = useRef(false);
 
   const [prepareMemoSigning] = usePrepareMemoSigningMutation();
   const [continueMemoSigning] = useContinueMemoSigningMutation();
-  const [verifyMemoSignature, verification] = useVerifyMemoSignatureLazyQuery({
-    fetchPolicy: 'no-cache',
-  });
-  const returnAttempt = useMemoSigningAttemptQuery({
-    variables: { attemptID: returnAttemptId ?? '' },
-    skip: !returnAttemptId,
-    fetchPolicy: 'network-only',
-  });
   const signingFlow = useMemoSigningFlow({
     memoId,
     requestDurability: () => provider?.requestDurability() ?? Promise.reject(new Error('Memo is not connected')),
@@ -169,87 +176,51 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
       return result.authorizeUrl;
     },
     navigate: url => globalThis.location.assign(url),
+    returnContext:
+      userModel && signingOrigin
+        ? {
+            userId: userModel.id,
+            memoId,
+            ...signingOrigin,
+          }
+        : undefined,
   });
-  const returnedAttempt = returnAttempt.data?.signingAttempt;
-  const returnedStatus = returnedAttempt?.status.toLowerCase();
-  const signingStage = returnAttemptId
-    ? returnAttempt.loading
-      ? 'checking'
-      : returnAttempt.error || !returnAttempt.data
-        ? 'return-error'
-        : returnedStatus === 'signed' && !returnedAttempt?.document
-          ? 'return-error'
-          : (returnedStatus as typeof signingFlow.stage)
-    : signingFlow.stage;
 
   useEffect(() => {
-    if (
-      returnedStatus !== 'signed' ||
-      !returnedAttempt?.document ||
-      refreshedAttemptId.current === returnedAttempt.id
-    ) {
-      return;
-    }
-    refreshedAttemptId.current = returnedAttempt.id;
+    if (!refreshAfterSigningAttemptId || refreshedAttemptId.current === refreshAfterSigningAttemptId) return;
+    refreshedAttemptId.current = refreshAfterSigningAttemptId;
     void refreshMemo();
-  }, [refreshMemo, returnedAttempt, returnedStatus]);
-  const clearSigningReturn = () => {
-    if (!returnAttemptId) return;
-    const search = new URLSearchParams(globalThis.location.search);
-    search.delete('signingAttemptId');
-    const query = search.toString();
-    globalThis.history.replaceState(
-      globalThis.history.state,
-      '',
-      `${globalThis.location.pathname}${query ? `?${query}` : ''}${globalThis.location.hash}`
-    );
-    setReturnAttemptId(null);
-  };
-  const closeSigningDialog = () => {
-    clearSigningReturn();
-    setSigningDialogOpen(false);
-  };
-  const completedSignature: MemoSignatureView | undefined = returnedAttempt?.document
-    ? {
-        ...returnedAttempt,
-        recordedAt: formatAbsoluteDateTime(returnedAttempt.updatedDate, resolveDateFnsLocale(i18n.language)),
-        verification:
-          verification.variables?.attemptID === returnedAttempt.id
-            ? verification.loading
-              ? 'checking'
-              : verification.error || !verification.data
-                ? 'unavailable'
-                : (verification.data.verifyMemoSignature.toLowerCase() as 'verified' | 'invalid' | 'unavailable')
-            : undefined,
-      }
-    : undefined;
-  const signedCopiesCount = memo?.signatures.filter(signature => signature.document).length ?? 0;
+  }, [refreshAfterSigningAttemptId, refreshMemo]);
 
-  const handleDownloadSignedCopy = async (document: MemoSignatureDocument) => {
-    setDownloadingDocumentIds(current => new Set(current).add(document.id));
-    try {
-      await downloadMemoSignaturePdf(document);
-    } catch {
-      notify(t('memo.signing.downloadFailed'), 'error');
-    } finally {
-      setDownloadingDocumentIds(current => {
-        const next = new Set(current);
-        next.delete(document.id);
-        return next;
-      });
-    }
+  const handleEditorMounted = (focusTarget: HTMLElement) => {
+    if (!open || !editorMountKey || !onEditorMounted) return;
+    if (notifiedEditorMountKey.current === editorMountKey) return;
+    notifiedEditorMountKey.current = editorMountKey;
+    onEditorMounted(focusTarget);
   };
+  const closeSigningDialog = () => setSigningDialogOpen(false);
+  const signedCopiesCount = memo?.signatures.filter(signature => signature.document).length ?? 0;
 
   const privileges = memo?.authorization?.myPrivileges ?? [];
   const hasUpdatePrivileges = privileges.includes(AuthorizationPrivilege.Update);
   const hasDeletePrivileges = privileges.includes(AuthorizationPrivilege.Delete);
   const hasContributePrivileges = privileges.includes(AuthorizationPrivilege.Contribute);
-  const canSign = canStartMemoSigning(
+  const authenticationMethods = authenticationMethodsData?.me.user?.authentication?.methods;
+  const authenticationMethodsReady = isAuthenticated && !authenticationMethodsLoading && !authenticationMethodsError;
+  const hasSigningEntitlement = entitlements.includes(LicenseEntitlementType.SpaceFlagMemoSigning);
+  const signingIdentityReady = !currentUserLoading && Boolean(userModel);
+  const signingAvailableForActor =
+    authenticationMethodsReady && hasContributePrivileges && hasSigningEntitlement && signingIdentityReady;
+  const hasLinkedCleverbase = authenticationMethods?.includes(AuthenticationType.Cleverbase) === true;
+  const hasSigningAccess = canStartMemoSigning(
     privileges,
     entitlements,
-    authenticationMethodsData?.me.user?.authentication?.methods,
-    isAuthenticated && !authenticationMethodsLoading && !authenticationMethodsError
+    authenticationMethods,
+    authenticationMethodsReady
   );
+  const canSign = hasSigningAccess && signingIdentityReady;
+  const signingIdentityLoading = hasSigningAccess && currentUserLoading;
+  const showCleverbaseGuidance = signingAvailableForActor && !hasLinkedCleverbase && Boolean(provider);
 
   const canEditDisplayName = isContribution && hasUpdatePrivileges;
   const displayName = memo?.profile.displayName ?? t('memo.errors.loading');
@@ -347,6 +318,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     synced,
     isAuthenticated,
     isReadOnly,
+    readOnlyCode,
     memberCount,
     connectedUsers,
     isContribution,
@@ -394,26 +366,73 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const headerActions = (
     <>
       {signedCopiesCount > 0 && (
-        <Button type="button" variant="outline" size="sm" onClick={() => setSignedCopiesDialogOpen(true)}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="text-muted-foreground"
+          onClick={() => setSignedCopiesDialogOpen(true)}
+        >
           <FileSignature aria-hidden="true" />
           {t('memo.signing.signedCopiesCount', { count: signedCopiesCount })}
         </Button>
       )}
-      {canSign && (
+      {(canSign || signingIdentityLoading) && (
         <Button
           type="button"
           variant="outline"
           size="sm"
-          disabled={!provider || signingFlow.stage === 'preparing'}
+          className="mr-2"
+          disabled={!provider || !signingIdentityReady || signingFlow.stage === 'preparing'}
           onClick={() => {
-            clearSigningReturn();
             setSigningDialogOpen(true);
             void signingFlow.prepare();
           }}
         >
           <FileSignature aria-hidden="true" />
-          {t('memo.signing.title')}
+          <span className="sr-only sm:not-sr-only">{t('memo.signing.title')}</span>
         </Button>
+      )}
+      {showCleverbaseGuidance && (
+        <div className="flex max-w-56 flex-col items-end gap-1 text-right">
+          <Button type="button" variant="outline" size="sm" disabled={true}>
+            <FileSignature aria-hidden="true" />
+            {t('memo.signing.title')}
+          </Button>
+          <span className="text-caption text-muted-foreground">{t('memo.signing.cleverbaseRequired')}</span>
+          <a
+            href="https://alkem.io/documentation/en-US/how-to/connected-accounts"
+            target="_blank"
+            rel="noreferrer"
+            className="text-caption text-primary underline underline-offset-2 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {t('memo.signing.connectCleverbase')}
+          </a>
+        </div>
+      )}
+      {isAuthenticated && memo?.id && (
+        <Tooltip>
+          <TooltipTrigger asChild={true}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={downloadingPdf}
+              aria-busy={downloadingPdf}
+              onClick={() => void downloadMemoPdf()}
+            >
+              {downloadingPdf ? (
+                <Loader2 aria-hidden="true" className="animate-spin" />
+              ) : (
+                <Download aria-hidden="true" />
+              )}
+              {/* Icon-only so the non-wrapping header row keeps Share/Close on screen;
+                  the sr-only label keeps the accessible name and the tooltip names it visually. */}
+              <span className="sr-only">{t('memo.downloadPdf.button')}</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent className="z-[80]">{t('memo.downloadPdf.tooltip')}</TooltipContent>
+        </Tooltip>
       )}
       {/* Share dropdown. For users who can update the memo, it also hosts the content-update-policy
           control (Owner / Admins / Contributors) — parity with the CRD whiteboard and the legacy MUI
@@ -429,6 +448,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   return (
     <>
       <MemoEditorShell
+        onMounted={handleEditorMounted}
         open={open}
         fullscreen={isFullscreen}
         onClose={handleClose}
@@ -510,18 +530,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
         open={signingDialogOpen}
         onOpenChange={open => !open && closeSigningDialog()}
         mode="signing"
-        stage={signingStage}
+        stage={signingFlow.stage}
         previewUrl={signingFlow.attempt?.previewUrl}
-        completedSignature={completedSignature}
         onContinue={() => void signingFlow.continueSigning()}
-        onVerify={attemptID =>
-          void verifyMemoSignature({
-            variables: { attemptID },
-          })
-        }
-        onDownload={document => void handleDownloadSignedCopy(document)}
-        downloadingDocumentIds={downloadingDocumentIds}
-        verifyDisabled={verification.loading}
         onClose={closeSigningDialog}
       />
       <MemoSignedCopiesDialogConnector

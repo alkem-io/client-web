@@ -1,10 +1,10 @@
 import { formatDuration } from 'date-fns';
-import type { TFunction } from 'i18next';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import {
+  AUTH_LOGOUT_PATH,
   AUTH_REMINDER_PATH,
   AUTH_RESET_PASSWORD_PATH,
   AUTH_SIGN_UP_PATH,
@@ -21,14 +21,19 @@ import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { resolveInternalReturnPath } from '@/core/utils/links';
-import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
-import { LoginCard } from '@/crd/components/auth/LoginCard';
+import { AppSignInWelcome } from '@/crd/components/auth/AppSignInWelcome';
+import {
+  emptySecondFactorGroup,
+  type KratosFlowDescriptor,
+  type KratosMessage,
+} from '@/crd/components/auth/flowDescriptor';
+import { LoginCard, type LoginCardNotice } from '@/crd/components/auth/LoginCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
-import { buildSignUpUrl } from '@/main/routing/urlBuilders';
+import { buildSignUpUrl, URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
-import { invokePasskeyTrigger, PasskeyTriggerError } from './passkeyTrigger';
+import { invokePasskeyTrigger, translatePasskeyError } from './passkeyTrigger';
 import { useKratosMessageCopy, useTranslateDescriptor } from './useKratosMessageCopy';
 
 const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
@@ -36,6 +41,20 @@ const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
 const ACCOUNT_LOCKOUT_MESSAGE_ID = 9000429;
 // Client-side message id for a passkey ceremony failure.
 const PASSKEY_ERROR_MESSAGE_ID = -1;
+
+// The closed set of `?app_signin=` reasons the native shell and the server's
+// /app-handoff route emit (FR-012). Written as quoted literals on purpose: this
+// is the consumer half of the cross-repo `app-signin-landing-params` contract.
+// Any other value is ignored, so a crafted link falls through to the ordinary
+// OIDC entry rather than parking the visitor on a card with no way forward.
+const APP_SIGN_IN_VALUES = ['required', 'cancelled', 'failed'] as const;
+
+/** The recognised `?app_signin=` reason, or undefined for absent/unrecognised.
+ *  Read twice — once by the route to exempt the arrival from the
+ *  `NotAuthenticatedRoute` guard, once by the page to render the notice. */
+function readAppSignIn(params: URLSearchParams) {
+  return APP_SIGN_IN_VALUES.find(value => value === params.get('app_signin'));
+}
 
 /**
  * Absolute URL that restarts sign-in at the OIDC BFF, preserving the pending
@@ -63,6 +82,7 @@ function buildOidcRestartHref(rawReturnUrl: string, platformOrigin: string | und
 function CrdLoginPage({ flow }: { flow?: string }) {
   useTransactionScope({ type: 'authentication' });
   const { t, i18n } = useTranslation();
+  const { t: tAuth } = useTranslation('crd-auth');
   usePageTitle(t('pages.titles.signIn'));
 
   const navigate = useNavigate();
@@ -70,6 +90,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const params = useQueryParams();
   const [passkeyError, setPasskeyError] = useState<string>();
+  const [recoveryCodeChoice, setRecoveryCodeChoice] = useState<boolean>();
   const translateDescriptor = useTranslateDescriptor();
   const translateMessages = useKratosMessageCopy();
 
@@ -91,7 +112,12 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   // the lockout notice can render — so a lockout arrival is NOT an OIDC entry;
   // it renders the notice with a manual way back into sign-in instead.
   const isLockedOutArrival = params.get('lockout') === 'true';
-  const isOidcEntry = !flow && !isLockedOutArrival;
+  // The native app shell intercepts credential surfaces and sends the visitor
+  // back here with a reason; the server does the same when a hand-off fails.
+  // Like a lockout arrival this is NOT an OIDC entry — redirecting would throw
+  // the reason away before it could be read.
+  const appSignIn = readAppSignIn(params);
+  const isOidcEntry = !flow && !isLockedOutArrival && !appSignIn;
 
   useLayoutEffect(() => {
     if (!isOidcEntry) return;
@@ -163,23 +189,74 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     return { ...base, messages };
   })();
 
-  // Locked-out arrival (no flow): render the lockout notice with a manual
-  // re-entry into the OIDC sign-in. No Kratos form is offered — the flow the
-  // hook auto-provisioned is deliberately ignored, both because a Kratos-native
-  // login would bypass Hydra and because the backoff proxy would refuse the
-  // POST anyway. If still locked when the person retries, the proxy bounces
-  // them back here with fresh params.
-  if (!flow && isLockedOutArrival) {
+  // The sign-in's second step: Kratos asks for a second factor (`requested_aal: aal2`). The code
+  // and the recovery code are separate submits with a required field each, so only one of the two
+  // is in the form at a time; the security key, when enrolled, is always offered beside it.
+  const isSecondFactorStep = loginFlow?.requested_aal === 'aal2';
+  const hasAuthenticatorCode = (descriptor?.groups.totp.inputs.length ?? 0) > 0;
+  const hasRecoveryCode = (descriptor?.groups.lookupSecret.inputs.length ?? 0) > 0;
+  // A submitted recovery code comes back with the flow on its method, so the page reopens on it.
+  const showRecoveryCode = recoveryCodeChoice ?? loginFlow?.active === 'lookup_secret';
+  const showingRecoveryCode = hasRecoveryCode && (showRecoveryCode || !hasAuthenticatorCode);
+  const stepDescriptor =
+    descriptor && isSecondFactorStep
+      ? {
+          ...descriptor,
+          groups: {
+            ...descriptor.groups,
+            totp: showingRecoveryCode ? emptySecondFactorGroup() : descriptor.groups.totp,
+            lookupSecret: showingRecoveryCode ? descriptor.groups.lookupSecret : emptySecondFactorGroup(),
+          },
+        }
+      : descriptor;
+
+  // The two arrivals that carry their reason in the query string: the backoff
+  // proxy's lockout bounce, and the shell / server hand-off bounce. Neither may
+  // render a Kratos form — the auto-provisioned flow is deliberately ignored,
+  // both because a Kratos-native login would bypass Hydra and because the
+  // backoff proxy would refuse the POST anyway — so each offers a manual
+  // re-entry into the OIDC sign-in. Lockout wins when both are present: the
+  // account is blocked either way. Nothing here knows or asks whether it is
+  // running in the app; both screens are correct in a plain browser too.
+  const arrivalNotice: LoginCardNotice | undefined = isLockedOutArrival
+    ? {
+        text: t('authentication.lockout', { duration: lockoutDuration }),
+        actionLabel: t('authentication.lockoutRetry'),
+        actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
+      }
+    : undefined;
+
+  // The app hand-off arrival is the app's sign-in screen: a welcome with room
+  // for the brand, sign-in and a way to browse public spaces. It offers no
+  // sign-up: inside the app the shell turns /sign_up into the OIDC sign-in, so
+  // that button would open the sign-in screen. `required` comes before any
+  // attempt and needs no message; after a cancelled or failed attempt the
+  // reason sits above the buttons on the same screen.
+  if (!flow && !isLockedOutArrival && appSignIn) {
+    return (
+      <AuthShellWrapper plain={true}>
+        <AppSignInWelcome
+          signInHref={buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin)}
+          // Absolute against the apex, like the OIDC hand-off, because this page
+          // also renders on the identity subdomain where the explorer does not live.
+          browseSpacesHref={`${platformOrigin ?? ''}${URL_SPACE_EXPLORER}`}
+          message={
+            appSignIn === 'required'
+              ? undefined
+              : { text: tAuth(`appSignIn.${appSignIn}`), tone: appSignIn === 'failed' ? 'destructive' : 'info' }
+          }
+        />
+      </AuthShellWrapper>
+    );
+  }
+
+  if (!flow && arrivalNotice) {
     return (
       <AuthShellWrapper>
         <LoginCard
           descriptor={undefined}
           isLoading={false}
-          notice={{
-            text: t('authentication.lockout', { duration: lockoutDuration }),
-            actionLabel: t('authentication.lockoutRetry'),
-            actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
-          }}
+          notice={arrivalNotice}
           signUpHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
           forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
         />
@@ -236,7 +313,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   return (
     <AuthShellWrapper>
       <LoginCard
-        descriptor={descriptor}
+        descriptor={stepDescriptor}
         isLoading={loading}
         signUpHref={
           // Forward the pending returnUrl so a first-time visitor who came
@@ -245,26 +322,25 @@ function CrdLoginPage({ flow }: { flow?: string }) {
           signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH
         }
         forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
-        onPasskeyTrigger={trigger => {
+        onPasskeyTrigger={(trigger, value) => {
           setPasskeyError(undefined);
-          invokePasskeyTrigger(trigger).catch(error => {
+          invokePasskeyTrigger(trigger, value).catch(error => {
             setPasskeyError(translatePasskeyError(t, error));
           });
         }}
+        secondFactorStep={
+          isSecondFactorStep
+            ? {
+                showingRecoveryCode,
+                onToggleRecoveryCode:
+                  hasAuthenticatorCode && hasRecoveryCode ? () => setRecoveryCodeChoice(!showRecoveryCode) : undefined,
+                signOutHref: AUTH_LOGOUT_PATH,
+              }
+            : undefined
+        }
       />
     </AuthShellWrapper>
   );
-}
-
-/** Maps a passkey-trigger failure to its localised user-facing message. Falls
- *  back to the existing `authentication.passkey.unknown-error` copy for any
- *  shape we don't recognise (e.g. a non-PasskeyTriggerError thrown). */
-function translatePasskeyError(t: TFunction, error: unknown): string {
-  if (error instanceof PasskeyTriggerError) {
-    if (error.reason === 'not-supported') return t('authentication.passkey.not-supported');
-    if (error.reason === 'script-not-loaded') return t('authentication.passkey.script-loading');
-  }
-  return t('authentication.passkey.unknown-error');
 }
 
 /**
@@ -285,6 +361,12 @@ function translatePasskeyError(t: TFunction, error: unknown): string {
 export function LoginCrdRoute() {
   const params = useQueryParams();
   const flow = params.get('flow') || undefined;
+  // A hand-off arrival carries no flow id but, like a Kratos refresh login, can
+  // legitimately reach this page while the user still holds an `alkemio_session`
+  // (Settings > Security re-auth is exactly that case). Exempt it from the guard
+  // alongside `flow`, or `NotAuthenticatedRoute` bounces it to the dashboard and
+  // the notice never renders.
+  const appSignIn = readAppSignIn(params);
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
   const { setReturnUrl } = useReturnUrl();
 
@@ -301,7 +383,10 @@ export function LoginCrdRoute() {
 
   return (
     <Routes>
-      <Route path="/" element={flow ? loginPage : <NotAuthenticatedRoute>{loginPage}</NotAuthenticatedRoute>} />
+      <Route
+        path="/"
+        element={flow || appSignIn ? loginPage : <NotAuthenticatedRoute>{loginPage}</NotAuthenticatedRoute>}
+      />
       <Route path="success" element={<LoginSuccessPage />} />
     </Routes>
   );

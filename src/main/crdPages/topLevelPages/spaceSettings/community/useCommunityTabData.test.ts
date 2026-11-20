@@ -1,7 +1,15 @@
-import { act, renderHook } from '@testing-library/react';
+import { ApolloError } from '@apollo/client';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import type { InvitationModel } from '@/domain/access/model/InvitationModel';
+
+const notify = vi.fn();
+vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
+vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
+  useCurrentUserContext: () => ({ userModel: undefined }),
+}));
 
 vi.mock('@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin', () => ({
   default: vi.fn(),
@@ -38,17 +46,13 @@ const baseAdmin = (invitations: InvitationModel[]) => ({
     members: [],
     onLeadChange: vi.fn(),
     onAuthorizationChange: vi.fn(),
-    onAdd: vi.fn(),
     onRemove: vi.fn(),
-    getAvailable: vi.fn(async () => []),
     inviteContributors: vi.fn(),
   },
   organizationAdmin: {
     members: [],
     onLeadChange: vi.fn(),
-    onAdd: vi.fn(),
     onRemove: vi.fn(),
-    getAvailable: vi.fn(async () => []),
     inviteContributors: vi.fn(),
   },
   virtualContributorAdmin: { members: [], onAdd: vi.fn(), onRemove: vi.fn(), inviteContributors: vi.fn() },
@@ -62,12 +66,11 @@ const baseAdmin = (invitations: InvitationModel[]) => ({
     onInvitationStateChange: vi.fn(),
     onDeleteInvitation: vi.fn(),
     onDeletePlatformInvitation: vi.fn(),
+    onResendPlatformInvitation: vi.fn(),
   },
   permissions: {
-    canAddUsers: true,
     canInvite: true,
     canInviteOrganizations: true,
-    canAddOrganizations: false,
     canAddVirtualContributors: false,
     canAddVirtualContributorsFromAccount: false,
   },
@@ -127,9 +130,9 @@ describe('useCommunityTabData — organization invitations (T009)', () => {
   });
 
   it.each([
-    'accepted',
-    'rejected',
-  ] as const)('moves a %s organization invitation out of pendingOrganizationInvitations and into the generic table, deletable', state => {
+    ['accepted', false],
+    ['rejected', true],
+  ] as const)('moves a %s organization invitation out of pendingOrganizationInvitations and into the generic table (deletable: %s)', (state, canDelete) => {
     vi.mocked(useCommunityAdmin).mockReturnValue(
       baseAdmin([orgInvitation({ state })]) as ReturnType<typeof useCommunityAdmin>
     );
@@ -137,16 +140,16 @@ describe('useCommunityTabData — organization invitations (T009)', () => {
 
     // No longer presented as outstanding ...
     expect(result.current.pendingOrganizationInvitations).toHaveLength(0);
-    // ... but the row still exists server-side, so it must remain visible and
-    // removable exactly like the equivalent user invitation — otherwise a
-    // declined organization invitation is invisible AND undeletable forever.
+    // ... but the row still exists server-side, so it must remain visible —
+    // otherwise a declined organization invitation is invisible AND undeletable
+    // forever. An accepted one cannot be deleted (the server rejects it).
     expect(result.current.pendingMemberships).toEqual([
       expect.objectContaining({
         id: 'inv-org-1',
         type: 'invitation',
         state,
         contributorType: 'organization',
-        canDelete: true,
+        canDelete,
       }),
     ]);
   });
@@ -175,5 +178,124 @@ describe('useCommunityTabData — organization invitations (T009)', () => {
     const { result } = renderHook(() => useCommunityTabData('rs1'));
 
     expect(result.current.permissions.canInviteOrganizations).toBe(true);
+  });
+});
+
+describe('useCommunityTabData — email invitation resend', () => {
+  beforeEach(() => {
+    vi.mocked(useCommunityAdmin).mockReset();
+    notify.mockReset();
+  });
+
+  const adminWithPlatformInvitation = () => {
+    const admin = baseAdmin([userInvitation()]);
+    admin.membershipAdmin.platformInvitations = [
+      {
+        id: 'pi-1',
+        email: 'new@example.com',
+        createdDate: new Date('2026-01-01T00:00:00.000Z'),
+        roleSetExtraRoles: [],
+      },
+    ] as never[];
+    return admin;
+  };
+
+  it('only email invitation rows can be resent', () => {
+    vi.mocked(useCommunityAdmin).mockReturnValue(adminWithPlatformInvitation() as ReturnType<typeof useCommunityAdmin>);
+    const { result } = renderHook(() => useCommunityTabData('rs1'));
+
+    expect(result.current.pendingMemberships.find(m => m.id === 'pi-1')?.canResend).toBe(true);
+    expect(result.current.pendingMemberships.find(m => m.id === 'inv-user-1')?.canResend).toBe(false);
+  });
+
+  it('resend calls the admin hook and toasts success', async () => {
+    const admin = adminWithPlatformInvitation();
+    admin.membershipAdmin.onResendPlatformInvitation.mockResolvedValue(undefined);
+    vi.mocked(useCommunityAdmin).mockReturnValue(admin as ReturnType<typeof useCommunityAdmin>);
+    const { result } = renderHook(() => useCommunityTabData('rs1'));
+
+    await act(async () => {
+      result.current.onPendingResend('pi-1');
+    });
+
+    expect(admin.membershipAdmin.onResendPlatformInvitation).toHaveBeenCalledWith('pi-1');
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendSuccess', 'success'));
+  });
+
+  it('resend maps the throttled error code to the throttled toast', async () => {
+    const admin = adminWithPlatformInvitation();
+    admin.membershipAdmin.onResendPlatformInvitation.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [{ message: 'slow down', extensions: { code: 'ROLESET_INVITATION_RESEND_THROTTLED' } } as never],
+      })
+    );
+    vi.mocked(useCommunityAdmin).mockReturnValue(admin as ReturnType<typeof useCommunityAdmin>);
+    const { result } = renderHook(() => useCommunityTabData('rs1'));
+
+    await act(async () => {
+      result.current.onPendingResend('pi-1');
+    });
+
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendThrottled', 'error'));
+  });
+});
+
+describe('useCommunityTabData — pending rows and delete rules (spec 045 FR-012a / FR-012b)', () => {
+  beforeEach(() => {
+    vi.mocked(useCommunityAdmin).mockReset();
+  });
+
+  const application = (id: string, state: string) => ({
+    id,
+    state,
+    nextEvents: [],
+    contributorType: ActorType.User,
+    createdDate: new Date('2026-01-01T00:00:00.000Z'),
+    updatedDate: new Date('2026-01-01T00:00:00.000Z'),
+    questions: [],
+    actor: { id: `actor-${id}`, profile: { id: `p-${id}`, displayName: id, url: `/user/${id}` } },
+  });
+
+  const invitation = (id: string, state: string): InvitationModel => ({ ...userInvitation(), id, state });
+
+  const rows = () => {
+    const admin = baseAdmin([
+      invitation('inv-invited', 'invited'),
+      invitation('inv-accepting', 'accepting'),
+      invitation('inv-accepted', 'accepted'),
+      invitation('inv-rejected', 'rejected'),
+    ]);
+    admin.membershipAdmin.applications = [
+      application('app-new', 'new'),
+      application('app-approving', 'approving'),
+      application('app-approved', 'approved'),
+      application('app-rejected', 'rejected'),
+    ] as never[];
+    vi.mocked(useCommunityAdmin).mockReturnValue(admin as ReturnType<typeof useCommunityAdmin>);
+    const { result } = renderHook(() => useCommunityTabData('rs1'));
+    return Object.fromEntries(result.current.pendingMemberships.map(r => [r.id, r]));
+  };
+
+  it('lists transient (approving / accepting) rows with their in-flight state', () => {
+    const byId = rows();
+    expect(byId['app-approving'].state).toBe('approving');
+    expect(byId['inv-accepting'].state).toBe('accepting');
+  });
+
+  it('offers delete only on new / rejected applications and open / rejected invitations', () => {
+    const byId = rows();
+    const deletable = Object.values(byId)
+      .filter(r => r.canDelete)
+      .map(r => r.id)
+      .sort();
+    expect(deletable).toEqual(['app-new', 'app-rejected', 'inv-invited', 'inv-rejected']);
+  });
+
+  it('offers approve / reject only on a new application', () => {
+    const byId = rows();
+    const actionable = Object.values(byId)
+      .filter(r => r.canApprove || r.canReject)
+      .map(r => r.id);
+    expect(actionable).toEqual(['app-new']);
   });
 });

@@ -3,10 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { VirtualContributorBadge } from '@/crd/components/common/VirtualContributorBadge';
+import { ContributorHoverCard, type ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { CommentReactions } from './CommentReactions';
+import { MessageAttachments } from './MessageAttachments';
+import { hasRenderableText } from './messageText';
 import type { CommentData } from './types';
 
 type CommentItemProps = {
@@ -34,6 +37,7 @@ type CommentItemProps = {
    *  thread uses the same id on the input container so the relationship is
    *  exposed to assistive tech even though the input renders elsewhere. */
   replyInputId?: string;
+  onMessageContributor?: (contributor: ContributorPreviewData) => void;
 };
 
 export function CommentItem({
@@ -46,6 +50,7 @@ export function CommentItem({
   isReplyOpen = false,
   onToggleReply,
   replyInputId,
+  onMessageContributor,
 }: CommentItemProps) {
   const { t } = useTranslation('crd-space');
 
@@ -63,21 +68,35 @@ export function CommentItem({
   // so the hover toolbar stays next to the text.
   const isLongComment = comment.content.length > 120 || comment.content.includes('\n');
 
+  // Same rule the chat bubbles use: an empty body renders no markdown block, and a
+  // caption-less media event's filename body is not echoed above its own attachment.
+  const hasText = hasRenderableText(comment.content, comment.attachments);
+
+  const avatarLink = (
+    <a
+      href={comment.author.profileUrl}
+      onClick={e => e.stopPropagation()}
+      aria-label={comment.author.name}
+      className="relative z-10 block shrink-0 self-start rounded-full -m-0.5 p-0.5 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
+      <Avatar className="h-8 w-8">
+        {comment.author.avatarUrl && <AvatarImage src={comment.author.avatarUrl} alt={comment.author.name} />}
+        <AvatarFallback className="text-caption">{comment.author.name.charAt(0)}</AvatarFallback>
+      </Avatar>
+    </a>
+  );
+
   return (
     <div className={cn('group/comment space-y-1.5', isReply && 'ml-6 md:ml-10')}>
       <div className="flex gap-3">
         {comment.author.profileUrl ? (
-          <a
-            href={comment.author.profileUrl}
-            onClick={e => e.stopPropagation()}
-            aria-label={comment.author.name}
-            className="relative z-10 block shrink-0 self-start rounded-full -m-0.5 p-0.5 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <Avatar className="h-8 w-8">
-              {comment.author.avatarUrl && <AvatarImage src={comment.author.avatarUrl} alt={comment.author.name} />}
-              <AvatarFallback className="text-caption">{comment.author.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-          </a>
+          comment.author.preview ? (
+            <ContributorHoverCard contributor={comment.author.preview} onMessage={onMessageContributor}>
+              {avatarLink}
+            </ContributorHoverCard>
+          ) : (
+            avatarLink
+          )
         ) : (
           <Avatar className="h-8 w-8 shrink-0">
             {comment.author.avatarUrl && <AvatarImage src={comment.author.avatarUrl} alt={comment.author.name} />}
@@ -97,13 +116,20 @@ export function CommentItem({
               {comment.isDeleted ? (
                 <p className="text-body italic text-muted-foreground">{t('comments.deleted')}</p>
               ) : (
-                <MarkdownContent
-                  content={comment.content}
-                  className="break-words text-body text-foreground [&_p]:mb-0 [&_p]:leading-normal [&_p]:text-foreground"
-                />
+                hasText && (
+                  <MarkdownContent
+                    newTabLinks="external"
+                    content={comment.content}
+                    className="break-words text-body text-foreground [&_p]:mb-0 [&_p]:leading-normal [&_p]:text-foreground"
+                  />
+                )
               )}
             </div>
           </div>
+
+          {!comment.isDeleted && comment.attachments && comment.attachments.length > 0 && (
+            <MessageAttachments attachments={comment.attachments} />
+          )}
 
           {!comment.isDeleted && (
             <CommentReactions
@@ -119,6 +145,7 @@ export function CommentItem({
               {canComment && (
                 <EmojiPicker
                   onSelect={handleAddReaction}
+                  mode="reaction"
                   trigger={
                     <Button
                       type="button"

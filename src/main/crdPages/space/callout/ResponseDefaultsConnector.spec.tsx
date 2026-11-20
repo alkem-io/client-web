@@ -208,6 +208,62 @@ describe('ResponseDefaultsConnector template boundaries', () => {
     expect(discard).toHaveBeenCalledOnce();
   });
 
+  it('seeds the draft from the callout that stores the default being edited', async () => {
+    const materialize = vi.fn().mockResolvedValue({ whiteboardID: 'draft-1', sourceKey: ':callout-1' });
+
+    render(
+      <ResponseDefaultsConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        type="whiteboard"
+        values={{ ...values, whiteboardContentAvailable: true }}
+        onSave={vi.fn()}
+        existingDefaultSourceCalloutId="callout-1"
+        whiteboardDraft={{
+          handle: undefined,
+          loading: false,
+          materialize,
+          discard: vi.fn().mockResolvedValue(true),
+          consumed: vi.fn(),
+        }}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'framing.edit' }));
+
+    // Without the seed the server would materialize a blank board, so saving would
+    // silently replace the stored default with an empty one.
+    await waitFor(() => expect(materialize).toHaveBeenCalledWith({ sourceCalloutID: 'callout-1' }));
+  });
+
+  it('prefers a picked template over the stored default as the draft seed', async () => {
+    const materialize = vi.fn().mockResolvedValue({ whiteboardID: 'draft-2', sourceKey: 'template-wb:' });
+
+    render(
+      <ResponseDefaultsConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        type="whiteboard"
+        values={{ ...values, whiteboardContentAvailable: true, sourceWhiteboardId: 'template-wb' }}
+        onSave={vi.fn()}
+        existingDefaultSourceCalloutId="callout-1"
+        whiteboardDraft={{
+          handle: undefined,
+          loading: false,
+          materialize,
+          discard: vi.fn().mockResolvedValue(true),
+          consumed: vi.fn(),
+        }}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'framing.edit' }));
+
+    await waitFor(() =>
+      expect(materialize).toHaveBeenCalledWith({ sourceWhiteboardID: 'template-wb', sourceCalloutID: undefined })
+    );
+  });
+
   it('does not reopen the editor when materialization finishes after the dialog closes', async () => {
     let resolveMaterialize: ((value: { whiteboardID: string; sourceKey: string }) => void) | undefined;
     const materialized = {

@@ -24,6 +24,14 @@ export const isValidUrlOrEmpty = (value: string): boolean => {
   }
 };
 
+const PHONE_REGEX = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
+
+/** True when `value` is empty (whitespace-only) or a phone number in the formats the profile forms accept. */
+export const isValidPhoneOrEmpty = (value: string): boolean => {
+  const trimmed = value.trim();
+  return !trimmed || PHONE_REGEX.test(trimmed);
+};
+
 /**
  * Mirrors what a PERSON may type into a nameID (alias) field: 3–25
  * characters, only `a-z`, `0-9` and `-`. Uppercase is rejected — the server's

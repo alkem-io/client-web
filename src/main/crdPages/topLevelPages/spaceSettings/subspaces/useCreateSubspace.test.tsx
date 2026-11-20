@@ -37,6 +37,8 @@ vi.mock('@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubs
   useSubspaceCreation: (options: SubspaceCreationOptions) => mockUseSubspaceCreation(options),
 }));
 
+vi.mock('@/core/routing/useNavigate', () => ({ default: () => vi.fn() }));
+
 vi.mock('@/main/crdPages/templates/useTemplatePicker', () => ({
   useTemplatePicker: () => ({
     pickerProps: {},

@@ -1,3 +1,4 @@
+import type { DefaultContext } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import {
   refetchUserPendingMembershipsQuery,
@@ -9,6 +10,7 @@ import {
   useEventOnApplicationMutation,
   useInvitationStateEventMutation,
   useInviteForEntryRoleOnRoleSetMutation,
+  useResendPlatformInvitationMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   type ActorDetailsQuery,
@@ -24,6 +26,19 @@ import type { PlatformInvitationModel } from '../model/PlatformInvitationModel';
 
 type useRoleSetApplicationsAndInvitationsParams = {
   roleSetId: string | undefined;
+  /**
+   * Whether to select `roleSet.applications`. The server gates that field on GRANT while
+   * `invitations` only needs the invite privilege, so a caller that merely needs the
+   * invitations (the invite dialog's dedupe) must opt out: for an inviter without GRANT the
+   * non-null `applications` field would otherwise null out the whole `roleSet`. Defaults to
+   * true — the admin pending tables read both.
+   */
+  includeApplications?: boolean;
+  /**
+   * Apollo link context attached to every mutation this hook runs — e.g.
+   * `{ skipGlobalErrorHandler: true }` for a caller that renders every failure itself.
+   */
+  mutationContext?: DefaultContext;
 };
 
 type useRoleSetApplicationsAndInvitationsProvided = {
@@ -48,6 +63,11 @@ type useRoleSetApplicationsAndInvitationsProvided = {
   invitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
   deleteInvitation: (invitationId: string) => Promise<unknown>;
   deletePlatformInvitation: (invitationId: string) => Promise<unknown>;
+  /**
+   * Sends the invitation email of an open platform invitation again. The caller renders the
+   * outcome (including the throttled error), so the global error handler is bypassed.
+   */
+  resendPlatformInvitation: (invitationId: string) => Promise<unknown>;
   refetch: () => Promise<unknown>;
   loading: boolean;
   errored: boolean;
@@ -60,6 +80,8 @@ const getContributorType = (type: ActorType | undefined): ActorType => {
 
 const useRoleSetApplicationsAndInvitations = ({
   roleSetId,
+  includeApplications = true,
+  mutationContext,
 }: useRoleSetApplicationsAndInvitationsParams): useRoleSetApplicationsAndInvitationsProvided => {
   const [fetchActorDetails] = useActorDetailsLazyQuery();
 
@@ -70,7 +92,7 @@ const useRoleSetApplicationsAndInvitations = ({
     refetch: refetchCommunityApplicationsInvitations,
   } = useCommunityApplicationsInvitationsQuery({
     // biome-ignore lint/style/noNonNullAssertion: guarded by skip
-    variables: { roleSetId: roleSetId! },
+    variables: { roleSetId: roleSetId!, includeApplications },
     skip: !roleSetId,
   });
 
@@ -86,7 +108,7 @@ const useRoleSetApplicationsAndInvitations = ({
   const [actorDetailsMap, setActorDetailsMap] = useState<Record<string, ActorDetail>>({});
 
   useEffect(() => {
-    const appIds = data?.lookup.roleSet?.applications.map(app => app.actor.id) ?? [];
+    const appIds = data?.lookup.roleSet?.applications?.map(app => app.actor.id) ?? [];
     const invIds = data?.lookup.roleSet?.invitations.map(inv => inv.actor.id) ?? [];
     const contributorIds = [...new Set([...appIds, ...invIds])];
 
@@ -119,7 +141,7 @@ const useRoleSetApplicationsAndInvitations = ({
   const { applications, invitations, platformInvitations } = (() => {
     return {
       applications:
-        data?.lookup.roleSet?.applications.map(app => ({
+        data?.lookup.roleSet?.applications?.map(app => ({
           ...app,
           contributorType: getContributorType(app.actor.type),
           actor: {
@@ -156,6 +178,7 @@ const useRoleSetApplicationsAndInvitations = ({
         roleSetId,
         questions,
       },
+      context: mutationContext,
       onCompleted: () => refetch(),
     });
 
@@ -173,6 +196,7 @@ const useRoleSetApplicationsAndInvitations = ({
           evictFromCache(cache, roleSetId, 'RoleSet');
         }
       },
+      context: mutationContext,
       onCompleted: () => refetch(),
     });
 
@@ -183,6 +207,7 @@ const useRoleSetApplicationsAndInvitations = ({
         invitationId,
         eventName,
       },
+      context: mutationContext,
       onCompleted: () => refetch(),
     });
 
@@ -192,6 +217,7 @@ const useRoleSetApplicationsAndInvitations = ({
       variables: {
         invitationId,
       },
+      context: mutationContext,
       onCompleted: () => refetch(),
     });
 
@@ -201,7 +227,18 @@ const useRoleSetApplicationsAndInvitations = ({
       variables: {
         invitationId,
       },
+      context: mutationContext,
       onCompleted: () => refetch(),
+    });
+
+  // The record is unchanged by a resend, so nothing is refetched on completion.
+  const [resendPlatformInvitation] = useResendPlatformInvitationMutation();
+  const handleResendPlatformInvitation = (invitationId: string) =>
+    resendPlatformInvitation({
+      variables: {
+        invitationId,
+      },
+      context: { ...mutationContext, skipGlobalErrorHandler: true },
     });
 
   const [inviteForEntryRoleOnRoleSet] = useInviteForEntryRoleOnRoleSetMutation();
@@ -232,6 +269,7 @@ const useRoleSetApplicationsAndInvitations = ({
         extraRoles: filteredExtraRoles,
         suggestedLanguage,
       },
+      context: mutationContext,
       onCompleted: () => refetch(),
     });
     return result.data?.inviteForEntryRoleOnRoleSet ?? [];
@@ -251,6 +289,7 @@ const useRoleSetApplicationsAndInvitations = ({
     invitationStateChange: handleInvitationStateChange,
     deleteInvitation: handleDeleteInvitation,
     deletePlatformInvitation: handleDeletePlatformInvitation,
+    resendPlatformInvitation: handleResendPlatformInvitation,
     isApplying,
   };
 };

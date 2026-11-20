@@ -6,7 +6,6 @@ import {
   type RoleSetMemberUserFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
-import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 import type { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import type { InviteContributorsData } from '@/domain/access/model/InvitationDataModel';
 import type { InvitationModel } from '@/domain/access/model/InvitationModel';
@@ -26,32 +25,13 @@ export interface useCommunityAdminProvided {
     members: CommunityMemberUserFragmentWithRoles[];
     onLeadChange: (memberId: string, isLead: boolean) => Promise<unknown>;
     onAuthorizationChange: (memberId: string, isAdmin: boolean) => Promise<unknown>;
-    onAdd: (memberId: string) => Promise<unknown>;
     onRemove: (memberId: string) => Promise<unknown>;
-    getAvailable: (filter: string | undefined) => Promise<
-      {
-        id: string;
-        profile?: {
-          displayName: string;
-        };
-        email?: string;
-      }[]
-    >;
     inviteContributors: (inviteData: InviteContributorsData) => Promise<unknown>;
   };
   organizationAdmin: {
     members: CommunityMemberOrganizationFragmentWithRoles[];
     onLeadChange: (memberId: string, isLead: boolean) => Promise<unknown>;
-    onAdd: (memberId: string) => Promise<unknown>;
     onRemove: (memberId: string) => Promise<unknown>;
-    getAvailable: (filter: string | undefined) => Promise<
-      {
-        id: string;
-        profile?: {
-          displayName: string;
-        };
-      }[]
-    >;
     inviteContributors: (inviteData: InviteContributorsData) => Promise<unknown>;
   };
   virtualContributorAdmin: {
@@ -70,12 +50,11 @@ export interface useCommunityAdminProvided {
     onInvitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
     onDeleteInvitation: (invitationId: string) => Promise<unknown>;
     onDeletePlatformInvitation: (invitationId: string) => Promise<unknown>;
+    onResendPlatformInvitation: (invitationId: string) => Promise<unknown>;
   };
   permissions: {
-    canAddUsers: boolean;
     canInvite: boolean;
     canInviteOrganizations: boolean;
-    canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
     canAddVirtualContributorsFromAccount: boolean;
   };
@@ -122,7 +101,6 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     contributorTypes: [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
     fetchContributors: true,
     fetchRoleDefinitions: true,
-    onChange: () => refetchAvailableContributors(),
   });
   const memberRoleDefinition = rolesDefinitions?.[RoleName.Member];
   const leadRoleDefinition = rolesDefinitions?.[RoleName.Lead];
@@ -144,28 +122,6 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     return result;
   })();
 
-  // Available new members:
-  const {
-    refetch: refetchAvailableContributors,
-    findAvailableUsersForRoleSetEntryRole,
-    findAvailableOrganizationsForRoleSet,
-  } = useRoleSetAvailableContributors({
-    roleSetId,
-    filterCurrentMembers: [...communityUsers, ...communityOrganizations],
-  });
-
-  const getAvailableUsers = async (filter: string | undefined) => {
-    const { users } = await findAvailableUsersForRoleSetEntryRole(filter);
-    return users;
-  };
-  const getAvailableOrganizations = async (filter: string | undefined) => {
-    const { organizations } = await findAvailableOrganizationsForRoleSet(filter);
-    return organizations;
-  };
-
-  // Adding new members:
-  const onAddUser = (memberId: string) => assignRoleToUser(memberId, RoleName.Member);
-
   const onRemoveUser = (memberId: string) => removeRoleFromUser(memberId, RoleName.Member);
 
   const onUserLeadChange = (memberId: string, isLead: boolean) =>
@@ -175,8 +131,6 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
 
   const onUserAuthorizationChange = (memberId: string, isAdmin: boolean) =>
     isAdmin ? assignRoleToUser(memberId, RoleName.Admin) : removeRoleFromUser(memberId, RoleName.Admin);
-
-  const onAddOrganization = (memberId: string) => assignRoleToOrganization(memberId, RoleName.Member);
 
   const onOrganizationLeadChange = (memberId: string, isLead: boolean) =>
     isLead ? assignRoleToOrganization(memberId, RoleName.Lead) : removeRoleFromOrganization(memberId, RoleName.Lead);
@@ -195,6 +149,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     invitationStateChange,
     deleteInvitation,
     deletePlatformInvitation,
+    resendPlatformInvitation,
     loading: loadingApplicationsAndInvitations,
     errored: erroredApplicationsAndInvitations,
   } = useRoleSetApplicationsAndInvitations({
@@ -205,18 +160,13 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     inviteContributorsOnRoleSet({ roleSetId, ...inviteData });
 
   const permissions = {
-    canAddUsers: authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssign),
     // Inviting (incl. by email) is gated by the dedicated invite privilege, which space admins
-    // hold even when they lack RolesetEntryRoleAssign (the direct-add privilege reserved for PAs).
+    // hold. Invitation is the only way users and organizations join (alkem-io/server#6623).
     canInvite: authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleInvite),
-    // Same invite privilege covers organization invitees — distinct from canAddOrganizations
-    // below, which is the platform-admin direct-add path.
+    // Same invite privilege covers organization invitees.
     canInviteOrganizations: authorizationPrivileges.some(
       priv => priv === AuthorizationPrivilege.RolesetEntryRoleInvite
     ),
-    canAddOrganizations:
-      authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssignOrganization) &&
-      authorizationPrivileges.some(priv => priv === AuthorizationPrivilege.Grant),
     canAddVirtualContributors: authorizationPrivileges.some(
       priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssign
     ),
@@ -232,17 +182,13 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
       members: communityUsers,
       onLeadChange: onUserLeadChange,
       onAuthorizationChange: onUserAuthorizationChange,
-      onAdd: onAddUser,
       onRemove: onRemoveUser,
-      getAvailable: getAvailableUsers,
       inviteContributors,
     },
     organizationAdmin: {
       members: communityOrganizations,
       onLeadChange: onOrganizationLeadChange,
-      onAdd: onAddOrganization,
       onRemove: onRemoveOrganization,
-      getAvailable: getAvailableOrganizations,
       inviteContributors,
     },
     virtualContributorAdmin: {
@@ -261,6 +207,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
       onInvitationStateChange: invitationStateChange,
       onDeleteInvitation: deleteInvitation,
       onDeletePlatformInvitation: deletePlatformInvitation,
+      onResendPlatformInvitation: resendPlatformInvitation,
     },
     permissions,
     myPrivileges: authorizationPrivileges,

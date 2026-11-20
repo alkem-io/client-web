@@ -2,6 +2,7 @@ import { Menu } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDragScroll } from '@/crd/hooks/useDragScroll';
+import { MAIN_CONTENT_ID } from '@/crd/lib/mainContent';
 import { cn } from '@/crd/lib/utils';
 
 type TabItem = {
@@ -47,18 +48,39 @@ export function SpaceNavigationTabs({
   isSmallScreen,
   className,
 }: SpaceNavigationTabsProps) {
+  // The tabs are redundant only when none leads anywhere but the active section. A hidden
+  // section opened by URL keeps the tab back to the sole visible state.
+  const showTabs = tabs.some(tab => tab.index !== activeIndex);
+
+  // Choosing the last other destination removes the tabs, and the focused tab with them. Hand
+  // focus to the main content (the skip-link target) instead of letting it fall to the document.
+  const changeTab = (index: number) => {
+    if (tabs.every(tab => tab.index === index)) {
+      document.getElementById(MAIN_CONTENT_ID)?.focus({ preventScroll: true });
+    }
+    onTabChange(index);
+  };
+
   if (isSmallScreen) {
-    return <MobileTabBar tabs={tabs} activeIndex={activeIndex} onTabChange={onTabChange} onMenuClick={onMenuClick} />;
+    return (
+      <MobileTabBar
+        tabs={tabs}
+        activeIndex={activeIndex}
+        showTabs={showTabs}
+        onTabChange={changeTab}
+        onMenuClick={onMenuClick}
+      />
+    );
+  }
+
+  // No other state to navigate to: drop the tab strip but keep the action slot, which carries
+  // the header actions on this row.
+  if (!showTabs) {
+    return <div className={cn('flex justify-end pb-3', className)}>{action}</div>;
   }
 
   return (
-    <DesktopTabs
-      tabs={tabs}
-      activeIndex={activeIndex}
-      onTabChange={onTabChange}
-      action={action}
-      className={className}
-    />
+    <DesktopTabs tabs={tabs} activeIndex={activeIndex} onTabChange={changeTab} action={action} className={className} />
   );
 }
 
@@ -163,11 +185,13 @@ function DesktopTabs({
 function MobileTabBar({
   tabs,
   activeIndex,
+  showTabs,
   onTabChange,
   onMenuClick,
 }: {
   tabs: TabItem[];
   activeIndex: number;
+  showTabs: boolean;
   onTabChange: (index: number) => void;
   onMenuClick?: () => void;
 }) {
@@ -199,29 +223,36 @@ function MobileTabBar({
             <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
           </>
         )}
-        {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-        {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-        <ul ref={scrollRef} role="list" className={MOBILE_TAB_LIST_CLASSES}>
-          {tabs.map(tab => {
-            const active = tab.index === activeIndex;
-            return (
-              <li key={tab.index} ref={active ? activeTabRef : undefined} className="inline-flex items-center shrink-0">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => onTabChange(tab.index)}
-                  className={cn(
-                    'whitespace-nowrap py-2 px-1 text-control transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                    active ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
-                  )}
+        {/* No other state to navigate to; the menu button stays. */}
+        {showTabs && (
+          // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+          // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
+          <ul ref={scrollRef} role="list" className={MOBILE_TAB_LIST_CLASSES}>
+            {tabs.map(tab => {
+              const active = tab.index === activeIndex;
+              return (
+                <li
+                  key={tab.index}
+                  ref={active ? activeTabRef : undefined}
+                  className="inline-flex items-center shrink-0"
                 >
-                  {tab.label}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => onTabChange(tab.index)}
+                    className={cn(
+                      'whitespace-nowrap py-2 px-1 text-control transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      active ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    {tab.label}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
     </nav>
   );

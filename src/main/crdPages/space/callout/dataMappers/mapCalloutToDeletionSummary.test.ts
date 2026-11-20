@@ -88,6 +88,7 @@ describe('mapCalloutToDeletionSummary', () => {
       [{ whiteboard: { id: 'wb' }, memo: { id: 'm' } }, 'whiteboard'],
       [{ memo: { id: 'm' }, poll: { id: 'p' } }, 'memo'],
       [{ poll: { id: 'p' }, mediaGallery: { id: 'mg' } }, 'poll'],
+      [{ form: { id: 'f' } }, 'form'],
       [{ mediaGallery: { id: 'mg' }, collaboraDocument: { id: 'd' } }, 'mediaGallery'],
       [{ collaboraDocument: { id: 'd' } }, 'document'],
     ];

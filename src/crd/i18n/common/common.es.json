@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "Este usuario ha desactivado la mensajería directa. No puede enviarle un mensaje en este momento.",
       "NOT_SUPPORTED": "No soportado: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "Se produjo un error inesperado. Inténtelo de nuevo.",
       "generic": "Se ha producido un error",
       "generic-with-code": "Se ha producido un error con el código {{code}}",
+      "network": {
+        "session_store_unavailable": "El servicio no está disponible temporalmente. Inténtelo de nuevo en un momento.",
+        "generic": "Se produjo un problema de conexión. Compruebe su conexión e inténtelo de nuevo."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -30,6 +35,8 @@
           "invalidToken": "Invalid token.",
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Unable to initialize login flow.",
+          "platformSupportSelfTarget": "No puedes hacer esto con tu propia cuenta. Pídeselo a otra persona de soporte de la plataforma o a un administrador de la organización.",
+          "secondFactorRequired": "Tu cuenta requiere la verificación en dos pasos.",
           "sessionExpired": "Session expired.",
           "sessionExtend": "Unable to extend session.",
           "subscriptionNotAuthenticated": "Subscription requires authentication.",
@@ -51,7 +58,7 @@
           "userIdentity": "User identity not found."
         },
         "operations": {
-          "calloutClosed": "Callout is closed.",
+          "calloutClosed": "La $t(common.post) está cerrada.",
           "licenseEntitlementNotAvailable": "License entitlement not available.",
           "licenseEntitlementNotSupported": "License entitlement not supported.",
           "messagingNotEnabled": "Messaging not enabled.",
@@ -258,8 +265,8 @@
     "Organization": "Organización",
     "Organizations": "Organizaciones",
     "Poll": "Poll",
-    "Post": "Post",
-    "Posts": "Posts",
+    "Post": "Publicación",
+    "Posts": "Publicaciones",
     "Profile": "Perfil",
     "Response": "Respuesta",
     "Responses": "Respuestas",
@@ -506,8 +513,8 @@
     "permission": "Permiso",
     "permissions": "Permisos",
     "poll": "poll",
-    "post": "post",
-    "posts": "posts",
+    "post": "publicación",
+    "posts": "publicaciones",
     "preview": "Vista previa",
     "profile": "perfil",
     "project": "Proyecto",
@@ -526,6 +533,10 @@
       "ADMIN": "$t(common.Admin)",
       "ANONYMOUS": "Anónimo",
       "ASSOCIATE": "Asociado",
+      "FEATURE_BETA_TESTER": "Función: Beta Tester",
+      "FEATURE_ORGANIZATION_CREATOR": "Función: Creador de organizaciones",
+      "FEATURE_VC_CAMPAIGN": "Acceso temprano a VC",
+      "FEATURE_VIRTUAL_ASSISTANT": "Función: Asistente virtual",
       "GLOBAL_ADMIN": "Administrador $t(common.global)",
       "GLOBAL_COMMUNITY_READER": "Gestor de $t(common.Community)",
       "GLOBAL_LICENSE_MANAGER": "Gestor de licencias",
@@ -538,7 +549,17 @@
       "LEAD": "Responsable",
       "MEMBER": "$t(common.Member)",
       "OWNER": "Propietario",
+      "PLATFORM_AUDIT_READER": "Lector de auditoría de la plataforma",
       "PLATFORM_BETA_TESTER": "Probador beta",
+      "PLATFORM_CONTENT_FULL_ACCESS": "Acceso total al contenido de la plataforma",
+      "PLATFORM_LICENSE_MANAGER": "Gestor de licencias de la plataforma",
+      "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin",
+      "PLATFORM_RESOURCE_ADMIN": "Administrador de recursos de la plataforma",
+      "PLATFORM_ROLES_ADMIN": "Administrador de roles de la plataforma",
+      "PLATFORM_SETTINGS_ADMIN": "Administrador de configuración de la plataforma",
+      "PLATFORM_SPACES_READER": "Lector de espacios de la plataforma",
+      "PLATFORM_SUPPORT": "Soporte de la plataforma",
+      "PLATFORM_USERS_ADMIN": "Administrador de usuarios de la plataforma",
       "PLATFORM_VC_CAMPAIGN": "Acceso temprano a VC",
       "REGISTERED": "Registrado"
     },
@@ -760,7 +781,8 @@
         },
         "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
           "description": "",
-          "subject": "{{triggeredByName}} ha asignado {{role}} a {{userName}}"
+          "subject": "{{triggeredByName}} ha asignado {{role}} a {{userName}}",
+          "subjectRemoved": "{{triggeredByName}} ha eliminado {{role}} de {{userName}}"
         },
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "description": "{{spaceName}}",
@@ -815,8 +837,8 @@
           "subject": "{{triggeredByName}} comentó en {{contributionName}} (contribución) en {{spaceName}}"
         },
         "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
-          "description": "{{triggeredByName}} publicó un nuevo $t(common.post) en {{spaceLevel}}: {{spaceName}}, con el nombre: {{calloutName}}.",
-          "subject": "{{spaceName}} - Se ha publicado un nuevo $t(common.post) \"{{calloutName}}\", ¡échale un vistazo!"
+          "description": "{{triggeredByName}} publicó una nueva $t(common.post) en {{spaceLevel}}: {{spaceName}}, con el nombre: {{calloutName}}.",
+          "subject": "{{spaceName}} - Se ha publicado una nueva $t(common.post) \"{{calloutName}}\", ¡échale un vistazo!"
         },
         "SPACE_COLLABORATION_CALLOUT_REACTION": {
           "description": "",
@@ -917,9 +939,51 @@
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
           "subject": "Su $t(common.organization) {{organizationName}} se ha unido a {{spaceName}}",
           "description": "No se requiere ninguna acción adicional."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} te invitó a asociarte con {{organizationName}}",
+          "description": "Como {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} aceptó la invitación a asociarse con {{organizationName}}",
+          "description": "{{triggeredByName}} ahora es asociado de {{organizationName}}, de la que eres $t(common.admin).{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} rechazó la invitación a asociarse con {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} solicitó asociarse con {{organizationName}}",
+          "description": "Revisa la solicitud en la configuración de la organización"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Tu solicitud para asociarte con {{organizationName}} fue aprobada",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Tu solicitud para asociarte con {{organizationName}} fue rechazada",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "\"{{memberName}}\" se unió a {{organizationName}} como asociado",
+          "description": "{{memberName}} se ha unido a {{organizationName}}, de la que eres $t(common.admin)."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} respondió al formulario \"{{calloutName}}\"",
+          "description": "En <b>{{spaceName}}</b>, del cual eres $t(common.admin)."
         }
       },
-      "spacesToJoin": "Al aceptar se une a: {{spaces}}"
+      "spacesToJoin": "Al aceptar se une a: {{spaces}}",
+      "associateRole": {
+        "associate": "Asociado",
+        "associateAdmin": "Asociado + Admin",
+        "associateOwner": "Asociado + Propietario"
+      },
+      "withheldRole": {
+        "admin": "Admin",
+        "owner": "Propietario"
+      },
+      "associateRoleWithheld": " No se pudo conceder el rol {{role}}."
     },
     "profile": {
       "fields": {
@@ -1102,6 +1166,9 @@
     "message": "Mensaje",
     "successfully-sent": "Mensaje enviado correctamente"
   },
+  "notification": {
+    "close": "Cerrar notificación"
+  },
   "ok": "Aceptar",
   "pages": {
     "admin": {
@@ -1208,6 +1275,7 @@
         "urlRequired": "URL is required"
       },
       "transferCallout": {
+        "formNotAllowed": "Una $t(common.post) con un formulario no se puede transferir: sus respuestas permanecen en el espacio donde se dieron.",
         "urlNotCallout": "URL does not resolve to a $t(common.post)",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space"
@@ -1250,7 +1318,10 @@
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organization"
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
+        "accountNotAccessible": "Esta cuenta existe pero no es accesible para usted.",
+        "successMessage": "Espacio transferido correctamente.",
+        "errorMessage": "No se pudo transferir el espacio."
       },
       "transferVc": {
         "confirmButton": "Transfer",
@@ -1315,12 +1386,13 @@
       },
       "vcConversion": {
         "alreadyConverted": "This virtual contributor is already knowledge-base-based. No conversion needed.",
-        "calloutCount": "Callouts to Migrate",
+        "calloutCount": "$t(common.Posts) a migrar",
         "confirmTitle": "Convert Virtual Contributor?",
-        "confirmWarning": "This will convert the virtual contributor from space-based to knowledge-base-based. Callouts will be MOVED from the source space (not copied). This action cannot be undone.",
+        "confirmWarning": "Esto convertirá el contribuidor virtual de basado en un espacio a basado en una base de conocimiento. Las $t(common.posts) se MOVERÁN desde el espacio de origen (no se copiarán). Esta acción no se puede deshacer.",
         "convertButton": "Convert to Knowledge Base",
         "errorMessage": "Failed to convert virtual contributor.",
-        "sectionDescription": "Convert a space-based virtual contributor to use a knowledge base. Callouts will be moved from the source space — not copied.",
+        "formNotAllowed": "El espacio de este contribuidor virtual tiene una $t(common.post) con un formulario, por lo que no se puede convertir en una base de conocimiento.",
+        "sectionDescription": "Convierte un contribuidor virtual basado en un espacio para que use una base de conocimiento. Las $t(common.posts) se moverán desde el espacio de origen, no se copiarán.",
         "sectionTitle": "Virtual Contributor Type Conversion",
         "sourceSpace": "Source Space",
         "successMessage": "Virtual contributor conversion completed successfully.",
@@ -1523,5 +1595,60 @@
     "archived": "Archivado",
     "demo": "Demo",
     "inactive": "Inactivo"
+  },
+  "messageAttachments": {
+    "videoLabel": "Vídeo adjunto: {{name}}",
+    "videoUnavailableHint": "Este vídeo no se puede reproducir aquí. Descárgalo para verlo.",
+    "listLabel": "Adjuntos",
+    "imageAlt": "Imagen adjunta: {{name}}",
+    "download": "Descargar {{name}}",
+    "unavailableHint": "No se pudo cargar este archivo. Descárgalo para verlo.",
+    "unavailableNoDownload": "Este archivo no está disponible.",
+    "loading": "Cargando adjunto",
+    "openMedia": "Abrir {{name}} en el visor multimedia"
+  },
+  "unsavedChanges": {
+    "count_one": "{{count}} cambio sin guardar",
+    "count_other": "{{count}} cambios sin guardar",
+    "save": "Guardar cambios",
+    "discard": "Descartar",
+    "saving": "Guardando…",
+    "saved": "Cambios guardados",
+    "regionLabel": "Cambios sin guardar",
+    "discardDialog": {
+      "title_one": "¿Descartar 1 cambio sin guardar?",
+      "title_other": "¿Descartar {{count}} cambios sin guardar?",
+      "description": "Cada campo modificado en esta pestaña vuelve a su valor guardado.",
+      "confirm": "Descartar"
+    },
+    "leaveDialog": {
+      "title": "Cambios sin guardar",
+      "description": "Tienes cambios sin guardar en esta pestaña. ¿Quieres guardarlos, descartarlos o quedarte en esta pestaña?",
+      "save": "Guardar",
+      "discard": "Descartar y salir"
+    },
+    "saveFailedDialog": {
+      "title": "No se pudieron guardar tus cambios",
+      "description": "Es posible que alguien haya cambiado esta página mientras tanto. Actualiza la página para cargar la versión más reciente; tus cambios sin guardar se perderán.",
+      "refresh": "Actualizar página",
+      "close": "Cerrar"
+    }
+  },
+  "vcPaused": {
+    "title": "¡Los Virtual Contributors se están actualizando! 🚀",
+    "description": "Los estamos reconstruyendo para que sean más inteligentes y útiles. Mientras tanto, no puedes crearlos, añadirlos ni mencionarlos, pero tus VC existentes siguen visibles.",
+    "learnMore": "Más información",
+    "contactSupport": "Contactar con soporte",
+    "mentionUnavailable": "No disponible temporalmente"
+  },
+  "appDownload": {
+    "failed": "No se pudo descargar el archivo."
+  },
+  "emojiPicker": {
+    "more": "Más emojis"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} colaboradores aquí: {{names}}",
+    "pinGroupList": "{{count}} colaboradores aquí"
   }
 }

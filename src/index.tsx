@@ -1,8 +1,12 @@
 import { createRoot } from 'react-dom/client';
+import { installAppBack } from '@/core/appMode/appBack';
 import '@/crd/styles/crd.css';
 import './index.css';
 import Root from './root';
 import { register as registerServiceWorker, unregister as unregisterServiceWorker } from './serviceWorker';
+
+// Before the first render, so the app shell's Back button can ask the page from the first press.
+installAppBack();
 
 const root = createRoot(document.getElementById('root')!);
 root.render(<Root />);

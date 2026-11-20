@@ -21,6 +21,8 @@ function CrdNotificationsPanelConnector() {
     setNotificationFilter,
     isLoadingNotifications,
     hasMoreNotifications,
+    hasNewNotifications,
+    showNewNotifications,
     notificationSettingsHref,
     handleNotificationClick,
     markNotificationsAsRead,
@@ -40,6 +42,8 @@ function CrdNotificationsPanelConnector() {
         selectedFilter={notificationFilter}
         loading={isLoadingNotifications}
         hasMore={hasMoreNotifications}
+        hasNewNotifications={hasNewNotifications}
+        onShowNewNotifications={showNewNotifications}
         settingsHref={notificationSettingsHref}
         onFilterChange={key => setNotificationFilter(key as NotificationFilterType)}
         onMarkAllRead={() => markNotificationsAsRead()}

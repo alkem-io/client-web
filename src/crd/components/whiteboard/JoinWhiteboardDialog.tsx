@@ -44,7 +44,9 @@ export function JoinWhiteboardDialog({
     <Dialog open={open}>
       <DialogPortal>
         <DialogOverlay />
+        {/* No-exit gate: the app's OS Back must pass through to history — see src/core/appMode/appBack.ts */}
         <DialogContentRaw
+          data-app-back="pass"
           aria-labelledby={titleId}
           onInteractOutside={e => e.preventDefault()}
           onEscapeKeyDown={e => e.preventDefault()}

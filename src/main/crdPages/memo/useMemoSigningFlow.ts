@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import type { MemoSigningStage } from '@/crd/components/memo/MemoSigningDialog';
+import { type MemoSigningOrigin, writeMemoSigningReturnRecord } from '@/main/ui/layout/memoSigningReturnStorage';
 
 type PreparedAttempt = { attemptId: string; previewUrl: string };
 
@@ -9,6 +10,7 @@ type UseMemoSigningFlowOptions = {
   prepare: (memoId: string) => Promise<PreparedAttempt>;
   continueSigning: (attemptId: string) => Promise<string>;
   navigate: (url: string) => void;
+  returnContext?: MemoSigningOrigin;
 };
 
 export function useMemoSigningFlow({
@@ -17,6 +19,7 @@ export function useMemoSigningFlow({
   prepare: prepareMutation,
   continueSigning: continueMutation,
   navigate,
+  returnContext,
 }: UseMemoSigningFlowOptions) {
   const [stage, setStage] = useState<MemoSigningStage>('idle');
   const [attempt, setAttempt] = useState<PreparedAttempt>();
@@ -45,7 +48,11 @@ export function useMemoSigningFlow({
     continuing.current = true;
     setStage('continuing');
     try {
-      navigate(await continueMutation(attempt.attemptId));
+      const authorizeUrl = await continueMutation(attempt.attemptId);
+      if (returnContext) {
+        writeMemoSigningReturnRecord(attempt.attemptId, returnContext);
+      }
+      navigate(authorizeUrl);
     } catch {
       setStage('continue-error');
       continuing.current = false;

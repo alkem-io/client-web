@@ -1,19 +1,90 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 import type * as React from 'react';
+import { createContext, useContext, useRef, useState } from 'react';
 
 import { cn } from '@/crd/lib/utils';
 
-function DropdownMenu({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
-  return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
+/**
+ * Lets the trigger open the menu itself. Radix opens a dropdown on `pointerdown`
+ * for every pointer type, but iOS Safari does not always deliver `pointerdown`
+ * for a tap: once the page is scrolled, taps on the sticky header's menus reach
+ * the page as a `click` only, so a pointerdown-only trigger never opens. Touch and
+ * pen therefore open on `click` (finger lift), the way Radix's own Select trigger
+ * does; mouse keeps opening on press so press-drag-release selection still works.
+ */
+const DropdownMenuOpenContext = createContext<{ open: boolean; setOpen: (open: boolean) => void } | null>(null);
+
+function DropdownMenu({
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const isControlled = openProp !== undefined;
+  const open = isControlled ? openProp : uncontrolledOpen;
+
+  const setOpen = (next: boolean) => {
+    if (!isControlled) setUncontrolledOpen(next);
+    onOpenChange?.(next);
+  };
+
+  return (
+    <DropdownMenuOpenContext.Provider value={{ open, setOpen }}>
+      <DropdownMenuPrimitive.Root data-slot="dropdown-menu" open={open} onOpenChange={setOpen} {...props} />
+    </DropdownMenuOpenContext.Provider>
+  );
 }
 
 function DropdownMenuPortal({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
   return <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />;
 }
 
-function DropdownMenuTrigger({ ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
-  return <DropdownMenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />;
+const isTouchLikePointer = (pointerType: string) => pointerType === 'touch' || pointerType === 'pen';
+
+function DropdownMenuTrigger({
+  onPointerDown,
+  onClick,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
+  const menu = useContext(DropdownMenuOpenContext);
+  // True while the current press is a mouse press with which Radix closed the menu
+  // on `pointerdown`, so the click that ends it must not reopen it. Only a closing
+  // press sets it: the click after an opening press often never reaches the trigger
+  // (a modal menu disables pointer events outside itself), and a marker left set
+  // would swallow the next tap that arrives as a click alone.
+  const pressClosedMenuRef = useRef(false);
+
+  return (
+    <DropdownMenuPrimitive.Trigger
+      data-slot="dropdown-menu-trigger"
+      onPointerDown={event => {
+        onPointerDown?.(event);
+        if (event.defaultPrevented || !menu) return;
+        if (isTouchLikePointer(event.pointerType)) {
+          // Skips Radix's own pointerdown toggle (it bails on a prevented event):
+          // a touch that turns into a scroll then never opens the menu either.
+          event.preventDefault();
+          pressClosedMenuRef.current = false;
+        } else {
+          pressClosedMenuRef.current = menu.open;
+        }
+      }}
+      onClick={event => {
+        onClick?.(event);
+        const pressClosedMenu = pressClosedMenuRef.current;
+        pressClosedMenuRef.current = false;
+        // Skipped when the menu is already open: a mouse press opened it on
+        // `pointerdown`, and reporting the same opening twice would call a
+        // controlled consumer's onOpenChange(true) again.
+        if (event.defaultPrevented || !menu || pressClosedMenu || menu.open) return;
+        // A touch/pen tap, or a tap whose `pointerdown` iOS never delivered.
+        menu.setOpen(true);
+      }}
+      {...props}
+    />
+  );
 }
 
 function DropdownMenuContent({

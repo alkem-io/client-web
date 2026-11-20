@@ -1,9 +1,13 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { aal2LoginFlow, passkeyLoginFlow } from './__fixtures__/secondFactorFlows';
 import { LoginCrdRoute } from './LoginCrdRoute';
 
 let mockSearch = '';
+// The props the route last passed to the welcome screen.
+let mockWelcomeProps: Record<string, unknown> | undefined;
 const mockIsAuthenticated = vi.fn<() => boolean>();
 const replaceSpy = vi.fn<(url: string) => void>();
 
@@ -23,24 +27,59 @@ vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
 
 // Render a cheap sentinel for the login screen so we can assert whether it
 // mounted without pulling in the full CRD auth UI / Kratos stack.
-vi.mock('@/crd/components/auth/LoginCard', () => ({
-  LoginCard: ({
+// The second-step cases render the real card and adapter against recorded flows; every other
+// case keeps the cheap sentinel.
+let mockRealFlow = false;
+vi.mock('@/crd/components/auth/LoginCard', async importOriginal => {
+  const actual = await importOriginal<typeof import('@/crd/components/auth/LoginCard')>();
+  const Sentinel = ({
     descriptor,
     notice,
   }: {
     descriptor?: { flowType?: string };
-    notice?: { text: string; actionLabel: string; actionHref: string };
+    notice?: { text: string; actionLabel: string; actionHref: string; tone?: string };
   }) => (
     <div data-testid="crd-login-card">
       {descriptor?.flowType ?? 'no-descriptor'}
       {notice ? (
-        <div data-testid="card-notice">
+        <div data-testid="card-notice" data-tone={notice.tone ?? 'destructive'}>
           <span>{notice.text}</span>
           <a href={notice.actionHref}>{notice.actionLabel}</a>
         </div>
       ) : null}
     </div>
-  ),
+  );
+  return {
+    LoginCard: (props: Parameters<typeof actual.LoginCard>[0]) =>
+      mockRealFlow ? <actual.LoginCard {...props} /> : <Sentinel {...props} />,
+  };
+});
+vi.mock('@/crd/components/auth/AppSignInWelcome', () => ({
+  AppSignInWelcome: (props: {
+    signInHref: string;
+    browseSpacesHref?: string;
+    message?: { text: string; tone: string };
+  }) => {
+    mockWelcomeProps = props;
+    const { signInHref, browseSpacesHref, message } = props;
+    return (
+      <div data-testid="app-signin-welcome">
+        {message ? (
+          <span data-testid="welcome-message" data-tone={message.tone}>
+            {message.text}
+          </span>
+        ) : null}
+        <a data-testid="welcome-sign-in" href={signInHref}>
+          sign in
+        </a>
+        {browseSpacesHref ? (
+          <a data-testid="welcome-browse-spaces" href={browseSpacesHref}>
+            browse
+          </a>
+        ) : null}
+      </div>
+    );
+  },
 }));
 vi.mock('./AuthShellWrapper', () => ({
   AuthShellWrapper: ({ children }: { children: React.ReactNode }) => <>{children}</>,
@@ -69,10 +108,16 @@ vi.mock('./useKratosMessageCopy', () => ({
   useTranslateDescriptor: () => (descriptor: unknown) => descriptor,
   useKratosMessageCopy: () => (messages: unknown) => messages,
 }));
-vi.mock('./flowDescriptorAdapter', () => ({ flowDescriptorAdapter: () => ({}) }));
+vi.mock('./flowDescriptorAdapter', async importOriginal => {
+  const actual = await importOriginal<typeof import('./flowDescriptorAdapter')>();
+  return {
+    flowDescriptorAdapter: (...args: Parameters<typeof actual.flowDescriptorAdapter>) =>
+      mockRealFlow ? actual.flowDescriptorAdapter(...args) : {},
+  };
+});
 vi.mock('./passkeyTrigger', () => ({
   invokePasskeyTrigger: vi.fn(),
-  PasskeyTriggerError: class extends Error {},
+  translatePasskeyError: vi.fn(),
 }));
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -93,7 +138,9 @@ const renderRoute = () =>
 describe('LoginCrdRoute', () => {
   beforeEach(() => {
     mockSearch = '';
+    mockWelcomeProps = undefined;
     mockFlowState = { flow: undefined, error: undefined, loading: false };
+    mockRealFlow = false;
     mockIsAuthenticated.mockReset();
     replaceSpy.mockReset();
     // Simulate the page being served on the identity subdomain (where signup
@@ -271,6 +318,132 @@ describe('LoginCrdRoute', () => {
     );
   });
 
+  // The native shell (and the server's /app-handoff route) bounce an interrupted
+  // sign-in back to a flow-less `/login?app_signin=<reason>`. Redirecting on
+  // arrival — today's OIDC-entry behaviour — would discard the reason before it
+  // could be read and put the app straight back into the loop it just left.
+  it.each([
+    ['cancelled', 'info'],
+    ['failed', 'destructive'],
+  ])('an app_signin=%s arrival renders the welcome view with its reason, in the %s tone', (reason, tone) => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = `app_signin=${reason}`;
+
+    renderRoute();
+
+    expect(replaceSpy).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('card-notice')).not.toBeInTheDocument();
+    const message = screen.getByTestId('welcome-message');
+    expect(message).toHaveTextContent(`appSignIn.${reason}`);
+    expect(message).toHaveAttribute('data-tone', tone);
+    expect(screen.getByTestId('welcome-sign-in')).toHaveAttribute(
+      'href',
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
+    );
+  });
+
+  // `required` is the app's first sign-in screen, before any attempt was made:
+  // it renders the welcome view (sign in + browse) instead of a card
+  // whose only content was a "Sign in to continue." notice.
+  it('an app_signin=required arrival renders the welcome view instead of the notice card', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'app_signin=required';
+
+    renderRoute();
+
+    expect(replaceSpy).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('crd-login-card')).not.toBeInTheDocument();
+    expect(screen.getByTestId('welcome-sign-in')).toHaveAttribute(
+      'href',
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
+    );
+    expect(screen.getByTestId('welcome-browse-spaces')).toHaveAttribute('href', 'https://sandbox-alkem.io/spaces');
+    expect(screen.queryByTestId('welcome-message')).not.toBeInTheDocument();
+    // No sign-up entry: in the app the shell turns /sign_up into an OIDC
+    // sign-in, so a Create account button would open the sign-in screen.
+    expect(JSON.stringify(mockWelcomeProps)).not.toContain('sign_up');
+  });
+
+  it('the welcome view forwards the pending returnUrl to sign-in', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'app_signin=required&returnUrl=%2Fspace%2Fdemo';
+
+    renderRoute();
+
+    expect(screen.getByTestId('welcome-sign-in')).toHaveAttribute(
+      'href',
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fspace%2Fdemo'
+    );
+  });
+
+  it('a lockout wins over app_signin=required', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'app_signin=required&lockout=true&retry_after=120';
+
+    renderRoute();
+
+    expect(screen.queryByTestId('app-signin-welcome')).not.toBeInTheDocument();
+    expect(screen.getByTestId('card-notice')).toHaveAttribute('data-tone', 'destructive');
+  });
+
+  // The user this landing exists for is signed in: the WebView holds a live
+  // `alkemio_session`, so `isAuthenticated` is true when Settings > Security
+  // bounces them back here. Without the route-level exemption
+  // `NotAuthenticatedRoute` navigates to /home and the notice never renders —
+  // the case the three tests above miss, because they all pin `false`.
+  it('an authenticated app_signin=required arrival still lands on the welcome view', () => {
+    mockIsAuthenticated.mockReturnValue(true);
+    mockSearch = 'app_signin=required';
+
+    renderRoute();
+
+    expect(replaceSpy).not.toHaveBeenCalled();
+    expect(screen.getByTestId('app-signin-welcome')).toBeInTheDocument();
+  });
+
+  // The exemption is value-scoped too: an authenticated visitor on a crafted
+  // `?app_signin=<anything>` must still be bounced by the guard.
+  it('an authenticated unrecognised app_signin value is still bounced by the guard', () => {
+    mockIsAuthenticated.mockReturnValue(true);
+    mockSearch = 'app_signin=bogus';
+
+    renderRoute();
+
+    expect(screen.queryByTestId('crd-login-card')).not.toBeInTheDocument();
+  });
+
+  // The disqualifier is value-scoped, not presence-scoped: an unrecognised value
+  // must fall through to today's redirect. Scoping it to presence would let any
+  // crafted `/login?app_signin=<anything>` park a visitor on a card with no
+  // notice and no redirect — a dead sign-in screen.
+  it('an unrecognised app_signin value falls through to the ordinary OIDC entry', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'app_signin=bogus';
+
+    renderRoute();
+
+    expect(screen.queryByTestId('card-notice')).not.toBeInTheDocument();
+    expect(replaceSpy).toHaveBeenCalledWith('https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F');
+  });
+
+  it('a flow-less /login with no app_signin and no lockout still redirects', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+
+    renderRoute();
+
+    expect(screen.queryByTestId('card-notice')).not.toBeInTheDocument();
+    expect(replaceSpy).toHaveBeenCalledWith('https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F');
+  });
+
+  it('a lockout arrival keeps its destructive tone', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'lockout=true&retry_after=120';
+
+    renderRoute();
+
+    expect(screen.getByTestId('card-notice')).toHaveAttribute('data-tone', 'destructive');
+  });
+
   it('still shows the loading state while the flow request is in flight', () => {
     mockIsAuthenticated.mockReturnValue(false);
     mockSearch = 'flow=pending-flow-id';
@@ -280,5 +453,132 @@ describe('LoginCrdRoute', () => {
 
     expect(screen.queryByTestId('card-notice')).not.toBeInTheDocument();
     expect(screen.getByTestId('crd-login-card')).toBeInTheDocument();
+  });
+
+  describe('second step (requested_aal: aal2)', () => {
+    beforeEach(() => {
+      mockRealFlow = true;
+      mockIsAuthenticated.mockReturnValue(true);
+    });
+
+    const codeInput = (container: HTMLElement, name: string) => container.querySelector(`input[name="${name}"]`);
+
+    it('renders the code entry, posts to the flow, and is not treated as an OIDC entry', () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };
+
+      const { container } = renderRoute();
+
+      expect(screen.getByText('secondFactor.title')).toBeInTheDocument();
+      expect(codeInput(container, 'totp_code')).not.toBeNull();
+      expect(codeInput(container, 'lookup_secret')).toBeNull();
+      // Kratos owns the submission and, on success, its own return_to (the pending sign-in).
+      expect(container.querySelector('form')).toHaveAttribute('action', aal2LoginFlow.ui.action);
+      expect(container.querySelector('button[name="method"][value="totp"]')).not.toBeNull();
+      expect(screen.queryByText('signIn.forgotPassword')).not.toBeInTheDocument();
+      expect(replaceSpy).not.toHaveBeenCalled();
+    });
+
+    it('offers a way out of the step to someone without their second factor', () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };
+
+      renderRoute();
+
+      expect(screen.getByRole('link', { name: 'secondFactorPage.signOut' })).toHaveAttribute('href', '/logout');
+    });
+
+    it("shows the identity provider's own message for a wrong code", () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = {
+        flow: {
+          ...aal2LoginFlow,
+          ui: {
+            ...aal2LoginFlow.ui,
+            messages: [{ id: 4000008, type: 'error', text: 'The provided authentication code is invalid.' }],
+          },
+        },
+        error: undefined,
+        loading: false,
+      };
+
+      renderRoute();
+
+      expect(screen.getByRole('alert')).toHaveTextContent('The provided authentication code is invalid.');
+    });
+
+    it('"Use a recovery code" swaps the code for the recovery code, submitted as method lookup_secret', async () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };
+
+      const { container } = renderRoute();
+      await userEvent.click(screen.getByRole('button', { name: 'secondFactor.useRecoveryCode' }));
+
+      expect(codeInput(container, 'lookup_secret')).not.toBeNull();
+      expect(codeInput(container, 'totp_code')).toBeNull();
+      expect(container.querySelector('button[name="method"][value="lookup_secret"]')).not.toBeNull();
+      expect(screen.getByRole('button', { name: 'secondFactor.useAuthenticator' })).toBeInTheDocument();
+    });
+
+    it('reopens on the recovery code after a submitted one is refused, and can switch back', async () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = {
+        flow: {
+          ...aal2LoginFlow,
+          active: 'lookup_secret',
+          ui: {
+            ...aal2LoginFlow.ui,
+            messages: [{ id: 4000016, type: 'error', text: 'The recovery code is not valid.' }],
+          },
+        },
+        error: undefined,
+        loading: false,
+      };
+
+      const { container } = renderRoute();
+
+      expect(codeInput(container, 'lookup_secret')).not.toBeNull();
+      expect(codeInput(container, 'totp_code')).toBeNull();
+      expect(screen.getByRole('alert')).toHaveTextContent('The recovery code is not valid.');
+
+      await userEvent.click(screen.getByRole('button', { name: 'secondFactor.useAuthenticator' }));
+      expect(codeInput(container, 'totp_code')).not.toBeNull();
+    });
+
+    it('starts the code entry empty again after switching away and back, with its submit disabled', async () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };
+
+      const { container } = renderRoute();
+      await userEvent.type(codeInput(container, 'totp_code') as HTMLInputElement, '123456');
+      await userEvent.click(screen.getByRole('button', { name: 'secondFactor.useRecoveryCode' }));
+      await userEvent.click(screen.getByRole('button', { name: 'secondFactor.useAuthenticator' }));
+
+      expect(codeInput(container, 'totp_code')).toHaveValue('');
+      expect(container.querySelector('button[name="method"][value="totp"]')).toBeDisabled();
+    });
+
+    it('offers the security key beside the code', () => {
+      mockSearch = 'flow=login-aal2';
+      mockFlowState = { flow: aal2LoginFlow, error: undefined, loading: false };
+
+      const { container } = renderRoute();
+
+      expect(container.querySelector('button[name="webauthn_login_trigger"]')).not.toBeNull();
+      expect(screen.getByRole('button', { name: /secondFactor\.useSecurityKey/ })).toBeInTheDocument();
+    });
+
+    it('leaves a passkey sign-in (first factor) unchanged: the passkey button and no second-factor group', () => {
+      mockSearch = 'flow=login-aal1';
+      mockFlowState = { flow: passkeyLoginFlow, error: undefined, loading: false };
+
+      const { container } = renderRoute();
+
+      expect(screen.getByText('signIn.title')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Sign in with passkey' })).toBeInTheDocument();
+      expect(codeInput(container, 'totp_code')).toBeNull();
+      expect(codeInput(container, 'lookup_secret')).toBeNull();
+      expect(container.querySelector('[name="webauthn_login_trigger"]')).toBeNull();
+    });
   });
 });

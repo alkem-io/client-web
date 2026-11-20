@@ -74,6 +74,13 @@ export type UseColumnMenuOptions = {
    * exists before firing the settings-only mutation. Provided by the layout data hook.
    */
   innovationFlowStates?: ReadonlyArray<{ id: string }>;
+  /**
+   * Whether the per-phase layout save writes the `sidebar` key. True for top-level Spaces
+   * (one sidebar per tab). False for subspaces: their sidebar lists are bound to position
+   * and written only by Customize Sidebar, so the per-phase save omits the key — the server
+   * then keeps the stored list, and a stale buffer can never be written back after a reorder.
+   */
+  includeSidebar: boolean;
 };
 
 export function useColumnMenu({
@@ -91,6 +98,7 @@ export function useColumnMenu({
   minimumNumberOfStates,
   onToggleVisibility,
   innovationFlowStates,
+  includeSidebar,
 }: UseColumnMenuOptions): ColumnMenuActions {
   const [updateCurrentState] = useUpdateInnovationFlowCurrentStateMutation();
   const [setDefaultTemplate] = useSetDefaultCalloutTemplateOnInnovationFlowStateMutation();
@@ -191,9 +199,9 @@ export function useColumnMenu({
       : undefined;
 
   /**
-   * Persist per-phase layout settings immediately (FR-013 partial update).
+   * Persist per-phase layout settings immediately (partial update).
    * Uses the settings-only mutation so ONLY `descriptionDisplayMode` + `showPublishDetails` +
-   * `sidebar` are sent — every other field (allowNewCallouts/visible/displayName/description) is
+   * (top-level only, see `includeSidebar`) `sidebar` are sent — every other field (allowNewCallouts/visible/displayName/description) is
    * omitted and thus left unchanged on the server, so a concurrent hide, rename, or description
    * edit is never clobbered by a layout save (FR-014/S2).
    */
@@ -214,7 +222,7 @@ export function useColumnMenu({
           showPublishDetails: layout.showPublishDetails,
           // Re-insert the out-of-vocabulary values captured at read time so this
           // full-replacement write never deletes a newer server vocabulary.
-          sidebar: toWireSidebar(layout.sidebar, layout.sidebarUnknown),
+          ...(includeSidebar ? { sidebar: toWireSidebar(layout.sidebar, layout.sidebarUnknown) } : {}),
         },
       },
       // Refetch so the local column buffer's `column.layout` reflects the saved

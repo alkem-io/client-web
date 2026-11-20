@@ -5,6 +5,7 @@ query CommunityInvitation($invitationId: UUID!, $isPlatformInvitation: Boolean!)
       createdDate
       updatedDate
       welcomeMessage
+      extraRoles
       actor {
         type
         id

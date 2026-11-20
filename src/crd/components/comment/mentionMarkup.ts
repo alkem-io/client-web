@@ -13,6 +13,10 @@ export const MENTION_MARKUP = '[@__display__](__id__)';
 
 const buildMentionPattern = () => /\[@([^\]]+?)\]\(([^)]+?)\)/g;
 
+/** TEMP: VCs disabled (#10398) — number of `[@name](id)` mention tokens in `value` that point at `id`. */
+export const countMentionsOf = (value: string, id: string): number =>
+  Array.from(value.matchAll(buildMentionPattern())).filter(match => match[2] === id).length;
+
 export type MappedIndex = {
   /** Index into the markup value — safe to splice at. */
   markupIndex: number;

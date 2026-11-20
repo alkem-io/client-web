@@ -1,9 +1,21 @@
 export type MemberExportRow = { displayName: string; email: string | undefined };
+export type OrganizationExportRow = { displayName: string; role: 'lead' | 'member'; url: string | undefined };
 export type ApplicationExportRow = {
   displayName: string;
   email: string | undefined;
   questions: Array<{ name: string; value: string }>;
   createdDate: string;
+};
+export type FormResponseExportRow = {
+  submitter: string;
+  submittedDate: string;
+  /** One value per question column, in column order; an unanswered question is an empty string. */
+  answers: string[];
+};
+export type FormResponsesExportHeader = {
+  submitter: string;
+  submittedDate: string;
+  questions: string[];
 };
 
 const SENTINEL = 'not accessible';
@@ -56,6 +68,13 @@ export function buildMembersCsv(rows: MemberExportRow[]): string {
   return toCsv(header, dataRows);
 }
 
+/** Build a CSV export of a space's member organisations. */
+export function buildOrganizationsCsv(rows: OrganizationExportRow[]): string {
+  const header = ['displayName', 'role', 'url'];
+  const dataRows = rows.map(r => [r.displayName, r.role, r.url ?? '']);
+  return toCsv(header, dataRows);
+}
+
 /**
  * Build a CSV export of applications.
  * Union header: fixed lead (displayName, email) + question columns in first-encounter order + tail (createdDate).
@@ -92,17 +111,32 @@ export function buildApplicationsCsv(rows: ApplicationExportRow[]): string {
   return toCsv(header, dataRows);
 }
 
+/**
+ * Build a CSV export of Form responses: one row per response — submitter, submitted date, then one column per
+ * question. Question columns are positional (two questions may share a prompt), unlike the applications export.
+ */
+export function buildFormResponsesCsv(header: FormResponsesExportHeader, rows: FormResponseExportRow[]): string {
+  const headerRow = [header.submitter, header.submittedDate, ...header.questions];
+  const dataRows = rows.map(row => [
+    row.submitter,
+    row.submittedDate,
+    ...header.questions.map((_, index) => row.answers[index] ?? ''),
+  ]);
+  return toCsv(headerRow, dataRows);
+}
+
 /** Build a sanitized filename for the CSV export. */
 export function buildCsvFilename(
-  spaceDisplayName: string | undefined,
-  kind: 'members' | 'applications',
-  now: Date
+  displayName: string | undefined,
+  kind: 'members' | 'applications' | 'organizations' | 'responses',
+  now: Date,
+  fallbackSlug = 'space'
 ): string {
   const slug =
-    spaceDisplayName
+    displayName
       ?.toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '') || 'space';
+      .replace(/^-+|-+$/g, '') || fallbackSlug;
   const date = now.toISOString().slice(0, 10); // YYYY-MM-DD
   return `${slug}-${kind}-${date}.csv`;
 }

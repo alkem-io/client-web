@@ -1,4 +1,3 @@
-import type { ExportedDataState } from '@excalidraw-yjs/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
@@ -38,6 +37,8 @@ import {
   type WhiteboardPreviewSettings,
 } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import createFallbackWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardVisuals/createFallbackWhiteboardPreview';
+import { decidePreviewWork } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/decidePreviewWork';
+import generateCardFromPreview from '@/domain/collaboration/whiteboard/WhiteboardVisuals/generateCardFromPreview';
 import getWhiteboardPreviewImage from '@/domain/collaboration/whiteboard/WhiteboardVisuals/getWhiteboardPreviewImage';
 import useGenerateWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useGenerateWhiteboardVisuals';
 import type {
@@ -81,8 +82,8 @@ export interface WhiteboardDetails {
       allowedMimeTypes: string[];
       maxFileSize: number;
     };
-    visual?: Identifiable & PreviewImageDimensions;
-    preview?: Identifiable & PreviewImageDimensions;
+    visual?: Identifiable & PreviewImageDimensions & { uri: string };
+    preview?: Identifiable & PreviewImageDimensions & { uri: string };
     url?: string;
   };
   createdBy?: {
@@ -133,12 +134,13 @@ interface CrdWhiteboardDialogProps {
   };
 }
 
-type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
-
 type CollaborativeCloseParams = {
-  hadLocalEdits: boolean;
-  /** Persist preview + display name after content is durable; invoked only after local edits. */
-  saveMetadata?: () => Promise<boolean | undefined>;
+  /**
+   * Renders the preview images while the editor is still mounted, after content is durable.
+   * Resolves to the upload, which runs in the background once the dialog has closed — except
+   * for a durable (draft) close, which waits for it.
+   */
+  capturePreview?: () => Promise<(() => Promise<boolean | undefined>) | undefined>;
   /** Join the provider's one save owner. It publishes assets before its barrier. */
   requestDurability?: () => Promise<void>;
   requireDurability?: boolean;
@@ -163,8 +165,7 @@ export const acceptWhiteboardCloseIntent = ({
 
 /** Close after durable content, treating derived metadata as best-effort. */
 export async function closeCollaborativeWhiteboard({
-  hadLocalEdits,
-  saveMetadata,
+  capturePreview,
   requestDurability,
   requireDurability,
   onDurabilityFailed,
@@ -183,14 +184,26 @@ export async function closeCollaborativeWhiteboard({
       return false;
     }
   }
-  if (hadLocalEdits && saveMetadata) {
+  let upload: (() => Promise<boolean | undefined>) | undefined;
+  if (capturePreview) {
     try {
-      if ((await saveMetadata()) === false) onMetadataFailed?.();
+      upload = await capturePreview();
     } catch {
       onMetadataFailed?.();
     }
   }
+  const settle = (pending: Promise<boolean | undefined>) =>
+    pending.then(
+      succeeded => {
+        if (succeeded === false) onMetadataFailed?.();
+      },
+      () => onMetadataFailed?.()
+    );
+  // A draft is consumed by the next create, which copies its visuals: upload before closing so an
+  // immediate publish cannot copy missing or stale ones.
+  if (upload && requireDurability) await settle(upload());
   teardown();
+  if (upload && !requireDurability) void settle(upload());
   return true;
 }
 
@@ -265,17 +278,24 @@ const CrdWhiteboardDialog = ({
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
   const { updateWhiteboardPreviewSettings } = useUpdateWhiteboardPreviewSettings({ whiteboard, excalidrawAPI });
 
-  const prepareWhiteboardForUpdate = async (wb: WhiteboardDetails, excState: RelevantExcalidrawState | undefined) => {
-    if (!excState || !wb?.profile?.id || !formikRef.current?.isValid) {
-      return { success: false as const };
-    }
-    const previewImages = await generateWhiteboardVisuals(wb);
-    const displayName = formikRef.current?.values.profile.displayName ?? wb.profile.displayName;
-    return {
-      success: true as const,
-      whiteboard: { ...wb, profile: { ...wb.profile, displayName } },
-      previewImages,
-    };
+  const capturePreview = async (wb: WhiteboardDetails, hadLocalEdits: boolean) => {
+    const previewUri = wb.profile.preview?.uri;
+    const work = decidePreviewWork({
+      hadLocalEdits,
+      sceneIsEmpty: !excalidrawAPI || excalidrawAPI.getSceneElements().length === 0,
+      mode: wb.previewSettings.mode,
+      hasPreview: !!previewUri,
+      hasCard: !!wb.profile.visual?.uri,
+      canUpload: !!(wb.profile.visual?.id || wb.profile.preview?.id),
+    });
+    if (work === 'none') return undefined;
+    // An unreadable stored preview would otherwise leave the CARD missing on every close; re-render both instead.
+    const previewImages =
+      (work === 'card-from-preview' && previewUri ? await generateCardFromPreview(previewUri) : undefined) ??
+      (await generateWhiteboardVisuals(wb, true));
+    if (!previewImages?.length) return undefined;
+    const upload = async () => (await actions.onUpdate(wb, previewImages)).success;
+    return options.requireDurableClose ? () => withCloseFinalizing(setCloseFinalizing, upload) : upload;
   };
 
   const onClose = async () => {
@@ -305,33 +325,13 @@ const CrdWhiteboardDialog = ({
     );
     try {
       await closeCollaborativeWhiteboard({
-        hadLocalEdits: hasLocalEdits,
         requestDurability:
           canRequestDurability && collabApi
             ? () => withCloseFinalizing(setCloseFinalizing, () => collabApi.requestDurability())
             : undefined,
         requireDurability: options.requireDurableClose,
-        saveMetadata:
-          canRequestDurability && whiteboard
-            ? async () => {
-                const excState = excalidrawAPI
-                  ? {
-                      elements: excalidrawAPI.getSceneElements(),
-                      appState: excalidrawAPI.getAppState(),
-                      files: excalidrawAPI.getFiles(),
-                    }
-                  : undefined;
-                const result = await prepareWhiteboardForUpdate(whiteboard, excState);
-                if (result.success) {
-                  const update = await actions.onUpdate(result.whiteboard, result.previewImages);
-                  return update.success;
-                }
-                logError(new Error('Error preparing whiteboard for update on close'), {
-                  category: TagCategoryValues.WHITEBOARD,
-                });
-                return false;
-              }
-            : undefined,
+        capturePreview:
+          canRequestDurability && whiteboard ? () => capturePreview(whiteboard, hasLocalEdits) : undefined,
         onMetadataFailed: () => {
           notify(t('callout.whiteboard.saveFailed'), 'error');
         },

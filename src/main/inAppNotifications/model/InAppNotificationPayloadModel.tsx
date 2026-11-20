@@ -3,6 +3,7 @@ import type {
   CalendarEventType,
   ForumDiscussionCategory,
   NotificationEventPayload,
+  RoleChangeType,
   RoleName,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
@@ -90,6 +91,8 @@ export interface InAppNotificationPayloadModel {
   update?: string; // returning ID, todo: get the content of the update
   spaceCommunicationMessage?: string;
   role?: string;
+  /** Whether the role above was assigned or removed; absent on records written before this field existed. */
+  changeType?: RoleChangeType;
   discussion?: {
     id: string;
     displayName: string;
@@ -124,9 +127,20 @@ export interface InAppNotificationPayloadModel {
         }[]
       | null;
   };
+  /** Organization-associate application payloads (062) — set for the three application events. */
+  application?: {
+    id: string;
+  };
+  /**
+   * Offered extra roles that could not be granted on accept (062, organization invitations
+   * only). Present only on the admin-facing "accepted" notification.
+   */
+  extraRolesWithheld?: RoleName[];
 }
 // nullable aliases are required because you can have different nullability for the same field name conditionally by payload type
 // to be mapped to InAppNotificationPayloadModel
 export interface InAppNotificationIncomingPayloadModel extends InAppNotificationPayloadModel {
   nullableOrganization?: InAppNotificationPayloadModel['organization'];
+  nullableActor?: InAppNotificationPayloadModel['actor'];
+  nullableApplication?: InAppNotificationPayloadModel['application'];
 }

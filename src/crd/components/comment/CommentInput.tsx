@@ -1,5 +1,13 @@
-import { AtSign, Send, Smile } from 'lucide-react';
-import { type CSSProperties, type KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { AtSign, CircleAlert, Image as ImageIcon, ImagePlus, Loader2, Paperclip, Send, Smile, X } from 'lucide-react';
+import {
+  type ClipboardEvent,
+  type CSSProperties,
+  type DragEvent,
+  type KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, type SuggestionDataItem } from 'react-mentions';
 import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
@@ -8,12 +16,18 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { MentionSuggestionItem } from './MentionSuggestionItem';
-import { MENTION_MARKUP, mapPlainIndexToMarkupIndex } from './mentionMarkup';
-import type { CommentAuthor, CrdMentionSearch, CrdMentionSuggestion } from './types';
+import { countMentionsOf, MENTION_MARKUP, mapPlainIndexToMarkupIndex } from './mentionMarkup';
+import type { CommentAuthor, ComposerAttachment, CrdMentionSearch, CrdMentionSuggestion } from './types';
 
 type CommentInputProps = {
   currentUser?: CommentAuthor;
   onSubmit: (content: string) => void;
+  /**
+   * A send is in flight (or the composer is otherwise busy). The textarea is
+   * not natively disabled — that would blur it and, on a phone, drop the
+   * on-screen keyboard mid-conversation. It keeps focus, is marked
+   * `aria-disabled`, and ignores input until the composer is free again.
+   */
   disabled?: boolean;
   maxLength?: number;
   /**
@@ -39,17 +53,49 @@ type CommentInputProps = {
    */
   autoFocus?: boolean;
   /**
-   * Chat-composer behaviour: return focus to the textarea after a submit, once
-   * the input is enabled again. Submitting drops focus either way — Enter
-   * blurs the textarea when `disabled` kicks in for the in-flight send, and
-   * clicking Send parks focus on a button that then disables itself.
+   * Chat-composer behaviour: return focus to the textarea on submit. Clicking
+   * Send (or attaching a file first) parks focus on a button, which would
+   * close the on-screen keyboard between messages.
    */
   refocusAfterSubmit?: boolean;
+  /**
+   * Enables the attach-file affordance. When true an attach button + preview
+   * chips appear and the message can be sent with attachments only (no text
+   * required). Composers that leave it off render exactly as before.
+   */
+  attachmentsEnabled?: boolean;
+  /** Currently staged attachments (with their upload lifecycle state). */
+  attachments?: ComposerAttachment[];
+  /** User picked, dropped or pasted one or more files. */
+  onAttachFiles?: (files: File[]) => void;
+  /** User removed a staged attachment chip. */
+  onRemoveAttachment?: (id: string) => void;
+  /** A localized validation / upload error to surface under the composer. */
+  attachmentError?: string;
+  /** `accept` attribute for the file picker, derived from the bucket policy. */
+  acceptMimeTypes?: string;
+  /**
+   * Image-only composers show an image button and image chips instead of the
+   * paperclip metaphor, which reads as "any file". Behaviour is unchanged; the
+   * accepted types still come from `acceptMimeTypes`.
+   */
+  imagesOnly?: boolean;
 };
 
 type EnrichedSuggestion = SuggestionDataItem & CrdMentionSuggestion;
 
 const MAX_ROWS = 5;
+
+const STAGED_LIST_CLASS = 'mb-1.5 flex flex-wrap gap-1.5';
+
+const carriesFiles = (transfer: DataTransfer) => Array.from(transfer.types).includes('Files');
+
+// The small-screen mention list stops short of the site/dialog header (h-16).
+const MOBILE_LIST_TOP_GUTTER = 72;
+// With less room than this above the input, the list opens below it instead of
+// shrinking until a suggestion can no longer be tapped.
+const MOBILE_LIST_MIN_HEIGHT = 144;
+const MOBILE_LIST_INPUT_GAP = 4;
 
 // react-mentions renders an overlay + textarea stack. These inline styles
 // neutralize its defaults so the textarea blends with the surrounding Tailwind
@@ -89,6 +135,14 @@ const mentionsInputStyle = {
   },
 };
 
+// react-mentions' suggestions wrapper is only zIndex 1, so the `relative z-10`
+// links in a post and its comments would paint over the small-screen list and
+// take its taps. Stays below the site header (z-50).
+const smallScreenMentionsInputStyle = {
+  ...mentionsInputStyle,
+  suggestions: { ...mentionsInputStyle.suggestions, zIndex: 30 },
+};
+
 // `react-mentions` paints the styled mention chip in an overlay layer on top
 // of the underlying textarea, and BOTH layers paint their text (it relies on
 // pixel-perfect alignment to look like one). Any property that changes glyph
@@ -112,16 +166,29 @@ export function CommentInput({
   mentionSearch,
   autoFocus,
   refocusAfterSubmit,
+  attachmentsEnabled = false,
+  attachments = [],
+  onAttachFiles,
+  onRemoveAttachment,
+  attachmentError,
+  acceptMimeTypes,
+  imagesOnly = false,
 }: CommentInputProps) {
   const { t } = useTranslation('crd-space');
+  const AttachIcon = imagesOnly ? ImagePlus : Paperclip;
+  const ChipIcon = imagesOnly ? ImageIcon : Paperclip;
   const { isSmallScreen } = useScreenSize();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [pendingRefocus, setPendingRefocus] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [uncontrolledContent, setUncontrolledContent] = useState('');
+  const [isDraggingFiles, setIsDraggingFiles] = useState(false);
 
   const controlled = value !== undefined;
   const content = controlled ? value : uncontrolledContent;
   const setContent = (next: string) => {
+    // Text typed during a send would be lost: the consumer clears the draft
+    // when the send is confirmed and restores the sent text when it fails.
+    if (disabled) return;
     if (controlled) {
       onValueChange?.(next);
     } else {
@@ -130,9 +197,66 @@ export function CommentInput({
   };
 
   const trimmedContent = content.trim();
-  const canSend = !disabled && trimmedContent.length > 0;
+  const anyUploading = attachments.some(attachment => attachment.status === 'uploading');
+  // Failed files remain selected and can be retried explicitly with Send.
+  const canSend =
+    !disabled &&
+    !(attachmentsEnabled && anyUploading) &&
+    (trimmedContent.length > 0 || (attachmentsEnabled && attachments.length > 0));
   const showCharCount = content.length >= Math.floor(maxLength * 0.8);
   const mentionsEnabled = Boolean(mentionSearch);
+  // TEMP: VCs disabled (#10398) — ids of suggestions that cannot be picked; a change that adds one is rejected.
+  const unavailableMentionIdsRef = useRef(new Set<string>());
+  const addsUnavailableMention = (next: string) =>
+    Array.from(unavailableMentionIdsRef.current).some(id => countMentionsOf(next, id) > countMentionsOf(content, id));
+
+  const handleFilesPicked = (fileList: FileList | null) => {
+    if (!fileList || fileList.length === 0) return;
+    onAttachFiles?.(Array.from(fileList));
+    // Reset so picking the same file again re-triggers onChange.
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const acceptsFiles = attachmentsEnabled && Boolean(onAttachFiles);
+
+  // Cancelling dragenter/dragover is what makes the composer a drop target, so a
+  // file dropped here never navigates the tab away from the conversation. While
+  // a send is in flight the drop is refused visibly (dropEffect none), the same
+  // way the attach button is disabled.
+  const handleFileDragOver = (event: DragEvent<HTMLDivElement>) => {
+    if (!carriesFiles(event.dataTransfer)) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = disabled ? 'none' : 'copy';
+    setIsDraggingFiles(true);
+  };
+
+  // relatedTarget is null when the drag is cancelled or leaves the window.
+  const handleFileDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+    setIsDraggingFiles(false);
+  };
+
+  const handleFileDrop = (event: DragEvent<HTMLDivElement>) => {
+    if (!carriesFiles(event.dataTransfer)) return;
+    event.preventDefault();
+    setIsDraggingFiles(false);
+    if (disabled || event.dataTransfer.files.length === 0) return;
+    onAttachFiles?.(Array.from(event.dataTransfer.files));
+  };
+
+  // Same rule as Element's composer: Office puts a bitmap of copied text next to
+  // its RTF, and that paste means the text. text/plain is no signal — a file
+  // copied from a file manager carries its name as text/plain.
+  const handlePaste = (event: ClipboardEvent<HTMLDivElement>) => {
+    const { files, types } = event.clipboardData;
+    if (disabled || files.length === 0 || Array.from(types).includes('text/rtf')) return;
+    event.preventDefault();
+    // react-mentions pastes text from its own document-level listener.
+    event.stopPropagation();
+    onAttachFiles?.(Array.from(files));
+  };
 
   const resizeTextarea = () => {
     const textarea = textareaRef.current;
@@ -164,25 +288,18 @@ export function CommentInput({
     textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [autoFocus]);
 
-  // A disabled textarea can't take focus, so the refocus waits out the
-  // in-flight send (`disabled`) and fires on the re-enable render.
-  // `preventScroll` because the composer was in view when the user submitted —
-  // if they scrolled away during a slow send, focus shouldn't yank them back.
-  useEffect(() => {
-    if (!pendingRefocus || disabled) return;
-
-    setPendingRefocus(false);
-    textareaRef.current?.focus({ preventScroll: true });
-  }, [pendingRefocus, disabled]);
-
   const handleSubmit = () => {
     if (!canSend) return;
 
+    // Synchronously, inside the user's gesture: iOS raises the keyboard and
+    // reveals the field only for a focus that comes from a gesture, and a
+    // focus that scrolls. A deferred or `preventScroll` focus leaves the
+    // keyboard on top of the field.
     if (refocusAfterSubmit) {
-      setPendingRefocus(true);
+      textareaRef.current?.focus();
     }
     onSubmit(trimmedContent);
-    // Controlled: the consumer clears once the submit actually succeeded.
+    // Controlled: the consumer clears its draft on submit and restores it if the send is not confirmed.
     if (!controlled) {
       setContent('');
     }
@@ -230,6 +347,9 @@ export function CommentInput({
   const handleMentionSearch = async (query: string, callback: (items: EnrichedSuggestion[]) => void) => {
     if (!mentionSearch) return callback([]);
     const results = await mentionSearch(query);
+    for (const suggestion of results) {
+      if (suggestion.unavailable) unavailableMentionIdsRef.current.add(suggestion.id);
+    }
     callback(
       results.map(suggestion => ({
         id: suggestion.id,
@@ -238,6 +358,7 @@ export function CommentInput({
         city: suggestion.city,
         country: suggestion.country,
         virtualContributor: suggestion.virtualContributor,
+        unavailable: suggestion.unavailable,
         displayName: suggestion.displayName,
       }))
     );
@@ -250,41 +371,136 @@ export function CommentInput({
         <AvatarFallback className="text-caption">{currentUser?.name?.charAt(0) ?? '?'}</AvatarFallback>
       </Avatar>
 
-      <div className="min-w-0 flex-1">
-        <div className="flex items-end gap-1 rounded-md border border-border bg-input-background px-2 py-1.5 transition-colors focus-within:border-primary/50">
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: drop/paste wrapper — the keyboard path is the attach button, and pastes come from the textarea inside */}
+      <div
+        className="min-w-0 flex-1"
+        onDragEnter={acceptsFiles ? handleFileDragOver : undefined}
+        onDragOver={acceptsFiles ? handleFileDragOver : undefined}
+        onDragLeave={acceptsFiles ? handleFileDragLeave : undefined}
+        onDrop={acceptsFiles ? handleFileDrop : undefined}
+        onPaste={acceptsFiles ? handlePaste : undefined}
+      >
+        {/* The list label is distinct from the paperclip button's — sharing one makes a
+            screen reader announce "Attach files, list" then "Attach files, button". */}
+        {attachmentsEnabled && attachments.length > 0 && (
+          // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+          // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
+          <ul role="list" aria-label={t('comments.attachments.stagedListLabel')} className={STAGED_LIST_CLASS}>
+            {attachments.map(attachment => (
+              <li
+                key={attachment.id}
+                className={cn(
+                  'flex max-w-[12rem] items-center gap-1.5 rounded-md border border-border bg-muted/40 py-1 pl-2 pr-1 text-caption',
+                  attachment.status === 'error' && 'border-destructive/50 text-destructive'
+                )}
+              >
+                {attachment.status === 'uploading' ? (
+                  // `<output>` is an implicit live region (role="status" +
+                  // aria-live="polite"), so the chip appearing mid-upload is
+                  // actually announced — an aria-label on the spinner alone
+                  // describes it but never announces its insertion. Mirrors the
+                  // loading skeleton in MessageAttachments.
+                  <output aria-label={t('comments.attachments.uploading')} className="flex shrink-0">
+                    <Loader2 aria-hidden="true" className="size-3.5 animate-spin" />
+                  </output>
+                ) : attachment.status === 'error' ? (
+                  <CircleAlert aria-hidden="true" className="size-3.5 shrink-0" />
+                ) : (
+                  <ChipIcon aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
+                )}
+                <span className="min-w-0 flex-1 truncate">{attachment.name}</span>
+                {attachment.status === 'error' && <span className="sr-only">{t('comments.attachments.failed')}</span>}
+                <button
+                  type="button"
+                  // The consumer snapshots the ready document ids *before*
+                  // awaiting the send, so a removal accepted mid-send would drop
+                  // the chip while the message still ships that attachment. The
+                  // callback is guarded too: `disabled` only blocks pointer and
+                  // keyboard activation, not a programmatic call.
+                  disabled={disabled}
+                  onClick={() => {
+                    if (disabled) return;
+                    onRemoveAttachment?.(attachment.id);
+                  }}
+                  aria-label={t('comments.attachments.removeAttachment', { name: attachment.name })}
+                  className="flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                >
+                  <X aria-hidden="true" className="size-3.5" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="relative flex items-end gap-1 rounded-md border border-border bg-input-background px-2 py-1.5 transition-colors focus-within:border-primary/50">
+          {acceptsFiles && isDraggingFiles && !disabled && (
+            <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-md border-2 border-dashed border-primary bg-background/90 text-caption text-primary">
+              {t('comments.attachments.dropHint')}
+            </div>
+          )}
+          {/* On iOS, 16px text: WebKit zooms the page on focus when a field's
+              text is smaller, and does not zoom back out. The mentions
+              textarea inherits its font from this wrapper (and its overlay must
+              match it), so the size is set here rather than on the textarea. */}
           {mentionsEnabled ? (
-            <div className="min-h-6 min-w-0 flex-1 text-body [&_textarea]:placeholder:text-muted-foreground">
+            <div
+              className={cn(
+                'min-h-6 min-w-0 flex-1 text-body ios:text-base [&_textarea]:placeholder:text-muted-foreground',
+                disabled && 'opacity-50'
+              )}
+            >
               <MentionsInput
                 value={content}
-                onChange={(_event, newValue) => setContent(newValue)}
+                onChange={(_event, newValue) => {
+                  if (addsUnavailableMention(newValue)) return;
+                  setContent(newValue);
+                }}
                 onKeyDown={handleKeyDown}
-                disabled={disabled}
+                aria-disabled={disabled || undefined}
                 maxLength={maxLength}
                 placeholder={t('comments.addComment')}
                 aria-label={t('comments.addComment')}
                 allowSpaceInQuery={true}
                 forceSuggestionsAboveCursor={true}
-                style={mentionsInputStyle}
+                style={isSmallScreen ? smallScreenMentionsInputStyle : mentionsInputStyle}
                 inputRef={(input: HTMLTextAreaElement | null) => {
                   textareaRef.current = input;
                 }}
                 customSuggestionsContainer={children => {
                   // On phones react-mentions' cursor-anchored popover often
                   // spills past the viewport edge. Position the dropdown as a
-                  // fixed overlay anchored just above the input's top so it
-                  // stays near the text the user is typing while still being
-                  // fully tappable.
+                  // fixed overlay just above the input, or just below it when
+                  // there is too little room above, so it stays near the text
+                  // the user is typing while still being fully tappable.
                   let mobileStyle: CSSProperties | undefined;
                   if (isSmallScreen) {
-                    const rect = textareaRef.current?.getBoundingClientRect();
-                    const inputTop = rect?.top ?? 0;
+                    const input = textareaRef.current;
+                    const inputRect = input?.getBoundingClientRect();
+                    // A transformed dialog is the containing block of its fixed
+                    // descendants, so `top` is relative to it, not the viewport.
+                    // It also clips them.
+                    const block = input?.closest('[data-slot="dialog-content"]')?.getBoundingClientRect();
+                    const blockTop = block?.top ?? 0;
+                    // The visual viewport is what the on-screen keyboard and
+                    // iOS panning leave visible of the layout viewport.
+                    const viewport = window.visualViewport;
+                    const viewportBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+                    const listBottom = (inputRect?.top ?? 0) - blockTop - MOBILE_LIST_INPUT_GAP;
+                    const listTop = (inputRect?.bottom ?? 0) - blockTop + MOBILE_LIST_INPUT_GAP;
+                    const roomAbove =
+                      listBottom - Math.max(MOBILE_LIST_TOP_GUTTER, (viewport?.offsetTop ?? 0) - blockTop);
+                    const roomBelow =
+                      Math.min(viewportBottom, block?.bottom ?? viewportBottom) -
+                      blockTop -
+                      listTop -
+                      MOBILE_LIST_INPUT_GAP;
+                    const opensAbove = roomAbove >= MOBILE_LIST_MIN_HEIGHT || roomAbove >= roomBelow;
                     mobileStyle = {
                       position: 'fixed',
                       left: '0.5rem',
                       right: '0.5rem',
-                      bottom: `calc(100vh - ${Math.max(inputTop, 80) - 4}px)`,
-                      maxHeight: '14rem',
-                      zIndex: 50,
+                      top: `${opensAbove ? listBottom : listTop}px`,
+                      transform: opensAbove ? 'translateY(-100%)' : undefined,
+                      maxHeight: `min(14rem, ${opensAbove ? roomAbove : roomBelow}px)`,
                     };
                   }
 
@@ -318,18 +534,44 @@ export function CommentInput({
             <textarea
               ref={textareaRef}
               value={content}
-              disabled={disabled}
+              aria-disabled={disabled || undefined}
               maxLength={maxLength}
               onChange={event => setContent(event.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={t('comments.addComment')}
-              className="min-h-6 min-w-0 flex-1 resize-none bg-transparent px-1 py-1 text-body outline-hidden placeholder:text-muted-foreground"
+              className={cn(
+                'min-h-6 min-w-0 flex-1 resize-none bg-transparent px-1 py-1 text-body ios:text-base outline-hidden placeholder:text-muted-foreground',
+                disabled && 'opacity-50'
+              )}
               rows={1}
               aria-label={t('comments.addComment')}
             />
           )}
 
           <div className="flex shrink-0 items-center gap-0.5 pb-0.5">
+            {attachmentsEnabled && (
+              <>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple={true}
+                  accept={acceptMimeTypes}
+                  className="hidden"
+                  onChange={event => handleFilesPicked(event.target.files)}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 text-muted-foreground hover:text-foreground md:h-7 md:w-7"
+                  disabled={disabled}
+                  onClick={() => fileInputRef.current?.click()}
+                  aria-label={t(imagesOnly ? 'comments.attachments.addImage' : 'comments.attachments.attach')}
+                >
+                  <AttachIcon className="h-3.5 w-3.5 md:h-4 md:w-4" aria-hidden="true" />
+                </Button>
+              </>
+            )}
             {mentionsEnabled && (
               <Button
                 type="button"
@@ -375,6 +617,12 @@ export function CommentInput({
           <div className="mt-1 text-right text-caption text-muted-foreground">
             {t('comments.charCount', { count: content.length, max: maxLength })}
           </div>
+        )}
+
+        {attachmentsEnabled && attachmentError && (
+          <p role="alert" className="mt-1 text-caption text-destructive">
+            {attachmentError}
+          </p>
         )}
       </div>
     </div>

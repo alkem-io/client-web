@@ -10,14 +10,6 @@ vi.mock('@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInv
   default: vi.fn(),
 }));
 
-vi.mock('@/domain/access/AvailableContributors/useRoleSetAvailableContributors', () => ({
-  default: vi.fn(() => ({
-    refetch: vi.fn(),
-    findAvailableUsersForRoleSetEntryRole: vi.fn(async () => ({ users: [] })),
-    findAvailableOrganizationsForRoleSet: vi.fn(async () => ({ organizations: [] })),
-  })),
-}));
-
 vi.mock('@/domain/access/RoleSetManager/RolesAssignment/useRoleSetManagerRolesAssignment', () => ({
   default: vi.fn(() => ({
     assignRoleToUser: vi.fn(),
@@ -51,12 +43,15 @@ const baseRoleSetManagerReturn = {
   roleNames: ['Admin', 'Lead', 'Member'],
   loading: false,
   errored: false,
+  holdersUnavailable: false,
   updating: false,
   refetchRoleSetAssignment: vi.fn(),
   assignRoleToUser: vi.fn(),
   removeRoleFromUser: vi.fn(),
   assignPlatformRoleToUser: vi.fn(),
   removePlatformRoleFromUser: vi.fn(),
+  assignPlatformRoleToOrganization: vi.fn(),
+  removePlatformRoleFromOrganization: vi.fn(),
   assignRoleToOrganization: vi.fn(),
   removeRoleFromOrganization: vi.fn(),
   assignRoleToVirtualContributor: vi.fn(),
@@ -78,6 +73,7 @@ const baseApplicationsReturn = {
   invitationStateChange: vi.fn(),
   deleteInvitation: vi.fn(),
   deletePlatformInvitation: vi.fn(),
+  resendPlatformInvitation: vi.fn(),
 };
 
 describe('useCommunityAdmin errored propagation', () => {

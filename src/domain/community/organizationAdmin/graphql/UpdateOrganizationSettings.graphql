@@ -5,6 +5,10 @@ mutation UpdateOrganizationSettings($settingsData: UpdateOrganizationSettingsInp
       membership {
         allowUsersMatchingDomainToJoin
         allowSpaceInvitations
+        allowApplications
+      }
+      security {
+        secondFactorRequired
       }
     }
   }

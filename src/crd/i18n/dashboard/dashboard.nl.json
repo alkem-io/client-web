@@ -14,6 +14,22 @@
     "navigation": "Dashboardnavigatie",
     "pendingCount": "{{count}} openstaand"
   },
+  "unreadSummary": {
+    "messages": {
+      "heading": "Berichten",
+      "text_one": "Je hebt <b>{{count}} ongelezen bericht</b>",
+      "text_other": "Je hebt <b>{{count}} ongelezen berichten</b>",
+      "ariaLabel_one": "Je hebt {{count}} ongelezen bericht. Berichten openen",
+      "ariaLabel_other": "Je hebt {{count}} ongelezen berichten. Berichten openen"
+    },
+    "notifications": {
+      "heading": "Meldingen",
+      "text_one": "Je hebt <b>{{count}} nieuwe melding</b>",
+      "text_other": "Je hebt <b>{{count}} nieuwe meldingen</b>",
+      "ariaLabel_one": "Je hebt {{count}} nieuwe melding. Meldingen openen",
+      "ariaLabel_other": "Je hebt {{count}} nieuwe meldingen. Meldingen openen"
+    }
+  },
   "recentSpaces": {
     "title": "Recente Spaces",
     "exploreAll": "Bekijk al je Spaces",
@@ -196,7 +212,19 @@
       "title": "Uitnodiging voor {{organizationName}}",
       "accept": "Accepteren",
       "role": "Rol",
-      "spacesToJoin": "Bij accepteren wordt toegetreden tot: {{spaces}}"
+      "spacesToJoin": "Bij acceptatie wordt de organisatie lid van: {{spaces}}"
+    },
+    "orgAssociateInvitationsSection": "Uitnodigingen als betrokkene",
+    "orgAssociateApplicationsSection": "Aanvragen als betrokkene",
+    "orgAssociateCard": {
+      "badge": "Organisatie",
+      "role": {
+        "associate": "Betrokkene",
+        "associateAdmin": "Betrokkene + Beheerder",
+        "associateOwner": "Betrokkene + Eigenaar"
+      },
+      "pendingLabel": "In behandeling",
+      "invitedBy": "Uitgenodigd door {{name}}"
     }
   },
   "nonActivity": {

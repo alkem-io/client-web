@@ -22,6 +22,9 @@ export const IN_APP_NOTIFICATIONS_PAGE_SIZE = 10;
 // reflect recent unread across categories without paginating.
 const ALL_TYPES_PROBE_SIZE = 50;
 
+// Shared by every mounted instance of the hook, so each hidden notification is sent once
+const hiddenIdsMarkedRead = new Set<string>();
+
 // Update the cache as refetching all could be expensive
 const updateNotificationsCache = (
   cache: ApolloCache<unknown>,
@@ -81,12 +84,18 @@ export const useInAppNotifications = () => {
 
   // Probe all categories so we can render per-tab unread indicators independently
   // of the currently-selected filter's paginated list.
-  const { data: allTypesData, refetch: refetchAllTypes } = useInAppNotificationsQuery({
+  const {
+    data: allTypesData,
+    loading: allTypesLoading,
+    refetch: refetchAllTypes,
+  } = useInAppNotificationsQuery({
     variables: {
       types: getNotificationTypesForFilter(NotificationFilterType.All),
       first: ALL_TYPES_PROBE_SIZE,
     },
     errorPolicy: 'ignore',
+    // Report a refetch as loading too, so an arrival during one can wait for it
+    notifyOnNetworkStatusChange: true,
     skip: !isEnabled || !isOpen,
   });
 
@@ -96,7 +105,8 @@ export const useInAppNotifications = () => {
     [NotificationFilterType.Space]: 0,
     [NotificationFilterType.Platform]: 0,
   };
-  for (const notification of allTypesData?.me?.notifications?.inAppNotifications ?? []) {
+  const probed = allTypesData?.me?.notifications?.inAppNotifications ?? [];
+  for (const notification of probed) {
     if (notification.state !== NotificationEventInAppState.Unread) continue;
     unreadCountsByFilter[NotificationFilterType.All] += 1;
     const categoryFilter = getCategoryFilterForNotificationType(notification.type);
@@ -104,6 +114,50 @@ export const useInAppNotifications = () => {
       unreadCountsByFilter[categoryFilter] += 1;
     }
   }
+
+  // The count subscription only updates the count cache. While the dialog is open, a rise
+  // refreshes the all-types probe, which keeps the per-tab dots current and tells whether
+  // anything newer than the list has arrived. The list itself is left as the user reads it.
+  // A first count arriving while the dialog is open counts too: before it the subscription
+  // has no cached count to update, so a notification in that window shows only through it.
+  // Apollo shares an identical request already in flight, and one that read the server
+  // before the arrival does not hold it, so the refresh waits until the probe is idle.
+  const fetchedUnreadCount = unreadCountData?.me?.notificationsUnreadCount;
+  const prevUnreadCountRef = useRef(fetchedUnreadCount);
+  const probePendingRef = useRef(false);
+  useEffect(() => {
+    const previous = prevUnreadCountRef.current;
+    prevUnreadCountRef.current = fetchedUnreadCount;
+    if (!isEnabled || !isOpen) {
+      probePendingRef.current = false;
+      return;
+    }
+    if (fetchedUnreadCount !== undefined && (previous === undefined || fetchedUnreadCount > previous)) {
+      probePendingRef.current = true;
+    }
+    if (probePendingRef.current && !allTypesLoading) {
+      probePendingRef.current = false;
+      refetchAllTypes().catch(() => {});
+    }
+  }, [fetchedUnreadCount, isEnabled, isOpen, allTypesLoading, refetchAllTypes]);
+
+  // Newer notifications for the selected tab than the newest row in the list: the panel
+  // offers to show them instead of pushing them in above what the user is reading.
+  const listed = data?.me?.notifications?.inAppNotifications;
+  const newestListed = listed?.[0] ? new Date(listed[0].triggeredAt).getTime() : Number.NEGATIVE_INFINITY;
+  const hasNewNotifications =
+    listed !== undefined &&
+    !loading &&
+    probed.some(
+      notification =>
+        notificationTypes.includes(notification.type) &&
+        notification.state !== NotificationEventInAppState.Archived &&
+        new Date(notification.triggeredAt).getTime() > newestListed
+    );
+
+  const showNewNotifications = () => {
+    refetch().catch(() => {});
+  };
 
   // Memoize the filtered and mapped notifications to avoid unnecessary re-processing
   const notificationsInApp = (() => {
@@ -127,6 +181,30 @@ export const useInAppNotifications = () => {
 
     return notifications;
   })();
+
+  // Unread notifications the panel cannot render still keep the bell dot on.
+  // Once no visible unread notification is left, mark those read too.
+  useEffect(() => {
+    if (!allTypesData || !data) return;
+    const unread = [
+      ...(allTypesData.me?.notifications?.inAppNotifications ?? []),
+      ...(data.me?.notifications?.inAppNotifications ?? []),
+    ].filter(notification => notification.state === NotificationEventInAppState.Unread);
+    if (unread.some(notification => mapInAppNotificationToModel(notification))) return;
+    for (const { id } of unread) {
+      if (hiddenIdsMarkedRead.has(id)) continue;
+      hiddenIdsMarkedRead.add(id);
+      updateState({
+        variables: { ID: id, state: NotificationEventInAppState.Read },
+        context: { skipGlobalErrorHandler: true },
+        update: (cache, result) => {
+          if (result?.data?.updateNotificationState === NotificationEventInAppState.Read) {
+            updateNotificationsCache(cache, [id], NotificationEventInAppState.Read);
+          }
+        },
+      }).catch(() => {});
+    }
+  }, [allTypesData, data, updateState]);
 
   // Calculate total unread count from the dedicated query
   const unreadCount = (() => {
@@ -214,6 +292,8 @@ export const useInAppNotifications = () => {
     markNotificationsAsRead,
     fetchMore: fetchMoreNotifications,
     hasMore,
+    hasNewNotifications,
+    showNewNotifications,
     error,
   };
 };

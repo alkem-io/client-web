@@ -6,16 +6,12 @@ import { UserPublicProfileView } from '@/crd/components/user/UserPublicProfileVi
 import { MOCK_ALEX_RIVERA } from '../data/profiles';
 
 const SECTIONS_LABELS = {
-  spacesSubsection: 'Spaces',
   virtualContributorsSubsection: 'Virtual Contributors',
   templatePacksSubsection: 'Template Packs',
   customHomepagesSubsection: 'Custom Homepages',
   spacesLeading: 'Spaces Leading',
   memberOf: 'Member of',
-  emptyResourcesHosted: 'No resources hosted yet.',
-  emptyLeading: 'Not leading any spaces yet.',
   emptyMembership: 'No memberships yet.',
-  spacePrivacy: { privacyPrivate: 'Private space', privacyPublic: 'Public space' },
 };
 
 const SIDEBAR_LABELS = {
@@ -28,9 +24,9 @@ const SIDEBAR_LABELS = {
 };
 
 const TABS = [
-  { key: 'resourcesHosted' as ResourceTabKey, label: 'Resources Hosted' },
   { key: 'leading' as ResourceTabKey, label: 'Leading' },
   { key: 'memberOf' as ResourceTabKey, label: 'Member Of' },
+  { key: 'otherResources' as ResourceTabKey, label: 'Other Resources' },
 ];
 
 /**
@@ -42,7 +38,7 @@ const TABS = [
  * `aria-busy` / spinner state.
  */
 export function UserProfileOtherDemoPage() {
-  const [activeTab, setActiveTab] = useState<ResourceTabKey>('resourcesHosted');
+  const [activeTab, setActiveTab] = useState<ResourceTabKey>('leading');
   const alex = MOCK_ALEX_RIVERA;
 
   const handleSendMessage = (text: string) =>
@@ -96,7 +92,6 @@ export function UserProfileOtherDemoPage() {
       }}
       sections={{
         activeTab,
-        hostedSpaces: alex.hostedSpaces,
         hostedVirtualContributors: alex.hostedVirtualContributors,
         hostedInnovationPacks: alex.hostedInnovationPacks,
         hostedInnovationHubs: alex.hostedInnovationHubs,

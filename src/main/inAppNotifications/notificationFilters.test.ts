@@ -42,3 +42,45 @@ describe('organization space-invitation events belong to the Space filter (061, 
     }
   });
 });
+
+describe('organization-associate events belong to the Space filter (062)', () => {
+  const associateEvents = [
+    NotificationEvent.UserOrganizationAssociateInvitation,
+    NotificationEvent.UserOrganizationAssociateApplicationApproved,
+    NotificationEvent.UserOrganizationAssociateApplicationDeclined,
+    NotificationEvent.OrganizationAdminAssociateInvitationAccepted,
+    NotificationEvent.OrganizationAdminAssociateInvitationDeclined,
+    NotificationEvent.OrganizationAdminAssociateApplication,
+    NotificationEvent.OrganizationAdminAssociateJoined,
+  ];
+
+  it('are included in both the Space and All filter type lists', () => {
+    const spaceTypes = getNotificationTypesForFilter(NotificationFilterType.Space);
+    const allTypes = getNotificationTypesForFilter(NotificationFilterType.All);
+    for (const event of associateEvents) {
+      expect(spaceTypes).toContain(event);
+      expect(allTypes).toContain(event);
+    }
+  });
+
+  it('resolve to the Space category', () => {
+    for (const event of associateEvents) {
+      expect(getCategoryFilterForNotificationType(event)).toBe(NotificationFilterType.Space);
+    }
+  });
+});
+
+describe('the form-response admin event belongs to the Space filter', () => {
+  const event = NotificationEvent.SpaceAdminCollaborationCalloutFormResponse;
+
+  it('is listed under Space and All, and resolves to the Space category', () => {
+    expect(getNotificationTypesForFilter(NotificationFilterType.Space)).toContain(event);
+    expect(getNotificationTypesForFilter(NotificationFilterType.All)).toContain(event);
+    expect(getCategoryFilterForNotificationType(event)).toBe(NotificationFilterType.Space);
+  });
+
+  it('is absent from the Messages & Replies and Platform filters', () => {
+    expect(getNotificationTypesForFilter(NotificationFilterType.MessagesAndReplies)).not.toContain(event);
+    expect(getNotificationTypesForFilter(NotificationFilterType.Platform)).not.toContain(event);
+  });
+});

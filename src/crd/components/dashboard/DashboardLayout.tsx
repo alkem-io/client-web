@@ -1,6 +1,7 @@
 import { Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { claimEscape } from '@/crd/lib/claimEscape';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -37,7 +38,7 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
     if (!drawerOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (claimEscape(e)) {
         closeDrawer();
         return;
       }

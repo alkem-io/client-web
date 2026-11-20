@@ -18,10 +18,13 @@ import type {
   FramingKind,
   ReferenceRow,
   TemplateContent,
+  TemplateFormPreview,
   TemplateFormValues,
   TemplateType,
 } from '@/crd/components/templates/types';
+import { isChoiceKind } from '@/crd/forms/callout/formValues';
 import { mapGqlClassificationCardinality } from '@/domain/space/about/model/classificationCardinality';
+import { formQuestionsFromServer } from '@/main/crdPages/space/callout/calloutFormDefinitionMapper';
 
 /** `data.lookup.template` from a `TemplateContent` query (non-null). */
 export type TemplateContentTemplate = NonNullable<TemplateContentQuery['lookup']['template']>;
@@ -47,6 +50,8 @@ export function mapGqlFramingType(gql: CalloutFramingType): FramingKind {
       return 'poll';
     case CalloutFramingType.Contributors:
       return 'contributors';
+    case CalloutFramingType.Form:
+      return 'form';
     default:
       return 'none';
   }
@@ -69,6 +74,20 @@ function mapReferences(
   refs: ReadonlyArray<{ id: string; name: string; uri: string; description?: string }> | undefined
 ): ReferenceRow[] {
   return (refs ?? []).map(r => ({ id: r.id, name: r.name, uri: r.uri, description: r.description || undefined }));
+}
+
+function mapFormPreview(form: NonNullable<CalloutContentGql['framing']['form']>): TemplateFormPreview {
+  return {
+    title: form.title || undefined,
+    description: form.description || undefined,
+    questions: formQuestionsFromServer(form).map(question => ({
+      prompt: question.prompt,
+      explanation: question.explanation || undefined,
+      type: question.type,
+      required: question.required,
+      options: isChoiceKind(question.type) ? question.options.map(option => option.label) : [],
+    })),
+  };
 }
 
 function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent, { type: 'callout' }> {
@@ -105,6 +124,7 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
       framingKind === 'poll' && framing.poll
         ? { question: framing.poll.title, options: framing.poll.options.map(o => o.text) }
         : undefined,
+    framingForm: framingKind === 'form' && framing.form ? mapFormPreview(framing.form) : undefined,
     // Callout-references (distinct from the *cta* framing's single Link, which goes on framingLinks).
     // D19, 2026-05-18 — the editor's References rows persist here and the legacy MUI preview rendered
     // them; CRD now does the same via `ReferencesAndTagsStrip` in `CalloutTemplatePreview`.

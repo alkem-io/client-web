@@ -9,6 +9,8 @@ import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesD
 import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { AboutButton } from '@/crd/components/space/sidebar/AboutButton';
+import { ActivityButton } from '@/crd/components/space/sidebar/ActivityButton';
+import { CommunityButton } from '@/crd/components/space/sidebar/CommunityButton';
 import { ContactLeadButton } from '@/crd/components/space/sidebar/ContactLeadButton';
 import { CreatePostButton } from '@/crd/components/space/sidebar/CreatePostButton';
 import { CreateSubspaceButton } from '@/crd/components/space/sidebar/CreateSubspaceButton';
@@ -23,10 +25,14 @@ import { VirtualContributorsSection } from '@/crd/components/space/sidebar/Virtu
 import { Skeleton } from '@/crd/primitives/skeleton';
 import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { isApplyUnavailable } from '@/main/crdPages/space/isApplyUnavailable';
+import { useMessageContributor } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { PostIndexDialogConnector } from '../callout/PostIndexDialogConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { ContactLeadsDialogConnector } from '../dialogs/ContactLeadsDialogConnector';
+import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
+import { CrdSpaceCommunityDialogConnector } from '../dialogs/CrdSpaceCommunityDialogConnector';
 import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConnector';
 import { SubspacesDialogConnector } from '../dialogs/SubspacesDialogConnector';
 import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
@@ -94,6 +100,7 @@ export function SpaceTabSidebarConnector({
   const { t } = useTranslation('crd-space');
   const navigate = useNavigate();
   const locale = useCrdSpaceLocale();
+  const onMessageContributor = useMessageContributor();
 
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [updatesOpen, setUpdatesOpen] = useState(false);
@@ -102,18 +109,32 @@ export function SpaceTabSidebarConnector({
   const [vcInviteOpen, setVcInviteOpen] = useState(false);
   const [indexOpen, setIndexOpen] = useState(false);
   const [subspacesOpen, setSubspacesOpen] = useState(false);
+  const [communityOpen, setCommunityOpen] = useState(false);
+  const [activityOpen, setActivityOpen] = useState(false);
 
   const plan = resolveSidebarPlan(sidebar);
   const skips = deriveWidgetSkips(plan);
   const { isAuthenticated } = useAuthenticationContext();
+  // Recent Activity needs a signed-in viewer: the activity query is gated on the platform
+  // read-users right, so for anonymous visitors the widget would only produce an error.
+  const showActivity = !skips.activity && isAuthenticated;
 
   // A loading placeholder is only worth its footprint when something renders below it (the
   // last widget can land or vanish without moving anything) AND the widget is likely to
   // resolve non-empty — a placeholder that then unmounts is itself a layout jump. Only
   // widgets known to render before any query resolves count as "below": a trailing widget
   // gated on async data (addUser, virtualContributors, guidelines, …) often renders nothing.
-  const alwaysRendered = new Set<SidebarWidgetId>(['intent', 'about', 'events', 'updates', 'index', 'search']);
+  const alwaysRendered = new Set<SidebarWidgetId>([
+    'intent',
+    'about',
+    'events',
+    'updates',
+    'index',
+    'search',
+    'community',
+  ]);
   if (canCreatePost) alwaysRendered.add('createPost');
+  if (showActivity) alwaysRendered.add('activity');
   if (permissions.canCreateSubspaces) alwaysRendered.add('createSubspace');
   const hasWidgetsBelow = (widgetId: SidebarWidgetId) =>
     plan.slice(plan.indexOf(widgetId) + 1).some(id => alwaysRendered.has(id));
@@ -201,7 +222,9 @@ export function SpaceTabSidebarConnector({
   // so only a signed-in viewer can end up with the button; nearly every space has a user lead.
   const showContactLeadsPlaceholder =
     !skips.contactLeads && communityLoading && isAuthenticated && hasWidgetsBelow('contactLeads');
-  const canInviteVc = hasVcEntitlement && canInvite && Boolean(roleSetId);
+  // TEMP: VCs disabled (#10398) — drop `vcsPaused` to restore the Invite VC button.
+  const vcsPaused = true;
+  const canInviteVc = !vcsPaused && hasVcEntitlement && canInvite && Boolean(roleSetId);
   const leadRecipients: ContactLeadRecipient[] = leadUsers.map(lead => ({
     id: lead.id,
     displayName: lead.name,
@@ -220,6 +243,7 @@ export function SpaceTabSidebarConnector({
         leads={sidebarLeads}
         leadsLoading={leadsLoading && hasWidgetsBelow('intent')}
         onEditClick={onEditClick}
+        onMessageContributor={onMessageContributor}
       />
     ),
     about: <AboutButton key="about" onClick={onAboutClick} />,
@@ -232,7 +256,10 @@ export function SpaceTabSidebarConnector({
       </output>
     ) : (
       !isKnownMember &&
-      !isSpaceMember && <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
+      !isSpaceMember &&
+      !isApplyUnavailable(applyButtonProps) && (
+        <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
+      )
     ),
     createSubspace: permissions.canCreateSubspaces && (
       <CreateSubspaceButton key="createSubspace" onClick={onCreateSubspace} />
@@ -300,6 +327,8 @@ export function SpaceTabSidebarConnector({
     ),
     index: <PostIndexButton key="index" onClick={() => setIndexOpen(true)} />,
     search: <SearchSection key="search" {...search} tagsLoading={search.tagsLoading && hasWidgetsBelow('search')} />,
+    community: <CommunityButton key="community" onClick={() => setCommunityOpen(true)} />,
+    activity: showActivity && <ActivityButton key="activity" onClick={() => setActivityOpen(true)} />,
   };
 
   return (
@@ -356,6 +385,18 @@ export function SpaceTabSidebarConnector({
         classificationTagsets={classificationTagsets}
         tabSectionNumber={tabPosition + 1}
       />
+
+      {!skips.community && (
+        <CrdSpaceCommunityDialogConnector
+          open={communityOpen}
+          onOpenChange={setCommunityOpen}
+          roleSetId={space.about.membership?.roleSetID}
+        />
+      )}
+
+      {showActivity && (
+        <CrdSpaceActivityDialogConnector open={activityOpen} onOpenChange={setActivityOpen} spaceId={space.id} />
+      )}
 
       {!skips.subspaceLinks && (
         <SubspacesDialogConnector

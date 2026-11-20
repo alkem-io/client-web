@@ -39,7 +39,7 @@ export function CalloutDeletionSummary({ summary, listCap = DEFAULT_LIST_CAP }: 
     return null;
   }
 
-  const { contributionCount, richContent, callToAction, commentCount } = summary;
+  const { contributionCount, richContent, callToAction, commentCount, formResponseCount } = summary;
   // With exactly one contribution beyond the cap, show it as a row — an
   // "1 contribution more..." line would waste the very row it summarizes.
   const contributionRowCap = contributionCount === listCap + 1 ? listCap + 1 : listCap;
@@ -57,6 +57,13 @@ export function CalloutDeletionSummary({ summary, listCap = DEFAULT_LIST_CAP }: 
       contributionCount > 0
         ? t('deleteCallout.headerRichPollContributions', { count: contributionCount })
         : t('deleteCallout.headerRichPoll');
+  } else if (richContent === 'form' && (contributionCount > 0 || (formResponseCount ?? 0) > 0)) {
+    // A form's deletion takes every response with it. The response total is only known once the viewer
+    // may read them all; otherwise the composed "The form will be deleted" header below applies.
+    headerText =
+      contributionCount > 0
+        ? t('deleteCallout.headerRichFormContributions', { count: contributionCount })
+        : t('deleteCallout.headerRichForm', { count: formResponseCount });
   } else if (richContent !== undefined) {
     const content = t(`deleteCallout.contentType.${richContent}`);
     headerText =

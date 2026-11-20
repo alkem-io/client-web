@@ -5,6 +5,7 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import { CommentThread } from '@/crd/components/comment/CommentThread';
+import type { ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { useNow } from '@/crd/hooks/useNow';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
@@ -12,7 +13,14 @@ import useCommentReactionsMutations from '@/domain/communication/room/Comments/u
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import {
+  type SendEvent,
+  useConversationAttachments,
+} from '@/main/crdPages/unifiedChat/attachments/useConversationAttachments';
+import { useAttachmentReadiness } from '@/main/userMessaging/useAttachmentReadiness';
 import { mapRoomToCommentData } from '../dataMappers/commentDataMapper';
+import { useCommentImageStorageConfig } from './useCommentImageStorageConfig';
+import { useContactableUsers } from './useContactableUsers';
 import { useMentionableContributors } from './useMentionableContributors';
 
 type UseCrdRoomCommentsParams = {
@@ -20,7 +28,7 @@ type UseCrdRoomCommentsParams = {
   /** Pre-loaded room object. Either fetched lazily by the consumer
    *  (CalloutCommentsConnector with useInView gating) or eagerly available
    *  (CalendarCommentsConnector — already loaded by useCalendarEventDetail). */
-  room: Pick<CommentsWithMessagesModel, 'messages' | 'authorization'> | undefined;
+  room: Pick<CommentsWithMessagesModel, 'messages' | 'authorization' | 'attachmentBucketId'> | undefined;
   /** When true, do not subscribe to live room events. CalloutCommentsConnector
    *  forwards `!inView` here for lazy subscription; CalendarCommentsConnector
    *  omits to default to false (always subscribe). */
@@ -31,6 +39,8 @@ type UseCrdRoomCommentsParams = {
    *  behind it and block the UI. */
   confirmOverlayClassName?: string;
   confirmContentClassName?: string;
+  /** Message action on the author hover card; without it the button hides. */
+  onMessageContributor?: (contributor: ContributorPreviewData) => void;
 };
 
 export type CrdRoomCommentsSlots = {
@@ -53,6 +63,7 @@ export function useCrdRoomComments({
   skipSubscription = false,
   confirmOverlayClassName,
   confirmContentClassName,
+  onMessageContributor,
 }: UseCrdRoomCommentsParams): CrdRoomCommentsSlots {
   const { t } = useTranslation('crd-space');
   // `tMain` resolves the default `translation` namespace, where the
@@ -84,7 +95,37 @@ export function useCrdRoomComments({
   const privileges = room?.authorization?.myPrivileges ?? [];
   const canComment = isAuthenticated && privileges.includes(AuthorizationPrivilege.CreateMessage);
 
-  const comments = mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain });
+  // A room with a bucket gets image-capable composers from the first render, so
+  // the field never switches mode under typed text; the image button appears
+  // once the bucket policy allows uploads. Text and image go in one message, and
+  // the controlled field clears only once that message is confirmed.
+  const canReply = privileges.includes(AuthorizationPrivilege.CreateMessageReply);
+  const storageConfigs = useCommentImageStorageConfig(room?.attachmentBucketId, canComment, canReply);
+  const imageComposers = Boolean(room?.attachmentBucketId);
+  const [draft, setDraft] = useState('');
+  const [replyTarget, setReplyTarget] = useState<string | undefined>(undefined);
+  const [replyDraft, setReplyDraft] = useState('');
+  const imageOptions = { maxAttachments: 1, textWithAttachment: true };
+  const topLevelFiles = useConversationAttachments(storageConfigs.comment, { roomID: roomId }, imageOptions);
+  const replyFiles = useConversationAttachments(
+    storageConfigs.reply,
+    replyTarget ? { roomID: roomId, threadID: replyTarget } : undefined,
+    imageOptions
+  );
+
+  const mapped = mapRoomToCommentData(room, { currentUserId: userModel?.id, t: tMain });
+  // Only hosts that offer Message ask who can be contacted (FR-004).
+  const withContactability = useContactableUsers(
+    mapped.map(comment => comment.author.preview),
+    !onMessageContributor || !isAuthenticated
+  );
+  const comments = useAttachmentReadiness(
+    mapped.map(comment => ({
+      ...comment,
+      author: { ...comment.author, preview: withContactability(comment.author.preview) },
+    })),
+    roomId
+  );
 
   const currentUser = userModel
     ? {
@@ -103,6 +144,30 @@ export function useCrdRoomComments({
   // is reloading. Existing comments must stay visible; the new one snaps
   // in via the cache update / subscription when the mutation resolves.
   const inputBusy = postingMessage || postingReply || deletingMessage;
+
+  const imageComposerProps = (
+    files: ReturnType<typeof useConversationAttachments>,
+    value: string,
+    onValueChange: (value: string) => void
+  ) => ({
+    value,
+    onValueChange,
+    attachmentsEnabled: files.enabled,
+    attachments: files.attachments,
+    onAttachFiles: files.attachFiles,
+    onRemoveAttachment: files.removeAttachment,
+    attachmentError: files.error,
+    acceptMimeTypes: files.accept,
+    imagesOnly: true,
+    disabled: inputBusy || files.isSending,
+  });
+
+  const sendTopLevel: SendEvent = async (text, attachmentUpload) =>
+    Boolean((await postMessage(text, attachmentUpload)).data?.sendMessageToRoom);
+  const sendReply =
+    (threadId: string): SendEvent =>
+    async (text, attachmentUpload) =>
+      Boolean((await postReply({ threadId, messageText: text, attachmentUpload })).data?.sendMessageReplyToRoom);
 
   // MUI parity (CommentsComponent → ConfirmationDialog): the user confirms the
   // delete in a separate dialog before the mutation fires. `pendingDeleteId`
@@ -133,9 +198,22 @@ export function useCrdRoomComments({
         currentUser={currentUser}
         canComment={canComment}
         mentionSearch={mentionSearch}
+        onMessageContributor={onMessageContributor}
         onReply={(parentId, content) => {
+          if (imageComposers) return replyFiles.send(content, sendReply(parentId), () => setReplyDraft(''));
           void postReply({ messageText: content, threadId: parentId });
         }}
+        onReplyTargetChange={
+          imageComposers
+            ? id => {
+                setReplyTarget(id);
+                setReplyDraft('');
+                for (const file of replyFiles.attachments) replyFiles.removeAttachment(file.id);
+              }
+            : undefined
+        }
+        replyInputProps={imageComposers ? imageComposerProps(replyFiles, replyDraft, setReplyDraft) : undefined}
+        replyTogglesLocked={replyFiles.isSending}
         onDelete={commentId => {
           setPendingDeleteId(commentId);
         }}
@@ -188,8 +266,10 @@ export function useCrdRoomComments({
       currentUser={currentUser}
       disabled={inputBusy}
       mentionSearch={mentionSearch}
+      {...(imageComposers ? imageComposerProps(topLevelFiles, draft, setDraft) : undefined)}
       onSubmit={content => {
-        void postMessage(content);
+        if (imageComposers) void topLevelFiles.send(content, sendTopLevel, () => setDraft(''));
+        else void postMessage(content);
       }}
     />
   ) : cantCommentNotice ? (

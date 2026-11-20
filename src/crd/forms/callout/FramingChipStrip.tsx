@@ -1,4 +1,5 @@
 import {
+  ClipboardList,
   FileText,
   FolderTree,
   Image as ImageIcon,
@@ -9,12 +10,23 @@ import {
   Vote,
   X,
 } from 'lucide-react';
-import { type ComponentType, type SVGProps, useState } from 'react';
+import { type ComponentType, type SVGProps, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeleteFramingDialog } from '@/crd/components/dialogs/DeleteFramingDialog';
+import { ChipOverflowMenu, chipBaseClass, chipIdleClass, useChipOverflow } from '@/crd/forms/callout/ChipOverflowMenu';
+import { chipIconTint, chipSurfaceTint } from '@/crd/forms/callout/chipTints';
 import { cn } from '@/crd/lib/utils';
 
-export type FramingChipId = 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll' | 'contributors' | 'spaces';
+export type FramingChipId =
+  | 'whiteboard'
+  | 'memo'
+  | 'document'
+  | 'cta'
+  | 'image'
+  | 'poll'
+  | 'contributors'
+  | 'spaces'
+  | 'form';
 
 type Chip = {
   id: FramingChipId;
@@ -33,7 +45,26 @@ const CHIPS: Chip[] = [
   // Feature 013: the "Subspaces" framing (chip id stays `'spaces'` → maps to
   // CalloutFramingType.Spaces; the visible label is "Subspaces").
   { id: 'spaces', labelKey: 'callout.subspaces', icon: FolderTree },
+  // Admin-only: the consumer leaves `form` out of `allowedChips` for anyone who
+  // is not a space admin, so it never reaches the row or the More menu for them.
+  { id: 'form', labelKey: 'callout.form', icon: ClipboardList },
 ];
+
+/**
+ * The chips kept on the surface; everything else moves behind the "More" menu.
+ *
+ * Chosen from usage (Sept 2026): whiteboard 162, memo 97, media gallery 73 —
+ * the next one down is an order of magnitude smaller. The row used to show all
+ * eight, which gave a framing type nobody picks the same share of the opening
+ * screen as the one most people do, and grew by a chip with every new framing
+ * type we shipped.
+ *
+ * The caveat on that data, from the analyst: the counts measure activity on a
+ * framing type rather than creation of one, and cannot separate "added to a
+ * post" from "asked for as a response". It is good enough to pick three; it is
+ * not good enough to order the menu, which stays in `CHIPS` order.
+ */
+const PRIMARY_CHIP_IDS: FramingChipId[] = ['whiteboard', 'memo', 'image'];
 
 export type DisabledChipMap = Partial<Record<FramingChipId, { tooltip?: string }>>;
 
@@ -65,6 +96,12 @@ export type FramingChipStripProps = {
    * Contributor's knowledge base offers none. `undefined` renders all chips.
    */
   allowedChips?: FramingChipId[];
+  /**
+   * Chips whose framing kind is fixed once created. In edit mode an active chip
+   * listed here is inert: it cannot be cleared back to `'none'` (no confirmation
+   * dialog) and explains why through the type-locked hint.
+   */
+  fixedKindChips?: FramingChipId[];
   className?: string;
 };
 
@@ -74,12 +111,15 @@ export function FramingChipStrip({
   editMode = false,
   disabledChips,
   allowedChips,
+  fixedKindChips,
   className,
 }: FramingChipStripProps) {
   const { t } = useTranslation('crd-space');
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
+  const hintIdPrefix = useId();
 
   const chips = allowedChips ? CHIPS.filter(chip => allowedChips.includes(chip.id)) : CHIPS;
+  const { rowChips, menuChips, keepInRow } = useChipOverflow(chips, PRIMARY_CHIP_IDS, value);
 
   const handleClick = (chip: Chip) => {
     if (editMode) {
@@ -90,13 +130,15 @@ export function FramingChipStrip({
       // became entitlement-disabled after creation (e.g. `document` once the
       // office-documents flag is revoked) must still be clearable — clearing only
       // ever reduces capability.
-      if (chip.id === value) setConfirmClearOpen(true);
+      if (chip.id === value && !fixedKindChips?.includes(chip.id)) setConfirmClearOpen(true);
       return;
     }
     if (disabledChips?.[chip.id]) return;
     if (chip.id === value) {
+      keepInRow(chip.id);
       onChange('none');
     } else {
+      keepInRow(undefined);
       onChange(chip.id);
     }
   };
@@ -105,49 +147,88 @@ export function FramingChipStrip({
     <>
       <div className="space-y-3">
         <span className="text-label text-muted-foreground uppercase">{t('forms.framingType')}</span>
-        <div
-          role="radiogroup"
-          aria-label={t('forms.framingType')}
-          className={cn('flex flex-wrap gap-2 overflow-x-auto', className)}
-        >
-          {chips.map(chip => {
-            const active = value === chip.id;
-            const disabledInfo = disabledChips?.[chip.id];
-            const isDisabled = Boolean(disabledInfo);
-            // In edit mode the active chip is always interactive (to clear the
-            // framing) even if its type is otherwise entitlement-disabled —
-            // clearing only reduces capability. Every other inactive chip is
-            // inert; in create mode all chips are live.
-            const activeClearable = editMode && active;
-            const isInert = !activeClearable && (isDisabled || (editMode && !active));
-            return (
-              // biome-ignore lint/a11y/useSemanticElements: the chip is a styled <button>, not an <input type="radio">
-              <button
-                key={chip.id}
-                type="button"
-                role="radio"
-                aria-checked={active}
-                aria-disabled={isInert ? 'true' : undefined}
-                aria-label={t(chip.labelKey as 'callout.whiteboard')}
-                title={disabledInfo?.tooltip ?? (editMode && !active ? t('forms.typeLockedHint') : undefined)}
-                onClick={() => handleClick(chip)}
-                className={cn(
-                  'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  active
-                    ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
-                    : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
-                  isDisabled && !activeClearable && 'opacity-50 cursor-not-allowed pointer-events-none',
-                  editMode && !active && !isDisabled && 'opacity-60 cursor-not-allowed'
-                )}
-              >
-                <chip.icon className="w-4 h-4" aria-hidden="true" />
-                <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
-                {/* The X marks the active chip as removable; clicking the chip itself
+        {/* The menu trigger sits beside the radiogroup, not inside it: "More" is
+            not one of the choices, it is the way to reach the rest of them, and
+            a screen reader announcing it as the fourth option would be a lie. */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div
+            role="radiogroup"
+            aria-label={t('forms.framingType')}
+            className={cn('flex flex-wrap gap-2 overflow-x-auto', className)}
+          >
+            {rowChips.map(chip => {
+              const active = value === chip.id;
+              const disabledInfo = disabledChips?.[chip.id];
+              const isDisabled = Boolean(disabledInfo);
+              // In edit mode the active chip is always interactive (to clear the
+              // framing) even if its type is otherwise entitlement-disabled —
+              // clearing only reduces capability. Every other inactive chip is
+              // inert; in create mode all chips are live.
+              const fixedActive = editMode && active && Boolean(fixedKindChips?.includes(chip.id));
+              const activeClearable = editMode && active && !fixedActive;
+              const isInert = fixedActive || (!activeClearable && (isDisabled || (editMode && !active)));
+              const hint =
+                disabledInfo?.tooltip ?? (fixedActive || (editMode && !active) ? t('forms.typeLockedHint') : undefined);
+              const hintId = `${hintIdPrefix}-${chip.id}-hint`;
+              return (
+                // biome-ignore lint/a11y/useSemanticElements: the chip is a styled <button>, not an <input type="radio">
+                <button
+                  key={chip.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  aria-disabled={isInert ? 'true' : undefined}
+                  aria-label={t(chip.labelKey as 'callout.whiteboard')}
+                  // The hint is the chip's description, as a menu item's reason
+                  // is, not only a hover `title`.
+                  title={hint}
+                  aria-describedby={hint ? hintId : undefined}
+                  onClick={() => handleClick(chip)}
+                  className={cn(
+                    chipBaseClass,
+                    active ? cn(chipSurfaceTint(chip.id), 'text-foreground') : chipIdleClass(isInert),
+                    // No pointer-events-none: it would swallow the `title` that
+                    // says why the chip is unavailable. `handleClick` ignores it.
+                    isDisabled && !activeClearable && 'opacity-50 cursor-not-allowed',
+                    editMode && !active && !isDisabled && 'opacity-60 cursor-not-allowed',
+                    fixedActive && 'cursor-not-allowed'
+                  )}
+                >
+                  <chip.icon className={cn('w-4 h-4', chipIconTint(chip.id))} aria-hidden="true" />
+                  <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
+                  {/* The X marks the active chip as removable; clicking the chip itself
                     deselects (create) or asks to confirm clearing the framing (edit). */}
-                {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
-              </button>
-            );
-          })}
+                  {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
+                  {hint && (
+                    <span id={hintId} className="sr-only">
+                      {hint}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          {menuChips.length > 0 && (
+            <ChipOverflowMenu
+              chips={menuChips.map(chip => {
+                const disabledInfo = disabledChips?.[chip.id];
+                return {
+                  id: chip.id,
+                  label: t(chip.labelKey as 'callout.whiteboard'),
+                  icon: chip.icon,
+                  disabled: disabledInfo && { reason: disabledInfo.tooltip },
+                };
+              })}
+              label={t('forms.moreFramingTypes')}
+              heading={t('forms.moreFramingTypesHeading')}
+              locked={editMode}
+              lockedHint={t('forms.typeLockedHint')}
+              onSelect={id => {
+                keepInRow(undefined);
+                onChange(id);
+              }}
+            />
+          )}
         </div>
       </div>
       <DeleteFramingDialog
@@ -155,6 +236,7 @@ export function FramingChipStrip({
         onOpenChange={setConfirmClearOpen}
         onConfirm={() => {
           setConfirmClearOpen(false);
+          if (value !== 'none') keepInRow(value);
           onChange('none');
         }}
       />

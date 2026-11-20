@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time.",
       "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "An unexpected error occurred. Please try again.",
       "generic": "An error occurred",
       "generic-with-code": "An error occurred with code {{code}}",
+      "network": {
+        "session_store_unavailable": "The service is temporarily unavailable. Please try again in a moment.",
+        "generic": "A connection problem occurred. Please check your connection and try again."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -30,6 +35,8 @@
           "invalidToken": "Invalid token.",
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Unable to initialise login flow.",
+          "platformSupportSelfTarget": "You can't do this to your own account. Ask another Platform Support user or an organisation admin.",
+          "secondFactorRequired": "Two-step verification is required for your account.",
           "sessionExpired": "Session expired.",
           "sessionExtend": "Unable to extend session.",
           "subscriptionNotAuthenticated": "Subscription requires authentication.",
@@ -51,7 +58,7 @@
           "userIdentity": "User identity not found."
         },
         "operations": {
-          "calloutClosed": "Callout is closed.",
+          "calloutClosed": "$t(common.Post) is closed.",
           "licenseEntitlementNotAvailable": "License entitlement not available.",
           "licenseEntitlementNotSupported": "License entitlement not supported.",
           "messagingNotEnabled": "Messaging not enabled.",
@@ -526,6 +533,10 @@
       "ADMIN": "$t(common.Admin)",
       "ANONYMOUS": "Anonymous",
       "ASSOCIATE": "Associate",
+      "FEATURE_BETA_TESTER": "Feature Beta Tester",
+      "FEATURE_ORGANIZATION_CREATOR": "Feature Organization Creator",
+      "FEATURE_VC_CAMPAIGN": "VC Early Access",
+      "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtual Assistant",
       "GLOBAL_ADMIN": "Global $t(common.Admin)",
       "GLOBAL_COMMUNITY_READER": "$t(common.Community) Manager",
       "GLOBAL_LICENSE_MANAGER": "License Manager",
@@ -538,7 +549,17 @@
       "LEAD": "Lead",
       "MEMBER": "$t(common.Member)",
       "OWNER": "Owner",
+      "PLATFORM_AUDIT_READER": "Platform Audit Reader",
       "PLATFORM_BETA_TESTER": "Beta Tester",
+      "PLATFORM_CONTENT_FULL_ACCESS": "Platform Content Full Access",
+      "PLATFORM_LICENSE_MANAGER": "Platform License Manager",
+      "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin",
+      "PLATFORM_RESOURCE_ADMIN": "Platform Resource Admin",
+      "PLATFORM_ROLES_ADMIN": "Platform Roles Admin",
+      "PLATFORM_SETTINGS_ADMIN": "Platform Settings Admin",
+      "PLATFORM_SPACES_READER": "Platform Spaces Reader",
+      "PLATFORM_SUPPORT": "Platform Support",
+      "PLATFORM_USERS_ADMIN": "Platform Users Admin",
       "PLATFORM_VC_CAMPAIGN": "VC Early Access",
       "REGISTERED": "Registered"
     },
@@ -760,7 +781,8 @@
         },
         "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
           "description": "",
-          "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}"
+          "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}",
+          "subjectRemoved": "{{triggeredByName}} has removed {{role}} from {{userName}}"
         },
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "description": "{{spaceName}}",
@@ -917,9 +939,51 @@
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
           "subject": "Your $t(common.organization) {{organizationName}} has joined {{spaceName}}",
           "description": "No further action is needed."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} invited you to associate with {{organizationName}}",
+          "description": "As {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} accepted the invitation to associate with {{organizationName}}",
+          "description": "{{triggeredByName}} is now an associate of {{organizationName}}, of which you are an $t(common.admin).{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} declined the invitation to associate with {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} applied to associate with {{organizationName}}",
+          "description": "Review the application on the $t(common.organization) $t(common.settings)"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Your application to associate with {{organizationName}} was approved",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Your application to associate with {{organizationName}} was declined",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "\"{{memberName}}\" joined {{organizationName}} as an associate",
+          "description": "{{memberName}} has joined {{organizationName}}, of which you are an $t(common.admin)."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} responded to the form \"{{calloutName}}\"",
+          "description": "In <b>{{spaceName}}</b>, of which you are an $t(common.admin)."
         }
       },
-      "spacesToJoin": "Accepting joins: {{spaces}}"
+      "spacesToJoin": "Accepting joins: {{spaces}}",
+      "associateRole": {
+        "associate": "Associate",
+        "associateAdmin": "Associate + Admin",
+        "associateOwner": "Associate + Owner"
+      },
+      "withheldRole": {
+        "admin": "Admin",
+        "owner": "Owner"
+      },
+      "associateRoleWithheld": " The {{role}} role could not be granted."
     },
     "profile": {
       "fields": {
@@ -1102,6 +1166,9 @@
     "message": "Message",
     "successfully-sent": "Message successfully sent"
   },
+  "notification": {
+    "close": "Close notification"
+  },
   "ok": "OK",
   "pages": {
     "admin": {
@@ -1208,6 +1275,7 @@
         "urlRequired": "URL is required"
       },
       "transferCallout": {
+        "formNotAllowed": "A $t(common.post) with a form cannot be transferred: its responses stay in the space where they were given.",
         "urlNotCallout": "URL does not resolve to a $t(common.post)",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space"
@@ -1250,7 +1318,10 @@
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organisation"
+        "urlNotUserOrOrg": "URL does not resolve to a user or organisation",
+        "accountNotAccessible": "This account exists but is not accessible to you.",
+        "successMessage": "Space transferred successfully.",
+        "errorMessage": "Failed to transfer the space."
       },
       "transferVc": {
         "confirmButton": "Transfer",
@@ -1315,12 +1386,13 @@
       },
       "vcConversion": {
         "alreadyConverted": "This virtual contributor is already knowledge-base-based. No conversion needed.",
-        "calloutCount": "Callouts to Migrate",
+        "calloutCount": "$t(common.Posts) to Migrate",
         "confirmTitle": "Convert Virtual Contributor?",
-        "confirmWarning": "This will convert the virtual contributor from space-based to knowledge-base-based. Callouts will be MOVED from the source space (not copied). This action cannot be undone.",
+        "confirmWarning": "This will convert the virtual contributor from space-based to knowledge-base-based. $t(common.Posts) will be MOVED from the source space (not copied). This action cannot be undone.",
         "convertButton": "Convert to Knowledge Base",
         "errorMessage": "Failed to convert virtual contributor.",
-        "sectionDescription": "Convert a space-based virtual contributor to use a knowledge base. Callouts will be moved from the source space — not copied.",
+        "formNotAllowed": "This virtual contributor's space has a $t(common.post) with a form, so it cannot be converted to a knowledge base.",
+        "sectionDescription": "Convert a space-based virtual contributor to use a knowledge base. $t(common.Posts) will be moved from the source space — not copied.",
         "sectionTitle": "Virtual Contributor Type Conversion",
         "sourceSpace": "Source Space",
         "successMessage": "Virtual contributor conversion completed successfully.",
@@ -1523,5 +1595,60 @@
     "archived": "Archived",
     "demo": "Demo",
     "inactive": "Inactive"
+  },
+  "messageAttachments": {
+    "videoLabel": "Attached video: {{name}}",
+    "videoUnavailableHint": "This video cannot be played here. Download it to view.",
+    "listLabel": "Attachments",
+    "imageAlt": "Attached image: {{name}}",
+    "download": "Download {{name}}",
+    "unavailableHint": "This file could not be loaded. Download it to view.",
+    "unavailableNoDownload": "This file is unavailable.",
+    "loading": "Loading attachment",
+    "openMedia": "Open {{name}} in the media viewer"
+  },
+  "unsavedChanges": {
+    "count_one": "{{count}} unsaved change",
+    "count_other": "{{count}} unsaved changes",
+    "save": "Save changes",
+    "discard": "Discard",
+    "saving": "Saving…",
+    "saved": "Changes saved",
+    "regionLabel": "Unsaved changes",
+    "discardDialog": {
+      "title_one": "Discard 1 unsaved change?",
+      "title_other": "Discard {{count}} unsaved changes?",
+      "description": "Every changed field on this tab goes back to its saved value.",
+      "confirm": "Discard"
+    },
+    "leaveDialog": {
+      "title": "Unsaved changes",
+      "description": "You have unsaved changes on this tab. Save them, discard them, or stay on this tab?",
+      "save": "Save",
+      "discard": "Discard & leave"
+    },
+    "saveFailedDialog": {
+      "title": "Your changes couldn't be saved",
+      "description": "Someone may have changed this page in the meantime. Refresh the page to load the latest version — your unsaved changes will be lost.",
+      "refresh": "Refresh page",
+      "close": "Close"
+    }
+  },
+  "vcPaused": {
+    "title": "Virtual Contributors are getting an upgrade! 🚀",
+    "description": "We're rebuilding them to be smarter and more helpful. While we do, you can't create, add or mention them, but your existing VCs stay visible.",
+    "learnMore": "Learn more",
+    "contactSupport": "Contact support",
+    "mentionUnavailable": "Temporarily unavailable"
+  },
+  "appDownload": {
+    "failed": "The file could not be downloaded."
+  },
+  "emojiPicker": {
+    "more": "More emojis"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} contributors here: {{names}}",
+    "pinGroupList": "{{count}} contributors here"
   }
 }

@@ -1,10 +1,16 @@
-import { buildApplicationsCsv, buildCsvFilename, buildMembersCsv } from '@/core/utils/csv/csvExport';
+import {
+  buildApplicationsCsv,
+  buildCsvFilename,
+  buildMembersCsv,
+  buildOrganizationsCsv,
+} from '@/core/utils/csv/csvExport';
 import { downloadCsv } from '@/core/utils/csv/downloadCsv';
-import type { CommunityMember } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
+import type { CommunityMember, CommunityOrg } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
 import type { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 
 type UseCommunityCsvExportParams = {
   members: CommunityMember[];
+  organizations: CommunityOrg[];
   applications: ApplicationModel[];
   spaceDisplayName: string | undefined;
   loading: boolean;
@@ -14,11 +20,13 @@ type UseCommunityCsvExportParams = {
 type UseCommunityCsvExportResult = {
   exportMembers: () => void;
   exportApplications: () => void;
+  exportOrganizations: () => void;
   exportDisabled: boolean;
 };
 
 export function useCommunityCsvExport({
   members,
+  organizations,
   applications,
   spaceDisplayName,
   loading,
@@ -48,9 +56,21 @@ export function useCommunityCsvExport({
     downloadCsv(csv, filename);
   };
 
+  const exportOrganizations = () => {
+    const rows = organizations.map(org => ({
+      displayName: org.displayName,
+      role: org.isLead ? ('lead' as const) : ('member' as const),
+      url: org.url,
+    }));
+    const csv = buildOrganizationsCsv(rows);
+    const filename = buildCsvFilename(spaceDisplayName, 'organizations', new Date());
+    downloadCsv(csv, filename);
+  };
+
   return {
     exportMembers,
     exportApplications,
+    exportOrganizations,
     exportDisabled,
   };
 }

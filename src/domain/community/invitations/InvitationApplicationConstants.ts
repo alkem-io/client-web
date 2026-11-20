@@ -3,6 +3,8 @@
 
 export enum InvitationState {
   INVITED = 'invited',
+  /** Transient: the acceptance is being processed server-side. */
+  ACCEPTING = 'accepting',
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
 }
@@ -15,6 +17,8 @@ export enum InvitationEvent {
 
 export enum ApplicationState {
   NEW = 'new',
+  /** Transient: the approval is being processed server-side. */
+  APPROVING = 'approving',
   APPROVED = 'approved',
   REJECTED = 'rejected',
   ARCHIVED = 'archived',

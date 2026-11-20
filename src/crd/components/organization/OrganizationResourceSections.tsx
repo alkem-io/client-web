@@ -2,7 +2,6 @@ import { Bot, LayoutDashboard, Package, Sparkles } from 'lucide-react';
 import { isValidElement, type Key, type ReactNode } from 'react';
 import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import type { SimpleResourceCardItem, VirtualContributorCardItem } from '@/crd/components/common/profileTypes';
-import { SpaceGridCard, type SpaceGridCardData, type SpaceGridCardLabels } from '@/crd/components/user/SpaceGridCard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 
@@ -16,7 +15,6 @@ function asListItems(nodes: ReactNode[]) {
 
 export type OrganizationResourceSectionsProps = {
   activeTab: ResourceTabKey;
-  hostedSpaces: SpaceGridCardData[];
   hostedVirtualContributors: VirtualContributorCardItem[];
   /** Backend field: `account.innovationPacks`. UI label: "Template Packs". */
   hostedInnovationPacks: SimpleResourceCardItem[];
@@ -27,7 +25,6 @@ export type OrganizationResourceSectionsProps = {
   /** Pre-rendered All Memberships tiles. */
   memberOf: ReactNode[];
   labels: {
-    spacesSubsection: string;
     virtualContributorsSubsection: string;
     /** "Template Packs" — reused from `common.innovation-packs` per FR-102. */
     templatePacksSubsection: string;
@@ -35,18 +32,13 @@ export type OrganizationResourceSectionsProps = {
     customHomepagesSubsection: string;
     spacesLeading: string;
     memberOf: string;
-    emptyResourcesHosted: string;
-    emptyLeading: string;
     /** Parity reuse — i18n key `pages.user-profile.communities.noMembership`. */
     emptyMembership: string;
-    /** sr-only labels for the SpaceGridCard privacy chip (WCAG 2.1 AA). */
-    spacePrivacy: SpaceGridCardLabels;
   };
 };
 
 export function OrganizationResourceSections({
   activeTab,
-  hostedSpaces,
   hostedVirtualContributors,
   hostedInnovationPacks,
   hostedInnovationHubs,
@@ -54,37 +46,10 @@ export function OrganizationResourceSections({
   memberOf,
   labels,
 }: OrganizationResourceSectionsProps) {
-  if (activeTab === 'resourcesHosted') {
-    const hasHostedResources =
-      hostedSpaces.length > 0 ||
-      hostedVirtualContributors.length > 0 ||
-      hostedInnovationPacks.length > 0 ||
-      hostedInnovationHubs.length > 0;
-
-    if (!hasHostedResources) {
-      return (
-        <section>
-          <p className="text-body text-muted-foreground">{labels.emptyResourcesHosted}</p>
-        </section>
-      );
-    }
-
+  if (activeTab === 'otherResources') {
+    // The page only shows this tab when at least one sub-section has items.
     return (
       <div className="space-y-10">
-        {hostedSpaces.length > 0 ? (
-          <SubSection label={labels.spacesSubsection}>
-            {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-            {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-            <ul role="list" className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
-              {hostedSpaces.map(space => (
-                <li key={space.id}>
-                  <SpaceGridCard space={space} labels={labels.spacePrivacy} />
-                </li>
-              ))}
-            </ul>
-          </SubSection>
-        ) : null}
-
         {hostedVirtualContributors.length > 0 ? (
           <SubSection
             label={labels.virtualContributorsSubsection}
@@ -146,15 +111,12 @@ export function OrganizationResourceSections({
   if (activeTab === 'leading') {
     return (
       <section>
-        {leadSpaces.length === 0 ? (
-          <p className="text-body text-muted-foreground">{labels.emptyLeading}</p>
-        ) : (
-          /* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */
-          /* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */
-          <ul role="list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
-            {asListItems(leadSpaces)}
-          </ul>
-        )}
+        {/* The page only shows this tab when the profile leads at least one Space. */}
+        {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+        {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+        <ul role="list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
+          {asListItems(leadSpaces)}
+        </ul>
       </section>
     );
   }

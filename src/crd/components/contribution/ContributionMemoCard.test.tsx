@@ -39,6 +39,8 @@ describe('ContributionMemoCard signed copies', () => {
     const history = screen.getByRole('button', { name: 'Signed copies (1)' });
     expect(openMemo.contains(history)).toBe(false);
     expect(history).toBeVisible();
+    expect(history).not.toHaveClass('bg-secondary');
+    expect(history.closest('[data-slot="memo-meta"]')).toBeInTheDocument();
 
     history.focus();
     await user.keyboard('{Enter}');

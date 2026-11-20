@@ -19,6 +19,11 @@ vi.mock('../../useAdminAccessGuard', () => ({
   useAdminAccessGuard: () => accessGuardMock(),
 }));
 
+const canManageLicensePlansMock = vi.fn();
+vi.mock('@/domain/platformAdmin/domain/licensing/useCanManageLicensePlans', () => ({
+  default: () => canManageLicensePlansMock(),
+}));
+
 const onDelete = vi.fn();
 const fetchMore = vi.fn();
 const onSearchTermChange = vi.fn();
@@ -75,7 +80,13 @@ const baseHookReturn = {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  accessGuardMock.mockReturnValue({ loading: false, isPlatformAdmin: true });
+  accessGuardMock.mockReturnValue({
+    loading: false,
+    isPlatformAdmin: true,
+    canChangeUserEmail: true,
+    canReadEmailChangeHistory: true,
+  });
+  canManageLicensePlansMock.mockReturnValue(true);
   userListHookMock.mockReturnValue(baseHookReturn);
 });
 
@@ -133,8 +144,11 @@ describe('CrdAdminUsersPage', () => {
     );
   });
 
-  test('change-email action is hidden for non-global-admins', () => {
-    accessGuardMock.mockReturnValue({ loading: false, isPlatformAdmin: false });
+  // Hidden for anyone lacking PLATFORM_USERS_ADMIN — including roles that DO
+  // reach the admin area (Platform Roles Admin, Content Full Access). Gating it
+  // on admin-area access handed the button to every one of them.
+  test('change-email action is hidden without the email-change capability', () => {
+    accessGuardMock.mockReturnValue({ loading: false, isPlatformAdmin: true, canChangeUserEmail: false });
     render(<CrdAdminUsersPage />);
     expect(screen.queryByRole('button', { name: 'users.changeEmail.action' })).toBeNull();
   });
@@ -143,5 +157,26 @@ describe('CrdAdminUsersPage', () => {
     render(<CrdAdminUsersPage />);
     await userEvent.click(screen.getAllByRole('button', { name: 'users.edit' })[0]);
     expect(navigateMock).toHaveBeenCalledWith('/admin/users/u1/edit');
+  });
+
+  // client-6: History and Manage-license-plans are capabilities, not admin standing —
+  // PlatformAuditRead and Grant respectively, each gated at its own server resolver.
+  test('hides History and Manage-license-plans without their capabilities', () => {
+    accessGuardMock.mockReturnValue({
+      loading: false,
+      isPlatformAdmin: true,
+      canChangeUserEmail: true,
+      canReadEmailChangeHistory: false,
+    });
+    canManageLicensePlansMock.mockReturnValue(false);
+    render(<CrdAdminUsersPage />);
+    expect(screen.queryByRole('button', { name: 'users.history.action' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'licensePlans.manage' })).toBeNull();
+  });
+
+  test('shows History and Manage-license-plans with both capabilities', () => {
+    render(<CrdAdminUsersPage />);
+    expect(screen.getAllByRole('button', { name: 'users.history.action' })).toHaveLength(2);
+    expect(screen.getAllByRole('button', { name: 'licensePlans.manage' })).toHaveLength(2);
   });
 });

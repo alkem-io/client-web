@@ -3,6 +3,7 @@ mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
     id
     nextEvents
     state
+    extraRolesWithheld
   }
 }
 
@@ -46,6 +47,12 @@ mutation DeleteInvitation($invitationId: UUID!) {
 
 mutation DeletePlatformInvitation($invitationId: UUID!) {
   deletePlatformInvitation(deleteData: { ID: $invitationId }) {
+    id
+  }
+}
+
+mutation ResendPlatformInvitation($invitationId: UUID!) {
+  resendPlatformInvitation(resendData: { ID: $invitationId }) {
     id
   }
 }

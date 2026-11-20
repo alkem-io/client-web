@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, Download, Plus, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -28,8 +28,8 @@ export type ApplicationFormEditorProps = {
   onQuestionMoveUp: (index: number) => void;
   onQuestionMoveDown: (index: number) => void;
   onSave: () => void;
-  onExportApplications?: () => void;
-  exportDisabled?: boolean;
+  /** Omit the built-in Save button — for hosts that provide their own (e.g. a dialog footer). */
+  hideSaveButton?: boolean;
   className?: string;
 } & MarkdownUploadProps;
 
@@ -46,8 +46,7 @@ export function ApplicationFormEditor({
   onQuestionMoveUp,
   onQuestionMoveDown,
   onSave,
-  onExportApplications,
-  exportDisabled,
+  hideSaveButton = false,
   className,
   onImageUpload,
   iframeAllowedUrls,
@@ -75,19 +74,6 @@ export function ApplicationFormEditor({
         <div className="flex items-center justify-between">
           <span className="text-body-emphasis">{t('settings.applicationForm.questionsLabel')}</span>
           <div className="flex items-center gap-2">
-            {onExportApplications && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                onClick={onExportApplications}
-                disabled={exportDisabled}
-              >
-                <Download aria-hidden="true" className="size-3.5" />
-                {t('settings.applicationForm.export')}
-              </Button>
-            )}
             <Button type="button" variant="outline" size="sm" onClick={onQuestionAdd} disabled={loading}>
               <Plus aria-hidden="true" className="size-3.5 mr-1.5" />
               {t('settings.applicationForm.addQuestion')}
@@ -172,12 +158,13 @@ export function ApplicationFormEditor({
         ))}
       </div>
 
-      {/* Save button */}
-      <div className="flex justify-end">
-        <Button type="button" onClick={onSave} disabled={!canSave}>
-          {t('settings.applicationForm.save')}
-        </Button>
-      </div>
+      {!hideSaveButton && (
+        <div className="flex justify-end">
+          <Button type="button" onClick={onSave} disabled={!canSave}>
+            {t('settings.applicationForm.save')}
+          </Button>
+        </div>
+      )}
 
       {/* Delete question confirmation */}
       <ConfirmationDialog

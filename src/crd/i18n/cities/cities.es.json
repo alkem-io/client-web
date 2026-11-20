@@ -1,0 +1,859 @@
+{
+  "AD": {
+    "andorra_la_vella": "Andorra la Vieja"
+  },
+  "AE": {
+    "abu_dhabi": "Abu Dabi",
+    "dubai": "Dubái"
+  },
+  "AF": {
+    "kabul": "Kabul"
+  },
+  "AG": {
+    "saint_johns": "Saint John's"
+  },
+  "AL": {
+    "tirana": "Tirana",
+    "durres": "Durrës",
+    "vlore": "Vlorë"
+  },
+  "AM": {
+    "yerevan": "Ereván"
+  },
+  "AO": {
+    "luanda": "Luanda"
+  },
+  "AR": {
+    "buenos_aires": "Buenos Aires"
+  },
+  "AT": {
+    "vienna": "Viena",
+    "graz": "Graz",
+    "salzburg": "Salzburgo"
+  },
+  "AU": {
+    "canberra": "Canberra",
+    "sydney": "Sídney",
+    "melbourne": "Melbourne"
+  },
+  "AZ": {
+    "baku": "Bakú"
+  },
+  "BA": {
+    "sarajevo": "Sarajevo",
+    "banja_luka": "Banja Luka",
+    "mostar": "Mostar"
+  },
+  "BB": {
+    "bridgetown": "Bridgetown"
+  },
+  "BD": {
+    "dhaka": "Daca"
+  },
+  "BE": {
+    "brussels": "Bruselas",
+    "antwerp": "Amberes",
+    "ghent": "Gante",
+    "liege": "Lieja",
+    "bruges": "Brujas",
+    "charleroi": "Charleroi",
+    "namur": "Namur",
+    "leuven": "Lovaina",
+    "mons": "Mons",
+    "mechelen": "Malinas",
+    "aalst": "Aalst",
+    "hasselt": "Hasselt",
+    "kortrijk": "Kortrijk",
+    "ostend": "Ostende",
+    "tournai": "Tournai",
+    "genk": "Genk"
+  },
+  "BF": {
+    "ouagadougou": "Uagadugú"
+  },
+  "BG": {
+    "sofia": "Sofía",
+    "plovdiv": "Plovdiv",
+    "varna": "Varna",
+    "burgas": "Burgas",
+    "ruse": "Ruse",
+    "stara_zagora": "Stara Zagora",
+    "pleven": "Pleven",
+    "sliven": "Sliven",
+    "dobrich": "Dobrich",
+    "shumen": "Shumen",
+    "pernik": "Pernik",
+    "haskovo": "Haskovo",
+    "yambol": "Yambol",
+    "pazardzhik": "Pazardzhik",
+    "blagoevgrad": "Blagoevgrad",
+    "veliko_tarnovo": "Veliko Tarnovo",
+    "vratsa": "Vratsa",
+    "gabrovo": "Gabrovo",
+    "kardzhali": "Kardzhali",
+    "vidin": "Vidin",
+    "montana": "Montana",
+    "kyustendil": "Kyustendil",
+    "lovech": "Lovech",
+    "silistra": "Silistra"
+  },
+  "BH": {
+    "manama": "Manama"
+  },
+  "BI": {
+    "gitega": "Gitega"
+  },
+  "BJ": {
+    "porto_novo": "Porto Novo"
+  },
+  "BN": {
+    "bandar_seri_begawan": "Bandar Seri Begawan"
+  },
+  "BO": {
+    "sucre": "Sucre",
+    "la_paz": "La Paz"
+  },
+  "BR": {
+    "brasilia": "Brasilia",
+    "sao_paulo": "São Paulo",
+    "rio_de_janeiro": "Río de Janeiro"
+  },
+  "BS": {
+    "nassau": "Nasáu"
+  },
+  "BT": {
+    "thimphu": "Timbu"
+  },
+  "BW": {
+    "gaborone": "Gaborone"
+  },
+  "BY": {
+    "minsk": "Minsk",
+    "gomel": "Gómel",
+    "brest": "Brest"
+  },
+  "BZ": {
+    "belmopan": "Belmopan"
+  },
+  "CA": {
+    "ottawa": "Ottawa",
+    "toronto": "Toronto",
+    "montreal": "Montreal",
+    "vancouver": "Vancouver"
+  },
+  "CD": {
+    "kinshasa": "Kinshasa"
+  },
+  "CF": {
+    "bangui": "Bangui"
+  },
+  "CG": {
+    "brazzaville": "Brazzaville"
+  },
+  "CH": {
+    "bern": "Berna",
+    "zurich": "Zúrich",
+    "geneva": "Ginebra",
+    "basel": "Basilea"
+  },
+  "CI": {
+    "yamoussoukro": "Yamoussoukro",
+    "abidjan": "Abiyán"
+  },
+  "CL": {
+    "santiago": "Santiago de Chile"
+  },
+  "CM": {
+    "yaounde": "Yaundé"
+  },
+  "CN": {
+    "beijing": "Pekín",
+    "shanghai": "Shanghái"
+  },
+  "CO": {
+    "bogota": "Bogotá"
+  },
+  "CR": {
+    "san_jose": "San José"
+  },
+  "CU": {
+    "havana": "La Habana"
+  },
+  "CV": {
+    "praia": "Praia"
+  },
+  "CY": {
+    "nicosia": "Nicosia",
+    "limassol": "Limasol"
+  },
+  "CZ": {
+    "prague": "Praga",
+    "brno": "Brno",
+    "ostrava": "Ostrava"
+  },
+  "DE": {
+    "berlin": "Berlín",
+    "hamburg": "Hamburgo",
+    "munich": "Múnich",
+    "cologne": "Colonia",
+    "frankfurt": "Fráncfort",
+    "stuttgart": "Stuttgart",
+    "dusseldorf": "Düsseldorf",
+    "leipzig": "Leipzig",
+    "dortmund": "Dortmund",
+    "essen": "Essen",
+    "bremen": "Bremen",
+    "dresden": "Dresde",
+    "hanover": "Hannover",
+    "nuremberg": "Núremberg",
+    "duisburg": "Duisburg",
+    "bochum": "Bochum",
+    "bonn": "Bonn",
+    "mannheim": "Mannheim",
+    "karlsruhe": "Karlsruhe",
+    "freiburg": "Friburgo",
+    "heidelberg": "Heidelberg",
+    "munster": "Münster",
+    "aachen": "Aquisgrán",
+    "kiel": "Kiel",
+    "potsdam": "Potsdam",
+    "mainz": "Maguncia"
+  },
+  "DJ": {
+    "djibouti": "Yibuti"
+  },
+  "DK": {
+    "copenhagen": "Copenhague",
+    "aarhus": "Aarhus",
+    "odense": "Odense"
+  },
+  "DM": {
+    "roseau": "Roseau"
+  },
+  "DO": {
+    "santo_domingo": "Santo Domingo"
+  },
+  "DZ": {
+    "algiers": "Argel"
+  },
+  "EC": {
+    "quito": "Quito"
+  },
+  "EE": {
+    "tallinn": "Tallin",
+    "tartu": "Tartu",
+    "narva": "Narva"
+  },
+  "EG": {
+    "cairo": "El Cairo"
+  },
+  "ER": {
+    "asmara": "Asmara"
+  },
+  "ES": {
+    "madrid": "Madrid",
+    "barcelona": "Barcelona",
+    "valencia": "Valencia",
+    "seville": "Sevilla",
+    "zaragoza": "Zaragoza",
+    "malaga": "Málaga",
+    "murcia": "Murcia",
+    "palma": "Palma de Mallorca",
+    "las_palmas": "Las Palmas de Gran Canaria",
+    "bilbao": "Bilbao",
+    "alicante": "Alicante",
+    "cordoba": "Córdoba",
+    "valladolid": "Valladolid",
+    "vigo": "Vigo",
+    "gijon": "Gijón",
+    "granada": "Granada",
+    "a_coruna": "A Coruña",
+    "san_sebastian": "San Sebastián",
+    "santander": "Santander",
+    "salamanca": "Salamanca",
+    "pamplona": "Pamplona",
+    "toledo": "Toledo",
+    "cadiz": "Cádiz"
+  },
+  "ET": {
+    "addis_ababa": "Adís Abeba"
+  },
+  "FI": {
+    "helsinki": "Helsinki",
+    "espoo": "Espoo",
+    "tampere": "Tampere"
+  },
+  "FJ": {
+    "suva": "Suva"
+  },
+  "FM": {
+    "palikir": "Palikir"
+  },
+  "FR": {
+    "paris": "París",
+    "marseille": "Marsella",
+    "lyon": "Lyon",
+    "toulouse": "Tolosa",
+    "nice": "Niza",
+    "nantes": "Nantes",
+    "strasbourg": "Estrasburgo",
+    "montpellier": "Montpellier",
+    "bordeaux": "Burdeos",
+    "lille": "Lille",
+    "rennes": "Rennes",
+    "reims": "Reims",
+    "grenoble": "Grenoble",
+    "dijon": "Dijon",
+    "angers": "Angers",
+    "le_havre": "El Havre",
+    "toulon": "Tolón",
+    "saint_etienne": "Saint-Étienne",
+    "clermont_ferrand": "Clermont-Ferrand",
+    "tours": "Tours",
+    "nancy": "Nancy",
+    "metz": "Metz",
+    "avignon": "Aviñón",
+    "aix_en_provence": "Aix-en-Provence"
+  },
+  "GA": {
+    "libreville": "Libreville"
+  },
+  "GB": {
+    "london": "Londres",
+    "manchester": "Mánchester",
+    "birmingham": "Birmingham",
+    "edinburgh": "Edimburgo",
+    "cardiff": "Cardiff",
+    "belfast": "Belfast"
+  },
+  "GD": {
+    "saint_georges": "Saint George's"
+  },
+  "GE": {
+    "tbilisi": "Tiflis",
+    "batumi": "Batumi",
+    "kutaisi": "Kutaisi"
+  },
+  "GH": {
+    "accra": "Acra"
+  },
+  "GM": {
+    "banjul": "Banjul"
+  },
+  "GN": {
+    "conakry": "Conakri"
+  },
+  "GQ": {
+    "malabo": "Malabo"
+  },
+  "GR": {
+    "athens": "Atenas",
+    "thessaloniki": "Tesalónica",
+    "patras": "Patras"
+  },
+  "GT": {
+    "guatemala_city": "Ciudad de Guatemala"
+  },
+  "GW": {
+    "bissau": "Bisáu"
+  },
+  "GY": {
+    "georgetown": "Georgetown"
+  },
+  "HK": {
+    "hong_kong": "Hong Kong"
+  },
+  "HN": {
+    "tegucigalpa": "Tegucigalpa"
+  },
+  "HR": {
+    "zagreb": "Zagreb",
+    "split": "Split",
+    "rijeka": "Rijeka"
+  },
+  "HT": {
+    "port_au_prince": "Puerto Príncipe"
+  },
+  "HU": {
+    "budapest": "Budapest",
+    "debrecen": "Debrecen",
+    "szeged": "Szeged"
+  },
+  "ID": {
+    "jakarta": "Yakarta"
+  },
+  "IE": {
+    "dublin": "Dublín",
+    "cork": "Cork",
+    "galway": "Galway"
+  },
+  "IL": {
+    "jerusalem": "Jerusalén",
+    "tel_aviv": "Tel Aviv"
+  },
+  "IN": {
+    "new_delhi": "Nueva Delhi",
+    "mumbai": "Bombay"
+  },
+  "IQ": {
+    "baghdad": "Bagdad"
+  },
+  "IR": {
+    "tehran": "Teherán"
+  },
+  "IS": {
+    "reykjavik": "Reikiavik",
+    "kopavogur": "Kópavogur",
+    "akureyri": "Akureyri"
+  },
+  "IT": {
+    "rome": "Roma",
+    "milan": "Milán",
+    "naples": "Nápoles",
+    "turin": "Turín",
+    "florence": "Florencia"
+  },
+  "JM": {
+    "kingston": "Kingston"
+  },
+  "JO": {
+    "amman": "Amán"
+  },
+  "JP": {
+    "tokyo": "Tokio",
+    "osaka": "Osaka"
+  },
+  "KE": {
+    "nairobi": "Nairobi"
+  },
+  "KG": {
+    "bishkek": "Biskek"
+  },
+  "KH": {
+    "phnom_penh": "Nom Pen"
+  },
+  "KI": {
+    "south_tarawa": "Tarawa Sur"
+  },
+  "KM": {
+    "moroni": "Moroni"
+  },
+  "KN": {
+    "basseterre": "Basseterre"
+  },
+  "KP": {
+    "pyongyang": "Pionyang"
+  },
+  "KR": {
+    "seoul": "Seúl"
+  },
+  "KW": {
+    "kuwait_city": "Ciudad de Kuwait"
+  },
+  "KZ": {
+    "astana": "Astana",
+    "almaty": "Almaty"
+  },
+  "LA": {
+    "vientiane": "Vientián"
+  },
+  "LB": {
+    "beirut": "Beirut"
+  },
+  "LC": {
+    "castries": "Castries"
+  },
+  "LI": {
+    "vaduz": "Vaduz",
+    "schaan": "Schaan"
+  },
+  "LK": {
+    "sri_jayawardenepura_kotte": "Sri Jayawardenepura Kotte",
+    "colombo": "Colombo"
+  },
+  "LR": {
+    "monrovia": "Monrovia"
+  },
+  "LS": {
+    "maseru": "Maseru"
+  },
+  "LT": {
+    "vilnius": "Vilna",
+    "kaunas": "Kaunas",
+    "klaipeda": "Klaipėda"
+  },
+  "LU": {
+    "luxembourg": "Luxemburgo",
+    "esch_sur_alzette": "Esch-sur-Alzette"
+  },
+  "LV": {
+    "riga": "Riga",
+    "daugavpils": "Daugavpils",
+    "liepaja": "Liepāja"
+  },
+  "LY": {
+    "tripoli": "Trípoli"
+  },
+  "MA": {
+    "rabat": "Rabat",
+    "casablanca": "Casablanca"
+  },
+  "MC": {
+    "monaco": "Mónaco"
+  },
+  "MD": {
+    "chisinau": "Chisináu",
+    "balti": "Bălți"
+  },
+  "MG": {
+    "antananarivo": "Antananarivo"
+  },
+  "MH": {
+    "majuro": "Majuro"
+  },
+  "MK": {
+    "skopje": "Skopie",
+    "bitola": "Bitola",
+    "ohrid": "Ohrid"
+  },
+  "ML": {
+    "bamako": "Bamako"
+  },
+  "MM": {
+    "naypyidaw": "Naipyidó"
+  },
+  "MN": {
+    "ulaanbaatar": "Ulán Bator"
+  },
+  "MR": {
+    "nouakchott": "Nuakchot"
+  },
+  "MT": {
+    "valletta": "La Valeta",
+    "birkirkara": "Birkirkara"
+  },
+  "MU": {
+    "port_louis": "Port Louis"
+  },
+  "MV": {
+    "male": "Malé"
+  },
+  "MW": {
+    "lilongwe": "Lilongwe"
+  },
+  "MX": {
+    "mexico_city": "Ciudad de México"
+  },
+  "MY": {
+    "kuala_lumpur": "Kuala Lumpur"
+  },
+  "MZ": {
+    "maputo": "Maputo"
+  },
+  "NA": {
+    "windhoek": "Windhoek"
+  },
+  "NE": {
+    "niamey": "Niamey"
+  },
+  "NG": {
+    "abuja": "Abuja",
+    "lagos": "Lagos"
+  },
+  "NI": {
+    "managua": "Managua"
+  },
+  "NL": {
+    "amsterdam": "Ámsterdam",
+    "rotterdam": "Róterdam",
+    "the_hague": "La Haya",
+    "utrecht": "Utrecht",
+    "eindhoven": "Eindhoven",
+    "groningen": "Groninga",
+    "tilburg": "Tilburg",
+    "almere": "Almere",
+    "breda": "Breda",
+    "nijmegen": "Nimega",
+    "haarlem": "Haarlem",
+    "arnhem": "Arnhem",
+    "maastricht": "Maastricht",
+    "leiden": "Leiden",
+    "delft": "Delft",
+    "enschede": "Enschede",
+    "zwolle": "Zwolle",
+    "s_hertogenbosch": "Bolduque",
+    "amersfoort": "Amersfoort",
+    "apeldoorn": "Apeldoorn"
+  },
+  "NO": {
+    "oslo": "Oslo",
+    "bergen": "Bergen",
+    "trondheim": "Trondheim"
+  },
+  "NP": {
+    "kathmandu": "Katmandú"
+  },
+  "NR": {
+    "yaren": "Yaren"
+  },
+  "NZ": {
+    "wellington": "Wellington",
+    "auckland": "Auckland"
+  },
+  "OM": {
+    "muscat": "Mascate"
+  },
+  "PA": {
+    "panama_city": "Ciudad de Panamá"
+  },
+  "PE": {
+    "lima": "Lima"
+  },
+  "PG": {
+    "port_moresby": "Port Moresby"
+  },
+  "PH": {
+    "manila": "Manila"
+  },
+  "PK": {
+    "islamabad": "Islamabad"
+  },
+  "PL": {
+    "warsaw": "Varsovia",
+    "krakow": "Cracovia",
+    "wroclaw": "Breslavia",
+    "gdansk": "Gdansk"
+  },
+  "PS": {
+    "ramallah": "Ramala"
+  },
+  "PT": {
+    "lisbon": "Lisboa",
+    "porto": "Oporto",
+    "braga": "Braga"
+  },
+  "PW": {
+    "ngerulmud": "Ngerulmud"
+  },
+  "PY": {
+    "asuncion": "Asunción"
+  },
+  "QA": {
+    "doha": "Doha"
+  },
+  "RO": {
+    "bucharest": "Bucarest",
+    "cluj_napoca": "Cluj-Napoca",
+    "timisoara": "Timisoara"
+  },
+  "RU": {
+    "moscow": "Moscú",
+    "saint_petersburg": "San Petersburgo",
+    "kazan": "Kazán"
+  },
+  "RW": {
+    "kigali": "Kigali"
+  },
+  "SA": {
+    "riyadh": "Riad"
+  },
+  "SB": {
+    "honiara": "Honiara"
+  },
+  "SC": {
+    "victoria": "Victoria"
+  },
+  "SD": {
+    "khartoum": "Jartum"
+  },
+  "SE": {
+    "stockholm": "Estocolmo",
+    "gothenburg": "Gotemburgo",
+    "malmo": "Malmö"
+  },
+  "SG": {
+    "singapore": "Singapur"
+  },
+  "SI": {
+    "ljubljana": "Liubliana",
+    "maribor": "Maribor"
+  },
+  "SK": {
+    "bratislava": "Bratislava",
+    "kosice": "Košice",
+    "presov": "Prešov"
+  },
+  "SL": {
+    "freetown": "Freetown"
+  },
+  "SM": {
+    "san_marino": "San Marino"
+  },
+  "SN": {
+    "dakar": "Dakar"
+  },
+  "SO": {
+    "mogadishu": "Mogadiscio"
+  },
+  "SR": {
+    "paramaribo": "Paramaribo"
+  },
+  "ST": {
+    "sao_tome": "Santo Tomé"
+  },
+  "SV": {
+    "san_salvador": "San Salvador"
+  },
+  "SY": {
+    "damascus": "Damasco"
+  },
+  "SZ": {
+    "mbabane": "Mbabane"
+  },
+  "TD": {
+    "ndjamena": "Yamena"
+  },
+  "TG": {
+    "lome": "Lomé"
+  },
+  "TH": {
+    "bangkok": "Bangkok"
+  },
+  "TJ": {
+    "dushanbe": "Dusambé"
+  },
+  "TL": {
+    "dili": "Dili"
+  },
+  "TM": {
+    "ashgabat": "Asjabad"
+  },
+  "TN": {
+    "tunis": "Túnez"
+  },
+  "TO": {
+    "nukualofa": "Nukuʻalofa"
+  },
+  "TR": {
+    "ankara": "Ankara",
+    "istanbul": "Estambul",
+    "izmir": "Esmirna"
+  },
+  "TT": {
+    "port_of_spain": "Puerto España"
+  },
+  "TV": {
+    "funafuti": "Funafuti"
+  },
+  "TW": {
+    "taipei": "Taipéi"
+  },
+  "TZ": {
+    "dodoma": "Dodoma",
+    "dar_es_salaam": "Dar es-Salam"
+  },
+  "UA": {
+    "kyiv": "Kiev",
+    "kharkiv": "Járkov",
+    "odesa": "Odesa",
+    "lviv": "Leópolis"
+  },
+  "UG": {
+    "kampala": "Kampala"
+  },
+  "US": {
+    "washington": "Washington D. C.",
+    "new_york": "Nueva York",
+    "los_angeles": "Los Ángeles",
+    "chicago": "Chicago",
+    "san_francisco": "San Francisco",
+    "montgomery": "Montgomery",
+    "juneau": "Juneau",
+    "phoenix": "Phoenix",
+    "little_rock": "Little Rock",
+    "sacramento": "Sacramento",
+    "denver": "Denver",
+    "hartford": "Hartford",
+    "dover": "Dover",
+    "tallahassee": "Tallahassee",
+    "atlanta": "Atlanta",
+    "honolulu": "Honolulu",
+    "boise": "Boise",
+    "springfield": "Springfield",
+    "indianapolis": "Indianapolis",
+    "des_moines": "Des Moines",
+    "topeka": "Topeka",
+    "frankfort": "Frankfort",
+    "baton_rouge": "Baton Rouge",
+    "augusta": "Augusta",
+    "annapolis": "Annapolis",
+    "boston": "Boston",
+    "lansing": "Lansing",
+    "saint_paul": "Saint Paul",
+    "jackson": "Jackson",
+    "jefferson_city": "Jefferson City",
+    "helena": "Helena",
+    "lincoln": "Lincoln",
+    "carson_city": "Carson City",
+    "concord": "Concord",
+    "trenton": "Trenton",
+    "santa_fe": "Santa Fe",
+    "albany": "Albany",
+    "raleigh": "Raleigh",
+    "bismarck": "Bismarck",
+    "columbus": "Columbus",
+    "oklahoma_city": "Oklahoma City",
+    "salem": "Salem",
+    "harrisburg": "Harrisburg",
+    "providence": "Providence",
+    "columbia": "Columbia",
+    "pierre": "Pierre",
+    "nashville": "Nashville",
+    "austin": "Austin",
+    "salt_lake_city": "Salt Lake City",
+    "montpelier": "Montpelier",
+    "richmond": "Richmond",
+    "olympia": "Olympia",
+    "charleston": "Charleston",
+    "madison": "Madison",
+    "cheyenne": "Cheyenne"
+  },
+  "UY": {
+    "montevideo": "Montevideo"
+  },
+  "UZ": {
+    "tashkent": "Taskent"
+  },
+  "VA": {
+    "vatican_city": "Ciudad del Vaticano"
+  },
+  "VC": {
+    "kingstown": "Kingstown"
+  },
+  "VE": {
+    "caracas": "Caracas"
+  },
+  "VN": {
+    "hanoi": "Hanói"
+  },
+  "VU": {
+    "port_vila": "Port Vila"
+  },
+  "WS": {
+    "apia": "Apia"
+  },
+  "YE": {
+    "sanaa": "Saná"
+  },
+  "ZA": {
+    "pretoria": "Pretoria",
+    "cape_town": "Ciudad del Cabo",
+    "johannesburg": "Johannesburgo"
+  },
+  "ZM": {
+    "lusaka": "Lusaka"
+  },
+  "ZW": {
+    "harare": "Harare"
+  }
+}

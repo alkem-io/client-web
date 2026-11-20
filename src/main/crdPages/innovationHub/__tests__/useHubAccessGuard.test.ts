@@ -40,6 +40,28 @@ describe('useHubAccessGuard', () => {
     expect(result.current).toEqual({ state: 'allowed' });
   });
 
+  // 027 R-F.2 (2026-09-16): Platform Support edits org-owned hubs through its
+  // own privilege (A7, PLATFORM_SUPPORT_ORG_RESOURCES cascading from the account)
+  // and never holds Update on them — the server accepted it all along; the
+  // guard was the only thing turning Support away.
+  test('returns allowed when PlatformSupportOrgResources is present without Update (A7)', () => {
+    useInnovationHubByIdQueryMock.mockReturnValue({
+      data: {
+        platform: {
+          innovationHub: {
+            id: 'hub-1',
+            nameID: 'demo-name-id',
+            subdomain: 'demo',
+            authorization: { myPrivileges: [AuthorizationPrivilege.PlatformSupportOrgResources] },
+          },
+        },
+      },
+      loading: false,
+    });
+    const { result } = renderHook(() => useHubAccessGuard('hub-1'));
+    expect(result.current).toEqual({ state: 'allowed' });
+  });
+
   test('returns denied with hub home redirect using nameID (NOT subdomain)', () => {
     useInnovationHubByIdQueryMock.mockReturnValue({
       data: {

@@ -1,14 +1,11 @@
-import {
-  AuthorizationPrivilege,
-  type InnovationHubHomeInnovationHubFragment,
-  InnovationHubType,
-} from '@/core/apollo/generated/graphql-schema';
+import { type InnovationHubHomeInnovationHubFragment, InnovationHubType } from '@/core/apollo/generated/graphql-schema';
 import type { VirtualContributorCardItem } from '@/crd/components/common/profileTypes';
 import type { InnovationHubHomeData } from '@/crd/components/innovationHub/InnovationHubHome';
 import type { InnovationPackCardData } from '@/crd/components/innovationPack/types';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { mapPackToInnovationPackCardData } from '@/main/crdPages/innovationLibrary/innovationLibraryMapper';
+import { canEditOrgResource } from '@/main/crdPages/innovationPack/innovationPackAccess';
 import type { SpaceWithParent } from '@/main/crdPages/spaces/SpaceExplorerPage';
 import { mapSpacesToCardDataList } from '@/main/crdPages/spaces/spaceCardDataMapper';
 import { mapAccountHostedResources } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
@@ -29,7 +26,10 @@ export const mapInnovationHubToHomeData = ({
   hub,
   canonicalDomain,
 }: MapInnovationHubToHomeDataInput): InnovationHubHomeData => {
-  const canEdit = hub.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  // 027-platform-role-redesign L6 (client-9): Platform Support edits an
+  // organization-owned hub through the same dual-path gate as Innovation
+  // Packs (A7) — `canEditOrgResource`, owner Update or PlatformSupportOrgResources.
+  const canEdit = canEditOrgResource(hub.authorization?.myPrivileges);
 
   return {
     name: hub.profile.displayName,

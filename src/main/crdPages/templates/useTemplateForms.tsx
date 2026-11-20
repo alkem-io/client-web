@@ -51,6 +51,7 @@ import {
   calloutFormValuesToCreateCalloutInput,
   calloutFormValuesToUpdateCalloutEntityInput,
 } from './calloutTemplateMapper';
+import { useCalloutTemplateFramingSave } from './useCalloutTemplateFramingSave';
 import { WhiteboardTemplateFormConnector } from './WhiteboardTemplateFormConnector';
 
 // ---------------------------------------------------------------------------
@@ -253,6 +254,7 @@ export function useTemplateForms({
   const [materializingWhiteboard, setMaterializingWhiteboard] = useState(false);
   const [materializedWhiteboardDraftId, setMaterializedWhiteboardDraftId] = useState<string | null>(null);
   const calloutForm = useCrdCalloutForm();
+  const calloutFramingSave = useCalloutTemplateFramingSave(calloutForm);
 
   // Space-template URL-paste source picker (mirrors legacy MUI `SpaceContentFromSpaceUrlForm`):
   // the user pastes a space URL, clicks "Use this space" → resolve URL → fetch space content →
@@ -561,6 +563,8 @@ export function useTemplateForms({
     | undefined;
   const uploadCalloutWhiteboardPreview = async (cv: CalloutFormValues, whiteboard: WhiteboardUploadHandle) => {
     if (cv.framingChip !== 'whiteboard') return;
+    // A draft carries its own preview; the prefilled one would overwrite it with the pre-edit image.
+    if (cv.framingWhiteboardDraft) return;
     if (!cv.whiteboardPreviewImages || cv.whiteboardPreviewImages.length === 0) return;
     const previewVisualId = whiteboard?.profile?.previewVisual?.id;
     if (!previewVisualId) return;
@@ -670,20 +674,22 @@ export function useTemplateForms({
         return;
       case 'callout': {
         const calloutData = calloutFormValuesToCreateCalloutInput(calloutForm.values, calloutFallbacks);
+        // Same gate `mapFormToCalloutCreationInput` applies on the live create path;
+        // `calloutFormValuesToCreateCalloutInput` destructures only `{ input }` and discards the
+        // gated file, so it is re-applied here. Without it, staging a file and then switching the
+        // chip to Post sends a file the server rejects with a ValidationException the user cannot
+        // explain.
+        const file =
+          calloutForm.values.framingChip === 'document'
+            ? (calloutForm.values.collaboraUploadFile ?? undefined)
+            : undefined;
         const result = await createTemplate({
-          variables: { templatesSetId: setId, type: GqlTemplateType.Callout, profileData, tags, calloutData },
+          variables: { templatesSetId: setId, type: GqlTemplateType.Callout, profileData, tags, calloutData, file },
         });
         // Best-effort post-create uploads: the template already exists, so an upload failure must not
         // bubble and keep the dialog open — that invites a retry and a duplicate template. Mirror the
-        // copy path; upload errors surface via the Apollo error link / global handler.
-        try {
-          await uploadCalloutWhiteboardPreview(
-            calloutForm.values,
-            result.data?.createTemplate?.callout?.framing?.whiteboard
-          );
-        } catch {
-          // Intentionally swallowed — see comment above.
-        }
+        // copy path; upload errors surface via the Apollo error link / global handler. No whiteboard
+        // preview upload: the server copies the draft or source whiteboard's visuals on create.
         try {
           await uploadCalloutMediaGallery(
             calloutForm.values,
@@ -751,10 +757,8 @@ export function useTemplateForms({
         calloutData,
       },
     });
-    // Carries the freshly-generated inline-editor blobs through when present (typical no-op for
-    // Duplicate, but Save-As-from-an-edited-source can land here with non-empty blobs).
+    // No whiteboard preview upload: the server copies the source whiteboard's visuals on create.
     try {
-      await uploadCalloutWhiteboardPreview(merged, result.data?.createTemplate?.callout?.framing?.whiteboard);
       await uploadCalloutMediaGallery(merged, result.data?.createTemplate?.callout?.framing?.mediaGallery?.id);
     } catch {
       // Errors are surfaced by the Apollo error link / global handler; don't fail the copy after create.
@@ -873,6 +877,14 @@ export function useTemplateForms({
       }
       case 'callout': {
         if (!editCalloutId) throw new Error('Missing callout id for Callout template edit');
+        // The Form definition travels through its own mutation, first: a rejection keeps the
+        // dialog open with nothing else saved.
+        await calloutFramingSave.saveFormDefinition();
+        // Poll options travel through their own mutations (updateCallout only carries the poll title).
+        // They save before the reference work below, which is not idempotent (it creates rows without
+        // ids and deletes removed ids): a failed option save then retries without replaying it, and
+        // the option save resumes from what already succeeded.
+        await calloutFramingSave.savePollOptions();
         await updateTemplate({ variables: { templateId, profile } });
 
         // References live on the callout's framing profile. The callout update mutation can only

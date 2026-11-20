@@ -4,6 +4,11 @@ query SpaceEntitlements(
   lookup {
     space(ID: $spaceId) {
       id
+      # READ-gated, and so is this query (skipped unless `canRead`) — see the
+      # note on SpaceAboutBase for why it cannot live there.
+      account {
+        id
+      }
       license {
         id
         availableEntitlements

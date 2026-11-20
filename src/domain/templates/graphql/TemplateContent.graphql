@@ -118,6 +118,9 @@ fragment CalloutTemplateContent on Callout {
     poll {
       ...PollDetails
     }
+    form {
+      ...CalloutFormDetails
+    }
     collaboraDocument {
       id
       documentType

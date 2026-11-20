@@ -9,7 +9,9 @@ export const usePendingInvitationsCount = () => {
   });
 
   return {
-    count: invitesData?.me?.communityInvitationsCount || 0,
+    // Sums the Space-shaped and organization-shaped counts (062) — the top-bar badge
+    // and dialog title show one number covering both pending-invitation kinds.
+    count: (invitesData?.me?.communityInvitationsCount || 0) + (invitesData?.me?.organizationInvitationsCount || 0),
     loading,
   };
 };

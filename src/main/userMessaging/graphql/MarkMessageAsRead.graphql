@@ -1,3 +1,0 @@
-mutation MarkMessageAsRead($messageData: RoomMarkMessageReadInput!) {
-  markMessageAsReadInRoom(messageData: $messageData)
-}

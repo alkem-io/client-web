@@ -23,7 +23,8 @@ export type DeleteAccountCardProps = {
 };
 
 /**
- * Delete-account card for the User Security tab (FR-001). Presentational —
+ * Delete-account row for the Danger Zone at the end of the User Account tab
+ * (054 FR-001, amended 2026-10-23 — moved from Security). Presentational —
  * driven entirely by the `dialog` state machine the connector owns:
  * closed → preflight-loading → {blocked | confirm} → deleting. A stale
  * session never reaches this component's dialogs at all — the connector
@@ -44,8 +45,24 @@ export function DeleteAccountCard({
   const preflightLoading = dialog.kind === 'preflight-loading';
 
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-body text-muted-foreground">{t('user.security.deleteAccount.cardBody')}</p>
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4 rounded-lg border border-destructive/20 bg-destructive/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <p className="text-body-emphasis">{t('user.security.deleteAccount.title')}</p>
+          <p className="text-caption text-muted-foreground">{t('user.security.deleteAccount.cardBody')}</p>
+        </div>
+        <Button
+          type="button"
+          variant="destructive"
+          size="sm"
+          className="shrink-0 self-start sm:self-center"
+          onClick={onOpen}
+          disabled={preflightLoading}
+          aria-busy={preflightLoading}
+        >
+          {t('user.security.deleteAccount.trigger')}
+        </Button>
+      </div>
       {dialog.kind === 'preflight-error' ? (
         <p role="alert" className="text-body text-destructive">
           {t('user.security.deleteAccount.preflightError')}
@@ -56,17 +73,6 @@ export function DeleteAccountCard({
           {t('user.security.deleteAccount.reauthFailed')}
         </p>
       ) : null}
-      <div>
-        <Button
-          type="button"
-          variant="destructive"
-          onClick={onOpen}
-          disabled={preflightLoading}
-          aria-busy={preflightLoading}
-        >
-          {t('user.security.deleteAccount.trigger')}
-        </Button>
-      </div>
 
       <ConfirmationDialog
         open={dialog.kind === 'confirm'}

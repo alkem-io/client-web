@@ -42,7 +42,7 @@ export function MemoContributionAddConnector({
     onOpenChange?.(next);
   };
   const [memoName, setMemoName] = useState(fallbackName);
-  const [editingMemoId, setEditingMemoId] = useState<string | undefined>();
+  const [editingMemo, setEditingMemo] = useState<{ contributionId: string; memoId: string }>();
   const [createMemo] = useCreateMemoOnCalloutMutation();
 
   const handleOpenCreate = () => {
@@ -76,9 +76,9 @@ export function MemoContributionAddConnector({
     });
     onCreated?.();
     handleCloseCreate();
-    const createdMemoId = data?.createContributionOnCallout.memo?.id;
-    if (createdMemoId) {
-      setEditingMemoId(createdMemoId);
+    const createdContribution = data?.createContributionOnCallout;
+    if (createdContribution?.id && createdContribution.memo?.id) {
+      setEditingMemo({ contributionId: createdContribution.id, memoId: createdContribution.memo.id });
     }
   });
 
@@ -119,12 +119,13 @@ export function MemoContributionAddConnector({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      {editingMemoId && (
+      {editingMemo && (
         <CrdMemoDialog
           open={true}
-          memoId={editingMemoId}
+          memoId={editingMemo.memoId}
           isContribution={true}
-          onClose={() => setEditingMemoId(undefined)}
+          signingOrigin={{ kind: 'contribution', calloutId, contributionId: editingMemo.contributionId }}
+          onClose={() => setEditingMemo(undefined)}
         />
       )}
     </>

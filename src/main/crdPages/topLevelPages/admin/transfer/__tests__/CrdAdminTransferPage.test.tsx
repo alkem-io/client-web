@@ -120,7 +120,17 @@ vi.mock('@/domain/platformAdmin/management/transfer/transferCallout/useTransferC
   default: () => calloutTransferHook,
 }));
 vi.mock('@/domain/platformAdmin/management/transfer/shared/useAccountSearch', () => ({
-  default: () => ({ searchTerm: '', results: [], loading: false, hasSearched: false, handleSearch: vi.fn() }),
+  default: () => ({
+    searchTerm: '',
+    results: [],
+    loading: false,
+    hasSearched: false,
+    denied: false,
+    handleSearch: vi.fn(),
+  }),
+}));
+vi.mock('@/domain/platformAdmin/management/transfer/shared/useAccountOwnerByUrl', () => ({
+  default: () => ({ accountOwner: undefined, ownerError: undefined, ownerLoading: false, submit: vi.fn() }),
 }));
 
 beforeEach(() => {

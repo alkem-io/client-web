@@ -3,6 +3,7 @@ import { UserGeoProvider } from '@/core/analytics/geo';
 import SentryErrorBoundaryProvider from '@/core/analytics/SentryErrorBoundaryProvider';
 import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
 import AlkemioApolloProvider from '@/core/apollo/context/ApolloProvider';
+import { useRefreshOnMembershipChange } from '@/core/apollo/useRefreshOnMembershipChange';
 import { AuthenticationProvider } from '@/core/auth/authentication/context/AuthenticationProvider';
 import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import '@/core/i18n/config';
@@ -10,7 +11,9 @@ import { type FC, Suspense } from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter, useLocation } from 'react-router-dom';
 import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
+import { useAppDownloadInterception } from '@/core/appMode/useAppDownloadInterception';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { MatrixSession } from '@/core/matrix/MatrixSessionProvider';
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
@@ -26,13 +29,16 @@ import { UnifiedChatProvider } from '@/main/crdPages/unifiedChat/UnifiedChatProv
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import { UnreadTabBadge } from '@/main/tabBadge/UnreadTabBadge';
+import { AppPullToRefresh } from '@/main/ui/layout/AppPullToRefresh';
 import { ConversationEventsSubscriber } from '@/main/userMessaging/ConversationEventsSubscriber';
+import { CallOverlayHost } from '@/main/userMessaging/calls/CallOverlayHost';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { AssistantProvider } from './main/assistant/AssistantContext';
 import { CrdAssistantButtonGate } from './main/assistant/CrdAssistantButtonGate';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
 import { PushNotificationProvider } from './main/pushNotifications/PushNotificationProvider';
+import { useNativePushTapRouting } from './main/pushNotifications/useNativePushTapRouting';
 import { VersionHandling } from './main/versionHandling';
 
 const CrdGlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./main/crdPages/error/CrdGlobalErrorDialog'));
@@ -60,6 +66,27 @@ function GlobalErrorDialogGate() {
   );
 }
 
+/**
+ * Mounted inside `BrowserRouter` and above `PushNotificationProvider` (which
+ * short-circuits while unauthenticated) because the tap listener must be live on
+ * every app start, signed in or not — see the hook for why.
+ */
+function NativePushTapRouter() {
+  useNativePushTapRouting();
+  return null;
+}
+
+/** Mounted inside `UserProvider`: the hook needs the Apollo client and the auth state. */
+function RefreshOnMembershipChange() {
+  useRefreshOnMembershipChange();
+  return null;
+}
+
+function AppDownloadInterceptor() {
+  useAppDownloadInterception();
+  return null;
+}
+
 /** Top-level path segments owned by the auth flow — the unified chat is hidden on all of them. */
 const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
 
@@ -80,8 +107,12 @@ function UnifiedChatGate() {
   const hidden = isAuthPage || fullscreen || isFullscreenEditorOpen;
   return (
     <>
-      <UnifiedChatLauncher hidden={hidden} />
+      {/* Before the chat, so the dimmed page behind the expanded chat (same z-50)
+          also covers this launcher. */}
       {!hidden && <CrdAssistantButtonGate />}
+      <UnifiedChatLauncher hidden={hidden} />
+      {/* Not subject to `hidden`: a running call outlives every route and editor. */}
+      <CallOverlayHost />
     </>
   );
 }
@@ -96,6 +127,8 @@ const Root: FC = () => {
               <GlobalErrorProvider>
                 <AuthenticationProvider>
                   <BrowserRouter>
+                    <NativePushTapRouter />
+                    <AppDownloadInterceptor />
                     <UserGeoProvider>
                       <ApmProvider>
                         <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
@@ -107,17 +140,20 @@ const Root: FC = () => {
                                     <FullscreenEditorProvider>
                                       <AssistantProvider>
                                         <NavigationHistoryTracker />
+                                        <RefreshOnMembershipChange />
                                         <ApmUserSetter />
                                         <ScrollToTop />
                                         <NotificationsGate />
                                         <InAppNotificationCountSubscriber />
                                         <ConversationEventsSubscriber />
+                                        <MatrixSession />
                                         <UnreadTabBadge />
                                         <Suspense fallback={null}>
                                           <AssistantDialog />
                                         </Suspense>
                                         <VersionHandling />
                                         <OnlineStatusNotification />
+                                        <AppPullToRefresh />
                                         <Error40XBoundary
                                           errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
                                         >

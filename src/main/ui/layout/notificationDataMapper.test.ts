@@ -8,6 +8,7 @@ import {
   NotificationEventCategory,
   NotificationEventInAppState,
   NotificationEventPayload,
+  RoleChangeType,
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
@@ -15,6 +16,13 @@ import type { InAppNotificationPayloadModel } from '@/main/inAppNotifications/mo
 import { mapNotificationToItemData } from './notificationDataMapper';
 
 const t = ((key: string) => key) as unknown as TFunction;
+
+// Mirrors i18next's real behaviour for the one key this suite resolves: a known key
+// round-trips as itself (identity translator), a missing key falls back to `defaultValue`.
+const roleAwareT = ((key: string, options?: { defaultValue?: string }) => {
+  const KNOWN_ROLE_KEYS = new Set(['common.roles.PLATFORM_RESOURCE_ADMIN']);
+  return KNOWN_ROLE_KEYS.has(key) ? key : (options?.defaultValue ?? key);
+}) as unknown as TFunction;
 
 const spacePayload = (url = '/my-space'): InAppNotificationPayloadModel['space'] => ({
   id: 'space-1',
@@ -316,6 +324,18 @@ describe('notification types kept on the generic payload fallback', () => {
     expect(href).toBe('/my-space/callout');
   });
 
+  it('sends a form response to the callout that holds the form', () => {
+    const href = hrefOf(
+      notification(NotificationEvent.SpaceAdminCollaborationCalloutFormResponse, {
+        type: NotificationEventPayload.SpaceCollaborationCallout,
+        space: spacePayload(),
+        callout: { framing: { profile: { displayName: 'Intake form', url: '/my-space/collaboration/intake-form' } } },
+      })
+    );
+
+    expect(href).toBe('/my-space/collaboration/intake-form');
+  });
+
   it('keeps space-scoped notifications with no better destination on the space home page', () => {
     const update = hrefOf(
       notification(NotificationEvent.SpaceCommunicationUpdate, {
@@ -456,7 +476,7 @@ describe('reaction notification rendering', () => {
     // The unknown slug must resolve through glyphForSlug to undefined — never the
     // raw wire slug — so the subject placeholder renders empty rather than
     // leaking "unknown-slug-9999".
-    const title = data!.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    const title = data?.title as ReactElement<{ values: Record<string, string | undefined> }>;
     expect(title.props.values.emoji).toBeUndefined();
   });
 
@@ -501,6 +521,33 @@ describe('notification avatar subject', () => {
     expect(data.avatarFallback).toBe('GH');
   });
 
+  it('shows the new associate, not the admin who approved or granted the role', () => {
+    // ORGANIZATION_ADMIN_ASSOCIATE_JOINED only fires for a direct join, an approved
+    // application or a direct role grant, so the trigger is the acting admin while the
+    // subject is the payload actor. Copy and avatar must name the same person.
+    const data = mapNotificationToItemData(
+      notification(
+        NotificationEvent.OrganizationAdminAssociateJoined,
+        {
+          type: NotificationEventPayload.OrganizationAssociateActor,
+          organization: { id: 'org-1', profile: { displayName: 'Acme Org', url: '/organization/acme' } },
+          actor: {
+            type: ActorType.User,
+            profile: { displayName: 'Grace Hopper', url: '/user/grace', visual: { uri: 'grace.png' } },
+          },
+        },
+        NotificationEventCategory.Organization
+      ),
+      t,
+      NotificationEventInAppState.Unread
+    );
+
+    expect(data.avatarUrl).toBe('grace.png');
+    expect(data.avatarFallback).toBe('GH');
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.memberName).toBe('Grace Hopper');
+  });
+
   it('falls back to the triggering user when the payload carries no actor', () => {
     const data = newMember(undefined);
 
@@ -523,5 +570,187 @@ describe('notification avatar subject', () => {
 
     expect(data.avatarUrl).toBe('ada.png');
     expect(data.avatarFallback).toBe('AL');
+  });
+});
+
+describe('organization-associate notifications (062)', () => {
+  const orgPayload = (url = '/organization/acme'): InAppNotificationPayloadModel['organization'] => ({
+    id: 'org-1',
+    profile: { displayName: 'Acme Org', url },
+  });
+
+  it('sends the user-side invitation notification to the organization profile', () => {
+    const href = hrefOf(
+      notification(NotificationEvent.UserOrganizationAssociateInvitation, {
+        type: NotificationEventPayload.OrganizationAssociateInvitation,
+        organization: orgPayload(),
+        invitation: { extraRoles: [], invitedToParent: false },
+      })
+    );
+    expect(href).toBe('/organization/acme');
+  });
+
+  it('sends the organisation-side events to the Associates (community) settings tab', () => {
+    const orgSideTypes = [
+      NotificationEvent.OrganizationAdminAssociateInvitationAccepted,
+      NotificationEvent.OrganizationAdminAssociateInvitationDeclined,
+      NotificationEvent.OrganizationAdminAssociateApplication,
+      NotificationEvent.OrganizationAdminAssociateJoined,
+    ];
+    for (const type of orgSideTypes) {
+      const href = hrefOf(
+        notification(type, {
+          type: NotificationEventPayload.OrganizationAssociateActor,
+          organization: orgPayload(),
+        })
+      );
+      expect(href).toBe('/organization/acme/settings/community');
+    }
+  });
+
+  it('resolves associateRole to Associate + Admin / Owner from the offered extra roles', () => {
+    const buildValues = (extraRoles: RoleName[]) => {
+      const data = mapNotificationToItemData(
+        notification(NotificationEvent.UserOrganizationAssociateInvitation, {
+          type: NotificationEventPayload.OrganizationAssociateInvitation,
+          organization: orgPayload(),
+          invitation: { extraRoles, invitedToParent: false },
+        }),
+        t,
+        NotificationEventInAppState.Unread
+      );
+      return (data.description as ReactElement<{ values: Record<string, string | undefined> }>).props.values;
+    };
+    expect(buildValues([]).associateRole).toBe('components.inAppNotifications.associateRole.associate');
+    expect(buildValues([RoleName.Admin]).associateRole).toBe(
+      'components.inAppNotifications.associateRole.associateAdmin'
+    );
+    expect(buildValues([RoleName.Owner]).associateRole).toBe(
+      'components.inAppNotifications.associateRole.associateOwner'
+    );
+  });
+
+  it('produces a withheld clause only when extraRolesWithheld is non-empty', () => {
+    const data = mapNotificationToItemData(
+      notification(NotificationEvent.OrganizationAdminAssociateInvitationAccepted, {
+        type: NotificationEventPayload.OrganizationAssociateActor,
+        organization: orgPayload(),
+        extraRolesWithheld: [RoleName.Owner],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const values = (data.description as ReactElement<{ values: Record<string, string | undefined> }>).props.values;
+    expect(values.withheld).toBe('components.inAppNotifications.associateRoleWithheld');
+
+    const dataNoWithheld = mapNotificationToItemData(
+      notification(NotificationEvent.OrganizationAdminAssociateInvitationAccepted, {
+        type: NotificationEventPayload.OrganizationAssociateActor,
+        organization: orgPayload(),
+        extraRolesWithheld: [],
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const valuesNoWithheld = (
+      dataNoWithheld.description as ReactElement<{ values: Record<string, string | undefined> }>
+    ).props.values;
+    expect(valuesNoWithheld.withheld).toBe('');
+  });
+});
+
+describe('form response notification rendering', () => {
+  const formResponse = () =>
+    notification(NotificationEvent.SpaceAdminCollaborationCalloutFormResponse, {
+      type: NotificationEventPayload.SpaceCollaborationCallout,
+      space: spacePayload(),
+      callout: { framing: { profile: { displayName: 'Intake form', url: '/my-space/collaboration/intake-form' } } },
+    });
+
+  it('resolves the subject and description under the new event type keys', () => {
+    const item = mapNotificationToItemData(formResponse(), t, NotificationEventInAppState.Unread);
+
+    expect((item.title as ReactElement<{ i18nKey: string }>).props.i18nKey).toBe(
+      'components.inAppNotifications.type.SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE.subject'
+    );
+    // The identity translator echoes the key, so a present description key renders an element.
+    expect((item.description as ReactElement<{ i18nKey: string }>).props.i18nKey).toBe(
+      'components.inAppNotifications.type.SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE.description'
+    );
+  });
+
+  it('carries no comment text: the notification never surfaces an answer', () => {
+    const item = mapNotificationToItemData(formResponse(), t, NotificationEventInAppState.Unread);
+    expect(item.comment).toBeUndefined();
+  });
+});
+
+describe('platform-admin role-change notification (065)', () => {
+  const roleChangeNotification = (payload: Partial<InAppNotificationPayloadModel>) =>
+    notification(
+      NotificationEvent.PlatformAdminGlobalRoleChanged,
+      { type: NotificationEventPayload.PlatformGlobalRoleChange, ...payload },
+      NotificationEventCategory.Platform
+    );
+
+  it('resolves a known role slug through the role translations, never the raw slug', () => {
+    const data = mapNotificationToItemData(
+      roleChangeNotification({ role: 'platform-resource-admin' }),
+      roleAwareT,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.role).toBe('common.roles.PLATFORM_RESOURCE_ADMIN');
+  });
+
+  it('humanizes a role slug unknown to the translations, never blank and never an error', () => {
+    const data = mapNotificationToItemData(
+      roleChangeNotification({ role: 'some-future-role' }),
+      roleAwareT,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.role).toBe('Some Future Role');
+  });
+
+  it('does not throw when role is undefined', () => {
+    expect(() =>
+      mapNotificationToItemData(roleChangeNotification({}), roleAwareT, NotificationEventInAppState.Unread)
+    ).not.toThrow();
+    const data = mapNotificationToItemData(roleChangeNotification({}), roleAwareT, NotificationEventInAppState.Unread);
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.role).toBeUndefined();
+  });
+
+  it('uses the subjectRemoved key when changeType is Removed', () => {
+    const data = mapNotificationToItemData(
+      roleChangeNotification({ role: 'platform-resource-admin', changeType: RoleChangeType.Removed }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ i18nKey: string }>;
+    expect(title.props.i18nKey).toBe(
+      'components.inAppNotifications.type.PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED.subjectRemoved'
+    );
+  });
+
+  it('uses the subject key when changeType is Added', () => {
+    const data = mapNotificationToItemData(
+      roleChangeNotification({ role: 'platform-resource-admin', changeType: RoleChangeType.Added }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ i18nKey: string }>;
+    expect(title.props.i18nKey).toBe('components.inAppNotifications.type.PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED.subject');
+  });
+
+  it('uses the subject key when changeType is absent (a pre-feature record)', () => {
+    const data = mapNotificationToItemData(
+      roleChangeNotification({ role: 'platform-resource-admin' }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ i18nKey: string }>;
+    expect(title.props.i18nKey).toBe('components.inAppNotifications.type.PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED.subject');
   });
 });

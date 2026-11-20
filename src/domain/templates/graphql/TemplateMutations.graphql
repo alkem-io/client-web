@@ -10,8 +10,10 @@ mutation CreateTemplate(
   $whiteboard: CreateWhiteboardInput
   $classificationData: CreateClassificationTemplateContentInput
   $includeProfileVisuals: Boolean = false
+  $file: Upload
 ) {
   createTemplate(
+    file: $file
     templateData: {
       templatesSetID: $templatesSetId
       profileData: $profileData

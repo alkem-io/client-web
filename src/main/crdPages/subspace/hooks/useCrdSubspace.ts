@@ -9,10 +9,15 @@ import type { ParentSpaceStackItem } from '@/crd/components/space/ParentSpaceSta
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceHeader';
 import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar';
+import {
+  SIDEBAR_WIDGET_IDS_BY_LEVEL,
+  type SidebarWidgetId,
+} from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
 import { useCalloutsSetAuthorization } from '@/domain/collaboration/calloutsSet/authorization/useCalloutsSetAuthorization';
+import { selectFirstFlowState } from '@/domain/collaboration/InnovationFlow/selectFirstFlowState';
 import { filterVisibleStates } from '@/domain/collaboration/InnovationFlow/utils/filterVisibleStates';
 import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -20,6 +25,11 @@ import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { mapSpaceVisibility, type SpaceVisibilityData } from '../../space/dataMappers/spacePageDataMapper';
+import {
+  deriveWidgetSkips,
+  resolveSidebarPlan,
+  type SidebarWidgetSkipFlags,
+} from '../../space/layout/sidebarWidgetPlan';
 import {
   mapInnovationFlowPhases,
   mapSubspaceBanner,
@@ -80,6 +90,13 @@ export type CrdSubspacePageData = {
   currentPhaseId: string | undefined;
   canEditFlow: boolean;
 
+  /** Sidebar configuration — a subspace has ONE sidebar for all its phases: the list stored
+   *  on its first phase (hidden phases included), resolved with the level's vocabulary. */
+  level: 'L1' | 'L2';
+  firstStateId: string | undefined;
+  sidebarPlan: SidebarWidgetId[];
+  sidebarSkips: SidebarWidgetSkipFlags;
+
   /** Permissions surfaced on the page */
   canRead: boolean;
   canUpdate: boolean;
@@ -106,9 +123,11 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const { isVideoCallEnabled, videoCallUrl } = useVideoCall(subspaceId, subspaceNameId);
 
   // Subspace-specific page query (collaboration + calloutsSet IDs, templatesManager).
+  // Both fields require READ on the subspace; a non-member of a private subspace only
+  // reaches the About route, so the query is skipped rather than answered FORBIDDEN_POLICY.
   const { data: subspacePageData, loading: subspacePageLoading } = useSubspacePageQuery({
     variables: { spaceId: subspaceId },
-    skip: !subspaceId,
+    skip: !subspaceId || !permissions.canRead,
   });
   const collaborationId = subspacePageData?.lookup.space?.collaboration.id;
   const calloutsSetId = subspacePageData?.lookup.space?.collaboration.calloutsSet.id;
@@ -123,7 +142,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
   // Configured default subspace template for FR-031 pre-selection — light query, non-blocking.
   const { data: defaultTemplatesData } = useSpaceDefaultTemplatesQuery({
     variables: { spaceId: subspaceId },
-    skip: !subspaceId,
+    skip: !subspaceId || !permissions.canRead,
   });
   const defaultSubspaceTemplateId = defaultTemplatesData?.lookup.space?.templatesManager?.templateDefaults?.find(
     td => td.type === TemplateDefaultType.SpaceSubspace
@@ -142,6 +161,14 @@ export function useCrdSubspace(): CrdSubspacePageData {
   // No-op until the server exposes per-phase `visible` (graceful degradation).
   const phases = mapInnovationFlowPhases(filterVisibleStates(flow?.states ?? []));
   const currentPhaseId = flow?.currentState?.id;
+
+  // The subspace sidebar is the first phase's stored list. "First" is resolved over ALL
+  // states — a hidden first phase stays authoritative — never over the visibility-filtered
+  // tab strip above.
+  const level: 'L1' | 'L2' = subspace.level === SpaceLevel.L2 ? 'L2' : 'L1';
+  const firstState = selectFirstFlowState(flow?.states);
+  const sidebarPlan = resolveSidebarPlan(firstState?.settings.sidebar ?? [], SIDEBAR_WIDGET_IDS_BY_LEVEL[level]);
+  const sidebarSkips = deriveWidgetSkips(sidebarPlan);
 
   // Parent's banner image — fetched via the same about-details query the parent
   // space already uses, so Apollo dedupes / serves from cache when navigating
@@ -217,7 +244,11 @@ export function useCrdSubspace(): CrdSubspacePageData {
 
   // Nested subspaces (L2s) shown by the sidebar widget. Reuses the same hook the
   // L0 dashboard uses for its children list — it works for any space level.
-  const { dashboardNavigation } = useSpaceDashboardNavigation({ spaceId: subspaceId });
+  // Skipped when the `subspaceLinks` widget is not configured — no fetch for an unrendered widget.
+  const { dashboardNavigation } = useSpaceDashboardNavigation({
+    spaceId: subspaceId,
+    skip: sidebarSkips.subspaceLinks,
+  });
   const subspaces =
     dashboardNavigation?.children?.map(child => ({
       name: child.displayName,
@@ -273,6 +304,11 @@ export function useCrdSubspace(): CrdSubspacePageData {
     phases,
     currentPhaseId,
     canEditFlow,
+
+    level,
+    firstStateId: firstState?.id,
+    sidebarPlan,
+    sidebarSkips,
 
     canRead: permissions.canRead,
     canUpdate: permissions.canUpdate,

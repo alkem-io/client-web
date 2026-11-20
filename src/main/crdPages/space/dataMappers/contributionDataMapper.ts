@@ -115,6 +115,7 @@ type AnyContributionItem = {
   collaboraDocument?: {
     id: string;
     documentType?: string;
+    previewUrl?: string | null;
     createdDate?: Date | string;
     createdBy?: ContributionAuthorBase | null;
     profile: { id?: string; url?: string; displayName: string };
@@ -211,6 +212,7 @@ export function mapAnyContributionToCardData(
       href: doc.profile.url,
       documentId: doc.id,
       documentType: toCollaboraPreviewType(doc.documentType),
+      previewUrl: doc.previewUrl ?? undefined,
       author: extractAuthor(doc.createdBy),
       createdDate: toDateString(doc.createdDate, locale),
     };

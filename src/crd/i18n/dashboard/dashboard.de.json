@@ -14,6 +14,22 @@
     "navigation": "Dashboard-Navigation",
     "pendingCount": "{{count}} ausstehend"
   },
+  "unreadSummary": {
+    "messages": {
+      "heading": "Nachrichten",
+      "text_one": "Du hast <b>{{count}} ungelesene Nachricht</b>",
+      "text_other": "Du hast <b>{{count}} ungelesene Nachrichten</b>",
+      "ariaLabel_one": "Du hast {{count}} ungelesene Nachricht. Nachrichten öffnen",
+      "ariaLabel_other": "Du hast {{count}} ungelesene Nachrichten. Nachrichten öffnen"
+    },
+    "notifications": {
+      "heading": "Benachrichtigungen",
+      "text_one": "Du hast <b>{{count}} neue Benachrichtigung</b>",
+      "text_other": "Du hast <b>{{count}} neue Benachrichtigungen</b>",
+      "ariaLabel_one": "Du hast {{count}} neue Benachrichtigung. Benachrichtigungen öffnen",
+      "ariaLabel_other": "Du hast {{count}} neue Benachrichtigungen. Benachrichtigungen öffnen"
+    }
+  },
   "recentSpaces": {
     "title": "Letzte Spaces",
     "exploreAll": "Alle deine Spaces erkunden",
@@ -43,8 +59,8 @@
     "showMore": "Mehr anzeigen",
     "noActivity": "Keine aktuelle Aktivität",
     "iconLabel": {
-      "CALLOUT_PUBLISHED": "Neuer Posten",
-      "CALLOUT_POST_CREATED": "Neuer Posten",
+      "CALLOUT_PUBLISHED": "Neuer Beitrag",
+      "CALLOUT_POST_CREATED": "Neuer Beitrag",
       "CALLOUT_POST_COMMENT": "Neuer Kommentar",
       "DISCUSSION_COMMENT": "Neuer Kommentar",
       "CALLOUT_WHITEBOARD_CREATED": "Neues Whiteboard",
@@ -197,6 +213,18 @@
       "accept": "Annehmen",
       "role": "Rolle",
       "spacesToJoin": "Bei Annahme wird beigetreten zu: {{spaces}}"
+    },
+    "orgAssociateInvitationsSection": "Einladungen als Assoziierter",
+    "orgAssociateApplicationsSection": "Bewerbungen als Assoziierter",
+    "orgAssociateCard": {
+      "badge": "Organisation",
+      "role": {
+        "associate": "Assoziiert",
+        "associateAdmin": "Assoziiert + Admin",
+        "associateOwner": "Assoziiert + Eigentümer"
+      },
+      "pendingLabel": "Ausstehend",
+      "invitedBy": "Eingeladen von {{name}}"
     }
   },
   "nonActivity": {

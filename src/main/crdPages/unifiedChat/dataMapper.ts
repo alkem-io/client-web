@@ -30,6 +30,24 @@ export const isGuidanceConversation = (
 };
 
 /**
+ * TEMP: guidance disabled — identifies a 1:1 chat with a virtual contributor,
+ * so such chats can be hidden while virtual contributors are off.
+ *
+ * Deliberately NOT expressed in terms of the well-known guidance VC id: that id
+ * is resolved by a separate platform query, and is `null` while that query is in
+ * flight. The conversation list is `cache-and-network` and can render first, so
+ * an id-based check lets the row through for those renders. The member `type`
+ * ships in the same payload as the row itself, so this cannot be raced.
+ *
+ * Delete together with the filter in `useUnifiedConversations`.
+ */
+export const isVirtualContributorChat = (
+  members: Pick<ConversationMember, 'id' | 'type'>[],
+  currentUserId: string | undefined
+): boolean =>
+  members.length <= 2 && members.some(m => m.id !== currentUserId && m.type === ActorType.VirtualContributor);
+
+/**
  * Sorts unified conversations: pinned (guidance) first, then the newly-created
  * conversation, then by most-recent activity (last message, else created date).
  */
@@ -47,6 +65,23 @@ export const sortUnifiedConversations = <T extends UnifiedConversation>(
     const bTime = b.lastMessage ? b.lastMessage.timestamp : b.createdDate.getTime();
     return bTime - aTime;
   });
+
+/**
+ * Moves the conversations with a call running to the top, below the pinned
+ * one and the newly-created one: a call is their latest activity, though not a
+ * message. The order is otherwise kept.
+ */
+export const withActiveCallsFirst = <T extends { id: string; pinned?: boolean; hasActiveCall?: boolean }>(
+  items: T[],
+  newlyCreatedConversationId: string | null
+): T[] => {
+  const rank = (item: T) => {
+    if (item.pinned) return 0;
+    if (item.id === newlyCreatedConversationId) return 1;
+    return item.hasActiveCall ? 2 : 3;
+  };
+  return [...items].sort((a, b) => rank(a) - rank(b));
+};
 
 export const mapMemberToCommentAuthor = (member: ConversationMember): CommentAuthor => ({
   id: member.id,
@@ -114,6 +149,9 @@ export const mapConversationToListItem = (
     isGuidance: conv.isGuidance,
     memberAvatars: otherMembers.map(m => ({ id: m.id, name: m.displayName, avatarUrl: m.avatarUri })),
     lastMessagePreview: conv.lastMessage?.message,
+    // A media-only message carries no body text, so the row needs the attachment
+    // count to render something instead of an empty preview line.
+    lastMessageAttachmentCount: conv.lastMessage?.attachments.length,
     lastMessageTimestamp: conv.lastMessage ? formatTimestamp(conv.lastMessage.timestamp) : undefined,
     unreadCount: conv.unreadCount,
     pinned: conv.pinned,
@@ -122,12 +160,11 @@ export const mapConversationToListItem = (
 
 type MessageOptions = {
   currentUserId: string | undefined;
-  formatTimestamp: (timestampMs: number) => string;
 };
 
 export const mapMessageToChatMessage = (
   message: ConversationMessage,
-  { currentUserId, formatTimestamp }: MessageOptions
+  { currentUserId }: MessageOptions
 ): ChatMessage => ({
   id: message.id,
   author: message.sender
@@ -138,9 +175,9 @@ export const mapMessageToChatMessage = (
       }
     : undefined,
   content: message.message,
-  timestamp: formatTimestamp(message.timestamp),
   timestampMs: message.timestamp,
   reactions: mapReactionsToCommentReactions(message.reactions, currentUserId),
+  attachments: message.attachments,
   isOwn: Boolean(currentUserId && message.sender?.id === currentUserId),
 });
 
@@ -161,7 +198,6 @@ export const injectGuidanceIntro = (
     id: GUIDANCE_INTRO_ID,
     author: intro.author,
     content: intro.text,
-    timestamp: '',
     timestampMs: 0,
     reactions: [],
     isOwn: false,

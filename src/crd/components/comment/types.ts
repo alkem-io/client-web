@@ -1,3 +1,5 @@
+import type { ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
+
 export type CommentAuthor = {
   id: string;
   name: string;
@@ -5,6 +7,8 @@ export type CommentAuthor = {
   profileUrl?: string;
   /** True when the author is a Virtual Contributor — drives the VC indicator badge. */
   isVirtualContributor?: boolean;
+  /** Set for user and VC senders; opens a hover card on the linked avatar. */
+  preview?: ContributorPreviewData;
 };
 
 export type CommentReactionSender = {
@@ -17,6 +21,32 @@ export type CommentReaction = {
   count: number;
   hasReacted: boolean;
   senders?: CommentReactionSender[];
+};
+
+/**
+ * A single media attachment on a message (feature 013). Plain presentational
+ * shape mapped from the GraphQL `MessageAttachment` by the integration layer —
+ * `url` identifies the media resource protected by the destination policy,
+ * so the render component treats every attachment uniformly. `width`/`height`
+ * are present for images only and let the renderer reserve aspect ratio.
+ */
+export type MessageAttachment = {
+  /** Presentation key, not an Alkemio file ID. */
+  id?: string;
+  /** Integration requests a fresh presentation after the same resource becomes ready. */
+  retryKey?: number;
+  onLoadError?: () => void;
+  /** Authorized bucket/reference resource URL. */
+  url?: string;
+  /** Filename / display name. */
+  displayName: string;
+  mimeType?: string;
+  /** Size in bytes. */
+  size?: number;
+  /** Pixel width — images only. */
+  width?: number;
+  /** Pixel height — images only. */
+  height?: number;
 };
 
 export type CommentData = {
@@ -39,6 +69,9 @@ export type CommentData = {
   isDeleted?: boolean;
   reactions: CommentReaction[];
   canDelete: boolean;
+  /** Media attachments on this comment (feature 013). Empty/omitted when the
+   *  feature is off or the message has none. */
+  attachments?: MessageAttachment[];
 };
 
 export type CommentsContainerData = {
@@ -51,10 +84,26 @@ export type CommentsContainerData = {
    *  per-comment Delete (gated separately by `comment.canDelete`) remain
    *  visible. Defaults to true for backwards compatibility. */
   canComment?: boolean;
-  onReply: (parentId: string, content: string) => void;
+  /** A returned promise keeps the reply box open until it resolves, and open
+   *  when it resolves `false`, so a failed send can be retried. */
+  // biome-ignore lint/suspicious/noConfusingVoidType: existing callers return nothing, so void must stay accepted
+  onReply: (parentId: string, content: string) => void | Promise<boolean>;
   onDelete: (commentId: string) => void;
   onAddReaction: (commentId: string, emoji: string) => void;
   onRemoveReaction: (commentId: string, emoji: string) => void;
+};
+
+/**
+ * A staged attachment in the composer (feature 013) — its upload lifecycle is
+ * owned by the integration layer; the input only renders the chip + remove
+ * affordance and reports picks/removals via callbacks.
+ */
+export type ComposerAttachment = {
+  id: string;
+  name: string;
+  /** Upload lifecycle of the staged file. */
+  status: 'uploading' | 'ready' | 'error';
+  mimeType?: string;
 };
 
 /**
@@ -69,6 +118,8 @@ export type CrdMentionSuggestion = {
   city?: string;
   country?: string;
   virtualContributor?: boolean;
+  /** TEMP: VCs disabled (#10398) — shown greyed out and cannot be picked. */
+  unavailable?: boolean;
 };
 
 /**

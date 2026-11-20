@@ -5,5 +5,19 @@ export enum AlkemioGraphqlErrorCode {
   ENTITY_NOT_FOUND = 'ENTITY_NOT_FOUND',
   FORBIDDEN = 'FORBIDDEN',
   FORBIDDEN_POLICY = 'FORBIDDEN_POLICY',
+  UNSPECIFIED = 'UNSPECIFIED',
   URL_RESOLVER_ERROR = 'URL_RESOLVER_ERROR',
+  // 062 — organization associates
+  ROLESET_APPLICATIONS_NOT_ACCEPTED = 'ROLESET_APPLICATIONS_NOT_ACCEPTED',
+  ROLESET_JOIN_NOT_ELIGIBLE = 'ROLESET_JOIN_NOT_ELIGIBLE',
+  ROLESET_ALREADY_MEMBER = 'ROLESET_ALREADY_MEMBER',
+  ROLESET_POLICY_ROLE_LIMITS_VIOLATED = 'ROLESET_POLICY_ROLE_LIMITS_VIOLATED',
+  // Resending the same platform invitation email again inside its cool-down window.
+  ROLESET_INVITATION_RESEND_THROTTLED = 'ROLESET_INVITATION_RESEND_THROTTLED',
+  // A Platform Support user acting on their own account on an organization's Community tab.
+  PLATFORM_SUPPORT_SELF_TARGET = 'PLATFORM_SUPPORT_SELF_TARGET',
+  // The recipient has turned direct messaging off.
+  MESSAGING_NOT_ENABLED = 'MESSAGING_NOT_ENABLED',
+  // A rule requires a second factor this session did not use; the client routes to /second-factor.
+  SECOND_FACTOR_REQUIRED = 'SECOND_FACTOR_REQUIRED',
 }

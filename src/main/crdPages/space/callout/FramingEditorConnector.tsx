@@ -1,7 +1,7 @@
 import { Crop, FileText, Presentation, Settings, Sheet, StickyNote, Wand2 } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
+import { type CollaboraDocumentType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
 import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/CollaboraDocumentDisplayName';
 import { Loading } from '@/crd/components/common/Loading';
@@ -9,6 +9,7 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import type { ContributorMapFixedView, ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { WhiteboardConfigCard } from '@/crd/components/whiteboard/WhiteboardConfigCard';
 import { ContributorSelector } from '@/crd/forms/ContributorSelector';
+import { CalloutCardVariantField } from '@/crd/forms/callout/CalloutCardVariantField';
 import { CalloutSelectionField } from '@/crd/forms/callout/CalloutSelectionField';
 import {
   CollaboraDocumentTypePicker,
@@ -19,11 +20,15 @@ import {
   type ContributorCollectionConfigValue,
 } from '@/crd/forms/callout/ContributorCollectionConfigField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
+import { FormQuestionsEditor } from '@/crd/forms/callout/FormQuestionsEditor';
+import { FormSettingsDialog } from '@/crd/forms/callout/FormSettingsDialog';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
 import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
 import type { PollOptionValue } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollOptionsEditor } from '@/crd/forms/callout/PollOptionsEditor';
 import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
+import { SpaceSelector } from '@/crd/forms/callout/SpaceSelector';
+import type { FormQuestionValue, FormSettingsValue } from '@/crd/forms/callout/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
@@ -36,12 +41,27 @@ import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout
 import type { UseRenameCollaboraDocumentResult } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import type { WhiteboardDraftLifecycle } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
+import { useWhiteboardDraftPreviewUrl } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraftPreviewUrl';
 import { WhiteboardDraftEditor } from '@/domain/collaboration/whiteboard/WhiteboardDraft/WhiteboardDraftEditor';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { MediaGalleryFormFieldConnector } from './MediaGalleryFormFieldConnector';
 import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
+
+/**
+ * What the editor knows about an existing Form's responses (edit mode only). Nothing is locked by them: they
+ * decide whether widening the visibility asks for confirmation and whether a type change shows its hint.
+ */
+export type FormEditContext = {
+  /** The visibility currently saved on the server. */
+  savedVisibility: FormSettingsValue['visibility'];
+  /** Whether this editor reads every response; when false the count says nothing about the Form. */
+  canReadAll: boolean;
+  responseCount: number;
+  /** The (sub)space whose members "Space members" refers to. */
+  spaceName: string;
+};
 
 type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
 
@@ -51,6 +71,14 @@ const collaboraDocIconByType: Record<CollaboraDocumentTypeValue, typeof FileText
   SPREADSHEET: Sheet,
   PRESENTATION: Presentation,
 };
+// The picker's row sub-line names the candidate's level (084 FR-028): the
+// platform's three levels, one key each.
+const spaceLevelLabelKeyByLevel = {
+  [SpaceLevel.L0]: 'forms.selection.spacePicker.levelSpace',
+  [SpaceLevel.L1]: 'forms.selection.spacePicker.levelSubspace',
+  [SpaceLevel.L2]: 'forms.selection.spacePicker.levelSubsubspace',
+} as const;
+
 const collaboraDocLabelKeyByType: Record<
   CollaboraDocumentTypeValue,
   'callout.documentText' | 'callout.documentSpreadsheet' | 'callout.documentPresentation'
@@ -114,6 +142,8 @@ type FramingEditorConnectorProps = {
    * dialogs directly, not by the main callout form.
    */
   mode?: 'create' | 'edit';
+  /** Parent callout id used to preserve memo-signing return intent. */
+  calloutId?: string;
   /** Server id of the existing memo, used by `CrdMemoDialog` on edit. */
   editMemoId?: string;
   /** Server-loaded whiteboard, used by `CrdWhiteboardView` on edit (T048). */
@@ -147,6 +177,20 @@ type FramingEditorConnectorProps = {
   // Poll status (editing existing polls)
   pollStatus?: 'open' | 'closed';
   onPollStatusChange?: (status: 'open' | 'closed') => void;
+  // Form framing: the definition is bound to the form values in both modes. In edit mode it is saved
+  // through the dedicated form mutation by the parent, never with the Post.
+  formTitle?: string;
+  onFormTitleChange?: (title: string) => void;
+  formDescription?: string;
+  onFormDescriptionChange?: (description: string) => void;
+  formQuestions?: FormQuestionValue[];
+  onFormQuestionsChange?: (questions: FormQuestionValue[]) => void;
+  /** Builder errors in the `FormQuestionsEditor` contract (`title`, `description`, `questions`, `<index>.prompt`, …). */
+  formQuestionsErrors?: Record<string, string | undefined>;
+  formSettings?: FormSettingsValue;
+  onFormSettingsChange?: (settings: FormSettingsValue) => void;
+  /** Edit mode only; undefined for a Form being created. */
+  formEditContext?: FormEditContext;
   // Whiteboard framing
   whiteboardConfigured?: boolean;
   /** Persisted live draft lifecycle for create mode. */
@@ -226,6 +270,13 @@ type FramingEditorConnectorProps = {
   selectedIds?: string[];
   onSelectedIdsChange?: (ids: string[]) => void;
   /**
+   * Card variant — present for the 'spaces' framing only. Defaults to
+   * 'compact' when the consumer omits it (e.g. the template form did not pass it
+   * before this feature).
+   */
+  cardVariant?: 'compact' | 'expanded';
+  onCardVariantChange?: (next: 'compact' | 'expanded') => void;
+  /**
    * Picker candidates + search for the contributors chip (feature 025, T005).
    * Derived by `useSelectionCandidates` in `CalloutFormConnector` and passed in
    * so `FramingEditorConnector` stays free of Apollo hooks (CRD connector rules).
@@ -236,12 +287,29 @@ type FramingEditorConnectorProps = {
   ) => import('@/crd/forms/ContributorSelector').ContributorSelectorInvitee[];
   contributorCandidatesLoading?: boolean;
   /**
-   * Subspace candidates for the spaces chip (feature 025, T006).
-   * Derived by `useCrdSpaceSubspaces` in `CalloutFormConnector` (the same data
-   * the collection renderer already has) — no new query.
+   * Whether the contributor candidate set cannot be trusted yet — in flight OR
+   * skipped for a missing roleSetId. Derived ONCE by the form connector, which
+   * owns both inputs, and shared with the save paths that must not strip a
+   * selection they cannot check. Distinct from `contributorCandidatesLoading`,
+   * which answers only "is a fetch in flight" and drives the dropdown spinner:
+   * a skipped query is not loading but is still unresolved (088).
    */
-  subspaceCandidates?: { id: string; displayName: string; avatarUrl?: string }[];
-  subspaceCandidatesLoading?: boolean;
+  contributorCandidatesUnresolved?: boolean;
+  /**
+   * The account-scoped space candidate model for the spaces chip (feature 084,
+   * T102). Derived by `useAccountSpaceCandidates` in `CalloutFormConnector` so
+   * this connector stays free of Apollo hooks (CRD connector rules).
+   */
+  spaceCandidates?: import('./useAccountSpaceCandidates').UseAccountSpaceCandidatesResult;
+  /**
+   * Whether this editor may change the spaces chip's manual selection — i.e. is
+   * a space admin of the host space, which is the privilege the candidate query
+   * is gated on. False only in EDIT mode, for a callout creator who has since
+   * been demoted and still holds UPDATE on the callout itself; the whole
+   * manual-selection block is then not rendered (084 FR-009a), and the stored
+   * selection is still submitted unchanged on save (084 FR-014).
+   */
+  canEditSpaceSelection?: boolean;
   /**
    * Map pins for the map-view capture control.
    * In edit mode: the default-type contributor cards derived by `CalloutFormConnector`.
@@ -262,8 +330,43 @@ type FramingEditorConnectorProps = {
   onContributorMapViewChange?: (view: ContributorMapFixedView | null) => void;
 };
 
+type DraftInlineWhiteboardPreviewProps = {
+  draftWhiteboardID: string | undefined;
+  onEdit: () => void;
+  editLabel: string;
+  previewImageUrl: string | undefined;
+  imageAlt: string;
+  disabled: boolean;
+};
+
+/** Prefers the draft's own stored preview once a draft exists. */
+const DraftInlineWhiteboardPreview = ({
+  draftWhiteboardID,
+  previewImageUrl,
+  ...props
+}: DraftInlineWhiteboardPreviewProps) =>
+  draftWhiteboardID ? (
+    <StoredDraftInlineWhiteboardPreview
+      draftWhiteboardID={draftWhiteboardID}
+      previewImageUrl={previewImageUrl}
+      {...props}
+    />
+  ) : (
+    <InlineWhiteboardPreview previewImageUrl={previewImageUrl} {...props} />
+  );
+
+const StoredDraftInlineWhiteboardPreview = ({
+  draftWhiteboardID,
+  previewImageUrl,
+  ...props
+}: DraftInlineWhiteboardPreviewProps & { draftWhiteboardID: string }) => {
+  const draftPreviewUrl = useWhiteboardDraftPreviewUrl(draftWhiteboardID);
+  return <InlineWhiteboardPreview previewImageUrl={draftPreviewUrl ?? previewImageUrl} {...props} />;
+};
+
 export function FramingEditorConnector({
   mode = 'create',
+  calloutId,
   editMemoId,
   editWhiteboard,
   editWhiteboardShareUrl,
@@ -290,6 +393,16 @@ export function FramingEditorConnector({
   onPollShowVoterAvatarsChange,
   pollStatus,
   onPollStatusChange,
+  formTitle = '',
+  onFormTitleChange,
+  formDescription = '',
+  onFormDescriptionChange,
+  formQuestions = [],
+  onFormQuestionsChange,
+  formQuestionsErrors,
+  formSettings,
+  onFormSettingsChange,
+  formEditContext,
   whiteboardTitle,
   whiteboardDraft,
   whiteboardPreviewImages,
@@ -312,11 +425,14 @@ export function FramingEditorConnector({
   onSelectionModeChange,
   selectedIds = [],
   onSelectedIdsChange,
+  cardVariant = 'compact',
+  onCardVariantChange,
   contributorCandidates = [],
   resolveContributorChips,
   contributorCandidatesLoading = false,
-  subspaceCandidates = [],
-  subspaceCandidatesLoading = false,
+  contributorCandidatesUnresolved = false,
+  spaceCandidates,
+  canEditSpaceSelection = true,
   contributorMapPins = [],
   contributorMapView = null,
   onContributorMapViewChange,
@@ -327,10 +443,10 @@ export function FramingEditorConnector({
   const [pendingStatus, setPendingStatus] = useState<'open' | 'closed' | null>(null);
   const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
   const [memoDialogOpen, setMemoDialogOpen] = useState(false);
-  // Feature 025: search query state for the contributor and subspace pickers.
-  // Must live at function top-level (Rules of Hooks — no hooks inside switch cases).
+  // Feature 025: search query state for the contributor picker. Must live at
+  // function top-level (Rules of Hooks — no hooks inside switch cases). The
+  // spaces picker holds its own query (084 T105).
   const [contributorSearchQuery, setContributorSearchQuery] = useState('');
-  const [subspaceSearchQuery, setSubspaceSearchQuery] = useState('');
   // Map-view capture control state.
   // Must live at function top-level (Rules of Hooks — no state inside switch cases).
   const [mapViewControlOpen, setMapViewControlOpen] = useState(false);
@@ -388,7 +504,8 @@ export function FramingEditorConnector({
       };
       return (
         <>
-          <InlineWhiteboardPreview
+          <DraftInlineWhiteboardPreview
+            draftWhiteboardID={whiteboardDraft?.handle?.whiteboardID}
             onEdit={() => void openDraft()}
             editLabel={t('framing.edit')}
             previewImageUrl={whiteboardPreviewUrl ?? whiteboardPreviewServerUrl}
@@ -437,7 +554,12 @@ export function FramingEditorConnector({
                 {t('framing.openMemo')}
               </Button>
             </div>
-            <CrdMemoDialog open={memoDialogOpen} memoId={editMemoId} onClose={() => setMemoDialogOpen(false)} />
+            <CrdMemoDialog
+              open={memoDialogOpen}
+              memoId={editMemoId}
+              signingOrigin={calloutId ? { kind: 'framing', calloutId } : undefined}
+              onClose={() => setMemoDialogOpen(false)}
+            />
           </>
         );
       }
@@ -590,6 +712,60 @@ export function FramingEditorConnector({
         </>
       );
 
+    case 'form': {
+      // The Form has responses, or may have them because this editor cannot read the count.
+      const formMayHaveResponses = formEditContext
+        ? !formEditContext.canReadAll || formEditContext.responseCount > 0
+        : false;
+      return (
+        <>
+          <FormQuestionsEditor
+            title={formTitle}
+            onTitleChange={next => onFormTitleChange?.(next)}
+            description={formDescription}
+            onDescriptionChange={next => onFormDescriptionChange?.(next)}
+            questions={formQuestions}
+            onChange={next => onFormQuestionsChange?.(next)}
+            errors={formQuestionsErrors}
+            // Per-question answer presence is not loaded: every persisted question gets the hint.
+            answeredHintQuestionIds={
+              formMayHaveResponses ? formQuestions.flatMap(question => (question.id ? [question.id] : [])) : []
+            }
+            settingsSlot={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9"
+                onClick={() => setSettingsOpen(true)}
+                aria-label={t('formForm.settingsButton')}
+              >
+                <Settings className="w-4 h-4" aria-hidden="true" />
+              </Button>
+            }
+          />
+          {formSettings && (
+            <FormSettingsDialog
+              open={settingsOpen}
+              onOpenChange={setSettingsOpen}
+              visibility={formSettings.visibility}
+              onVisibilityChange={visibility => onFormSettingsChange?.({ ...formSettings, visibility })}
+              responseMode={formSettings.responseMode}
+              onResponseModeChange={responseMode => onFormSettingsChange?.({ ...formSettings, responseMode })}
+              state={formSettings.state}
+              onStateChange={state => onFormSettingsChange?.({ ...formSettings, state })}
+              defaultCollapsed={formSettings.defaultCollapsed}
+              onDefaultCollapsedChange={defaultCollapsed =>
+                onFormSettingsChange?.({ ...formSettings, defaultCollapsed })
+              }
+              confirmWidening={formEditContext?.savedVisibility === 'ADMINS' && formMayHaveResponses}
+              existingResponseCount={formEditContext?.canReadAll ? formEditContext.responseCount : undefined}
+              spaceName={formEditContext?.spaceName ?? ''}
+            />
+          )}
+        </>
+      );
+    }
+
     case 'contributors': {
       // Contributor-collection config (feature 008). Editable in both create and
       // edit (FR-004d). The callout renders no framing body — only its config.
@@ -601,24 +777,47 @@ export function FramingEditorConnector({
         );
       }
 
+      // #10418: an `eligible: false` chip only means "not in the candidate set",
+      // and before the candidate set has arrived that is "not loaded yet", not
+      // "no longer a member" — relabelling then collapses every chip to the same
+      // "No longer available" string. Mirrors `SpaceSelector.tsx:156`.
+      const candidatesPending = contributorCandidatesUnresolved && contributorCandidates.length === 0;
       // Feature 025: build the ContributorSelector chip list from selectedIds
       // resolved against the candidate set (stale ids → eligible: false).
-      const contributorChips = resolveContributorChips ? resolveContributorChips(selectedIds) : [];
-      const selectedUserIds = new Set(
-        contributorChips.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
-      );
+      // An order-preserving map: `handleContributorRemove` indexes into this array
+      // positionally, so a stale entry is relabelled in place, never filtered out.
+      const contributorChips = (resolveContributorChips ? resolveContributorChips(selectedIds) : []).map(chip => {
+        if (chip.kind === 'email' || chip.eligible !== false) return chip;
+        // An unresolved chip carries the raw uuid as its displayName, so "keep
+        // its own identity" would print the uuid. While pending the chip must
+        // claim nothing in either direction: a neutral "loading" label, and no
+        // ineligible marker to alarm with. Same semantics as SpaceSelector's
+        // pending branch (`SpaceSelector.tsx:294-301`).
+        return candidatesPending
+          ? { ...chip, displayName: t('forms.selection.loading'), eligible: true }
+          : { ...chip, displayName: t('forms.selection.noLongerAvailable') };
+      });
+      // Selected entries stay in the results as ticked toggle rows (088,
+      // superseding 084 FR-006), so no already-selected filter here — only the
+      // query filter, because results show on search alone (operator ruling).
       const contributorSearchResults = contributorCandidates
         .filter(c => {
-          if (c.kind === 'user' && selectedUserIds.has(c.id)) return false;
           if (!contributorSearchQuery.trim()) return true;
           return c.displayName.toLowerCase().includes(contributorSearchQuery.toLowerCase());
         })
-        .map(c => ({ userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl }));
+        .map(c => ({
+          userId: c.id,
+          displayName: c.displayName,
+          avatarUrl: c.avatarUrl,
+          typeLabel: t(`contributors.types.${c.kind}` as 'contributors.types.user'),
+        }));
 
+      // A result row is a toggle: clicking a ticked row deselects it, which is
+      // the same end state as removing its chip.
       const handleContributorSelect = (userId: string) => {
-        if (!selectedIds.includes(userId)) {
-          onSelectedIdsChange?.([...selectedIds, userId]);
-        }
+        onSelectedIdsChange?.(
+          selectedIds.includes(userId) ? selectedIds.filter(id => id !== userId) : [...selectedIds, userId]
+        );
       };
       const handleContributorRemove = (index: number) => {
         const chip = contributorChips[index];
@@ -632,14 +831,7 @@ export function FramingEditorConnector({
         <div className="space-y-4">
           <CalloutSelectionField
             mode={selectionMode}
-            onModeChange={next => {
-              onSelectionModeChange?.(next);
-              // Manual contributor selection is users-only: force the config to Users so
-              // the picker offers only people and the type controls collapse (feature 025).
-              if (next === 'custom') {
-                onContributorCollectionChange({ ...contributorCollection, types: ['user'], defaultType: 'user' });
-              }
-            }}
+            onModeChange={next => onSelectionModeChange?.(next)}
             label={t('forms.selection.label')}
             autoDescription={t('forms.selection.contributors.autoDescription')}
             customDescription={t('forms.selection.contributors.customDescription')}
@@ -654,6 +846,7 @@ export function FramingEditorConnector({
                 loading={contributorCandidatesLoading}
                 allowEmailInvites={false}
                 chipsPosition="above"
+                rowSelection="toggle"
                 clearSearchAriaLabel={t('forms.selection.clearSearch')}
                 ineligibleLabel={t('forms.selection.noLongerAvailable')}
                 placeholder={t('forms.selection.searchPlaceholder')}
@@ -666,14 +859,12 @@ export function FramingEditorConnector({
               />
             }
           />
-          {/* Type config. In custom mode the callout is users-only: the contributor-
-              types filter + default-type are hidden and only the default display
-              (list/map) remains, still editable. */}
+          {/* Type config, shown in both selection modes: in custom mode the configured
+              types are what bounds the picker's candidates (084 FR-002/FR-004). */}
           <ContributorCollectionConfigField
             value={contributorCollection}
             onChange={onContributorCollectionChange}
             error={contributorCollectionError}
-            restrictToUsers={selectionMode === 'custom'}
           />
           {/* Map-view capture control. Only shown when the config has
               at least one locatable type. Virtual contributors are
@@ -754,72 +945,85 @@ export function FramingEditorConnector({
     }
 
     case 'spaces': {
-      // Feature 025: custom subspace selection for a Spaces-collection callout.
-      // Candidates come from the existing `SubspacesInSpace` query data
-      // (already-shipped host-scoped query — R-6 compliant).
-      const subspaceChips = selectedIds.map(id => {
-        const found = subspaceCandidates.find(c => c.id === id);
-        if (found) {
-          return {
-            kind: 'subspace' as const,
-            id: found.id,
-            displayName: found.displayName,
-            avatarUrl: found.avatarUrl,
-            eligible: true,
-          };
-        }
-        return { kind: 'subspace' as const, id, displayName: id, eligible: false };
-      });
+      // Feature 084: manual selection over every space of the host space's
+      // account the editor may READ (T102), replacing 025's host-only subspace
+      // source. `canEditSpaceSelection` decides whether the block renders at all
+      // (FR-009a) — not which of its parts do.
+      // The picker takes plain values only (CRD rule 4), so the level label is
+      // translated and the ancestor chain flattened to names here.
+      const spaceItems = (spaceCandidates?.candidates ?? []).map(candidate => ({
+        id: candidate.id,
+        displayName: candidate.displayName,
+        levelLabel: t(spaceLevelLabelKeyByLevel[candidate.level]),
+        ancestorPath: candidate.ancestorPath.map(ancestor => ancestor.displayName),
+        isHost: candidate.isHost,
+        inHostTree: candidate.inHostTree,
+        hasNameClash: candidate.hasNameClash,
+      }));
 
-      const subspaceSearchResults = subspaceCandidates
-        .filter(c => {
-          if (selectedIds.includes(c.id)) return false;
-          if (!subspaceSearchQuery.trim()) return true;
-          return c.displayName.toLowerCase().includes(subspaceSearchQuery.toLowerCase());
-        })
-        .map(c => ({ userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl }));
-
-      const handleSubspaceSelect = (id: string) => {
-        if (!selectedIds.includes(id)) {
-          onSelectedIdsChange?.([...selectedIds, id]);
-        }
-      };
-      const handleSubspaceRemove = (index: number) => {
-        const chip = subspaceChips[index];
-        if (!chip) return;
-        onSelectedIdsChange?.(selectedIds.filter(id => id !== chip.id));
-      };
+      const handleSpaceToggle = (id: string) =>
+        onSelectedIdsChange?.(
+          selectedIds.includes(id) ? selectedIds.filter(entry => entry !== id) : [...selectedIds, id]
+        );
 
       return (
-        <CalloutSelectionField
-          mode={selectionMode}
-          onModeChange={next => onSelectionModeChange?.(next)}
-          label={t('forms.selection.label')}
-          autoDescription={t('forms.selection.spaces.autoDescription')}
-          customDescription={t('forms.selection.spaces.customDescription')}
-          pickerSlot={
-            <ContributorSelector
-              selectedContributors={subspaceChips}
-              searchResults={subspaceSearchResults}
-              searchQuery={subspaceSearchQuery}
-              onSearchChange={setSubspaceSearchQuery}
-              onSelectUser={handleSubspaceSelect}
-              onRemoveContributor={handleSubspaceRemove}
-              loading={subspaceCandidatesLoading}
-              allowEmailInvites={false}
-              chipsPosition="above"
-              clearSearchAriaLabel={t('forms.selection.clearSearch')}
-              ineligibleLabel={t('forms.selection.noLongerAvailable')}
-              placeholder={t('forms.selection.searchSubspacePlaceholder')}
-              searchAriaLabel={t('forms.selection.searchSubspaceAriaLabel')}
-              noResultsLabel={t('forms.selection.noResults')}
-              loadingLabel={t('forms.selection.loading')}
-              loadMoreLabel={t('forms.selection.loadMore')}
-              removeAriaLabel={name => t('forms.selection.removeAriaLabel', { name })}
-              validationErrorLabel={() => ''}
-            />
-          }
-        />
+        <div className="space-y-4">
+          {canEditSpaceSelection && (
+            <div className="space-y-2">
+              <p className="text-body-emphasis text-foreground">{t('forms.selection.spaces.fieldTitle')}</p>
+              <CalloutSelectionField
+                mode={selectionMode}
+                onModeChange={next => onSelectionModeChange?.(next)}
+                label={t('forms.selection.spaces.switchLabel')}
+                autoDescription={t('forms.selection.spaces.autoDescription')}
+                customDescription={t('forms.selection.spaces.customDescription')}
+                pickerSlot={
+                  <SpaceSelector
+                    items={spaceItems}
+                    selectedIds={selectedIds}
+                    onToggle={handleSpaceToggle}
+                    onClearSelection={() => onSelectedIdsChange?.([])}
+                    loading={spaceCandidates?.loading ?? false}
+                    loadFailed={Boolean(spaceCandidates?.error)}
+                    searchPlaceholder={t('forms.selection.spacePicker.searchPlaceholder')}
+                    searchAriaLabel={t('forms.selection.spacePicker.searchAriaLabel')}
+                    clearSearchAriaLabel={t('forms.selection.clearSearch')}
+                    loadingLabel={t('forms.selection.loading')}
+                    noMatchesLabel={t('forms.selection.spacePicker.noMatches')}
+                    accountEmptyLabel={t('forms.selection.spacePicker.accountEmpty')}
+                    loadFailedLabel={t('forms.selection.spacePicker.loadFailed')}
+                    chipsEmptyLabel={t('forms.selection.spacePicker.chipsEmpty')}
+                    unresolvedLabel={t('forms.selection.noLongerAvailable')}
+                    chipContextLabel={parentName => t('forms.selection.spacePicker.chipContext', { parentName })}
+                    inThisSpaceLabel={t('forms.selection.spacePicker.badgeInThisSpace')}
+                    calloutIsHereLabel={t('forms.selection.spacePicker.badgeCalloutIsHere')}
+                    pathLabel={(level, path) => t('forms.selection.spacePicker.pathSubLine', { level, path })}
+                    removeAriaLabel={(name, parentName) =>
+                      parentName
+                        ? t('forms.selection.spacePicker.removeInParentAriaLabel', { name, parentName })
+                        : t('forms.selection.removeAriaLabel', { name })
+                    }
+                    selectedCountLabel={count =>
+                      count === 0
+                        ? t('forms.selection.spacePicker.noneSelected')
+                        : t('forms.selection.spacePicker.selectedCount', { count })
+                    }
+                    clearSelectionLabel={t('forms.selection.spacePicker.clearSelection')}
+                  />
+                }
+              />
+            </div>
+          )}
+          {/* "Expanded card" switch — placed immediately after the
+              complete Manual selection block (its switch, description and, when
+              on, its picker). */}
+          <CalloutCardVariantField
+            expanded={cardVariant === 'expanded'}
+            onExpandedChange={on => onCardVariantChange?.(on ? 'expanded' : 'compact')}
+            label={t('forms.cardVariant.label')}
+            description={t('forms.cardVariant.description')}
+          />
+        </div>
       );
     }
 

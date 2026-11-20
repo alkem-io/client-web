@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import {
   ProfileResourceTabStrip,
   type ProfileResourceTabStripProps,
@@ -25,6 +26,10 @@ export type OrganizationPublicProfileViewProps = {
     hostedResources: string;
     memberships: string;
   };
+  /** Rendered above the resource tab strip; the page passes it only for signed-out viewers once auth state is known. */
+  guestNotice?: ReactNode;
+  /** Dialogs the page mounts alongside the view (e.g. the associate apply/invitation dialogs). */
+  children?: ReactNode;
 };
 
 export function OrganizationPublicProfileView({
@@ -34,10 +39,14 @@ export function OrganizationPublicProfileView({
   rightColumn,
   loading,
   loadingLabels,
+  guestNotice,
+  children,
 }: OrganizationPublicProfileViewProps) {
-  const sectionsLoading = rightColumn.activeTab === 'resourcesHosted' ? loading.hostedResources : loading.memberships;
-  const sectionsLabel =
-    rightColumn.activeTab === 'resourcesHosted' ? loadingLabels.hostedResources : loadingLabels.memberships;
+  // The tab set depends on both memberships (Leading) and hosted resources
+  // (Other Resources), so the whole column waits for both before rendering —
+  // otherwise tabs would appear and the landing tab shift under the visitor.
+  const sectionsLoading = loading.memberships || loading.hostedResources;
+  const sectionsLabel = loading.memberships ? loadingLabels.memberships : loadingLabels.hostedResources;
 
   return (
     <div className="min-h-screen bg-background pb-12">
@@ -61,17 +70,21 @@ export function OrganizationPublicProfileView({
             )}
           </div>
           <div className="lg:col-span-9 flex flex-col min-w-0">
-            <ProfileResourceTabStrip {...tabStrip} />
+            {guestNotice}
             {sectionsLoading ? (
               <output aria-label={sectionsLabel}>
                 <SectionsSkeleton />
               </output>
             ) : (
-              <OrganizationResourceSections {...rightColumn} />
+              <>
+                <ProfileResourceTabStrip {...tabStrip} />
+                <OrganizationResourceSections {...rightColumn} />
+              </>
             )}
           </div>
         </div>
       </div>
+      {children}
     </div>
   );
 }

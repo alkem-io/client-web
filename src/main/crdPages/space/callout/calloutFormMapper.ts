@@ -14,7 +14,9 @@ import { ensureHttps } from '@/crd/lib/ensureHttps';
 import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { mapFormValuesToCreateInput } from '@/main/crdPages/space/callout/calloutFormDefinitionMapper';
 import { contributorCollectionToServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
+import { cardVariantToServer } from '@/main/crdPages/space/callout/spaceCollectionCardVariant';
 import type {
   AllowedActors,
   CalloutFormValues,
@@ -40,6 +42,7 @@ const FRAMING_CHIP_TO_SERVER: Record<FramingChip, CalloutFramingType> = {
   // Feature 013: the "Subspaces" chip. Config-free — the SPACES framing carries no
   // settings/config; only framing profile (name/description) is sent (FR-004b).
   spaces: CalloutFramingType.Spaces,
+  form: CalloutFramingType.Form,
 };
 
 const RESPONSE_TO_CONTRIBUTION_TYPE: Record<ResponseType, CalloutContributionType | undefined> = {
@@ -109,8 +112,8 @@ export type MapFormOptions = {
  * that the server supports but the domain's base interface omits. The server
  * accepts this shape — `CalloutCreationTypeWithPreviewImages.framing.memo` is
  * the canonical model — but we cannot use the "WithPreviewImages" alias here
- * because it *requires* `whiteboard.previewImages`, and we pass preview blobs
- * out-of-band via `MapFormResult.whiteboardPreviewImages`.
+ * because it *requires* `whiteboard.previewImages`, and the create input carries
+ * none: the server copies the source or draft whiteboard's visuals.
  */
 export type CalloutCreationInput = Omit<CalloutCreationType, 'framing'> & {
   framing: CalloutCreationType['framing'] & {
@@ -126,13 +129,6 @@ export type CalloutCreationInput = Omit<CalloutCreationType, 'framing'> & {
 
 export type MapFormResult = {
   input: CalloutCreationInput;
-  /**
-   * Whiteboard preview blobs, set only when the framing is Whiteboard and the
-   * user saved a whiteboard in the single-user dialog. The connector uploads
-   * these against the newly-created whiteboard's visual IDs after the create
-   * mutation resolves.
-   */
-  whiteboardPreviewImages?: WhiteboardPreviewImage[];
   /**
    * File staged for upload as the Collabora document framing's bytes. Set only
    * when `framingChip === 'document'` AND `values.collaboraUploadFile` is non-null.
@@ -212,7 +208,9 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
           : {}),
         // Selection settings (feature 025) — sent for BOTH collection kinds.
         // AUTO is the server default, but sending it explicitly keeps payloads
-        // consistent. Template capture will strip selectedIds server-side (FR-017/S10).
+        // consistent. A template cannot hold a CUSTOM selection (the server rejects it:
+        // no host space), so the template mappers in `calloutTemplateMapper.ts` reset it
+        // to AUTO with no ids before calling this mapper (FR-006).
         ...(framingType === CalloutFramingType.Contributors || framingType === CalloutFramingType.Spaces
           ? {
               selection: {
@@ -220,6 +218,12 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
                 selectedIds: values.selectedIds,
               },
             }
+          : {}),
+        // Card variant — SPACES only. The server rejects this block on
+        // every other framing, Contributors included, so this does NOT reuse the
+        // `Contributors || Spaces` condition above.
+        ...(framingType === CalloutFramingType.Spaces
+          ? { spaces: { cardVariant: cardVariantToServer(values.cardVariant) } }
           : {}),
       },
       contribution: contributionSettings,
@@ -275,10 +279,9 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     if (rows.length > 0) callout.contributions = rows;
   }
 
-  // Framing-specific branches. Note: `whiteboard.previewImages` is NOT
-  // included here — preview blobs travel out-of-band via the returned
-  // `whiteboardPreviewImages` field so the connector can upload them after
-  // the mutation resolves.
+  // Framing-specific branches. The new whiteboard always starts from a draft or a
+  // source whiteboard, and the server copies that whiteboard's CARD and PREVIEW
+  // visuals, so no preview is uploaded after create.
   if (framingType === CalloutFramingType.Whiteboard) {
     callout.framing.whiteboard = {
       draftWhiteboardID: values.framingWhiteboardDraft?.whiteboardID,
@@ -312,19 +315,29 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     };
   }
 
-  // Collabora document framing has two creation paths:
-  //   - Blank-create: send `{ displayName, documentType }` and no `file`.
+  // Collabora document framing has three creation paths. The branch order below IS the
+  // mutual-exclusion rule when two of them hold a value at once (spec 085 §6 D13) —
+  // precedence, not clearing. Abandoning a path is the connector's job: it drops the
+  // staged file and the carried source id when the framing chip leaves 'document' or a
+  // blank-create card is picked, because an unreachable value here would otherwise win
+  // silently over what the user last chose. The three paths:
   //   - Upload: always send `{}` plus the `file` separately to
   //     `handleCreateCallout`. The post title and the document's own name
   //     are independent — the server always derives the document's name
   //     from the uploaded file. `documentType` is server-derived from the
   //     file's sniffed MIME and MUST NOT be sent.
-  // There is no edit-time counterpart on either branch; the document body is
+  //   - Copy: `editMeta.collaboraDocumentId` is set by `loadCalloutTemplateFormValues` when a
+  //     Callout template is applied. Send only `sourceCollaboraDocumentID`; displayName,
+  //     documentType and MIME are inherited from the source server-side.
+  //   - Blank-create: send `{ displayName, documentType }` and no `file`.
+  // There is no edit-time counterpart on any branch; the document body is
   // edited through the Collabora overlay against the already-created document.
   if (framingType === CalloutFramingType.CollaboraDocument) {
     const postTitle = values.title.trim() || options.collaboraFallbackDisplayName;
     if (values.collaboraUploadFile) {
       callout.framing.collaboraDocument = {};
+    } else if (values.editMeta?.collaboraDocumentId) {
+      callout.framing.collaboraDocument = { sourceCollaboraDocumentID: values.editMeta.collaboraDocumentId };
     } else {
       callout.framing.collaboraDocument = {
         displayName: postTitle,
@@ -349,12 +362,17 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     };
   }
 
+  if (framingType === CalloutFramingType.Form) {
+    callout.framing.form = mapFormValuesToCreateInput({
+      title: values.formTitle,
+      description: values.formDescription,
+      questions: values.formQuestions,
+      settings: values.formSettings,
+    });
+  }
+
   return {
     input: callout,
-    whiteboardPreviewImages:
-      framingType === CalloutFramingType.Whiteboard && values.whiteboardPreviewImages.length > 0
-        ? values.whiteboardPreviewImages
-        : undefined,
     collaboraUploadFile:
       framingType === CalloutFramingType.CollaboraDocument && values.collaboraUploadFile
         ? values.collaboraUploadFile
@@ -486,6 +504,10 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
               selectedIds: values.selectedIds,
             },
           }
+        : {}),
+      // Card variant — SPACES only, same rule as create.
+      ...(framingType === CalloutFramingType.Spaces
+        ? { spaces: { cardVariant: cardVariantToServer(values.cardVariant) } }
         : {}),
     },
   };

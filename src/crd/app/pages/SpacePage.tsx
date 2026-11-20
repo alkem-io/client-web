@@ -53,6 +53,7 @@ import {
   MOCK_CALLOUT_DIALOG,
   MOCK_MEMBERS,
   MOCK_COMMENTS,
+  MOCK_EXPANDED_SUBSPACES,
   MOCK_LINK_CONTRIBUTIONS,
   MOCK_MEMO_CONTRIBUTIONS,
   MOCK_ORGANIZATIONS,
@@ -133,7 +134,7 @@ export function SpacePage() {
     why: 'Cities account for 70% of global energy consumption. By working together across municipalities, we can share learnings, reduce costs, and accelerate the transition to clean energy. This space exists to break silos between local governments and foster peer-to-peer knowledge exchange.',
     who: 'Municipal sustainability officers, urban planners, energy researchers, community organizers, and technology providers working on the ground in European cities. We welcome anyone committed to practical climate action at the local level.',
     provider: {
-      name: 'Alkemio Foundation',
+      name: 'Alkemio',
       avatarUrl: undefined,
       type: 'organization',
       location: 'The Hague, Netherlands',
@@ -481,7 +482,7 @@ export function SpacePage() {
               }
               contributionsSlot={
                 dialogPost?.id === 'p-post-contributions' ? (
-                  <ContributionGrid totalCount={MOCK_POST_CONTRIBUTIONS.length + 1} collapsedRows={1}>
+                  <ContributionGrid contributionCount={MOCK_POST_CONTRIBUTIONS.length} columns={3}>
                     {MOCK_POST_CONTRIBUTIONS.map(pc => (
                       <ContributionPostCard
                         key={pc.id}
@@ -497,7 +498,7 @@ export function SpacePage() {
                     <ContributionAddCard label="Add post" icon={MessageSquare} />
                   </ContributionGrid>
                 ) : dialogPost?.id === 'p-memo-contribs' ? (
-                  <ContributionGrid totalCount={MOCK_MEMO_CONTRIBUTIONS.length + 1} collapsedRows={1}>
+                  <ContributionGrid contributionCount={MOCK_MEMO_CONTRIBUTIONS.length} columns={3}>
                     {MOCK_MEMO_CONTRIBUTIONS.map(memo => (
                       <ContributionMemoCard
                         key={memo.id}
@@ -510,7 +511,7 @@ export function SpacePage() {
                     <ContributionAddCard label="Add memo" icon={MessageSquare} />
                   </ContributionGrid>
                 ) : (dialogPost?.id === 'p2' || dialogPost?.id === 'p-wb-contributions') ? (
-                  <ContributionGrid totalCount={MOCK_WHITEBOARD_CONTRIBUTIONS.length + 1} collapsedRows={1}>
+                  <ContributionGrid contributionCount={MOCK_WHITEBOARD_CONTRIBUTIONS.length} columns={3}>
                     {MOCK_WHITEBOARD_CONTRIBUTIONS.map(wb => (
                       <ContributionWhiteboardCard
                         key={wb.id}
@@ -601,6 +602,11 @@ export function SpacePage() {
         {activeTab === 2 && (
           <div className="space-y-8">
             <SpaceSubspacesList subspaces={MOCK_SUBSPACES} />
+            {/* Expanded-card design-review aid — lets the designer review the
+                desktop and phone layout with `pnpm crd:dev`, no backend needed. Covers a fully
+                filled card, a partial card, an all-empty card (falls back to the compact card),
+                and a long-text card (clamp-holds-at-any-length demo). */}
+            <SpaceSubspacesList subspaces={MOCK_EXPANDED_SUBSPACES} variant="expanded" title="Expanded card (design review)" />
             <SpaceFeed posts={MOCK_POSTS.slice(2)} />
           </div>
         )}
@@ -672,7 +678,7 @@ export function SpacePage() {
         onOpenChange={setAddPostOpen}
         mode="create"
         title={{ value: postTitle, onChange: setPostTitle }}
-        canSubmit={postTitle.trim().length > 0}
+        blockedReason={postTitle.trim().length > 0 ? undefined : 'titleRequired'}
         onSubmit={() => {
           console.log('Publish post:', { postTitle, postDescription, framingChip, responseType, memoContent });
           setAddPostOpen(false);

@@ -3,6 +3,7 @@ import { AuthCard } from '@/crd/components/auth/AuthCard';
 import { AuthCardHeader } from '@/crd/components/auth/AuthCardHeader';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
 import type { KratosFlowDescriptor, KratosPasskeyTrigger } from '@/crd/components/auth/flowDescriptor';
+import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
 export type LoginCardNotice = {
@@ -11,6 +12,12 @@ export type LoginCardNotice = {
   /** Already-translated label for the action that re-enters sign-in. */
   actionLabel: string;
   actionHref: string;
+  /**
+   * `'destructive'` (the default) announces assertively — sign-in failed or is
+   * blocked. `'info'` is for a notice that is part of the happy path, where red
+   * text in an assertive live region would misreport a normal prompt as an error.
+   */
+  tone?: 'info' | 'destructive';
 };
 
 export type LoginCardProps = {
@@ -26,7 +33,19 @@ export type LoginCardProps = {
    */
   notice?: LoginCardNotice;
   onProviderClick?: (providerKey: string) => void;
-  onPasskeyTrigger?: (trigger: KratosPasskeyTrigger) => void;
+  onPasskeyTrigger?: (trigger: KratosPasskeyTrigger, value: string) => void;
+  /**
+   * The sign-in's second step (the flow asks for a second factor). The card
+   * drops the sign-up and forgotten-password links, and — when the person has
+   * both an authenticator and recovery codes — offers one action that switches
+   * between the two; the consumer decides which group the descriptor carries.
+   * `signOutHref` lets someone without their second factor leave the step.
+   */
+  secondFactorStep?: {
+    showingRecoveryCode: boolean;
+    onToggleRecoveryCode?: () => void;
+    signOutHref: string;
+  };
 };
 
 export function LoginCard({
@@ -37,6 +56,7 @@ export function LoginCard({
   notice,
   onProviderClick,
   onPasskeyTrigger,
+  secondFactorStep,
 }: LoginCardProps) {
   const { t } = useTranslation('crd-auth');
 
@@ -53,13 +73,50 @@ export function LoginCard({
         }
       >
         <div className="flex flex-col gap-5">
-          <div role="alert" className="text-body rounded-md bg-destructive/10 px-3 py-2.5 text-destructive">
+          <div
+            role={notice.tone === 'info' ? 'status' : 'alert'}
+            className={cn(
+              'text-body rounded-md px-3 py-2.5',
+              notice.tone === 'info' ? 'bg-muted text-muted-foreground' : 'bg-destructive/10 text-destructive'
+            )}
+          >
             {notice.text}
           </div>
           <Button asChild={true} className="text-control h-12 w-full font-semibold uppercase tracking-wider">
             <a href={notice.actionHref}>{notice.actionLabel}</a>
           </Button>
         </div>
+      </AuthCard>
+    );
+  }
+
+  if (secondFactorStep && descriptor && !isLoading) {
+    return (
+      <AuthCard title={t('secondFactor.title')}>
+        <p className="text-body mb-5 text-muted-foreground">{t('secondFactor.subtitle')}</p>
+        <CrdKratosFlow
+          key={secondFactorStep.showingRecoveryCode ? 'recoveryCode' : 'authenticator'}
+          descriptor={descriptor}
+          onPasskeyTrigger={onPasskeyTrigger}
+        >
+          {secondFactorStep.onToggleRecoveryCode ? (
+            <button
+              type="button"
+              onClick={secondFactorStep.onToggleRecoveryCode}
+              className="text-body self-start rounded-sm text-primary outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            >
+              {secondFactorStep.showingRecoveryCode
+                ? t('secondFactor.useAuthenticator')
+                : t('secondFactor.useRecoveryCode')}
+            </button>
+          ) : null}
+        </CrdKratosFlow>
+        <a
+          href={secondFactorStep.signOutHref}
+          className="text-body mt-5 inline-block rounded-sm text-primary outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        >
+          {t('secondFactorPage.signOut')}
+        </a>
       </AuthCard>
     );
   }

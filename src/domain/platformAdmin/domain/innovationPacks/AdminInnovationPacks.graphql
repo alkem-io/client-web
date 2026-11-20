@@ -2,8 +2,13 @@ query PlatformAdminInnovationPacks {
   platformAdmin {
     innovationPacks {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       listedInStore
       searchVisibility
+      promote
       provider {
         id
         profile {

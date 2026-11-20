@@ -7,6 +7,7 @@ import { useMarkdownEditorState } from './useMarkdownEditorState';
 import './styles.css';
 import { Suspense } from 'react';
 import { Loading } from '@/crd/components/common/Loading';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 /**
  * The image-upload wiring a `MarkdownEditor` needs to enable copy/paste and the
@@ -30,7 +31,16 @@ type MarkdownEditorProps = MarkdownUploadProps & {
   /** Applied to the editor's root element so a sibling `<label htmlFor>` can reference it. */
   id?: string;
   placeholder?: string;
+  /**
+   * Turns on the character counter. It counts the markdown `value` — the string
+   * that is stored and validated — not the visible text, so formatting syntax and
+   * link / image URLs count too. That keeps the counter in agreement with any
+   * length validator applied to the same value. The counter shows from 20% of
+   * `maxLength`, and its tooltip adds the "formatting counts too" hint from 80%.
+   */
   maxLength?: number;
+  /** Validation message shown below the editor, on the same line as the counter. */
+  error?: string;
   disabled?: boolean;
   className?: string;
   /** Hides image + embed toolbar buttons (e.g. inline comment composer). */
@@ -54,6 +64,7 @@ function MarkdownEditorLazy({
   id,
   placeholder,
   maxLength,
+  error,
   disabled,
   className,
   onImageUpload,
@@ -80,41 +91,98 @@ function MarkdownEditorLazy({
 
   if (!editor) return null;
 
-  const charCount = editor.getText().length;
-  const isOverLimit = maxLength != null && charCount > maxLength;
+  const charCount = value.length;
+  const showCounter = maxLength != null && charCount >= maxLength * COUNTER_THRESHOLD;
+  const showCounterHint = maxLength != null && charCount >= maxLength * COUNTER_HINT_THRESHOLD;
 
   return (
-    <div
-      id={id}
-      className={cn(
-        'crd-markdown-editor flex flex-col border border-border rounded-lg overflow-hidden bg-input-background transition-shadow focus-within:ring-2 focus-within:ring-primary/20',
-        disabled && 'opacity-60',
-        className
-      )}
-    >
-      <MarkdownToolbar
-        editor={editor}
-        className="border-b border-border bg-muted/30"
-        onImageUpload={onImageUpload}
-        iframeAllowedUrls={iframeAllowedUrls}
-        onError={onError}
-        hideImageOptions={hideImageOptions}
-        hideEmbedOption={hideEmbedOption}
-      />
+    <>
+      <div
+        id={id}
+        className={cn(
+          'crd-markdown-editor flex flex-col border border-border rounded-lg overflow-hidden bg-input-background transition-shadow focus-within:ring-2 focus-within:ring-primary/20',
+          disabled && 'opacity-60',
+          className
+        )}
+      >
+        <MarkdownToolbar
+          editor={editor}
+          className="border-b border-border bg-muted/30"
+          onImageUpload={onImageUpload}
+          iframeAllowedUrls={iframeAllowedUrls}
+          onError={onError}
+          hideImageOptions={hideImageOptions}
+          hideEmbedOption={hideEmbedOption}
+        />
 
-      <EditorContent
-        editor={editor}
-        className="flex flex-col flex-1 min-h-0"
-        {...(placeholder ? { 'data-placeholder': placeholder } : {})}
-      />
+        <EditorContent
+          editor={editor}
+          className="flex flex-col flex-1 min-h-0"
+          {...(placeholder ? { 'data-placeholder': placeholder } : {})}
+        />
+      </div>
 
-      {maxLength != null && (
-        <div className="flex justify-end px-3 pb-2">
-          <span className={cn('text-caption', isOverLimit ? 'text-destructive' : 'text-muted-foreground')}>
-            {t('editor.charCount', { count: charCount, max: maxLength })}
-          </span>
+      {(error || showCounter) && (
+        <div className="flex items-start gap-3">
+          {error && (
+            <p className="text-caption text-destructive" aria-live="polite">
+              {error}
+            </p>
+          )}
+          {showCounter && maxLength != null && (
+            <Tooltip>
+              <TooltipTrigger
+                type="button"
+                aria-label={t('editor.charCount', {
+                  current: charCount.toLocaleString(),
+                  max: maxLength.toLocaleString(),
+                })}
+                className="ml-auto shrink-0 cursor-help rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <CharCountRing count={charCount} max={maxLength} />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>
+                  {t('editor.charCount', {
+                    current: charCount.toLocaleString(),
+                    max: maxLength.toLocaleString(),
+                  })}
+                </p>
+                {showCounterHint && <p className="mt-1">{t('editor.charCountHint')}</p>}
+              </TooltipContent>
+            </Tooltip>
+          )}
         </div>
       )}
-    </div>
+    </>
+  );
+}
+
+const COUNTER_THRESHOLD = 0.2;
+const COUNTER_HINT_THRESHOLD = 0.8;
+
+// The viewBox matches the rendered 16px, so stroke widths are in pixels.
+const RING_RADIUS = 6.5;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+/** Tiny circular progress of `count` towards `max`; turns destructive once full. */
+function CharCountRing({ count, max }: { count: number; max: number }) {
+  const progress = Math.min(count / max, 1);
+  const isFull = count >= max;
+  return (
+    <svg viewBox="0 0 16 16" className="size-4 -rotate-90" aria-hidden="true">
+      <circle cx="8" cy="8" r={RING_RADIUS} fill="none" strokeWidth="3" className="stroke-muted" />
+      <circle
+        cx="8"
+        cy="8"
+        r={RING_RADIUS}
+        fill="none"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeDasharray={RING_CIRCUMFERENCE}
+        strokeDashoffset={RING_CIRCUMFERENCE * (1 - progress)}
+        className={isFull ? 'stroke-destructive' : 'stroke-primary'}
+      />
+    </svg>
   );
 }

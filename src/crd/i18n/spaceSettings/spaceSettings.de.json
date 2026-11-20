@@ -11,47 +11,38 @@
     "account": "Konto"
   },
   "dirtyGuard": {
-    "save": "Speichern",
-    "discard": "Verwerfen und verlassen",
     "cancel": "Abbrechen",
-    "tabSwitch": {
-      "title": "Nicht gespeicherte Änderungen",
-      "description": "Sie haben nicht gespeicherte Änderungen auf diesem Tab. Möchten Sie sie speichern, verwerfen oder auf diesem Tab bleiben?"
-    },
     "navAway": {
       "title": "Nicht gespeicherte Änderungen",
       "description": "Wenn Sie diese Seite verlassen, werden Ihre nicht gespeicherten Änderungen verworfen."
     }
   },
   "saveBar": {
-    "save": "Änderungen speichern",
-    "discard": "Änderungen verwerfen",
-    "saving": "Speichern…"
+    "lockedReason": "Speichere oder verwirf zuerst deine Änderungen"
   },
   "layout": {
     "pageHeader": {
       "title": "Layout",
-      "subtitle": "Passen Sie die Navigations-Tabs Ihres Spaces an. Benennen Sie um, ordnen Sie neu an und verwalten Sie Beitragszuweisungen."
+      "subtitle": "Passen Sie die Navigations-Tabs Ihres Spaces an. Benennen Sie um, ordnen Sie neu an und verwalten Sie Beitragszuweisungen.",
+      "subtitle_subspace": "Passen Sie die Navigations-Tabs Ihres Subspaces an. Benennen Sie um, ordnen Sie neu an und verwalten Sie Beitragszuweisungen."
     },
-    "discardChangesDialog": {
-      "title": "Änderungen verwerfen?",
-      "description": "Ihre nicht gespeicherten Layout-Änderungen werden auf den zuletzt gespeicherten Stand zurückgesetzt. Dies kann nicht rückgängig gemacht werden.",
-      "confirm": "Änderungen verwerfen"
-    },
+    "loading": "Layout wird geladen…",
     "column": {
       "titlePlaceholder": "Spaltentitel",
       "descriptionPlaceholder": "Diese Spalte beschreiben…",
       "menu": "Spaltenaktionen",
       "drag": "Ziehen, um die Phase neu zu ordnen",
-      "empty": "Noch keine Callouts in dieser Spalte.",
+      "empty": "Noch keine Beiträge in dieser Spalte.",
+      "postCount_one": "{{count}} Beitrag",
+      "postCount_other": "{{count}} Beiträge",
       "activePhase": {
         "set": "Als aktive Phase markieren",
         "current": "Aktive Phase (aktuell)",
         "badge": "Aktive Phase"
       },
       "defaultCalloutTemplate": {
-        "set": "Standard-Callout-Vorlage festlegen…",
-        "clear": "Standard-Callout-Vorlage entfernen"
+        "set": "Standard-Beitragsvorlage festlegen…",
+        "clear": "Standard-Beitragsvorlage entfernen"
       },
       "editDetails": {
         "menuLabel": "Details bearbeiten",
@@ -70,7 +61,7 @@
         "menuLabel": "Phase löschen",
         "confirm": {
           "title": "Diese Phase löschen?",
-          "description": "Callouts, die derzeit mit dieser Phase getaggt sind, verlieren ihren Tag. Diese Aktion kann nicht rückgängig gemacht werden.",
+          "description": "Beiträge, die derzeit mit dieser Phase getaggt sind, verlieren ihren Tag. Diese Aktion kann nicht rückgängig gemacht werden.",
           "confirm": "Phase löschen",
           "cancel": "Abbrechen"
         }
@@ -123,6 +114,7 @@
         "widgets": {
           "intent": "Zweck & Leiter",
           "about": "Über diesen Bereich",
+          "about_subspace": "Über diesen Subspace",
           "createPost": "Post hinzufügen",
           "applicationButton": "Bewerben / Beitreten",
           "createSubspace": "Unterbereich erstellen",
@@ -134,7 +126,9 @@
           "virtualContributors": "Virtuelle Mitwirkende",
           "guidelines": "Gemeinschaftsrichtlinien",
           "index": "Beitragsindex",
-          "search": "Suche"
+          "search": "Suche",
+          "community": "Community",
+          "activity": "Letzte Aktivitäten"
         }
       },
       "postTemplate": {
@@ -149,6 +143,12 @@
           "cancel": "Abbrechen"
         }
       }
+    },
+    "customizeSidebar": {
+      "button": "Seitenleiste anpassen",
+      "title": "Layout: Seitenleiste",
+      "help": "Wähle aus, welche Widgets in der Seitenleiste dieses Unterbereichs erscheinen und in welcher Reihenfolge. Das gilt für den gesamten Unterbereich — jede Phase zeigt dieselbe Auswahl.",
+      "emptyNote": "Keine Widgets ausgewählt — die Seitenleiste bleibt im gesamten Unterbereich leer, in jeder Phase."
     },
     "addPhase": {
       "button": "Phase hinzufügen",
@@ -187,6 +187,7 @@
       "applyDialog": {
         "title": "Neue Vorlage anwenden",
         "description": "Sie sind dabei, eine neue Vorlage anzuwenden. Diese Aktion löscht Ihren aktuellen Innovationsfluss dauerhaft. Die vorhandenen Beiträge, die mit verschiedenen Phasen verknüpft sind, bleiben jedoch erhalten und werden unter der ersten Phase der neuen Einrichtung gruppiert.<br/><br/>Bitte wählen Sie eine der folgenden Optionen:",
+        "sidebarNote": "Die Seitenleiste des Unterbereichs wird durch die der Vorlage ersetzt.",
         "option1": {
           "label": "Durch neuen Fluss ersetzen",
           "description": "Dadurch wird Ihr aktueller Innovationsfluss mit allen vorhandenen Beiträgen gelöscht und durch den neuen Fluss einschließlich der Vorlagen-Beiträge ersetzt."
@@ -211,17 +212,13 @@
     },
     "row": {
       "drag": "Ziehen, um neu anzuordnen",
-      "menu": "Callout-Aktionen",
+      "menu": "Beitragsaktionen",
       "moveTo": "Verschieben nach",
       "viewPost": "Beitrag anzeigen",
       "noOtherColumns": "Keine anderen Spalten"
     }
   },
   "community": {
-    "pageHeader": {
-      "title": "Community",
-      "subtitle": "Verwalten Sie Mitglieder, Organisationen und virtuelle Mitwirkende in diesem Space."
-    },
     "applications": {
       "title": "Ausstehende Anträge",
       "approve": "Genehmigen",
@@ -238,10 +235,21 @@
       "email": "E-Mail",
       "date": "Datum",
       "type": "Typ",
+      "offeredRole": {
+        "column": "Angebotene Rolle"
+      },
       "actions": "Aktionen",
       "approve": "Genehmigen",
       "reject": "Ablehnen",
-      "delete": "Löschen",
+      "deleteAction": {
+        "rejectAndRemove": "Antrag ablehnen und entfernen",
+        "removeFromList": "Aus der Liste entfernen",
+        "revokeInvitation": "Einladung widerrufen"
+      },
+      "resend": "Einladungs-E-Mail erneut senden",
+      "resendSuccess": "Einladungs-E-Mail erneut gesendet",
+      "resendThrottled": "Erst kürzlich erneut gesendet — versuche es in ein paar Minuten noch einmal",
+      "resendError": "Die Einladungs-E-Mail konnte nicht erneut gesendet werden — versuche es erneut",
       "empty": "Keine ausstehenden Mitgliedschaften.",
       "noMatch": "Keine ausstehenden Mitgliedschaften entsprechen den gewählten Filtern.",
       "filterLabel": "Nach Status filtern",
@@ -251,6 +259,7 @@
       "viewDialog": {
         "created": "Erstellt am {{date}}",
         "updated": "Aktualisiert am {{date}}",
+        "offeredRole": "Angebotene Rolle: {{role}}",
         "welcomeMessage": "Willkommensnachricht",
         "noWelcomeMessage": "Keine Willkommensnachricht angegeben.",
         "noAnswers": "Keine Antworten angegeben.",
@@ -266,9 +275,11 @@
       "status": {
         "column": "Status",
         "applicationReceived": "Antrag erhalten",
+        "applicationApproving": "Wird genehmigt…",
         "applicationApproved": "Antrag genehmigt",
         "applicationRejected": "Antrag abgelehnt",
         "invited": "Eingeladen",
+        "invitationAccepting": "Wird angenommen…",
         "invitationAccepted": "Einladung angenommen",
         "invitationRejected": "Einladung abgelehnt",
         "invitedExternal": "Eingeladen (extern)"
@@ -281,6 +292,7 @@
     },
     "members": {
       "title": "Space-Mitglieder",
+      "title_subspace": "Subspace-Mitglieder",
       "search": "Mitglieder suchen…",
       "invite": "Einladen",
       "name": "Name",
@@ -299,7 +311,8 @@
       "dropdown": {
         "viewProfile": "Profil anzeigen",
         "changeRole": "Rolle ändern",
-        "removeFromSpace": "Aus Space entfernen"
+        "removeFromSpace": "Aus Space entfernen",
+        "removeFromSpace_subspace": "Aus Subspace entfernen"
       },
       "pagination": {
         "showing": "Zeige {{from}} bis {{to}} von {{total}} Mitgliedern",
@@ -308,7 +321,8 @@
         "next": "Nächste Seite"
       },
       "roleColumn": "Rolle",
-      "export": "Alle Mitglieder exportieren"
+      "export": "Alle Mitglieder exportieren",
+      "exportApplications": "Alle eingereichten Bewerbungen exportieren"
     },
     "memberSettings": {
       "title": "Mitgliedereinstellungen",
@@ -330,24 +344,18 @@
       "close": "Schließen"
     },
     "organizations": {
+      "export": "Organisationen exportieren",
       "title": "Mitgliedsorganisationen",
       "name": "Name",
       "role": "Rolle",
       "actions": "Aktionen",
       "empty": "Keine Organisationen.",
       "remove": "Organisation entfernen",
-      "description": "Übersicht aller Mitglieds- und Lead-Organisationen. Laden Sie eine Organisation ein beizutreten, oder fügen Sie direkt eine hinzu.",
-      "add": "Organisation hinzufügen",
       "dropdown": {
         "viewProfile": "Profil anzeigen",
         "changeRole": "Rolle ändern",
-        "removeFromSpace": "Aus Space entfernen"
-      },
-      "addDialog": {
-        "title": "Organisation hinzufügen",
-        "description": "Diese Organisationen werden als Mitglieder in diesem Space und auf ihrem Organisationsprofil sichtbar sein.",
-        "search": "Organisationen suchen…",
-        "empty": "Keine Organisationen entsprechen Ihrer Suche."
+        "removeFromSpace": "Aus Space entfernen",
+        "removeFromSpace_subspace": "Aus Subspace entfernen"
       },
       "invite": "Organisation einladen",
       "search": "Organisationen suchen…",
@@ -368,7 +376,6 @@
       "actions": "Aktionen",
       "empty": "Keine virtuellen Mitwirkenden.",
       "remove": "Virtuellen Mitwirkenden entfernen",
-      "description": "Verwalten Sie KI-Agenten und Bots, die an diesem Space teilnehmen.",
       "add": "Virtuellen Mitwirkenden hinzufügen",
       "addExternal": "Externen virtuellen Mitwirkenden einladen",
       "addDialog": {
@@ -389,13 +396,15 @@
     },
     "applicationForm": {
       "title": "Antragsformular",
-      "description": "Passen Sie die Fragen an, die Benutzer beantworten müssen, wenn sie diesem Space beitreten möchten."
+      "edit": "Antragsformular bearbeiten",
+      "optional": "Optional",
+      "questionNumber": "F{{number}}"
     },
     "guidelines": {
       "title": "Community-Richtlinien",
-      "description": "Legen Sie Regeln und Erwartungen für das Verhalten der Mitglieder fest.",
       "hint": "Werden neuen Mitgliedern beim Beitritt angezeigt.",
       "placeholder": "Beschreiben Sie den Verhaltenskodex Ihres Spaces…",
+      "placeholder_subspace": "Beschreiben Sie den Verhaltenskodex Ihres Subspaces…",
       "titleLabel": "Titel",
       "titlePlaceholder": "Benennen Sie Ihre Community-Richtlinien",
       "referencesLabel": "Verwandte Links",
@@ -408,7 +417,9 @@
         "cancel": "Abbrechen"
       },
       "save": "Richtlinien speichern",
-      "saving": "Speichern…"
+      "saving": "Speichern…",
+      "edit": "Richtlinien bearbeiten",
+      "empty": "Noch keine Community-Richtlinien."
     },
     "confirmRemove": {
       "confirm": "Bestätigen",
@@ -426,15 +437,24 @@
       },
       "invitation": {
         "title": "Einladung widerrufen",
-        "description": "Die ausstehende Einladung für {{name}} widerrufen?"
+        "description": "{{name}} kann diese Einladung nicht mehr annehmen, und sie wird aus der Liste entfernt."
       },
       "applicationReject": {
         "title": "Antrag ablehnen",
-        "description": "Den Antrag von {{name}} auf Beitritt zu diesem Space ablehnen?"
+        "description": "Den Antrag von {{name}} auf Beitritt zu diesem Space ablehnen?",
+        "description_subspace": "Den Antrag von {{name}} auf Beitritt zu diesem Subspace ablehnen?"
       },
       "applicationDelete": {
-        "title": "Antrag entfernen",
-        "description": "Den Antrag von {{name}} aus der Liste entfernen?"
+        "title": "Antrag ablehnen und entfernen",
+        "description": "Der Antrag von {{name}} wird abgelehnt und aus dieser Liste entfernt. Es entsteht keine Mitgliedschaft."
+      },
+      "resolvedDelete": {
+        "title": "Aus der Liste entfernen",
+        "description": "Damit wird nur die abgeschlossene Anfrage von {{name}} aus dieser Liste entfernt. Mitgliedschaften ändern sich nicht."
+      },
+      "platformInvitation": {
+        "title": "Einladung widerrufen",
+        "description": "Die an {{name}} gesendete Einladung wird storniert und aus der Liste entfernt. Sie kann nicht mehr zum Beitritt verwendet werden."
       }
     },
     "addDialog": {
@@ -466,16 +486,15 @@
         "invited": "Eingeladen",
         "invite": "Einladen"
       }
+    },
+    "editDialog": {
+      "save": "Speichern",
+      "saving": "Speichern…"
     }
   },
   "subspaces": {
-    "pageHeader": {
-      "title": "Subspaces",
-      "subtitle": "Bearbeiten Sie die Subspaces in diesem Space. Konfigurieren Sie Standardvorlagen und sehen Sie alle vorhandenen Subspaces."
-    },
     "defaultTemplate": {
       "title": "Standard-Subspace-Vorlage",
-      "description": "Wählen Sie die Standardeinstellungen, die beim Erstellen eines neuen Subspaces in diesem Space angewendet werden.",
       "change": "Standardvorlage ändern",
       "dialog": {
         "title": "Standard-Subspace-Vorlage ändern",
@@ -560,8 +579,8 @@
       "preview": {
         "info": "Immer enthalten: Über-Informationen und Einstellungen",
         "states": "Phasen",
-        "callouts": "Callouts",
-        "noCalloutsInState": "Keine Callouts in dieser Phase.",
+        "callouts": "Beiträge",
+        "noCalloutsInState": "Keine Beiträge in dieser Phase.",
         "noCalloutDescription": "Keine Beschreibung",
         "subspaces": "Enthält diese Subspaces"
       },
@@ -650,13 +669,12 @@
     }
   },
   "updates": {
-    "pageHeader": {
-      "title": "Updates der Leads",
-      "subtitle": "Veröffentlichen Sie Ankündigungen, Meilensteine und Fortschrittsupdates, die für alle Mitglieder des Spaces sichtbar sind."
+    "sections": {
+      "post": "Update veröffentlichen",
+      "published": "Veröffentlichte Updates"
     },
     "composer": {
       "new": "Neues Update",
-      "title": "Neues Update",
       "placeholder": "Schreiben Sie Ihr Update…",
       "publish": "Veröffentlichen",
       "submitting": "Veröffentlichen…",
@@ -758,33 +776,34 @@
     }
   },
   "settings": {
-    "pageHeader": {
-      "title": "Einstellungen",
-      "subtitle": "Konfigurieren Sie die Sichtbarkeit Ihres Spaces, die Mitgliedschaftsrichtlinien und die für Mitglieder erlaubten Aktionen."
-    },
     "visibility": {
       "title": "Sichtbarkeit",
-      "description": "Steuern Sie, wer diesen Space sehen und darauf zugreifen kann",
       "public": "Öffentlich",
       "publicDescription": "Dieser Space und seine Inhalte sind für alle auf der Plattform sichtbar. Benutzer können nur beitragen, wenn sie Mitglied sind.",
+      "publicDescription_subspace": "Dieser Subspace und seine Inhalte sind für alle auf der Plattform sichtbar. Benutzer können nur beitragen, wenn sie Mitglied sind.",
       "private": "Privat",
       "privateDescription": "Dieser Space ist für alle auf der Plattform sichtbar, aber die Inhalte sind nur für Mitglieder sichtbar.",
-      "hint": "Berücksichtigen Sie den Zweck und das Publikum Ihres Spaces bei der Wahl der Sichtbarkeit."
+      "privateDescription_subspace": "Dieser Subspace ist für alle auf der Plattform sichtbar, aber die Inhalte sind nur für Mitglieder sichtbar.",
+      "hint": "Berücksichtigen Sie den Zweck und das Publikum Ihres Spaces bei der Wahl der Sichtbarkeit.",
+      "hint_subspace": "Berücksichtigen Sie den Zweck und das Publikum Ihres Subspaces bei der Wahl der Sichtbarkeit."
     },
     "membership": {
       "title": "Mitgliedschaft",
-      "description": "Wählen Sie, wie Benutzer Ihrem Space beitreten",
       "open": "Kein Antrag erforderlich",
       "openDescription": "Alle Space-Mitglieder können direkt beitreten, ohne dass Sie ihre Anträge prüfen müssen.",
+      "openDescription_subspace": "Alle Mitglieder des übergeordneten Spaces können direkt beitreten, ohne dass Sie ihre Anträge prüfen müssen.",
       "openHint": "Am besten für öffentliche, offene Kollaborationsspaces",
+      "openHint_subspace": "Am besten für öffentliche, offene Kollaborations-Subspaces",
       "application": "Antrag erforderlich",
       "applicationDescription": "Wenn Personen Mitglied werden möchten, müssen sie das Antragsformular ausfüllen. Sie erhalten ihre Anträge (siehe Community-Tab hier) und können sie annehmen oder ablehnen.",
       "applicationHint": "Am besten für kuratierte Spaces mit spezifischen Anforderungen",
+      "applicationHint_subspace": "Am besten für kuratierte Subspaces mit spezifischen Anforderungen",
       "invitation": "Nur auf Einladung",
       "invitationDescription": "Benutzer können erst Mitglied werden, nachdem Sie sie eingeladen haben. Es gibt keine 'Beantragen'- oder 'Beitreten'-Schaltfläche für andere.",
       "invitationHint": "Am besten für private, eingeschränkte Kollaborationsteams",
       "trustedApplicants": "Vertrauenswürdige Antragsteller",
-      "hostOrgTrust": "Erlauben Sie Mitgliedern von {{host}}, ohne Antrag diesem Space beizutreten."
+      "hostOrgTrust": "Erlauben Sie Mitgliedern von {{host}}, ohne Antrag diesem Space beizutreten.",
+      "hostOrgTrust_subspace": "Erlauben Sie Mitgliedern von {{host}}, ohne Antrag diesem Subspace beizutreten."
     },
     "applicationForm": {
       "title": "Antragsformular",
@@ -804,12 +823,10 @@
         "description": "Möchten Sie diese Frage wirklich entfernen?",
         "confirm": "Löschen"
       },
-      "save": "Speichern",
-      "export": "Alle eingereichten Bewerbungen exportieren"
+      "save": "Speichern"
     },
     "allowedActions": {
       "title": "Erlaubte Aktionen",
-      "description": "Wählen Sie, welche Aktionen Mitglieder in diesem Space ausführen können",
       "subspaceAdminInvitations": "Subspace-Mitgliedschaft",
       "memberCreatePosts": "Beiträge erstellen",
       "videoCalls": "Videoanrufe",
@@ -840,16 +857,19 @@
     "userInfoVisibility": {
       "title": "Sichtbarkeit der Benutzerinformationen",
       "description": "Legen Sie fest, wer die Informationen der Mitglieder in diesem Space sehen kann. Organisationen und virtuelle Mitwirkende folgen der Sichtbarkeit des Space.",
+      "description_subspace": "Legen Sie fest, wer die Informationen der Mitglieder in diesem Subspace sehen kann. Organisationen und virtuelle Mitwirkende folgen der Sichtbarkeit des Subspace.",
       "followSpace": "Sichtbarkeit des Space übernehmen",
+      "followSpace_subspace": "Sichtbarkeit des Subspace übernehmen",
       "followSpaceDescription": "Die Benutzerinformationen der Mitglieder sind entsprechend der Sichtbarkeit des Space sichtbar.",
+      "followSpaceDescription_subspace": "Die Benutzerinformationen der Mitglieder sind entsprechend der Sichtbarkeit des Subspace sichtbar.",
       "membersOnly": "Nur Mitglieder",
-      "membersOnlyDescription": "Nur Mitglieder dieses Space können die Benutzerinformationen der Mitglieder sehen."
+      "membersOnlyDescription": "Nur Mitglieder dieses Space können die Benutzerinformationen der Mitglieder sehen.",
+      "membersOnlyDescription_subspace": "Nur Mitglieder dieses Subspace können die Benutzerinformationen der Mitglieder sehen."
     }
   },
   "storage": {
-    "pageHeader": {
-      "title": "Speicher",
-      "subtitle": "Durchsuchen und verwalten Sie die in diesem Space gespeicherten Dokumente."
+    "sections": {
+      "documents": "Dokumente"
     },
     "empty": "Noch keine Dokumente gespeichert.",
     "columns": {
@@ -868,12 +888,8 @@
     }
   },
   "account": {
-    "pageHeader": {
-      "title": "Konto",
-      "subtitle": "Hier finden Sie alle Ihre Spaces, virtuellen Mitwirkenden und andere gehostete Ressourcen. Wenn Sie Fragen haben, wenden Sie sich gerne an das Alkemio-Team."
-    },
     "url": {
-      "title": "URL",
+      "title": "Space-URL",
       "hint": "Die eindeutige URL für diesen Space. Wenden Sie sich an Alkemio, um sie zu ändern.",
       "copy": "URL kopieren",
       "copied": "URL kopiert"
@@ -882,18 +898,28 @@
       "title": "Sichtbarkeitsstatus",
       "prefix": "Dieser Space befindet sich derzeit im",
       "suffix": "Modus",
-      "contact": "Wenden Sie sich für Statusänderungen an das Alkemio-Team."
+      "contact": "Wenden Sie sich für Statusänderungen an das Alkemio-Team.",
+      "status": {
+        "active": "Aktiv",
+        "archived": "Archiviert",
+        "demo": "Demo",
+        "inactive": "Inaktiv"
+      }
     },
     "host": {
       "title": "Host-Informationen",
-      "description": "Der Host ist die Person oder Organisation, der dieser Space gehört."
+      "type": {
+        "organization": "Organisation",
+        "user": "Benutzer",
+        "virtualContributor": "Virtueller Mitwirkender"
+      }
     },
     "plan": {
       "title": "Lizenz",
-      "description": "Details zu Ihrem aktuellen Space-Abonnement",
       "featuresHeading": "Enthaltene Funktionen",
       "daysLeft": "Noch {{count}} Tage",
-      "changeLicense": "Lizenz ändern"
+      "changeLicense": "Lizenz ändern",
+      "none": "Keine aktive Lizenz"
     },
     "support": {
       "title": "Support",
@@ -904,6 +930,7 @@
       "title": "Gefahrenzone",
       "description": "Diesen Space und alle Inhalte dauerhaft löschen.",
       "delete": "Diesen Space löschen",
+      "deleteError": "Der Space konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
       "deleteDialog": {
         "title": "Space löschen",
         "description": "Dadurch werden dieser Space und alle Inhalte dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
@@ -912,35 +939,46 @@
     }
   },
   "about": {
+    "sections": {
+      "identity": "Identität",
+      "visuals": "Visuelle Elemente",
+      "context": "Kontext"
+    },
     "name": {
       "title": "Space-Name",
+      "title_subspace": "Subspace-Name",
       "description": "Der öffentliche Name Ihres Spaces.",
-      "ariaLabel": "Space-Name"
+      "description_subspace": "Der öffentliche Name Ihres Subspaces."
     },
     "tagline": {
       "title": "Untertitel",
       "description": "Ein kurzer Untertitel, der neben dem Space-Namen angezeigt wird.",
-      "ariaLabel": "Untertitel"
+      "description_subspace": "Ein kurzer Untertitel, der neben dem Subspace-Namen angezeigt wird."
     },
     "branding": {
-      "title": "Space-Branding",
-      "description": "Laden Sie einen Avatar, einen Seiten-Banner (3840px) und einen Karten-Banner (416×256) hoch.",
       "noImage": "Kein Bild",
-      "upload": "Hochladen",
       "avatar": {
         "title": "Avatar",
+        "size": "410 × 410px",
         "hint": "Das Logo des Spaces.",
-        "recrop": "Aktuellen Avatar zuschneiden"
+        "hint_subspace": "Das Logo des Subspaces.",
+        "recrop": "Aktuellen Avatar zuschneiden",
+        "upload": "Avatar hochladen"
       },
       "pageBanner": {
         "title": "Seiten-Banner",
-        "hint": "Wird oben auf der Space-Seite angezeigt. Verwenden Sie ein Bild von mindestens 1200 × 120px.",
-        "recrop": "Aktuelles Seitenbanner zuschneiden"
+        "size": "Min. 1200 × 120px",
+        "hint": "Wird oben auf der Space-Seite angezeigt.",
+        "recrop": "Aktuelles Seitenbanner zuschneiden",
+        "upload": "Seiten-Banner hochladen"
       },
       "cardBanner": {
-        "title": "Karten-Banner (416 × 256px)",
+        "title": "Karten-Banner",
+        "size": "416 × 256px",
         "hint": "Wird in Suchergebnissen und Space-Karten angezeigt.",
-        "recrop": "Aktuelles Kartenbanner zuschneiden"
+        "hint_subspace": "Wird in Suchergebnissen und in der Übersicht des übergeordneten Spaces angezeigt.",
+        "recrop": "Aktuelles Kartenbanner zuschneiden",
+        "upload": "Karten-Banner hochladen"
       },
       "cropDialog": {
         "save": "Speichern",
@@ -962,32 +1000,41 @@
     "location": {
       "title": "Standort",
       "description": "Stadt und Land dieses Spaces.",
+      "description_subspace": "Stadt und Land dieses Subspaces.",
       "city": "Stadt",
-      "country": "Land (ISO-Code)"
+      "country": "Land (ISO-Code)",
+      "countryPlaceholder": "Land"
     },
     "what": {
       "title": "Was",
       "description": "Beschreiben Sie, worum es in diesem Space geht.",
-      "placeholder": "Worum es in diesem Space geht…"
+      "description_subspace": "Beschreiben Sie, worum es in diesem Subspace geht.",
+      "placeholder": "Worum es in diesem Space geht…",
+      "placeholder_subspace": "Worum es in diesem Subspace geht…"
     },
     "why": {
       "title": "Warum",
       "description": "Erklären Sie die Motivation oder den Wert dieses Spaces.",
-      "placeholder": "Warum dieser Space existiert…"
+      "description_subspace": "Erklären Sie die Motivation oder den Wert dieses Subspaces.",
+      "placeholder": "Warum dieser Space existiert…",
+      "placeholder_subspace": "Warum dieser Subspace existiert…"
     },
     "who": {
       "title": "Wer",
       "description": "Beschreiben Sie das Zielpublikum oder die idealen Mitglieder.",
-      "placeholder": "Für wen dieser Space gedacht ist…"
+      "placeholder": "Für wen dieser Space gedacht ist…",
+      "placeholder_subspace": "Für wen dieser Subspace gedacht ist…"
     },
     "tags": {
       "title": "Tags",
       "description": "Tags helfen Mitgliedern, Ihren Space zu entdecken.",
+      "description_subspace": "Tags helfen Mitgliedern, Ihren Subspace zu entdecken.",
       "placeholder": "Tag hinzufügen und Enter drücken"
     },
     "references": {
       "title": "Verweise und Links",
       "description": "Externe Links, die auf dieser Space-Seite angezeigt werden.",
+      "description_subspace": "Externe Links, die auf dieser Subspace-Seite angezeigt werden.",
       "empty": "Noch keine Verweise hinzugefügt.",
       "add": "Hinzufügen",
       "row": {
@@ -1004,66 +1051,61 @@
         "description": "Möchten Sie \"{{name}}\" wirklich entfernen? Dies kann nach dem Speichern nicht rückgängig gemacht werden.",
         "untitled": "diesen Verweis",
         "confirm": "Entfernen"
-      }
+      },
+      "titleRequired": "Füge einen Titel hinzu, um diese Referenz zu speichern."
     },
     "preview": {
       "title": "VORSCHAU",
       "label": "VORSCHAU",
       "livePreview": {
         "title": "Live-Vorschau",
-        "description": "Diese Vorschau zeigt, wie Ihre Space-Karte im Verzeichnis \"Spaces erkunden\" angezeigt wird."
+        "description": "Diese Vorschau zeigt, wie Ihre Space-Karte im Verzeichnis \"Spaces erkunden\" angezeigt wird.",
+        "description_subspace": "Diese Vorschau zeigt, wie Ihre Subspace-Karte in der Übersicht des übergeordneten Spaces und in Suchergebnissen angezeigt wird."
       }
-    },
-    "inlineSave": {
-      "save": "Speichern",
-      "saving": "Speichern…",
-      "saved": "Gespeichert",
-      "retry": "Erneut versuchen"
-    },
-    "pageHeader": {
-      "title": "Über",
-      "subtitle": "Definieren Sie den Zweck, die Motivation und das Zielpublikum Ihres Spaces."
     }
   },
   "classifications": {
     "sectionTitle": "Klassifikationen",
     "sectionDescription": "Klassifiziere deinen Space mit strukturierten Vokabularen (z. B. SDGs, Sektor) für Auffindbarkeit und Berichte.",
+    "sectionDescription_subspace": "Klassifiziere deinen Subspace mit strukturierten Vokabularen (z. B. SDGs, Sektor) für Auffindbarkeit und Berichte.",
     "addButton": "Klassifikation hinzufügen",
     "picker": {
-      "title": "Add a classification",
-      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
-      "platformSection": "Platform-wide",
-      "spaceSection": "This Space's library",
+      "title": "Klassifizierung hinzufügen",
+      "description": "Wählen Sie eine Klassifizierungsvorlage, die Sie diesem Space hinzufügen möchten. Als Nächstes wählen Sie ihre Werte aus.",
+      "description_subspace": "Wählen Sie eine Klassifizierungsvorlage, die Sie diesem Subspace hinzufügen möchten. Als Nächstes wählen Sie ihre Werte aus.",
+      "platformSection": "Plattformweit",
+      "spaceSection": "Bibliothek dieses Spaces",
+      "spaceSection_subspace": "Bibliothek des Haupt-Spaces",
       "emptyState": {
-        "title": "No Classification Templates yet",
-        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+        "title": "Noch keine Klassifizierungsvorlagen",
+        "description": "Erstellen Sie eine in einem Vorlagenpaket oder in der Vorlagenbibliothek dieses Spaces und kehren Sie dann hierher zurück, um sie hinzuzufügen.",
+        "description_subspace": "Erstellen Sie eine in einem Vorlagenpaket oder in der Vorlagenbibliothek des Haupt-Spaces und kehren Sie dann hierher zurück, um sie hinzuzufügen."
       },
       "conflict": {
-        "title": "That name is already in use",
-        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
-        "fieldLabel": "Display label",
-        "retry": "Add with this label"
+        "title": "Dieser Name wird bereits verwendet",
+        "description": "Dieser Space hat bereits eine Klassifizierung mit der Bezeichnung \"{{label}}\". Geben Sie der neuen eine andere Anzeigebezeichnung, um sie zu unterscheiden.",
+        "description_subspace": "Dieser Subspace hat bereits eine Klassifizierung mit der Bezeichnung \"{{label}}\". Geben Sie der neuen eine andere Anzeigebezeichnung, um sie zu unterscheiden.",
+        "fieldLabel": "Anzeigebezeichnung",
+        "retry": "Mit dieser Bezeichnung hinzufügen"
       },
-      "cancel": "Cancel",
+      "cancel": "Abbrechen",
       "searchPlaceholder": "Vorlagen durchsuchen…",
       "noMatches": "Keine Vorlagen passen zu \"{{query}}\".",
       "multiSelect": "Mehrfach",
       "singleSelect": "Einzeln"
     },
     "valueSelector": {
-      "noneSelected": "No values selected yet"
+      "noneSelected": "Noch keine Werte ausgewählt"
     },
     "display": {
-      "toggleLabel": "Show on the Space page",
-      "hiddenHint": "Not shown on the Space page"
+      "toggleLabel": "Auf der Space-Seite anzeigen",
+      "toggleLabel_subspace": "Auf der Subspace-Seite anzeigen",
+      "hiddenHint": "Nicht auf der Space-Seite angezeigt",
+      "hiddenHint_subspace": "Nicht auf der Subspace-Seite angezeigt"
     },
     "remove": {
-      "menuLabel": "Remove classification",
-      "confirmTitle": "Remove this classification?",
-      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
-      "confirmButton": "Remove"
+      "menuLabel": "Klassifizierung entfernen"
     },
-    "removedEntryError": "This classification was removed — refreshing the page.",
     "entry": {
       "multiSelect": "Mehrfachauswahl",
       "singleSelect": "Einzelauswahl",
@@ -1071,8 +1113,9 @@
       "selectedCount_other": "{{count}} ausgewählt",
       "actions": "Klassifikations-Aktionen: {{label}}",
       "selectValues": "Werte auswählen…",
-      "deselectValue": "{{label}} abwählen"
-    },
-    "removedConcurrently": "Diese Klassifikation wurde von jemand anderem entfernt. Die Liste wurde aktualisiert."
+      "selectValue": "{{label}} auswählen",
+      "deselectValue": "{{label}} abwählen",
+      "unsaved": "Nicht gespeichert"
+    }
   }
 }

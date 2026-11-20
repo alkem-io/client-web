@@ -53,6 +53,9 @@ query CalloutContent($calloutId: UUID!) {
         poll {
           ...PollDetails
         }
+        form {
+          ...CalloutFormDetails
+        }
         collaboraDocument {
           ...CollaboraDocumentGate
         }

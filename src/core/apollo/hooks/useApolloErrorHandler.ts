@@ -1,5 +1,5 @@
 import type { ApolloError } from '@apollo/client';
-import type { GraphQLError, GraphQLFormattedError } from 'graphql';
+import type { GraphQLFormattedError } from 'graphql';
 import type { i18n, TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
@@ -50,7 +50,11 @@ export const stripIdsFromMessage = (message: string): string =>
     .replace(/\s{2,}/g, ' ')
     .trim();
 
-const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n: i18n) => {
+/**
+ * The translated user-facing message for one GraphQL error — the same text the global error
+ * handler shows for it. For a caller that handles an operation's errors itself.
+ */
+export const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n: i18n) => {
   const { message } = error;
   const code = error.extensions?.code as string;
   const userMessage = error.extensions?.userMessage as string | undefined;
@@ -80,40 +84,57 @@ const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n:
   return t(key, meta);
 };
 
+const NETWORK_ERROR_FALLBACK_KEY = 'apollo.errors.network.generic' as TranslationKey;
+
 export const useApolloErrorHandler = (severity: Severity = 'error') => {
   const { t, i18n } = useTranslation();
   const notify = useNotification();
 
-  const handleNetworkErrors = (error: ApolloError) => {
-    const networkError = error.networkError;
-    if (
-      networkError &&
-      'result' in networkError &&
-      typeof networkError.result === 'object' &&
-      'errors' in networkError.result &&
-      networkError.result.errors
-    ) {
-      const error = networkError.result.errors[0] as GraphQLError;
-      notify(error.message, severity);
+  const notifyGraphQLError = (graphqlError: GraphQLFormattedError) => {
+    const translation = getTranslationForCode(graphqlError, t, i18n);
+    const numericCode = graphqlError.extensions?.numericCode as number | undefined;
+    notify(translation, severity, numericCode);
+
+    const code = graphqlError.extensions?.code as string | undefined;
+    const detail = stripIdsFromMessage(graphqlError.message);
+    if (detail && detail !== translation && code !== AlkemioGraphqlErrorCode.UNSPECIFIED) {
+      notify(detail, severity, numericCode);
     }
   };
 
-  const handleGraphQLErrors = (error: ApolloError) => {
-    const graphqlErrors = error.graphQLErrors;
+  const handleNetworkErrors = (error: ApolloError) => {
+    const networkError = error.networkError;
+    if (!networkError) return;
 
-    graphqlErrors.forEach((graphqlError: GraphQLFormattedError) => {
-      const translation = getTranslationForCode(graphqlError, t, i18n);
-      const numericCode = graphqlError.extensions?.numericCode as number | undefined;
-      notify(translation, severity, numericCode);
-
-      // Also surface the server's specific reason (IDs stripped) as a second notification when it
-      // adds detail beyond the generic translated message — e.g. the generic "Operation not allowed"
-      // is followed by "Unable to remove Space, with level 1, as it contains 6 subspaces".
-      const detail = stripIdsFromMessage(graphqlError.message);
-      if (detail && detail !== translation) {
-        notify(detail, severity, numericCode);
+    if ('result' in networkError && typeof networkError.result === 'object' && networkError.result !== null) {
+      if (Array.isArray(networkError.result.errors) && networkError.result.errors.length > 0) {
+        (networkError.result.errors as GraphQLFormattedError[]).forEach(notifyGraphQLError);
+        return;
       }
-    });
+
+      const result = networkError.result as Record<string, unknown>;
+      if (typeof result.error === 'string') {
+        const key = `apollo.errors.network.${result.error}` as TranslationKey;
+        notify(i18n.exists(key) ? t(key) : t(NETWORK_ERROR_FALLBACK_KEY), severity);
+        return;
+      }
+    }
+
+    // Reaching here means the request produced no server payload that could explain itself.
+    // While the browser reports itself offline that is expected, and it is already shown by the
+    // persistent online-status banner, so a generic error toast per failed operation only repeats
+    // what the user can see — in bursts, since every in-flight operation fails at once.
+    // A failure while the browser believes it is online is a different matter: the server may be
+    // unreachable with no other signal to the user, so that one is still surfaced.
+    if (!navigator.onLine) {
+      return;
+    }
+
+    notify(t(NETWORK_ERROR_FALLBACK_KEY), severity);
+  };
+
+  const handleGraphQLErrors = (error: ApolloError) => {
+    error.graphQLErrors.forEach(notifyGraphQLError);
   };
 
   const handleClientErrors = (error: ApolloError) => {

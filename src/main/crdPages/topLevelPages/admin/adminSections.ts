@@ -1,5 +1,6 @@
 import {
   ArrowLeftRight,
+  BadgeCheck,
   Bot,
   Boxes,
   Building2,
@@ -31,6 +32,7 @@ export const ADMIN_SECTION_IDS = [
   'authorization',
   'authorization-policies',
   'transfer',
+  'licensing',
 ] as const;
 
 export type AdminSectionId = (typeof ADMIN_SECTION_IDS)[number];
@@ -53,6 +55,9 @@ export const ADMIN_SECTIONS: readonly AdminSectionDescriptor[] = [
   { id: 'authorization', path: '/admin/authorization', icon: ShieldCheck },
   { id: 'authorization-policies', path: '/admin/authorization-policies', icon: KeyRound },
   { id: 'transfer', path: '/admin/transfer', icon: ArrowLeftRight },
+  // 027 R-F.3 (2026-09-18): the Platform License Manager's section. `BadgeCheck`,
+  // not `KeyRound` — that one already marks authorization-policies.
+  { id: 'licensing', path: '/admin/licensing', icon: BadgeCheck },
 ];
 
 export const isAdminSectionId = (value: string): value is AdminSectionId =>

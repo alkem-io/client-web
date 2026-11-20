@@ -1,5 +1,5 @@
 import { Loader2, XIcon } from 'lucide-react';
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import {
@@ -31,7 +31,11 @@ type ConfirmationDialogConfirmProps = {
   description: string;
   confirmLabel: string;
   cancelLabel?: string;
-  onConfirm: () => void;
+  /**
+   * Called with the confirm click. The dialog closes right after it returns, unless the handler calls
+   * `event.preventDefault()` — an async confirm does that to stay open (with `loading`) until it settles.
+   */
+  onConfirm: (event: MouseEvent<HTMLButtonElement>) => void;
   onCancel?: () => void;
   variant?: 'default' | 'destructive';
   loading?: boolean;
@@ -59,6 +63,8 @@ type ConfirmationDialogDiscardProps = {
   onDiscard: () => void;
   onCancel?: () => void;
   loading?: boolean;
+  /** Disables Save while the buffered changes are invalid; Discard and Cancel stay available. */
+  saveDisabled?: boolean;
 };
 
 type ConfirmationDialogProps = ConfirmationDialogConfirmProps | ConfirmationDialogDiscardProps;
@@ -83,6 +89,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
       onDiscard,
       onCancel,
       loading = false,
+      saveDisabled = false,
     } = props;
 
     const handleCancel = () => {
@@ -110,8 +117,14 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
             >
               {discardLabel}
             </AlertDialogAction>
-            {/* Save is the safe default action — rendered last and auto-focused so Enter triggers onSave, not onDiscard. */}
-            <AlertDialogAction onClick={onSave} disabled={loading} aria-busy={loading} autoFocus={true}>
+            {/* Save is the safe default action — rendered last and auto-focused so Enter triggers onSave, not
+                onDiscard. A disabled Save cannot take focus, so Radix falls back to Cancel. */}
+            <AlertDialogAction
+              onClick={onSave}
+              disabled={loading || saveDisabled}
+              aria-busy={loading}
+              autoFocus={!saveDisabled}
+            >
               {saveLabel}
             </AlertDialogAction>
           </AlertDialogFooter>

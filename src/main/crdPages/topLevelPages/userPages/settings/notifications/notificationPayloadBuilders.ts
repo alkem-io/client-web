@@ -167,6 +167,13 @@ const buildSpaceAdmin = (
     value,
     server?.collaborationCalloutContributionCreated
   ),
+  collaborationCalloutFormResponseReceived: channel(
+    type,
+    property,
+    'collaborationCalloutFormResponseReceived',
+    value,
+    server?.collaborationCalloutFormResponseReceived
+  ),
   communicationMessageReceived: channel(
     type,
     property,
@@ -215,6 +222,20 @@ const buildUser = (
       value,
       server?.membership?.spaceCommunityJoined
     ),
+    organizationAssociateInvitationReceived: channel(
+      type,
+      property,
+      'membership.organizationAssociateInvitationReceived',
+      value,
+      server?.membership?.organizationAssociateInvitationReceived
+    ),
+    organizationAssociateApplicationDecided: channel(
+      type,
+      property,
+      'membership.organizationAssociateApplicationDecided',
+      value,
+      server?.membership?.organizationAssociateApplicationDecided
+    ),
   },
 });
 
@@ -233,6 +254,21 @@ const buildOrganization = (
     value,
     server?.adminSpaceCommunityInvitation
   ),
+  adminAssociateInvitationResponse: channel(
+    type,
+    property,
+    'adminAssociateInvitationResponse',
+    value,
+    server?.adminAssociateInvitationResponse
+  ),
+  adminAssociateApplicationReceived: channel(
+    type,
+    property,
+    'adminAssociateApplicationReceived',
+    value,
+    server?.adminAssociateApplicationReceived
+  ),
+  adminAssociateJoined: channel(type, property, 'adminAssociateJoined', value, server?.adminAssociateJoined),
 });
 
 const buildPlatform = (

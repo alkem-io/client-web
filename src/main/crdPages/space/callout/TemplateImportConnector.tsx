@@ -72,9 +72,9 @@ export function TemplateImportConnector({
 
   // When the user picks a template, re-fetch its full callout content and apply (or stage the overwrite-confirm).
   // D18, 2026-05-18: when the template carries a server-rendered whiteboard preview, fetch the image as
-  // a `Blob` and seed `whiteboardPreviewImages` so `CalloutFormConnector`'s post-create upload step carries
-  // it through to the new callout's `WHITEBOARD_PREVIEW` Visual. Fetch failures are non-fatal (the form
-  // still shows the server URL via the D16 fallback; the new callout just ends up with no preview image).
+  // a `Blob` and seed `whiteboardPreviewImages`; the update path uploads it when the template replaces an
+  // existing whiteboard's content (on create the server copies the visuals). Fetch failures are non-fatal
+  // (the form still shows the server URL via the D16 fallback).
   useEffect(() => {
     // Selection cleared (initial, or after a consume) — reset the per-id guard so the same template
     // can be picked again later and re-run the fetch/confirm flow.

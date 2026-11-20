@@ -8,8 +8,14 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
+import {
+  formHeaderFromServer,
+  formQuestionsFromServer,
+  formSettingsFromServer,
+} from '@/main/crdPages/space/callout/calloutFormDefinitionMapper';
 import { allowedActorsFromServer } from '@/main/crdPages/space/callout/calloutFormMapper';
 import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
+import { cardVariantFromServer } from '@/main/crdPages/space/callout/spaceCollectionCardVariant';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 type CalloutData = NonNullable<CalloutContentQuery['lookup']['callout']>;
@@ -24,6 +30,7 @@ const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, FramingChip> = {
   [CalloutFramingType.Poll]: 'poll',
   [CalloutFramingType.Contributors]: 'contributors',
   [CalloutFramingType.Spaces]: 'spaces',
+  [CalloutFramingType.Form]: 'form',
 };
 
 // Documents are framing-only in P1 — no `document` response type. Existing
@@ -108,6 +115,8 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     // Selection settings prefill (feature 025). Absent selection ⇒ AUTO (FR-016).
     selectionMode: settings.framing.selection?.mode === CalloutSelectionMode.Custom ? 'custom' : 'auto',
     selectedIds: settings.framing.selection?.selectedIds ?? [],
+    // Card variant prefill. Absent `spaces` block ⇒ compact.
+    cardVariant: cardVariantFromServer(settings.framing.spaces?.cardVariant),
     memoMarkdown: '',
     linkUrl: framing.link?.uri ?? '',
     linkDisplayName: framing.link?.profile.displayName ?? '',
@@ -119,6 +128,14 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     pollAllowCustomOptions: framing.poll?.settings.allowContributorsAddOptions ?? false,
     pollHideResultsUntilVoted: framing.poll?.settings.resultsVisibility === PollResultsVisibility.Hidden,
     pollShowVoterAvatars: framing.poll?.settings.resultsDetail !== PollResultsDetail.Count,
+    // The Form definition is edited through `updateCalloutForm`; the callout save never sends it.
+    ...(framing.form
+      ? {
+          ...formHeaderFromServer(framing.form),
+          formQuestions: formQuestionsFromServer(framing.form),
+          formSettings: formSettingsFromServer(framing.form.settings),
+        }
+      : {}),
     whiteboardPreviewImages: [],
     whiteboardPreviewSettings: framing.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
     // Server-rendered preview image (D16, 2026-05-18) — the inline framing preview's read-time
@@ -157,6 +174,7 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
       framingProfileTagsetId: findDefaultTagset(framing.profile.tagsets)?.id,
       framingLinkId: framing.link?.id,
       pollId: framing.poll?.id,
+      formId: framing.form?.id,
       memoId: framing.memo?.id,
       whiteboardId: framing.whiteboard?.id,
       framingProfileId: framing.profile.id,

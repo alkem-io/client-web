@@ -31,6 +31,12 @@ query WhiteboardDraftDetailsById($whiteboardId: UUID!) {
           allowedMimeTypes
           maxFileSize
         }
+        visual(type: CARD) {
+          ...VisualModelFull
+        }
+        preview: visual(type: WHITEBOARD_PREVIEW) {
+          ...VisualModelFull
+        }
       }
       previewSettings {
         ...whiteboardPreviewSettings

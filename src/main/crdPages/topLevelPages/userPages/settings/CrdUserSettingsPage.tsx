@@ -9,6 +9,7 @@ import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useAssistantEnabled } from '@/main/assistant/useAssistantEnabled';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { SettingsUnsavedChangesContext, useSettingsUnsavedChanges } from '../../common/settingsUnsavedChanges';
 import useUserPageRouteContext from '../useUserPageRouteContext';
 import useUserSettingsAccessGuard from './useUserSettingsAccessGuard';
 import useUserSettingsTab, { type UserSettingsTabId } from './useUserSettingsTab';
@@ -32,6 +33,7 @@ const CrdUserSettingsPage = () => {
   const { userId, userModel, profileUrl } = useUserPageRouteContext();
   const { isOwner } = useUserSettingsAccessGuard({ profileUserId: userId, profileUrl });
   const { activeTabId, onTabSelect } = useUserSettingsTab({ profileUrl });
+  const unsavedChanges = useSettingsUnsavedChanges(onTabSelect);
   const isAssistantEnabled = useAssistantEnabled();
 
   usePageTitle(t('user.profile.pageTitle'));
@@ -76,19 +78,22 @@ const CrdUserSettingsPage = () => {
   ];
 
   return (
-    <SettingsShell
-      header={{
-        avatarUrl,
-        avatarFallback: computeFallback(displayName),
-        avatarColor,
-        displayName: displayName || t('shared.loading'),
-      }}
-      tabs={tabs}
-      activeTab={activeTabId}
-      onTabChange={onTabSelect}
-    >
-      <Outlet />
-    </SettingsShell>
+    <SettingsUnsavedChangesContext value={unsavedChanges.context}>
+      <SettingsShell
+        header={{
+          avatarUrl,
+          avatarFallback: computeFallback(displayName),
+          avatarColor,
+          displayName: displayName || t('shared.loading'),
+        }}
+        tabs={tabs}
+        activeTab={activeTabId}
+        onTabChange={unsavedChanges.onTabChange}
+      >
+        <Outlet />
+      </SettingsShell>
+      {unsavedChanges.element}
+    </SettingsUnsavedChangesContext>
   );
 };
 

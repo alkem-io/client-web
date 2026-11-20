@@ -1,11 +1,11 @@
-/** Show close-only progress for exactly the durability wait, including failures. */
-export async function withCloseFinalizing(
+/** Show close-only progress for exactly the awaited close work, including failures. */
+export async function withCloseFinalizing<T>(
   setFinalizing: (finalizing: boolean) => void,
-  requestDurability: () => Promise<void>
-): Promise<void> {
+  work: () => Promise<T>
+): Promise<T> {
   setFinalizing(true);
   try {
-    await requestDurability();
+    return await work();
   } finally {
     setFinalizing(false);
   }

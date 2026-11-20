@@ -64,6 +64,23 @@ bucket; space storage usage reflects content size; deletion removes the owning
 bucket and snapshot; no collab/file-service 500s appear in the logs. The browser
 specs assert only their UI-observable half and do not present it as storage proof.
 
+## Group calls
+
+`specs/groupCalls.e2e.spec.ts` walks group calls in the web platform against an
+environment configured for calls (dev): its deployed client must be built with
+`VITE_APP_LIVEKIT_SERVICE_URL` set, otherwise every call control stays hidden and
+the specs fail at their first call action. They cover starting audio and video
+calls, the overlay surviving in-app navigation, the leave confirmation, a second beta
+tester seeing and joining the call, the conversation-list badge and sign-out.
+It needs `AUTH_TEST_HARNESS_EMAIL` and `AUTH_TEST_HARNESS_EMAIL_2` (both holding
+the Feature Beta Tester role), `E2E_NON_BETA_EMAIL` (a member without it) and
+`E2E_GROUP_CONVERSATION_NAME` (a group conversation all three belong to); the
+browser gets a fake camera and microphone. `specs/groupCallsElementInterop.e2e.spec.ts`
+is assisted: it also drives stock Element Web and runs only when
+`E2E_ELEMENT_SESSION` names a Playwright storage state of an Element Web session
+signed in to the same chat server (optionally `E2E_ELEMENT_URL`, default
+`https://app.element.io`); without it the rows are skipped.
+
 ## Selector note
 
 The page objects use stable, semantic locators (roles, Excalidraw's upstream DOM

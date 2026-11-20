@@ -1,0 +1,389 @@
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, test, vi } from 'vitest';
+import { MessageAttachments } from './MessageAttachments';
+import type { MessageAttachment } from './types';
+
+// Mock react-i18next with a tiny interpolating `t` so assertions can match the
+// attachment's display name inside aria-labels.
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, opts?: { name?: string }) => (opts?.name ? `${key}:${opts.name}` : key),
+  }),
+}));
+
+// The media viewer's carousel (Embla) observes slide visibility; jsdom has no
+// IntersectionObserver.
+if (!('IntersectionObserver' in globalThis)) {
+  globalThis.IntersectionObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
+  } as unknown as typeof IntersectionObserver;
+}
+
+const image: MessageAttachment = {
+  id: 'att-img',
+  url: 'https://alkem.io/storage/document/img-1',
+  displayName: 'photo.jpg',
+  mimeType: 'image/jpeg',
+  size: 102400,
+  width: 1920,
+  height: 1080,
+};
+
+const file: MessageAttachment = {
+  id: 'att-file',
+  url: 'https://alkem.io/storage/document/doc-1',
+  displayName: 'report.pdf',
+  mimeType: 'application/pdf',
+  size: 2_500_000,
+};
+
+const video: MessageAttachment = {
+  id: 'att-video',
+  url: 'https://alkem.io/storage/document/video-1',
+  displayName: 'clip.mp4',
+  mimeType: 'video/mp4',
+  size: 5_000_000,
+};
+
+describe('MessageAttachments', () => {
+  test('renders nothing when there are no attachments', () => {
+    const { container } = render(<MessageAttachments attachments={[]} />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  test('renders an image preview inside a viewer button, never a link that leaves the page', () => {
+    render(<MessageAttachments attachments={[image]} />);
+    const img = screen.getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` });
+    expect(img).toHaveAttribute('src', image.url);
+    expect(img).toHaveAttribute('loading', 'lazy');
+    expect(img.closest('a')).toBeNull();
+    expect(img.closest('button')).toHaveAccessibleName(`messageAttachments.openMedia:${image.displayName}`);
+    expect(document.querySelector('a[target="_blank"] img')).toBeNull();
+  });
+
+  test('clicking an image opens the media viewer over the page, and closing it returns', async () => {
+    const user = userEvent.setup();
+    render(<MessageAttachments attachments={[image]} />);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${image.displayName}` }));
+
+    const dialog = screen.getByRole('dialog');
+    const slide = within(dialog).getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` });
+    expect(slide).toHaveAttribute('src', image.url);
+    expect(within(dialog).getByRole('button', { name: 'close' })).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    // The inline preview is still there — nothing navigated away.
+    expect(
+      screen.getByRole('button', { name: `messageAttachments.openMedia:${image.displayName}` })
+    ).toBeInTheDocument();
+  });
+
+  test("the viewer holds only the message's http(s) images and videos, opened at the clicked one", async () => {
+    const user = userEvent.setup();
+    const secondImage = { ...image, id: 'att-img-2', displayName: 'second.jpg', url: `${image.url}-2` };
+    const unsafeImage = { ...image, id: 'att-img-unsafe', displayName: 'unsafe.jpg', url: 'javascript:alert(1)' };
+    render(<MessageAttachments attachments={[image, file, unsafeImage, video, secondImage]} />);
+
+    await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${secondImage.displayName}` }));
+
+    const dialog = screen.getByRole('dialog');
+    const thumbnails = within(dialog).getAllByRole('tab');
+    expect(thumbnails).toHaveLength(3);
+    expect(thumbnails[2]).toHaveAttribute('aria-selected', 'true');
+    expect(within(dialog).queryByText(file.displayName)).not.toBeInTheDocument();
+  });
+
+  test('the video expand control opens the viewer at the video, which plays there with native controls', async () => {
+    const user = userEvent.setup();
+    render(<MessageAttachments attachments={[image, video]} />);
+
+    await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${video.displayName}` }));
+
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getAllByRole('tab')[1]).toHaveAttribute('aria-selected', 'true');
+    const player = within(dialog).getByLabelText(`messageAttachments.videoLabel:${video.displayName}`);
+    expect(player.tagName).toBe('VIDEO');
+    expect(player).toHaveAttribute('src', video.url);
+    expect(player).toHaveAttribute('controls');
+    expect(player).toHaveAttribute('playsinline');
+  });
+
+  test('the viewer download is a download link to the current media under its file name', async () => {
+    const user = userEvent.setup();
+    render(<MessageAttachments attachments={[image, video]} />);
+
+    await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${video.displayName}` }));
+    const link = within(screen.getByRole('dialog')).getByRole('link', { name: 'mediaGallery.downloadVideo' });
+
+    expect(link).toHaveAttribute('href', video.url);
+    expect(link).toHaveAttribute('download', video.displayName);
+  });
+
+  test('opening a video in the viewer pauses the inline player first', async () => {
+    const user = userEvent.setup();
+    const paused: (string | null)[] = [];
+    const pause = vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(function (this: HTMLMediaElement) {
+      paused.push(this.closest('[role="dialog"]') ? 'viewer' : 'inline');
+    });
+    render(<MessageAttachments attachments={[video]} />);
+
+    await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${video.displayName}` }));
+
+    expect(paused).toContain('inline');
+    pause.mockRestore();
+  });
+
+  test('an image that failed to load inline is not offered in the viewer', async () => {
+    const user = userEvent.setup();
+    const broken = { ...image, id: 'att-img-broken', displayName: 'broken.jpg', url: `${image.url}-broken` };
+    render(<MessageAttachments attachments={[broken, image]} />);
+
+    fireEvent.error(screen.getByRole('img', { name: `messageAttachments.imageAlt:${broken.displayName}` }));
+    await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${image.displayName}` }));
+
+    const dialog = screen.getByRole('dialog');
+    // A single slide has no thumbnail strip.
+    expect(within(dialog).queryAllByRole('tab')).toHaveLength(0);
+    expect(
+      within(dialog).getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` })
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).queryByRole('img', { name: `messageAttachments.imageAlt:${broken.displayName}` })
+    ).not.toBeInTheDocument();
+  });
+
+  test('a retried image is offered in the viewer again', async () => {
+    const user = userEvent.setup();
+    const broken = { ...image, id: 'att-img-broken', displayName: 'broken.jpg', url: `${image.url}-broken` };
+    const { rerender } = render(<MessageAttachments attachments={[broken, image]} />);
+    fireEvent.error(screen.getByRole('img', { name: `messageAttachments.imageAlt:${broken.displayName}` }));
+
+    rerender(<MessageAttachments attachments={[{ ...broken, retryKey: 1 }, image]} />);
+    await user.click(screen.getByRole('button', { name: `messageAttachments.openMedia:${image.displayName}` }));
+
+    expect(within(screen.getByRole('dialog')).getAllByRole('tab')).toHaveLength(2);
+  });
+
+  test('renders a non-image attachment as a downloadable file chip with size', () => {
+    render(<MessageAttachments attachments={[file]} />);
+    const link = screen.getByRole('link', { name: `messageAttachments.download:${file.displayName}` });
+    expect(link).toHaveAttribute('href', file.url);
+    expect(link).toHaveAttribute('download', file.displayName);
+    expect(screen.getByText(file.displayName)).toBeInTheDocument();
+    // 2_500_000 bytes → ~2.4 MB (base-1024 steps, conventional MB/KB labels — the
+    // same convention `comments.attachments.errorTooLarge` renders).
+    expect(screen.getByText('2.4 MB')).toBeInTheDocument();
+  });
+
+  test('provides an independent image download without opening the viewer', async () => {
+    const user = userEvent.setup();
+    render(<MessageAttachments attachments={[image]} />);
+    const img = screen.getByRole('img');
+    const openButton = img.closest('button');
+    const download = screen.getByRole('link', { name: `messageAttachments.download:${image.displayName}` });
+    // Prevent jsdom navigation while observing which control receives activation.
+    download.addEventListener('click', event => event.preventDefault());
+
+    expect(download).toHaveAttribute('href', image.url);
+    expect(download).toHaveAttribute('download', image.displayName);
+    expect(download).not.toHaveAttribute('target');
+    expect(openButton).not.toContainElement(download);
+    await user.tab();
+    expect(openButton).toHaveFocus();
+    await user.tab();
+    expect(download).toHaveFocus();
+    await user.keyboard('{Enter}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  test('renders video with native inline controls and does not preload or autoplay', () => {
+    render(<MessageAttachments attachments={[video]} />);
+    const player = screen.getByLabelText(`messageAttachments.videoLabel:${video.displayName}`);
+    expect(player.tagName).toBe('VIDEO');
+    expect(player).toHaveAttribute('src', video.url);
+    expect(player).toHaveAttribute('controls');
+    expect(player).toHaveAttribute('playsinline');
+    expect(player).toHaveAttribute('preload', 'none');
+    expect(player).not.toHaveAttribute('autoplay');
+    expect(player.closest('a')).toBeNull();
+
+    const download = screen.getByRole('link', { name: `messageAttachments.download:${video.displayName}` });
+    expect(download).toHaveAttribute('href', video.url);
+    expect(download).toHaveAttribute('download', video.displayName);
+    expect(player).not.toContainElement(download);
+  });
+
+  test('video metadata without a picture falls back to the existing download chip', () => {
+    const onLoadError = vi.fn();
+    const unsupported = { ...video, displayName: 'unsupported.mov', mimeType: 'video/quicktime', onLoadError };
+    render(<MessageAttachments attachments={[unsupported]} />);
+    const player = screen.getByLabelText(`messageAttachments.videoLabel:${unsupported.displayName}`);
+    Object.defineProperty(player, 'videoWidth', { value: 0 });
+
+    fireEvent.loadedMetadata(player);
+    expect(onLoadError).not.toHaveBeenCalled();
+
+    expect(screen.queryByLabelText(`messageAttachments.videoLabel:${unsupported.displayName}`)).not.toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.videoUnavailableHint')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: `messageAttachments.download:${unsupported.displayName}` })
+    ).toHaveAttribute('download', unsupported.displayName);
+  });
+
+  test('video metadata with a picture keeps the native player', () => {
+    render(<MessageAttachments attachments={[video]} />);
+    const player = screen.getByLabelText(`messageAttachments.videoLabel:${video.displayName}`);
+    Object.defineProperty(player, 'videoWidth', { value: 640 });
+
+    fireEvent.loadedMetadata(player);
+
+    expect(player).toBeInTheDocument();
+    expect(screen.queryByText('messageAttachments.videoUnavailableHint')).not.toBeInTheDocument();
+  });
+
+  test('video download activation does not activate playback', async () => {
+    const user = userEvent.setup();
+    render(<MessageAttachments attachments={[video]} />);
+    const player = screen.getByLabelText(`messageAttachments.videoLabel:${video.displayName}`);
+    const play = vi.fn();
+    player.addEventListener('click', play);
+    const download = screen.getByRole('link', { name: `messageAttachments.download:${video.displayName}` });
+    download.addEventListener('click', event => event.preventDefault());
+    await user.click(download);
+    expect(play).not.toHaveBeenCalled();
+  });
+
+  test('an unsupported or broken video falls back to a download and retries a fresh URL', () => {
+    const { rerender } = render(<MessageAttachments attachments={[video]} />);
+    fireEvent.error(screen.getByLabelText(`messageAttachments.videoLabel:${video.displayName}`));
+    expect(screen.queryByLabelText(`messageAttachments.videoLabel:${video.displayName}`)).not.toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.videoUnavailableHint')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: `messageAttachments.download:${video.displayName}` })).toHaveAttribute(
+      'href',
+      video.url
+    );
+
+    const rehomed = { ...video, url: `${video.url}-rehomed` };
+    rerender(<MessageAttachments attachments={[rehomed]} />);
+    expect(screen.getByLabelText(`messageAttachments.videoLabel:${video.displayName}`)).toHaveAttribute(
+      'src',
+      rehomed.url
+    );
+    expect(screen.queryByText('messageAttachments.videoUnavailableHint')).not.toBeInTheDocument();
+  });
+
+  test.each([
+    undefined,
+    'javascript:alert(1)',
+  ])('does not offer playback or download for unavailable video URL %s', url => {
+    render(<MessageAttachments attachments={[{ ...video, url }]} />);
+    expect(screen.queryByLabelText(`messageAttachments.videoLabel:${video.displayName}`)).not.toBeInTheDocument();
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    expect(screen.getByText(video.displayName)).toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.unavailableNoDownload')).toBeInTheDocument();
+    expect(screen.queryByText('messageAttachments.videoUnavailableHint')).not.toBeInTheDocument();
+  });
+
+  test('renders a non-http(s) URL as a non-interactive unavailable chip', () => {
+    const unsafe: MessageAttachment = { ...file, id: 'att-unsafe', url: 'javascript:alert(1)' };
+    render(<MessageAttachments attachments={[unsafe]} />);
+    // No link or image is rendered for an unsafe URL.
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    // There is nothing to click, so the hint must not tell the user to download.
+    expect(screen.getByText('messageAttachments.unavailableNoDownload')).toBeInTheDocument();
+    expect(screen.queryByText('messageAttachments.unavailableHint')).not.toBeInTheDocument();
+  });
+
+  // An *image* with an unsafe URL takes the AttachmentImage fallback, which
+  // passes the download-oriented hint explicitly. The chip is still
+  // non-interactive, so that hint must not win.
+  test('a non-http(s) image falls back to a chip that does not offer a download', () => {
+    const unsafeImage: MessageAttachment = { ...image, id: 'att-unsafe-img', url: 'javascript:alert(1)' };
+    render(<MessageAttachments attachments={[unsafeImage]} />);
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.unavailableNoDownload')).toBeInTheDocument();
+    expect(screen.queryByText('messageAttachments.unavailableHint')).not.toBeInTheDocument();
+  });
+
+  test('renders multiple attachments as a labelled list', () => {
+    render(<MessageAttachments attachments={[image, file]} />);
+    expect(screen.getByRole('list', { name: 'messageAttachments.listLabel' })).toBeInTheDocument();
+    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+  });
+
+  test('falls back to a download chip with an unavailable hint when an image fails to load', () => {
+    render(<MessageAttachments attachments={[image]} />);
+    const img = screen.getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` });
+    fireEvent.error(img);
+    // Image is replaced by the downloadable chip carrying the unavailable hint.
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: `messageAttachments.download:${image.displayName}` })).toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.unavailableHint')).toBeInTheDocument();
+  });
+
+  test('recovers from an error state when the attachment URL changes (re-home, FR-017)', () => {
+    const { rerender } = render(<MessageAttachments attachments={[image]} />);
+    const img = screen.getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` });
+    fireEvent.error(img);
+    // Errored → fallback chip, no image.
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.unavailableHint')).toBeInTheDocument();
+
+    // The document is re-homed: same id, fresh URL. The component must retry.
+    const rehomed: MessageAttachment = { ...image, url: 'https://alkem.io/storage/document/img-1-rehomed' };
+    rerender(<MessageAttachments attachments={[rehomed]} />);
+
+    const retried = screen.getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` });
+    expect(retried).toHaveAttribute('src', rehomed.url);
+    expect(screen.queryByText('messageAttachments.unavailableHint')).not.toBeInTheDocument();
+  });
+
+  test('reports media load failure and retries the same URL only when its integration asks', () => {
+    const onLoadError = vi.fn();
+    const attachment = { ...image, onLoadError };
+    const { rerender } = render(<MessageAttachments attachments={[attachment]} />);
+    fireEvent.error(screen.getByRole('img'));
+    expect(onLoadError).toHaveBeenCalledOnce();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    rerender(<MessageAttachments attachments={[{ ...attachment, retryKey: 1 }]} />);
+    expect(screen.getByRole('img')).toHaveAttribute('src', image.url);
+  });
+
+  test('shows a loading status until the image fires onLoad', () => {
+    render(<MessageAttachments attachments={[image]} />);
+    expect(screen.getByRole('status', { name: 'messageAttachments.loading' })).toBeInTheDocument();
+    fireEvent.load(screen.getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` }));
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+
+  // Regression guard: the image used to be `display: none` (Tailwind `hidden`)
+  // until it fired onLoad. A `loading="lazy"` image that is not in the layout is
+  // never intersected by the browser's lazy-load observer, so it never fetches,
+  // onLoad never fires, and the skeleton is permanent — i.e. NO attachment image
+  // ever rendered. It must stay in the layout and merely be transparent.
+  test('keeps the lazily-loaded image in the layout while it loads (never display:none)', () => {
+    render(<MessageAttachments attachments={[image]} />);
+    const img = screen.getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` });
+
+    expect(img).toHaveAttribute('loading', 'lazy');
+    expect(img).not.toHaveClass('hidden');
+    expect(img.style.display).not.toBe('none');
+  });
+});
+
+test('an unavailable event keeps its filename without a fabricated document URL', () => {
+  render(<MessageAttachments attachments={[{ displayName: 'unavailable.png' }]} />);
+  expect(screen.getByText('unavailable.png')).toBeInTheDocument();
+  expect(screen.queryByRole('link')).not.toBeInTheDocument();
+  expect(screen.queryByRole('img')).not.toBeInTheDocument();
+});

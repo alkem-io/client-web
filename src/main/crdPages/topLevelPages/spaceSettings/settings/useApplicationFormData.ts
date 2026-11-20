@@ -10,6 +10,8 @@ export type UseApplicationFormDataResult = {
   description: string;
   questions: ApplicationQuestion[];
   loading: boolean;
+  /** The save mutation (and its refetch) is in flight. */
+  submitting: boolean;
   isDirty: boolean;
   canSave: boolean;
   onDescriptionChange: (value: string) => void;
@@ -19,7 +21,8 @@ export type UseApplicationFormDataResult = {
   onQuestionDelete: (index: number) => void;
   onQuestionMoveUp: (index: number) => void;
   onQuestionMoveDown: (index: number) => void;
-  onSave: () => void;
+  /** Resolves once the form is saved and refetched; rejects on failure. */
+  onSave: () => Promise<void>;
   onReset: () => void;
 };
 
@@ -96,7 +99,7 @@ export function useApplicationFormData(roleSetId: string | undefined): UseApplic
     onQuestionMoveUp(index + 1);
   };
 
-  const onSave = () => {
+  const onSave = async () => {
     if (!roleSetId) return;
     const formQuestions = questions.map((q, i) => ({
       question: q.question,
@@ -105,7 +108,7 @@ export function useApplicationFormData(roleSetId: string | undefined): UseApplic
       explanation: '',
       maxLength: 500,
     }));
-    void updateForm({
+    await updateForm({
       variables: {
         roleSetId,
         formData: {
@@ -115,10 +118,9 @@ export function useApplicationFormData(roleSetId: string | undefined): UseApplic
       },
       refetchQueries: [refetchRoleSetApplicationFormQuery({ roleSetId })],
       awaitRefetchQueries: true,
-    }).then(() => {
-      setLocalDescription(null);
-      setLocalQuestions(null);
     });
+    setLocalDescription(null);
+    setLocalQuestions(null);
   };
 
   const onReset = () => {
@@ -130,6 +132,7 @@ export function useApplicationFormData(roleSetId: string | undefined): UseApplic
     description,
     questions,
     loading: loadingQuestions || submitting,
+    submitting,
     isDirty,
     canSave,
     onDescriptionChange,

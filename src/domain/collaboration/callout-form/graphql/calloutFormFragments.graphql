@@ -1,0 +1,51 @@
+# The definition only. Responses are never selected under a Callout, its framing or the
+# form: they are read through the root lookup (see calloutFormQueries.graphql).
+fragment CalloutFormDetails on CalloutForm {
+  id
+  title
+  description
+  questions {
+    id
+    prompt
+    explanation
+    type
+    required
+    options {
+      id
+      label
+    }
+  }
+  settings {
+    visibility
+    responseMode
+    state
+    defaultCollapsed
+  }
+}
+
+fragment CalloutFormResponseDetails on CalloutFormResponse {
+  id
+  createdDate
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+  answers {
+    questionID
+    prompt
+    type
+    text
+    selectedOptions {
+      id
+      label
+    }
+  }
+}

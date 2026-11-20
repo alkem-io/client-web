@@ -1,9 +1,22 @@
-import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, ChevronUp, Eye, Trash2, X } from 'lucide-react';
+import {
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsUpDown,
+  ChevronUp,
+  Eye,
+  Send,
+  Trash2,
+  X,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatAbsoluteDateTime, formatRelativeFromNow } from '@/crd/lib/dateTimeFormat';
+import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/crd/primitives/table';
@@ -11,7 +24,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/toolti
 
 export type PendingMembershipType = 'application' | 'invitation' | 'platformInvitation';
 export type PendingMembershipContributorType = 'user' | 'organization' | 'virtualContributor';
-export type PendingMembershipState = 'new' | 'approved' | 'rejected' | 'invited' | 'accepted';
+export type PendingMembershipState =
+  | 'new'
+  | 'approving'
+  | 'approved'
+  | 'rejected'
+  | 'invited'
+  | 'accepting'
+  | 'accepted';
 
 export type PendingMembership = {
   id: string;
@@ -19,6 +39,8 @@ export type PendingMembership = {
   state: PendingMembershipState;
   contributorType: PendingMembershipContributorType;
   displayName: string;
+  /** Profile avatar of the applicant / invitee; initials are shown when absent. */
+  avatarUrl?: string;
   email?: string;
   url?: string;
   /** Raw ISO date string. The table formats both the display value and the tooltip timestamp. */
@@ -26,6 +48,12 @@ export type PendingMembership = {
   canApprove: boolean;
   canReject: boolean;
   canDelete: boolean;
+  /** Whether the invitation email can be sent again (an open email invitation for someone not yet on the platform). */
+  canResend: boolean;
+  /** The extra role(s) offered alongside the entry role, pre-formatted for display (e.g. "Associate + Admin").
+   * Only the organization Associates consumer populates this; the "Offered role" column renders only when
+   * at least one row in `items` carries it, so other consumers (Space settings) are unaffected. */
+  offeredRoleLabel?: string;
 };
 
 export type PendingMembershipsTableProps = {
@@ -34,6 +62,17 @@ export type PendingMembershipsTableProps = {
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onDelete: (id: string) => void;
+  /** Sends the invitation email of a row with `canResend` again. The control is hidden when omitted. */
+  onResend?: (id: string) => void;
+  /** Id of the row whose resend request is in flight — its control is disabled until it settles. */
+  resendingIds?: ReadonlySet<string>;
+  /** Overrides the built-in "Pending Memberships" heading — e.g. the organization Associates
+   * tab, which renders its own "Pending applications & invitations" card title above this
+   * table and would otherwise show the word "Memberships" twice, once in Space-flavoured
+   * copy the P5 wording rule forbids on an organization surface. */
+  title?: string;
+  /** Omit the built-in heading + count — for hosts that title the table themselves (e.g. a settings section card). */
+  hideHeading?: boolean;
   className?: string;
 };
 
@@ -66,6 +105,16 @@ const ALL_STATUS_IDS: StatusId[] = [
 const DEFAULT_HIDDEN_STATUSES: StatusId[] = ['applicationApproved', 'applicationRejected'];
 const DEFAULT_ACTIVE_STATUSES: StatusId[] = ALL_STATUS_IDS.filter(id => !DEFAULT_HIDDEN_STATUSES.includes(id));
 
+/**
+ * The server is still processing the answer (`approving` / `accepting`): the row stays
+ * listed so the admin sees it is in flight, but nothing can act on it yet.
+ */
+const isTransient = (state: PendingMembershipState) => state === 'approving' || state === 'accepting';
+
+/**
+ * Filter-chip grouping. A transient row files under the chip it is leaving
+ * (received / invited) — it is still pending until the server has finished.
+ */
 function statusId(type: PendingMembershipType, state: PendingMembershipState): StatusId {
   if (type === 'application') {
     if (state === 'approved') return 'applicationApproved';
@@ -80,18 +129,27 @@ function statusId(type: PendingMembershipType, state: PendingMembershipState): S
   return 'invitedExternal';
 }
 
+/**
+ * A new application is rejected then removed; an open invitation is revoked; any
+ * closed row is only cleared from the list.
+ */
+function deleteActionId(row: PendingMembership): 'rejectAndRemove' | 'revokeInvitation' | 'removeFromList' {
+  if (row.type === 'application') return row.state === 'new' ? 'rejectAndRemove' : 'removeFromList';
+  return row.state === 'invited' ? 'revokeInvitation' : 'removeFromList';
+}
+
 function statusVariantClass(id: StatusId): string {
   switch (id) {
     case 'applicationReceived':
-      return 'bg-primary/10 text-primary border-primary/20 font-bold';
+      return 'bg-amber-500/10 text-amber-700 border-amber-500/30 dark:text-amber-400';
     case 'applicationApproved':
     case 'invitationAccepted':
-      return 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20';
+      return 'bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:text-emerald-400';
     case 'applicationRejected':
     case 'invitationRejected':
-      return 'bg-destructive/10 text-destructive border-destructive/20';
+      return 'bg-destructive/10 text-destructive border-destructive/30';
     default:
-      return 'bg-primary/10 text-primary border-primary/20';
+      return 'bg-muted text-muted-foreground border-border';
   }
 }
 
@@ -101,6 +159,10 @@ export function PendingMembershipsTable({
   onApprove,
   onReject,
   onDelete,
+  onResend,
+  resendingIds,
+  title,
+  hideHeading = false,
   className,
 }: PendingMembershipsTableProps) {
   const { t, i18n } = useTranslation('crd-spaceSettings');
@@ -114,6 +176,15 @@ export function PendingMembershipsTable({
   const [page, setPage] = useState(1);
 
   const statusLabel = (id: StatusId) => t(`community.pendingMemberships.status.${id}`);
+  const rowStatusLabel = (row: PendingMembership) =>
+    row.state === 'approving'
+      ? t('community.pendingMemberships.status.applicationApproving')
+      : row.state === 'accepting'
+        ? t('community.pendingMemberships.status.invitationAccepting')
+        : statusLabel(statusId(row.type, row.state));
+  /** Names what the bin actually does for this row (spec 045 FR-012b). */
+  const deleteActionLabel = (row: PendingMembership) =>
+    t(`community.pendingMemberships.deleteAction.${deleteActionId(row)}`);
   const typeLabel = (row: PendingMembership) =>
     t(`community.pendingMemberships.contributorType.${row.contributorType}`);
 
@@ -154,10 +225,7 @@ export function PendingMembershipsTable({
         return (ta - tb) * dir;
       }
       case 'status':
-        return (
-          statusLabel(statusId(a.type, a.state)).localeCompare(statusLabel(statusId(b.type, b.state)), i18n.language) *
-          dir
-        );
+        return rowStatusLabel(a).localeCompare(rowStatusLabel(b), i18n.language) * dir;
       case 'type':
         return typeLabel(a).localeCompare(typeLabel(b), i18n.language) * dir;
       default:
@@ -173,6 +241,8 @@ export function PendingMembershipsTable({
     onSort: toggleSort,
   });
 
+  const hasOfferedRole = items.some(item => item.offeredRoleLabel !== undefined);
+
   const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const pageStart = (safePage - 1) * PAGE_SIZE;
@@ -181,12 +251,14 @@ export function PendingMembershipsTable({
 
   return (
     <div className={cn('flex flex-col gap-4', className)}>
-      <div className="flex items-center gap-2">
-        <h3 className="text-subsection-title">{t('community.pendingMemberships.title')}</h3>
-        <Badge variant="secondary" className="rounded-full">
-          {items.length}
-        </Badge>
-      </div>
+      {!hideHeading && (
+        <div className="flex items-center gap-2">
+          <h3 className="text-subsection-title">{title ?? t('community.pendingMemberships.title')}</h3>
+          <Badge variant="secondary" className="rounded-full">
+            {items.length}
+          </Badge>
+        </div>
+      )}
 
       <fieldset className="m-0 flex flex-wrap gap-2 border-0 p-0">
         <legend className="sr-only">{t('community.pendingMemberships.filterLabel')}</legend>
@@ -221,13 +293,14 @@ export function PendingMembershipsTable({
               <SortableHead {...headProps('date', t('community.pendingMemberships.date'))} />
               <SortableHead {...headProps('status', t('community.pendingMemberships.status.column'))} />
               <SortableHead {...headProps('type', t('community.pendingMemberships.type'))} />
-              <TableHead className="w-[160px] text-right">{t('community.pendingMemberships.actions')}</TableHead>
+              {hasOfferedRole && <TableHead>{t('community.pendingMemberships.offeredRole.column')}</TableHead>}
+              <TableHead className="w-[200px] text-right">{t('community.pendingMemberships.actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginated.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground py-6">
+                <TableCell colSpan={hasOfferedRole ? 7 : 6} className="text-center text-muted-foreground py-6">
                   {items.length === 0
                     ? t('community.pendingMemberships.empty')
                     : t('community.pendingMemberships.noMatch')}
@@ -243,12 +316,38 @@ export function PendingMembershipsTable({
                   <TableCell>
                     {row.type === 'platformInvitation' ? (
                       <span className="text-muted-foreground">—</span>
-                    ) : row.url ? (
-                      <a href={row.url} target="_blank" rel="noreferrer" className="text-body-emphasis hover:underline">
-                        {row.displayName}
-                      </a>
                     ) : (
-                      <span className="text-body-emphasis">{row.displayName}</span>
+                      <div className="flex min-w-0 items-center gap-2.5">
+                        <Avatar
+                          className={cn(
+                            'size-8 shrink-0 border border-border',
+                            // Circles are for people; organizations and VCs get a rounded square.
+                            row.contributorType === 'user' ? 'rounded-full' : 'rounded-md'
+                          )}
+                        >
+                          {row.avatarUrl ? <AvatarImage src={row.avatarUrl} alt="" /> : null}
+                          <AvatarFallback
+                            className={cn(
+                              'bg-muted text-badge text-muted-foreground',
+                              row.contributorType === 'user' ? 'rounded-full' : 'rounded-md'
+                            )}
+                          >
+                            {getInitials(row.displayName)}
+                          </AvatarFallback>
+                        </Avatar>
+                        {row.url ? (
+                          <a
+                            href={row.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="truncate text-body-emphasis hover:underline"
+                          >
+                            {row.displayName}
+                          </a>
+                        ) : (
+                          <span className="truncate text-body-emphasis">{row.displayName}</span>
+                        )}
+                      </div>
                     )}
                   </TableCell>
                   <TableCell className="text-body text-muted-foreground">{row.email || '—'}</TableCell>
@@ -266,10 +365,13 @@ export function PendingMembershipsTable({
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={cn('text-badge', statusVariantClass(id))}>
-                      {statusLabel(id)}
+                      {rowStatusLabel(row)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-body-emphasis">{typeLabel(row)}</TableCell>
+                  {hasOfferedRole && (
+                    <TableCell className="text-body text-muted-foreground">{row.offeredRoleLabel ?? '—'}</TableCell>
+                  )}
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       {row.canApprove && (
@@ -303,6 +405,7 @@ export function PendingMembershipsTable({
                             variant="ghost"
                             size="icon"
                             className="size-8"
+                            disabled={isTransient(row.state)}
                             onClick={() => onView(row.id)}
                             aria-label={
                               row.type === 'application'
@@ -319,17 +422,40 @@ export function PendingMembershipsTable({
                             : t('community.pendingMemberships.viewInvitation')}
                         </TooltipContent>
                       </Tooltip>
+                      {row.canResend && onResend && (
+                        <Tooltip>
+                          <TooltipTrigger asChild={true}>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="size-8"
+                              disabled={isTransient(row.state) || resendingIds?.has(row.id)}
+                              onClick={() => onResend(row.id)}
+                              aria-label={t('community.pendingMemberships.resend')}
+                            >
+                              <Send aria-hidden="true" className="size-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{t('community.pendingMemberships.resend')}</TooltipContent>
+                        </Tooltip>
+                      )}
                       {row.canDelete ? (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="size-8"
-                          onClick={() => onDelete(row.id)}
-                          aria-label={t('community.pendingMemberships.delete')}
-                        >
-                          <Trash2 aria-hidden="true" className="size-4 text-destructive" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild={true}>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="size-8"
+                              onClick={() => onDelete(row.id)}
+                              aria-label={deleteActionLabel(row)}
+                            >
+                              <Trash2 aria-hidden="true" className="size-4 text-destructive" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{deleteActionLabel(row)}</TooltipContent>
+                        </Tooltip>
                       ) : (
                         <span className="size-8" />
                       )}{' '}

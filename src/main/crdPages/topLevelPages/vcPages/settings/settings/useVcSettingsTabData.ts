@@ -321,7 +321,18 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
 
   // ────────────────── Prompt Graph (whole-section save + reset) ──────────────────
   const { platformPrivilegeWrapper } = useCurrentUserContext();
-  const isPlatformAdmin = platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
+  // spec-clientweb-5 (2026-07-31): this gates `promptGraphEditingEnabled`,
+  // a VC *platform setting*. T013 (Slice B) CORRECTS the target as well as
+  // dropping the catch-all: the server gates
+  // `updateVirtualContributorPlatformSettings` on `PLATFORM_OPERATIONS_ADMIN`,
+  // not `PLATFORM_SETTINGS_ADMIN`. The only setting behind it is
+  // `promptGraphEditingEnabled` — assistant-capability config, which spec
+  // §Target global role model row 5 (A11) owns, not row 4's platform settings.
+  // Offering the toggle on Settings Admin would render an affordance the server
+  // rejects.
+  const isPlatformAdmin = [AuthorizationPrivilege.PlatformOperationsAdmin].some(privilege =>
+    Boolean(platformPrivilegeWrapper?.hasPlatformPrivilege(privilege))
+  );
   const editingEnabled = vc?.platformSettings?.promptGraphEditingEnabled ?? false;
 
   const [updatePlatformSettings, { loading: togglingPlatformSetting }] =

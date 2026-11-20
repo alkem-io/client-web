@@ -6,7 +6,13 @@
   },
   "panel": {
     "title": "Chat",
-    "settings": "Configuración de notificaciones"
+    "settings": "Configuración de notificaciones",
+    "muteSound": "Silenciar el sonido del chat",
+    "unmuteSound": "Activar el sonido del chat",
+    "soundToggleError": "No pudimos guardar el ajuste del sonido del chat. Inténtalo de nuevo.",
+    "expand": "Ampliar chat",
+    "collapse": "Reducir chat",
+    "reconnecting": "Reconectando… Los mensajes nuevos pueden retrasarse."
   },
   "actions": {
     "cancel": "Cancelar"
@@ -55,7 +61,9 @@
     "emptyHint": "Inicia un mensaje nuevo para empezar a chatear.",
     "noResults": "Ninguna conversación coincide con tu búsqueda.",
     "loading": "Cargando conversaciones",
-    "draft": "Borrador:"
+    "draft": "Borrador:",
+    "attachmentPreview_one": "{{count}} archivo adjunto",
+    "attachmentPreview_other": "{{count}} archivos adjuntos"
   },
   "guidance": {
     "beta": "Beta",
@@ -76,7 +84,9 @@
   "thread": {
     "back": "Volver a las conversaciones",
     "loading": "Cargando mensajes",
-    "addReaction": "Añadir reacción"
+    "jumpToLatest": "Ir a los mensajes más recientes",
+    "addReaction": "Añadir reacción",
+    "options": "Opciones del chat"
   },
   "sendConfirmation": {
     "title": "Mensaje enviado",
@@ -100,5 +110,30 @@
       "messageTooLong": "El mensaje debe tener {{max}} caracteres o menos.",
       "sendFailed": "No se pudo enviar el mensaje. Inténtalo de nuevo."
     }
+  },
+  "call": {
+    "startAudio": "Iniciar llamada de audio",
+    "startVideo": "Iniciar videollamada",
+    "active": "Llamada activa",
+    "join": "Unirse",
+    "joinVideo": "Unirse con vídeo",
+    "joinAudio": "Unirse solo con audio",
+    "joinedOnThisDevice": "Ya te has unido desde este dispositivo",
+    "preparing": "Preparando la llamada… Empezará en un momento.",
+    "dropped": "No se pudo iniciar la llamada. Inténtalo de nuevo.",
+    "overlayLabel": "Llamada",
+    "close": "Cerrar llamada",
+    "license": "Licencia de código abierto",
+    "opensInNewTab": "se abre en una pestaña nueva",
+    "leaveConfirm": {
+      "title": "¿Salir de la llamada?",
+      "description": "Saldrás de la llamada. Los demás pueden continuar sin ti.",
+      "descriptionDirect": "Saldrás de la llamada y también terminará para la otra persona.",
+      "confirm": "Salir de la llamada",
+      "cancel": "Seguir en la llamada"
+    },
+    "listBadge": "Llamada activa",
+    "callingYou": "{{name}} te está llamando",
+    "groupCall": "Llamada en {{name}}"
   }
 }

@@ -46,6 +46,7 @@ describe('CollaboraDocumentEditor reconnect remount', () => {
     );
     const firstIframe = document.querySelector('iframe');
     expect(firstIframe).not.toBeNull();
+    expect(firstIframe).toHaveAttribute('allow', 'clipboard-read; clipboard-write');
 
     await userEvent.click(screen.getByRole('button', { name: 'bump' }));
 

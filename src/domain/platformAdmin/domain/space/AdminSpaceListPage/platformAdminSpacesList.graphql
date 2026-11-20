@@ -4,6 +4,7 @@ query platformAdminSpacesList {
       id
       nameID
       visibility
+      promote
       about {
         id
         profile {

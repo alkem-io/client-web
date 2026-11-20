@@ -82,7 +82,30 @@ type SaveBarState =
   | { kind: 'saveError'; message: string };
 ```
 
-**Used only by the Layout tab.** About uses per-field autosave (FR-005a); every other tab commits per action.
+**Used only by the Layout tab.** About uses per-section Save in each section's `FieldFooter` (FR-005a; *amended 2026-10-16 — was "per-field autosave"*); every other tab commits per action.
+
+> *(Amended 2026-10-22: superseded by `UnsavedChangesBarState` + `TabUnsavedChanges` below — FR-025 – FR-025d.)*
+
+### `TabUnsavedChanges` / `UnsavedChangesBarState` *(added 2026-10-22)*
+
+```
+type TabUnsavedChanges = {
+  count: number;            // FR-025b — one per changed field, 0 = clean
+  canSave: boolean;         // false while any buffered edit is invalid
+  saving: boolean;
+  error: string | null;     // last Save failure; failed parts stay counted
+  saveAll: () => Promise<boolean>; // true when everything saved
+  reset: () => void;        // back to the server values, in place
+};
+
+type UnsavedChangesBarState =
+  | { kind: 'clean' }
+  | { kind: 'dirty'; count: number; canSave: boolean }
+  | { kind: 'saving'; count: number }
+  | { kind: 'saveError'; count: number; message: string };
+```
+
+Exposed by `useAboutTabData`, `useLayoutTabData` and `useSettingsTabData` as `unsaved`. The page maps the **active** tab's `TabUnsavedChanges` to the bar state; tabs without one never show the bar. About's buffer additionally holds the staged classification changes: `stagedAdds` (template id, display label, cardinality, value set, selected ids, display), `stagedRemovals` (entry ids) and per-entry `selection` / `display` overrides.
 
 ---
 
@@ -134,6 +157,8 @@ Plain subset of CRD `SpaceCard` props (name, tagline, banner, avatar, tags, colo
 
 ### `FieldAutosaveState` + `AboutAutosaveStateMap`
 
+> *(Amended 2026-10-16: superseded — never shipped. The shipped model is per section: `AboutSectionKey = 'name' | 'tagline' | 'location' | 'what' | 'why' | 'who' | 'tags' | 'references' | 'classifications'`, `dirtyByField: Partial<Record<AboutSectionKey, boolean>>` (derived from the Apollo cache) and `saveStatusByField: Partial<Record<AboutSectionKey, SectionSaveStatus>>` where `SectionSaveStatus` is the shared `FieldFooter` type `idle | saving | saved | error`. There is no `pending` state and no debounce. See `contracts/tab-about.ts`.)*
+
 ```
 type FieldAutosaveState =
   | { kind: 'idle' }
@@ -158,8 +183,8 @@ The view reads this map and renders per-field indicators next to each field labe
 | Field | Type | Notes |
 |---|---|---|
 | `previewCard` | `SpaceCardPreview` | Derived live from form state |
-| `autosaveState` | `AboutAutosaveStateMap` | Per-field indicator state |
-| `onChange` | `(patch: Partial<AboutFormValues>) => void` | Any field edit; the hook debounces, then fires the autosave mutation |
+| `autosaveState` | `AboutAutosaveStateMap` | Per-field indicator state *(amended 2026-10-16: replaced by `dirtyByField` + `saveStatusByField` + `onSaveSection(section)`)* |
+| `onChange` | `(patch: Partial<AboutFormValues>) => void` | Any field edit; ~~the hook debounces, then fires the autosave mutation~~ updates the local buffer only — nothing is sent until the section's Save *(amended 2026-10-16)* |
 | `onUploadPageBanner` | `(file: File) => void` | Upload delegate; autosave fires immediately on upload completion (no debounce) |
 | `onUploadCardBanner` | `(file: File) => void` | Upload delegate; immediate autosave |
 | `onUploadAvatar` | `(file: File) => void` | Upload delegate; immediate autosave |
@@ -501,7 +526,7 @@ Read-only content + 3 action buttons. No `SaveBarState`.
 ```
 type DirtyTabState = {
   activeTab: TabId;
-  dirtyTab: 'layout' | null; // Only Layout can be dirty — About autosaves per field
+  dirtyTab: 'layout' | 'about' | null; // amended 2026-10-16: About is also dirty while any section is unsaved (per-section Save, no autosave); the shipped guard keeps a single isDirty flag
   pendingSwitch: TabId | null;
 };
 ```
@@ -512,7 +537,7 @@ Produced by `useDirtyTabGuard`. Consumed only by `CrdSpaceSettingsPage`.
 
 ## Subspace breadcrumbs (added 2026-04-27; avatars replaced the `Layers` icon 2026-08-21)
 
-`CrdSubspacePageLayout` calls `useSetBreadcrumbs` unconditionally before any early loading return so the trail is set on every render. Space/subspace hops carry an `avatar` field (`BreadcrumbTrailItem.avatar?: { src?: string; initials: string }`) rendered by `BreadcrumbsTrail` as a 20px rounded-square identity image (bordered; initials on a primary-tinted background as fallback) — the L0 hop uses the L0's **cardBanner** (L0 has no avatar visual), L1/L2 hops use their **avatar** visual. The former `icon: Layers` glyph on these hops is gone. The trail shape:
+`CrdSubspacePageLayout` calls `useSetBreadcrumbs` unconditionally before any early loading return so the trail is set on every render. Space/subspace hops carry an `avatar` field (`BreadcrumbTrailItem.avatar?: { src?: string; initials: string }`) rendered by `BreadcrumbsTrail` as a 20px rounded-square identity image (bordered; initials on a primary-tinted background as fallback) — the L0 hop uses the L0's **cardBanner** (L0 has no avatar visual), L1/L2 hops use their **avatar** visual. The former `icon: Layers` glyph on these hops is gone. *(Amended 2026-10-16: the `SpaceSettingsHeader` identity tile follows the same image rule — L0 `cardBanner` cropped square, L1/L2 `avatar`, initials fallback — at 48px, `rounded-lg`. Both are the owner-approved, navigation-chrome-only exception to spec 100's "no `cardBanner` as avatar" rule.)* The trail shape:
 
 ```ts
 const baseTrail =

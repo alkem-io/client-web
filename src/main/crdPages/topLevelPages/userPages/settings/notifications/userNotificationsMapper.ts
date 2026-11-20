@@ -44,6 +44,8 @@ export type NotificationViewData = {
 
 export type NotificationPrivileges = {
   isPlatformAdmin: boolean;
+  /** Gates the platformAdmin group only — visibility equals recipiency by construction. */
+  canReceivePlatformAdminNotifications: boolean;
   isOrganizationAdmin: boolean;
   isSpaceAdmin: boolean;
   isSpaceLead: boolean;
@@ -286,6 +288,16 @@ export const mapUserNotifications = (
           ),
         },
         {
+          property: 'collaborationCalloutFormResponseReceived',
+          label: t('user.notifications.rows.spaceAdmin.collaborationCalloutFormResponseReceived'),
+          channels: resolveChannels(
+            server.spaceAdmin?.collaborationCalloutFormResponseReceived,
+            overrides,
+            'spaceAdmin',
+            'collaborationCalloutFormResponseReceived'
+          ),
+        },
+        {
           property: 'communicationMessageReceived',
           label: t('user.notifications.rows.spaceAdmin.communicationMessageReceived'),
           channels: resolveChannels(
@@ -362,6 +374,26 @@ export const mapUserNotifications = (
           'membership.spaceCommunityJoined'
         ),
       },
+      {
+        property: 'membership.organizationAssociateInvitationReceived',
+        label: t('user.notifications.rows.user.membershipOrganizationAssociateInvitationReceived'),
+        channels: resolveChannels(
+          server.user?.membership?.organizationAssociateInvitationReceived,
+          overrides,
+          'user',
+          'membership.organizationAssociateInvitationReceived'
+        ),
+      },
+      {
+        property: 'membership.organizationAssociateApplicationDecided',
+        label: t('user.notifications.rows.user.membershipOrganizationAssociateApplicationDecided'),
+        channels: resolveChannels(
+          server.user?.membership?.organizationAssociateApplicationDecided,
+          overrides,
+          'user',
+          'membership.organizationAssociateApplicationDecided'
+        ),
+      },
     ],
   });
 
@@ -394,8 +426,8 @@ export const mapUserNotifications = (
     ],
   });
 
-  // ── Platform Admin (gated by isPlatformAdmin) ──
-  if (privileges.isPlatformAdmin) {
+  // ── Platform Admin (gated by canReceivePlatformAdminNotifications only) ──
+  if (privileges.canReceivePlatformAdminNotifications) {
     groups.push({
       groupId: 'platformAdmin',
       title: t('user.notifications.groups.platformAdmin.title'),
@@ -480,6 +512,36 @@ export const mapUserNotifications = (
             overrides,
             'organization',
             'adminSpaceCommunityInvitation'
+          ),
+        },
+        {
+          property: 'adminAssociateInvitationResponse',
+          label: t('user.notifications.rows.organization.adminAssociateInvitationResponse'),
+          channels: resolveChannels(
+            server.organization?.adminAssociateInvitationResponse,
+            overrides,
+            'organization',
+            'adminAssociateInvitationResponse'
+          ),
+        },
+        {
+          property: 'adminAssociateApplicationReceived',
+          label: t('user.notifications.rows.organization.adminAssociateApplicationReceived'),
+          channels: resolveChannels(
+            server.organization?.adminAssociateApplicationReceived,
+            overrides,
+            'organization',
+            'adminAssociateApplicationReceived'
+          ),
+        },
+        {
+          property: 'adminAssociateJoined',
+          label: t('user.notifications.rows.organization.adminAssociateJoined'),
+          channels: resolveChannels(
+            server.organization?.adminAssociateJoined,
+            overrides,
+            'organization',
+            'adminAssociateJoined'
           ),
         },
       ],

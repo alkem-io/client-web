@@ -21,6 +21,10 @@ type RecentSpacesProps = {
   className?: string;
 };
 
+// Below md: one horizontal scroll strip, the next card peeking in. md and up: the grid.
+const SPACE_STRIP_CLASS =
+  '-m-1 flex gap-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overflow-x-auto p-1 *:w-48 *:shrink-0 md:m-0 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:p-0 md:*:w-auto lg:grid-cols-4';
+
 export function RecentSpaces({
   spaces,
   loading,
@@ -54,19 +58,31 @@ export function RecentSpaces({
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+      {/* biome-ignore lint/a11y/useSemanticElements: role="list" restores list semantics after the Tailwind reset */}
+      <ul role="list" className={SPACE_STRIP_CLASS}>
         {loading ? (
-          // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
-          Array.from({ length: maxItems }).map((_, i) => <CompactSpaceCardSkeleton key={i} />)
+          Array.from({ length: maxItems }).map((_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
+            <li key={i}>
+              <CompactSpaceCardSkeleton />
+            </li>
+          ))
         ) : (
           <>
-            {placeholderShown && homeSpaceSettingsHref && <HomeSpacePlaceholder settingsHref={homeSpaceSettingsHref} />}
+            {placeholderShown && homeSpaceSettingsHref && (
+              <li>
+                <HomeSpacePlaceholder settingsHref={homeSpaceSettingsHref} />
+              </li>
+            )}
             {visibleSpaces.map(space => (
-              <CompactSpaceCard key={space.id} {...space} onPinClick={space.isHomeSpace ? onPinClick : undefined} />
+              <li key={space.id}>
+                <CompactSpaceCard {...space} onPinClick={space.isHomeSpace ? onPinClick : undefined} />
+              </li>
             ))}
           </>
         )}
-      </div>
+      </ul>
     </section>
   );
 }

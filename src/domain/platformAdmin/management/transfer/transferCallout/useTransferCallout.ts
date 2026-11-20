@@ -1,4 +1,6 @@
+import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useCalloutLookupQuery,
   useCalloutUrlResolveQuery,
@@ -7,9 +9,18 @@ import {
   useTransferCalloutMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, UrlResolverResultState } from '@/core/apollo/generated/graphql-schema';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import {
+  CalloutFormErrorCode,
+  getCalloutFormErrorCode,
+} from '@/domain/collaboration/callout-form/utils/calloutFormErrors';
 import toFullUrl from '../toFullUrl';
 
 const useTransferCallout = () => {
+  const { t } = useTranslation();
+  const notify = useNotification();
+  const handleApolloError = useApolloErrorHandler();
   const [calloutUrl, setCalloutUrl] = useState('');
   const [spaceUrl, setSpaceUrl] = useState('');
   const [mutationCompleted, setMutationCompleted] = useState(false);
@@ -88,9 +99,21 @@ const useTransferCallout = () => {
 
   const handleTransfer = async () => {
     if (!callout?.id || !calloutsSetId) return;
-    const result = await transferCalloutMutation({
-      variables: { calloutId: callout.id, targetCalloutsSetId: calloutsSetId },
-    });
+    let result: Awaited<ReturnType<typeof transferCalloutMutation>>;
+    try {
+      result = await transferCalloutMutation({
+        variables: { calloutId: callout.id, targetCalloutsSetId: calloutsSetId },
+        // Handled below, so a Form rejection gets its own message instead of the generic one.
+        context: { skipGlobalErrorHandler: true },
+      });
+    } catch (error) {
+      if (getCalloutFormErrorCode(error) === CalloutFormErrorCode.FORM_TRANSFER_NOT_ALLOWED) {
+        notify(t('pages.admin.transferCallout.formNotAllowed'), 'error');
+      } else if (error instanceof ApolloError) {
+        handleApolloError(error);
+      }
+      return;
+    }
     if (!result.data?.transferCallout?.id) {
       throw new Error('Transfer failed');
     }

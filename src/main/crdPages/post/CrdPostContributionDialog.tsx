@@ -1,9 +1,8 @@
-import { Loader2, Trash2 } from 'lucide-react';
+import { ChevronLeft, Loader2, Trash2 } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ValidationError } from 'yup';
 import {
-  useCalloutContributionCommentsQuery,
   useCreatePostOnCalloutMutation,
   useCreateReferenceOnProfileMutation,
   useDeleteContributionMutation,
@@ -22,11 +21,14 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
+import { useScreenSize } from '@/crd/hooks/useMediaQuery';
+import { useVisibleViewportArea } from '@/crd/hooks/useVisibleViewportArea';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -36,11 +38,11 @@ import {
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
+import { Switch } from '@/crd/primitives/switch';
 import useValidationMessageTranslation from '@/domain/shared/i18n/ValidationMessageTranslation/useValidationMessageTranslation';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
-import { CalloutCommentsConnector } from '@/main/crdPages/space/callout/CalloutCommentsConnector';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import {
   emptyPostContributionFormValues,
@@ -86,6 +88,13 @@ type CrdPostContributionDialogProps = {
 
 type FieldErrors = Partial<Record<'displayName' | 'description', string>>;
 
+/**
+ * Create / edit form for a post contribution (a "response", or a "task" on a Tasks
+ * board). Deliberately form-only: it carries no comment surface, because while this
+ * dialog is open the user is writing, not discussing. The post's comments belong to
+ * the read-only surfaces — the callout detail dialog's discussion section and the
+ * feed card — which is where saving or cancelling lands the user, count unchanged.
+ */
 export function CrdPostContributionDialog({
   open,
   onOpenChange,
@@ -105,6 +114,11 @@ export function CrdPostContributionDialog({
   onUpdated,
 }: CrdPostContributionDialogProps) {
   const { t } = useTranslation('crd-space');
+  const { isSmallScreen } = useScreenSize();
+  // Full screen on a small screen: follow the visible area so the actions stay above
+  // the on-screen keyboard.
+  const visibleArea = useVisibleViewportArea(open && isSmallScreen);
+
   const translateValidation = useValidationMessageTranslation();
   const notify = useNotification();
   // Create mode: the post (and its storage bucket) doesn't exist yet, so both markdown-image and
@@ -129,6 +143,9 @@ export function CrdPostContributionDialog({
   const [isDirty, setIsDirty] = useState(false);
   const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  // Create mode only — per-action choice, off by default, never persisted (FR-002).
+  // Reset alongside the rest of the create-mode form state below.
+  const [notifyMembers, setNotifyMembers] = useState(false);
 
   // Edit mode — fetch the post; prefill once data arrives.
   const { data, loading: loadingPost } = usePostSettingsQuery({
@@ -166,15 +183,6 @@ export function CrdPostContributionDialog({
 
   const [moveContributionToCallout] = useMoveContributionToCalloutMutation();
 
-  // Comments live on a separate query that follows the contribution → post.comments path.
-  // The connector also fetches this internally; we fetch here to know the roomId up-front
-  // and pass `roomData` so the connector skips its own fetch.
-  const { data: commentsData } = useCalloutContributionCommentsQuery({
-    variables: { contributionId: contributionId ?? '', includePost: true },
-    skip: mode !== 'edit' || !contributionId || !open,
-  });
-  const commentsRoom = commentsData?.lookup.contribution?.post?.comments;
-
   // Reset state on open / mode change.
   useEffect(() => {
     if (!open) return;
@@ -182,6 +190,7 @@ export function CrdPostContributionDialog({
       setValues(emptyPostContributionFormValues(fallbackName, fallbackDescription));
       setIsDirty(false);
       setErrors({});
+      setNotifyMembers(false);
     }
   }, [open, mode, fallbackName, fallbackDescription]);
 
@@ -268,6 +277,9 @@ export function CrdPostContributionDialog({
           // Present only for a Tasks board; the server ignores it otherwise and
           // defaults to the first column when omitted.
           taskColumn,
+          // Explicit on every create — omission means "notify" server-side, so the
+          // off-by-default switch state must always be sent (FR-005).
+          sendNotification: notifyMembers,
         },
         refetchQueries: ['CalloutDetails', 'CalloutContributions', 'TaskBoardData'],
         awaitRefetchQueries: true,
@@ -390,6 +402,13 @@ export function CrdPostContributionDialog({
       notify(t('contribution.edit'), 'success');
       setIsDirty(false);
       onUpdated?.();
+      // A successful save ends the editing session, so dismiss the dialog just
+      // like the create branch does. Clearing the dirty flag first keeps the
+      // unsaved-changes confirmation out of the way; the close is deliberately
+      // the direct prop call rather than `requestClose`. Mutation failures throw
+      // before reaching here, so a failed save still leaves the form open with
+      // the user's input intact.
+      onOpenChange(false);
     }
   };
 
@@ -414,7 +433,6 @@ export function CrdPostContributionDialog({
   };
 
   const submitting = creating || updating;
-  const showCommentsSection = mode === 'edit' && Boolean(commentsRoom);
   const dialogTitle = isTaskBoard
     ? mode === 'create'
       ? t('callout.createTask')
@@ -434,9 +452,31 @@ export function CrdPostContributionDialog({
       >
         <DialogContent
           overlayClassName={overlayClassName}
-          className={cn('sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden', contentClassName)}
+          hideClose={isSmallScreen}
+          style={visibleArea ? { ...visibleArea, bottom: 'auto' } : undefined}
+          className={cn(
+            'flex flex-col overflow-hidden',
+            // Full screen on a small screen, like the chat panel. No duration: the height
+            // follows the on-screen keyboard and must not lag behind it.
+            isSmallScreen
+              ? 'inset-0 max-w-none translate-x-0 translate-y-0 rounded-none border-none p-4 duration-0'
+              : 'sm:max-w-3xl max-h-[90vh]',
+            contentClassName
+          )}
         >
-          <DialogHeader className="shrink-0">
+          <DialogHeader className={cn('shrink-0', isSmallScreen && 'flex-row items-center gap-1 text-left')}>
+            {isSmallScreen && (
+              <DialogClose asChild={true}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="-ml-2 shrink-0 text-muted-foreground"
+                  aria-label={t('calloutDialog.close')}
+                >
+                  <ChevronLeft aria-hidden="true" className="size-5" />
+                </Button>
+              </DialogClose>
+            )}
             <DialogTitle>{dialogTitle}</DialogTitle>
             <DialogDescription className="sr-only">{dialogTitle}</DialogDescription>
           </DialogHeader>
@@ -541,16 +581,6 @@ export function CrdPostContributionDialog({
                 )}
               </>
             )}
-
-            {showCommentsSection && commentsRoom && contributionId && (
-              <div className="mt-6 pt-6 border-t border-border space-y-4">
-                <CalloutCommentsConnector
-                  roomId={commentsRoom.id}
-                  contributionId={contributionId}
-                  roomData={commentsRoom}
-                />
-              </div>
-            )}
           </div>
 
           <DialogFooter className="shrink-0 flex items-center justify-between gap-2 sm:justify-between">
@@ -567,7 +597,28 @@ export function CrdPostContributionDialog({
                 </Button>
               )}
             </div>
-            <div className="flex items-center gap-2">
+            {/* Wraps on a small screen: in longer languages the notify switch would push the submit button off screen. */}
+            <div className={cn('flex items-center gap-2', isSmallScreen && 'flex-wrap justify-end')}>
+              {mode === 'create' && (
+                <div className="flex items-center gap-2 mr-2">
+                  <Switch
+                    id="contribution-notify-members"
+                    checked={notifyMembers}
+                    onCheckedChange={checked => {
+                      setNotifyMembers(checked);
+                      // Mark dirty like the target-callout Select does: this is a
+                      // deliberate user choice, so closing after changing it must
+                      // route through the discard confirmation rather than
+                      // dropping it silently.
+                      setIsDirty(true);
+                    }}
+                    disabled={submitting}
+                  />
+                  <Label htmlFor="contribution-notify-members" className="text-body text-muted-foreground">
+                    {t('forms.notifyMembers')}
+                  </Label>
+                </div>
+              )}
               <Button variant="ghost" onClick={requestClose} disabled={submitting || deleting}>
                 {t('dialogs.cancel')}
               </Button>

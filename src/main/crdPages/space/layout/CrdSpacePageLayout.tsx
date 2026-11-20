@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { usePageTitle } from '@/core/routing/usePageTitle';
+import { useScrollToTopOnChange } from '@/core/routing/useScrollToTopOnChange';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { MobileSidebarDrawer } from '@/crd/components/common/MobileSidebarDrawer';
@@ -49,6 +50,7 @@ import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
+import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceAboutDialogConnector } from '../dialogs/CrdSpaceAboutDialogConnector';
@@ -93,10 +95,27 @@ export default function CrdSpacePageLayout() {
     setMobileMenuOpen(false);
   }, [pathname]);
 
+  // The chat covers the page, so opening it from inside the drawer (contact the
+  // leads, then open the chat) leaves the drawer just like a navigation does.
+  // Left open underneath, it would also take the next Escape before the chat.
+  const { isOpen: chatOpen } = useUserMessagingContext();
+  useEffect(() => {
+    if (chatOpen) {
+      setMobileMenuOpen(false);
+    }
+  }, [chatOpen]);
+
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
 
-  const { tabs, defaultTabIndex, sectionCount, showSettings, stateSidebars } = useCrdSpaceTabs({
+  const {
+    tabs,
+    defaultTabIndex,
+    sectionCount,
+    showSettings,
+    stateSidebars,
+    loaded: tabsLoaded,
+  } = useCrdSpaceTabs({
     spaceId,
     skip: !isLevelZero || !permissions.canRead,
   });
@@ -113,9 +132,12 @@ export default function CrdSpacePageLayout() {
 
   // Edge-swipe from the left opens the mobile sidebar drawer — same drawer the
   // hamburger triggers. Only armed while the drawer exists: below lg (the
-  // desktop sidebar takes over at lg+) and off settings (no drawer there).
+  // desktop sidebar takes over at lg+) and off settings (no drawer there), and
+  // not while the chat covers the page, which would hide the drawer behind it.
   const belowLg = useMediaQuery('(max-width: 1023px)');
-  useEdgeSwipe(() => setMobileMenuOpen(true), { enabled: belowLg && isLevelZero && !isOnSettings });
+  useEdgeSwipe(() => setMobileMenuOpen(true), {
+    enabled: belowLg && isLevelZero && !isOnSettings && !chatOpen,
+  });
 
   if (resolvingUrl || loadingSpace) {
     // Same reservation as `SpaceShell`'s content column, so the footer stays put while the
@@ -220,6 +242,7 @@ export default function CrdSpacePageLayout() {
           <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
         )}
         {enableBannerOverlay && <EnableBannerOverlay />}
+        {!isOnSettings && <ScrollToTopOnTabChange tabIndex={tabsLoaded ? activeTabIndex : undefined} />}
         <EnableSpaceFullWidth />
         <SpaceShell
           fullWidth={fullWidth}
@@ -229,6 +252,11 @@ export default function CrdSpacePageLayout() {
                 title={space.about.profile.displayName}
                 titleHref={space.about.profile.url ?? undefined}
                 tagline={space.about.profile.tagline ?? null}
+                visual={{
+                  // L0 has no avatar visual — the cardBanner stands in as the identity image.
+                  src: space.about.profile.cardBanner?.uri || undefined,
+                  initials: getInitials(space.about.profile.displayName),
+                }}
                 fullWidth={fullWidth}
               />
             ) : (
@@ -343,6 +371,12 @@ export default function CrdSpacePageLayout() {
 
 function EnableBannerOverlay() {
   useEnableBannerOverlay();
+  return null;
+}
+
+// Tabs live in the query string, which ScrollToTop ignores, so a tab switch resets here.
+function ScrollToTopOnTabChange({ tabIndex }: { tabIndex: number | undefined }) {
+  useScrollToTopOnChange(tabIndex);
   return null;
 }
 

@@ -37,6 +37,11 @@ vi.mock('@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboard
   default: () => ({ uploadVisuals: vi.fn() }),
 }));
 
+// The Poll/Form side-saves are covered by their own tests.
+vi.mock('@/main/crdPages/templates/useCalloutTemplateFramingSave', () => ({
+  useCalloutTemplateFramingSave: () => ({ saveFormDefinition: vi.fn(), savePollOptions: vi.fn() }),
+}));
+
 vi.mock('@/main/crdPages/templates/CalloutTemplateForm', () => ({
   CalloutTemplateForm: () => null,
 }));

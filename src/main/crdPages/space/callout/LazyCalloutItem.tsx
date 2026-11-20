@@ -15,6 +15,7 @@ import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/us
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
+import { useMessageContributor } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { getCalloutContributionType, mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
 import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
@@ -22,6 +23,7 @@ import { useFlowStateLayout } from '../hooks/useFlowStateLayout';
 import { useMediaGalleryDirectUpload } from '../hooks/useMediaGalleryDirectUpload';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
+import { CalloutFramingFormConnector } from './CalloutFramingFormConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
 import { CalloutReactionsConnector } from './CalloutReactionsConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
@@ -31,6 +33,7 @@ import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 import { ContributorCollectionConnector } from './ContributorCollectionConnector';
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 import { SpaceCollectionConnector } from './SpaceCollectionConnector';
+import { cardVariantFromServer } from './spaceCollectionCardVariant';
 import { TaskBoardConnector } from './TaskBoardConnector';
 import { TaskBoardDialog } from './TaskBoardDialog';
 
@@ -138,6 +141,7 @@ function LazyCalloutItemContent({
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { t } = useTranslation('crd-space');
+  const onMessageContributor = useMessageContributor();
   // Resolve per-phase layout from the FLOW_STATE classification tag.
   // `flowState.tags[0]` is the phase display name the callout is tagged under.
   // `useFlowStateLayout` reads from the cached SpaceTabsQuery (zero extra round-trips)
@@ -302,7 +306,6 @@ function LazyCalloutItemContent({
   const plainContributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
       callout={callout}
-      onShowAll={() => openDialog()}
       onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
       onOpenMemoSignedCopies={setSignedCopiesMemoId}
       isTaskBoard={isBoard}
@@ -328,6 +331,9 @@ function LazyCalloutItemContent({
   const pollPreview =
     callout.framing.type === CalloutFramingType.Poll ? <CalloutPollConnector callout={callout} /> : null;
 
+  const formPreview =
+    callout.framing.type === CalloutFramingType.Form ? <CalloutFramingFormConnector callout={callout} /> : null;
+
   // Contributor-collection callout body (feature 008): renders the self-updating
   // contributor cards/map for the active type. The callout accepts no
   // contributions, so it has no contributions-preview — only this body. The
@@ -344,7 +350,12 @@ function LazyCalloutItemContent({
   // so it has no contributions-preview — only this body.
   const spacesPreview =
     callout.framing.type === CalloutFramingType.Spaces ? (
-      <SpaceCollectionConnector calloutId={callout.id} className="mt-2" />
+      <SpaceCollectionConnector
+        calloutId={callout.id}
+        cardVariant={cardVariantFromServer(callout.settings.framing.spaces?.cardVariant)}
+        selectionMode={callout.settings.framing.selection?.mode}
+        className="mt-2"
+      />
     ) : null;
 
   // Without a comments room we can't wire the inline thread — fall back to the
@@ -364,6 +375,7 @@ function LazyCalloutItemContent({
           calloutId={callout.id}
           roomData={callout.comments}
           skipSubscription={!commentsExpanded}
+          onMessageContributor={onMessageContributor}
         >
           {({ thread, commentInput }) => (
             <PostCard
@@ -397,6 +409,7 @@ function LazyCalloutItemContent({
               reactionsSlot={reactionsBar}
             >
               {pollPreview}
+              {formPreview}
               {contributorsPreview}
               {spacesPreview}
             </PostCard>
@@ -432,6 +445,7 @@ function LazyCalloutItemContent({
           reactionsSlot={reactionsBar}
         >
           {pollPreview}
+          {formPreview}
           {contributorsPreview}
           {spacesPreview}
         </PostCard>
@@ -472,7 +486,13 @@ function LazyCalloutItemContent({
         />
       )}
       {framingMemoOpen && framingMemoId && (
-        <CrdMemoDialog open={true} memoId={framingMemoId} isContribution={false} onClose={handleFramingMemoClose} />
+        <CrdMemoDialog
+          open={true}
+          memoId={framingMemoId}
+          isContribution={false}
+          signingOrigin={{ kind: 'framing', calloutId: callout.id }}
+          onClose={handleFramingMemoClose}
+        />
       )}
 
       {signedCopiesMemoId && (

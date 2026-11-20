@@ -23,8 +23,8 @@ export interface WhiteboardDetails {
       allowedMimeTypes: string[];
       maxFileSize: number;
     };
-    visual?: Identifiable & PreviewImageDimensions;
-    preview?: Identifiable & PreviewImageDimensions;
+    visual?: Identifiable & PreviewImageDimensions & { uri: string };
+    preview?: Identifiable & PreviewImageDimensions & { uri: string };
     url?: string;
   };
   createdBy?: {

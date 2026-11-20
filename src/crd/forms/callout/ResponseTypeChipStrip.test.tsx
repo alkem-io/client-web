@@ -1,13 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { describe, expect, test, vi } from 'vitest';
-import { ResponseTypeChipStrip } from './ResponseTypeChipStrip';
+import { type ResponseTypeChipId, ResponseTypeChipStrip } from './ResponseTypeChipStrip';
+
+/** Opens the More menu and returns its items. */
+const openMore = async () => {
+  await userEvent.click(screen.getByRole('button', { name: 'contributionSettings.moreTypesHeading' }));
+  return screen.findAllByRole('menuitem');
+};
+const labels = (els: HTMLElement[]) => els.map(el => el.getAttribute('aria-label') ?? el.textContent);
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
 }));
+
+/** Holds the selection, as the consumer does, so a clear actually re-renders the row. */
+const Controlled = () => {
+  const [value, setValue] = useState<ResponseTypeChipId | 'none'>('none');
+  return <ResponseTypeChipStrip value={value} onChange={setValue} showTasksChip={true} tasksLabel="Tasks" />;
+};
 
 describe('ResponseTypeChipStrip', () => {
   test('renders as a radiogroup with an accessible label', () => {
@@ -16,19 +30,112 @@ describe('ResponseTypeChipStrip', () => {
     expect(group).toBeInTheDocument();
   });
 
-  test('renders the five response chips, including Documents (story #10083)', () => {
-    render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} />);
-    const chips = screen.getAllByRole('radio');
-    expect(chips).toHaveLength(5);
-    expect(screen.getByRole('radio', { name: /contributionSettings.types.document/i })).toBeInTheDocument();
+  test('without Tasks every type is on the row, with no More menu', () => {
+    // A row of three would leave two types behind More, and selecting one of
+    // them would leave a menu of one.
+    render(<ResponseTypeChipStrip value="memo" onChange={vi.fn()} />);
+    expect(labels(screen.getAllByRole('radio'))).toEqual([
+      'contributionSettings.types.link',
+      'contributionSettings.types.post',
+      'contributionSettings.types.memo',
+      'contributionSettings.types.whiteboard',
+      'contributionSettings.types.document',
+    ]);
+    expect(screen.queryByRole('button', { name: 'contributionSettings.moreTypesHeading' })).toBeNull();
   });
 
-  test('clicking the inactive Documents chip selects it', async () => {
+  test('with Tasks enabled it takes the third slot and Whiteboards moves to the menu', async () => {
+    render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} showTasksChip={true} tasksLabel="Tasks" />);
+    expect(labels(screen.getAllByRole('radio'))).toEqual([
+      'contributionSettings.types.link',
+      'contributionSettings.types.post',
+      'Tasks',
+    ]);
+    const items = await openMore();
+    expect(items.map(item => item.textContent)).toEqual([
+      'contributionSettings.types.memo',
+      'contributionSettings.types.whiteboard',
+      'contributionSettings.types.document',
+    ]);
+  });
+
+  test('the More trigger is not one of the radio options', () => {
+    render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} showTasksChip={true} tasksLabel="Tasks" />);
+    const more = screen.getByRole('button', { name: 'contributionSettings.moreTypesHeading' });
+    expect(more).not.toHaveAttribute('role', 'radio');
+    expect(screen.getByRole('radiogroup')).not.toContainElement(more);
+  });
+
+  test('choosing Documents from the menu selects it', async () => {
     const onChange = vi.fn();
-    render(<ResponseTypeChipStrip value="none" onChange={onChange} />);
-    const document = screen.getByRole('radio', { name: /contributionSettings.types.document/i });
-    await userEvent.click(document);
+    render(<ResponseTypeChipStrip value="none" onChange={onChange} showTasksChip={true} tasksLabel="Tasks" />);
+    const items = await openMore();
+    await userEvent.click(items.find(i => i.textContent === 'contributionSettings.types.document') as HTMLElement);
     expect(onChange).toHaveBeenCalledWith('document');
+  });
+
+  test('a type chosen from the menu joins the row and drops out of the menu', async () => {
+    render(<ResponseTypeChipStrip value="document" onChange={vi.fn()} showTasksChip={true} tasksLabel="Tasks" />);
+    expect(labels(screen.getAllByRole('radio'))).toContain('contributionSettings.types.document');
+    expect(screen.getByRole('radio', { name: /types.document/i, checked: true })).toBeInTheDocument();
+    const items = await openMore();
+    expect(items.map(i => i.textContent)).not.toContain('contributionSettings.types.document');
+  });
+
+  test('with only two types for the menu there is no More — selecting one would leave a menu of one', () => {
+    render(
+      <ResponseTypeChipStrip
+        value="none"
+        onChange={vi.fn()}
+        allowedChips={['link', 'post', 'memo', 'document']}
+        showTasksChip={true}
+        tasksLabel="Tasks"
+      />
+    );
+    expect(screen.getAllByRole('radio')).toHaveLength(5);
+    expect(screen.queryByRole('button', { name: 'contributionSettings.moreTypesHeading' })).toBeNull();
+  });
+
+  test('clearing a type picked from the menu keeps it in the row, so focus stays on it', async () => {
+    render(<Controlled />);
+    const items = await openMore();
+    await userEvent.click(items.find(i => i.textContent === 'contributionSettings.types.memo') as HTMLElement);
+    const memo = screen.getByRole('radio', { name: 'contributionSettings.types.memo', checked: true });
+    await userEvent.click(memo);
+    expect(memo).toBeInTheDocument();
+    expect(memo).toHaveAttribute('aria-checked', 'false');
+    expect(memo).toHaveFocus();
+  });
+
+  test('a cleared type goes back into the menu once another type is chosen', async () => {
+    render(<Controlled />);
+    const items = await openMore();
+    await userEvent.click(items.find(i => i.textContent === 'contributionSettings.types.memo') as HTMLElement);
+    await userEvent.click(screen.getByRole('radio', { name: 'contributionSettings.types.memo' }));
+    await userEvent.click(screen.getByRole('radio', { name: 'contributionSettings.types.post' }));
+    expect(screen.queryByRole('radio', { name: 'contributionSettings.types.memo' })).toBeNull();
+  });
+
+  test('locked mode: the More trigger stays focusable but inert, and describes the lock', async () => {
+    render(
+      <ResponseTypeChipStrip value="post" onChange={vi.fn()} locked={true} showTasksChip={true} tasksLabel="Tasks" />
+    );
+    const more = screen.getByRole('button', { name: 'contributionSettings.moreTypesHeading' });
+    expect(more).not.toBeDisabled();
+    expect(more).toHaveAttribute('aria-disabled', 'true');
+    expect(more).not.toHaveAttribute('aria-haspopup');
+    expect(more).toHaveAttribute('title', 'contributionSettings.typeLockedHint');
+    expect(more).toHaveAccessibleDescription('contributionSettings.typeLockedHint');
+    await userEvent.click(more);
+    expect(screen.queryByRole('menu')).toBeNull();
+  });
+
+  test('a menu that is open when the strip locks closes', async () => {
+    const props = { value: 'none' as const, onChange: vi.fn(), showTasksChip: true, tasksLabel: 'Tasks' };
+    const { rerender } = render(<ResponseTypeChipStrip {...props} />);
+    await openMore();
+    rerender(<ResponseTypeChipStrip {...props} locked={true} />);
+    expect(screen.queryByRole('menu')).toBeNull();
   });
 
   test('Documents chip is not disabled and is excludable via allowedChips like any other chip', () => {
@@ -36,18 +143,25 @@ describe('ResponseTypeChipStrip', () => {
     expect(screen.queryByRole('radio', { name: /contributionSettings.types.document/i })).toBeNull();
   });
 
-  test('disabledChips: the Documents chip is aria-disabled with the entitlement tooltip and cannot be selected', async () => {
+  test('disabledChips: the Documents menu item is aria-disabled, keeps its reason, and cannot be selected', async () => {
     const onChange = vi.fn();
     render(
       <ResponseTypeChipStrip
         value="none"
         onChange={onChange}
         disabledChips={{ document: { tooltip: 'framing.officeDocumentsNotEnabled' } }}
+        showTasksChip={true}
+        tasksLabel="Tasks"
       />
     );
-    const document = screen.getByRole('radio', { name: /contributionSettings.types.document/i });
+    const items = await openMore();
+    // The reason describes the item; it is not glued onto its name.
+    const document = screen.getByRole('menuitem', { name: 'contributionSettings.types.document' });
+    expect(items).toContain(document);
     expect(document).toHaveAttribute('aria-disabled', 'true');
-    expect(document).toHaveAttribute('title', 'framing.officeDocumentsNotEnabled');
+    expect(document).toHaveTextContent('framing.officeDocumentsNotEnabled');
+    expect(document).toHaveAccessibleDescription('framing.officeDocumentsNotEnabled');
+    expect(document).not.toHaveAttribute('data-disabled');
     await userEvent.click(document);
     expect(onChange).not.toHaveBeenCalled();
   });
@@ -67,7 +181,19 @@ describe('ResponseTypeChipStrip', () => {
     expect(onChange).toHaveBeenCalledWith('post');
   });
 
-  test('locked mode: the Documents chip is also inert when active', async () => {
+  test('disabledChips: a disabled chip in the row is described by its reason', () => {
+    render(
+      <ResponseTypeChipStrip
+        value="none"
+        onChange={vi.fn()}
+        disabledChips={{ document: { tooltip: 'framing.officeDocumentsNotEnabled' } }}
+      />
+    );
+    const document = screen.getByRole('radio', { name: 'contributionSettings.types.document' });
+    expect(document).toHaveAccessibleDescription('framing.officeDocumentsNotEnabled');
+  });
+
+  test('locked mode: an active type that would sit in the menu is inert in the row', async () => {
     const onChange = vi.fn();
     render(<ResponseTypeChipStrip value="document" onChange={onChange} locked={true} />);
     const document = screen.getByRole('radio', { name: /contributionSettings.types.document/i, checked: true });
@@ -86,17 +212,17 @@ describe('ResponseTypeChipStrip', () => {
 
   test('clicking the active chip deselects (emits "none")', async () => {
     const onChange = vi.fn();
-    render(<ResponseTypeChipStrip value="memo" onChange={onChange} />);
-    const memo = screen.getByRole('radio', { name: /contributionSettings.types.memo/i });
-    await userEvent.click(memo);
+    render(<ResponseTypeChipStrip value="post" onChange={onChange} />);
+    const post = screen.getByRole('radio', { name: /contributionSettings.types.post/i });
+    await userEvent.click(post);
     expect(onChange).toHaveBeenCalledWith('none');
   });
 
   test('locked mode: every chip click is a no-op — the response type cannot be changed or cleared', async () => {
     const onChange = vi.fn();
     render(<ResponseTypeChipStrip value="post" onChange={onChange} locked={true} />);
-    const memo = screen.getByRole('radio', { name: /contributionSettings.types.memo/i });
-    await userEvent.click(memo);
+    const whiteboard = screen.getByRole('radio', { name: /contributionSettings.types.whiteboard/i });
+    await userEvent.click(whiteboard);
     expect(onChange).not.toHaveBeenCalled();
     const post = screen.getByRole('radio', { name: /contributionSettings.types.post/i });
     await userEvent.click(post);
@@ -111,15 +237,16 @@ describe('ResponseTypeChipStrip', () => {
     expect(post).toHaveAttribute('aria-disabled', 'true');
     expect(post).toHaveAttribute('title', 'contributionSettings.typeLockedHint');
     // Inactive chips stay disabled with the same hint.
-    const memo = screen.getByRole('radio', { name: /contributionSettings.types.memo/i });
-    expect(memo).toHaveAttribute('aria-disabled', 'true');
-    expect(memo).toHaveAttribute('title', 'contributionSettings.typeLockedHint');
+    const whiteboard = screen.getByRole('radio', { name: /contributionSettings.types.whiteboard/i });
+    expect(whiteboard).toHaveAttribute('aria-disabled', 'true');
+    expect(whiteboard).toHaveAttribute('title', 'contributionSettings.typeLockedHint');
   });
 
   test('allowedChips limits the strip to the listed response types (VC KB: post + link)', () => {
     render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} allowedChips={['post', 'link']} />);
     const chips = screen.getAllByRole('radio');
     expect(chips).toHaveLength(2);
+    expect(screen.queryByRole('button', { name: 'contributionSettings.moreTypesHeading' })).toBeNull();
     expect(screen.getByRole('radio', { name: /contributionSettings.types.post/i })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: /contributionSettings.types.link/i })).toBeInTheDocument();
     expect(screen.queryByRole('radio', { name: /contributionSettings.types.memo/i })).toBeNull();
@@ -134,13 +261,11 @@ describe('ResponseTypeChipStrip', () => {
     expect(post).toBeInTheDocument();
   });
 
-  test('the Tasks chip is absent by default and appears as a sixth chip when enabled', () => {
+  test('the Tasks chip is absent by default and joins the row when enabled', () => {
     const { rerender } = render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} />);
-    expect(screen.getAllByRole('radio')).toHaveLength(5);
+    expect(screen.queryByRole('radio', { name: 'Tasks' })).toBeNull();
 
     rerender(<ResponseTypeChipStrip value="none" onChange={vi.fn()} showTasksChip={true} tasksLabel="Tasks" />);
-    const chips = screen.getAllByRole('radio');
-    expect(chips).toHaveLength(6);
     expect(screen.getByRole('radio', { name: 'Tasks' })).toBeInTheDocument();
   });
 
@@ -175,7 +300,7 @@ describe('ResponseTypeChipStrip', () => {
     expect(screen.getByRole('radio', { name: 'Tasks', checked: true })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: /contributionSettings.types.post/i, checked: false })).toBeInTheDocument();
     // Clicking a real chip selects that response type (the consumer clears the board).
-    await userEvent.click(screen.getByRole('radio', { name: /contributionSettings.types.memo/i }));
-    expect(onChange).toHaveBeenCalledWith('memo');
+    await userEvent.click(screen.getByRole('radio', { name: /contributionSettings.types.link/i }));
+    expect(onChange).toHaveBeenCalledWith('link');
   });
 });

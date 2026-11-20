@@ -25,11 +25,17 @@ import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard'
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import {
+  formHeaderFromServer,
+  formQuestionsFromServer,
+  formSettingsFromServer,
+} from '@/main/crdPages/space/callout/calloutFormDefinitionMapper';
+import {
   allowedActorsFromServer,
   mapFormToCalloutCreationInput,
   mapFormToCalloutUpdateInput,
 } from '@/main/crdPages/space/callout/calloutFormMapper';
 import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
+import { cardVariantFromServer } from '@/main/crdPages/space/callout/spaceCollectionCardVariant';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 export type CalloutTemplateMapperFallbacks = {
@@ -38,6 +44,17 @@ export type CalloutTemplateMapperFallbacks = {
   /** i18n-resolved fallback used when a Collabora-document framing has no title. */
   collaboraFallbackDisplayName: string;
 };
+
+/**
+ * A template never has a host space, so it can never carry a manual (CUSTOM) collection selection —
+ * the server rejects the whole template input when it does ("Selection requires a host space…").
+ * Saving a Subspaces / Contributors callout with a manual selection as a template therefore resets
+ * the selection to AUTO with no ids (FR-006), while every other captured setting — the Subspaces
+ * card variant included — is kept.
+ */
+function templateSafeSelection(values: CalloutFormValues): CalloutFormValues {
+  return { ...values, selectionMode: 'auto', selectedIds: [] };
+}
 
 /**
  * `CalloutFormValues` → `CreateCalloutInput` for `createTemplate({ ..., calloutData })`.
@@ -54,7 +71,7 @@ export function calloutFormValuesToCreateCalloutInput(
   values: CalloutFormValues,
   fallbacks: CalloutTemplateMapperFallbacks
 ): CreateCalloutInput {
-  const { input } = mapFormToCalloutCreationInput(values, {
+  const { input } = mapFormToCalloutCreationInput(templateSafeSelection(values), {
     visibility: CalloutVisibility.Published,
     whiteboardFallbackDisplayName: fallbacks.whiteboardFallbackDisplayName,
     collaboraFallbackDisplayName: fallbacks.collaboraFallbackDisplayName,
@@ -81,8 +98,14 @@ export function calloutFormValuesToUpdateCalloutEntityInput(
   values: CalloutFormValues,
   calloutId: string
 ): UpdateCalloutEntityInput {
-  const { input } = mapFormToCalloutUpdateInput(values, { calloutId });
-  return input;
+  const { input } = mapFormToCalloutUpdateInput(templateSafeSelection(values), { calloutId });
+  // The stored `enabled` is an independent server field the template form neither shows nor reads,
+  // so the save must not re-derive it from the actor switches. The server merge keeps an omitted
+  // field, and it treats a callout as closed on `enabled: false` OR actors None.
+  const contribution = input.settings?.contribution;
+  if (!contribution) return input;
+  const { enabled: _enabled, ...contributionWithoutEnabled } = contribution;
+  return { ...input, settings: { ...input.settings, contribution: contributionWithoutEnabled } };
 }
 
 // ---------------------------------------------------------------------------
@@ -99,14 +122,15 @@ const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, FramingChip> = {
   [CalloutFramingType.Poll]: 'poll',
   [CalloutFramingType.Contributors]: 'contributors',
   [CalloutFramingType.Spaces]: 'spaces',
+  [CalloutFramingType.Form]: 'form',
 };
 
-const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, ResponseType | 'none'> = {
+const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, Exclude<ResponseType, 'none'>> = {
   [CalloutContributionType.Link]: 'link',
   [CalloutContributionType.Post]: 'post',
   [CalloutContributionType.Memo]: 'memo',
   [CalloutContributionType.Whiteboard]: 'whiteboard',
-  [CalloutContributionType.CollaboraDocument]: 'none',
+  [CalloutContributionType.CollaboraDocument]: 'document',
 };
 
 type FramingProfile = CalloutTemplateContentFragment['framing']['profile'];
@@ -158,6 +182,9 @@ export function calloutTemplateContentToFormValues(
     // captured types/default-type/default-view instead of falling back to the form
     // default. Yields the default (all types) for non-contributors framing.
     contributorCollection: contributorCollectionFromServer(settings.framing.contributors),
+    // Card variant — the variant travels with the
+    // template; absent `spaces` ⇒ compact.
+    cardVariant: cardVariantFromServer(settings.framing.spaces?.cardVariant),
     memoMarkdown: framing.memo?.markdown ?? '',
     linkUrl: framing.link?.uri ?? '',
     linkDisplayName: framing.link?.profile.displayName ?? '',
@@ -169,6 +196,16 @@ export function calloutTemplateContentToFormValues(
     pollAllowCustomOptions: framing.poll?.settings.allowContributorsAddOptions ?? false,
     pollHideResultsUntilVoted: framing.poll?.settings.resultsVisibility === PollResultsVisibility.Hidden,
     pollShowVoterAvatars: framing.poll?.settings.resultsDetail !== PollResultsDetail.Count,
+    // A Form template carries its definition only (title, description, questions, settings). The
+    // question/option ids are kept for editing the template; the create mapper drops them, so a Post
+    // started from the template mints its own.
+    ...(framing.form
+      ? {
+          ...formHeaderFromServer(framing.form),
+          formQuestions: formQuestionsFromServer(framing.form),
+          formSettings: formSettingsFromServer(framing.form.settings),
+        }
+      : {}),
     // #29: live whiteboard content is WS-only; the server copies it into the template on create.
     whiteboardContent: EmptyWhiteboardString,
     whiteboardPreviewImages: [],
@@ -210,6 +247,7 @@ export function calloutTemplateContentToFormValues(
       framingProfileTagsetId: findDefaultTagset(framing.profile.tagsets)?.id,
       framingLinkId: framing.link?.id,
       pollId: framing.poll?.id,
+      formId: framing.form?.id,
       memoId: framing.memo?.id,
       whiteboardId: framing.whiteboard?.id,
       mediaGalleryId: framing.mediaGallery?.id,

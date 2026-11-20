@@ -29,7 +29,7 @@ export function ContributionGridConnector({
   if (contributions.length === 0 && !trailingSlot) return null;
 
   return (
-    <ContributionGrid totalCount={contributions.length + (trailingSlot ? 1 : 0)}>
+    <ContributionGrid contributionCount={contributions.length} columns={3}>
       {contributions.map(contribution => {
         switch (contribution.type) {
           case 'whiteboard':
@@ -62,6 +62,7 @@ export function ContributionGridConnector({
                 key={contribution.id}
                 title={contribution.title}
                 documentType={contribution.documentType ?? 'text'}
+                previewUrl={contribution.previewUrl}
                 author={contribution.author?.name}
                 onClick={() => onContributionClick?.(contribution.id, contribution.documentId)}
               />

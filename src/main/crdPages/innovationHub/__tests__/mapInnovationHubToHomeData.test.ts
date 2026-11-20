@@ -1,6 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
 import type { InnovationHubHomeInnovationHubFragment } from '@/core/apollo/generated/graphql-schema';
 import { AuthorizationPrivilege, InnovationHubType, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { mapInnovationHubSpaces, mapInnovationHubToHomeData } from '../dataMappers/mapInnovationHubToHomeData';
 
 vi.mock('@/main/crdPages/spaces/spaceCardDataMapper', () => ({
@@ -67,6 +68,26 @@ describe('mapInnovationHubToHomeData (header)', () => {
 
   test('non-admin gets no settingsUrl', () => {
     const data = mapInnovationHubToHomeData({ hub: baseHub, canonicalDomain: 'alkemio.org' });
+    expect(data.settingsUrl).toBeUndefined();
+  });
+
+  // 027-platform-role-redesign L6 (client-9): Platform Support edits an
+  // organization-owned hub through `PLATFORM_SUPPORT_ORG_RESOURCES` (A7),
+  // the same dual-path gate `canEditOrgResource` already applies to Innovation
+  // Packs — the mapper must offer the same affordance, not just `Update`.
+  test('Platform Support (PLATFORM_SUPPORT_ORG_RESOURCES) also gets settingsUrl built from nameID', () => {
+    const data = mapInnovationHubToHomeData({
+      hub: { ...baseHub, authorization: { myPrivileges: [AuthorizationPrivilege.PlatformSupportOrgResources] } },
+      canonicalDomain: 'alkemio.org',
+    });
+    expect(data.settingsUrl).toBe(buildSettingsUrl('/hub/demo-name-id'));
+  });
+
+  test('a bare Read privilege gets no settingsUrl', () => {
+    const data = mapInnovationHubToHomeData({
+      hub: { ...baseHub, authorization: { myPrivileges: [AuthorizationPrivilege.Read] } },
+      canonicalDomain: 'alkemio.org',
+    });
     expect(data.settingsUrl).toBeUndefined();
   });
 

@@ -8,8 +8,13 @@
       "MESSAGING_NOT_ENABLED": "This user has disabled direct messaging. You cannot send them a message at this time.",
       "NOT_SUPPORTED": "Not supported: {{message}}",
       "OPERATION_NOT_ALLOWED": "{{message}}",
+      "UNSPECIFIED": "Une erreur inattendue s'est produite. Veuillez réessayer.",
       "generic": "Une erreur s'est produite",
       "generic-with-code": "Une erreur est survenue avec le code {{code}}",
+      "network": {
+        "session_store_unavailable": "Le service est temporairement indisponible. Veuillez réessayer dans un instant.",
+        "generic": "Un problème de connexion est survenu. Veuillez vérifier votre connexion et réessayer."
+      },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
         "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -30,6 +35,8 @@
           "invalidToken": "Invalid token.",
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Unable to initialize login flow.",
+          "platformSupportSelfTarget": "Vous ne pouvez pas effectuer cette action sur votre propre compte. Demandez à un autre membre du support de la plateforme ou à un administrateur de l'organisation.",
+          "secondFactorRequired": "La validation en deux étapes est obligatoire pour votre compte.",
           "sessionExpired": "Session expired.",
           "sessionExtend": "Unable to extend session.",
           "subscriptionNotAuthenticated": "Subscription requires authentication.",
@@ -51,7 +58,7 @@
           "userIdentity": "User identity not found."
         },
         "operations": {
-          "calloutClosed": "Callout is closed.",
+          "calloutClosed": "La publication est fermée.",
           "licenseEntitlementNotAvailable": "License entitlement not available.",
           "licenseEntitlementNotSupported": "License entitlement not supported.",
           "messagingNotEnabled": "Messaging not enabled.",
@@ -239,8 +246,8 @@
     "Account": "Compte",
     "Admin": "Administrateur",
     "Admins": "Administrateurs",
-    "Callout": "$t(common.Post), $t(common.subspaces) & $t(common.opportunties)",
-    "Callouts": "$t(common.Posts), $t(common.subspaces) & $t(common.opportunties)",
+    "Callout": "$t(common.Post)",
+    "Callouts": "$t(common.Posts)",
     "Collection": "Collection",
     "Collections": "Collections",
     "Comment": "Commentaire",
@@ -294,17 +301,17 @@
       "users-contributing": "utilisateurs qui contribuent"
     },
     "calendar": "Calendrier",
-    "callout": "$t(common.post), $t(common.subspaces) & $t(common.opportunties)",
+    "callout": "$t(common.post)",
     "calloutType": {
       "COLLABORA_DOCUMENT": "Document",
-      "LINK": "$t(common.Link), $t(common.subspaces) & $t(common.opportunties)",
-      "MEMO": "$t(common.Memo), $t(common.subspaces) & $t(common.opportunties)",
-      "NONE": "$t(common.Post), $t(common.subspaces) & $t(common.opportunties)",
+      "LINK": "$t(common.Link)",
+      "MEMO": "$t(common.Memo)",
+      "NONE": "$t(common.Post)",
       "POLL": "$t(common.Poll)",
-      "POST": "$t(common.Post), $t(common.subspaces) & $t(common.opportunties)",
-      "WHITEBOARD": "$t(common.Whiteboard), $t(common.subspaces) & $t(common.opportunties)"
+      "POST": "$t(common.Post)",
+      "WHITEBOARD": "$t(common.Whiteboard)"
     },
-    "callouts": "$t(common.posts), $t(common.subspaces) & $t(common.opportunties)",
+    "callouts": "$t(common.posts)",
     "card": "Carte",
     "cards": "Cartes",
     "category": "Catégorie",
@@ -343,16 +350,16 @@
     "enums": {
       "calloutContributionType": {
         "COLLABORA_DOCUMENT": "Document",
-        "LINK": "$t(common.Link), $t(common.subspaces) & $t(common.opportunties)",
-        "MEMO": "$t(common.Memo), $t(common.subspaces) & $t(common.opportunties)",
-        "POST": "$t(common.Post), $t(common.subspaces) & $t(common.opportunties)",
-        "WHITEBOARD": "$t(common.Whiteboard), $t(common.subspaces) & $t(common.opportunties)"
+        "LINK": "$t(common.Link)",
+        "MEMO": "$t(common.Memo)",
+        "POST": "$t(common.Post)",
+        "WHITEBOARD": "$t(common.Whiteboard)"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link $t(common.Collection)",
-        "POST": "$t(common.Post), $t(common.subspaces) & $t(common.opportunties)",
+        "POST": "$t(common.Post)",
         "POST_COLLECTION": "$t(common.Post) $t(common.Collection)",
-        "WHITEBOARD": "$t(common.Whiteboard), $t(common.subspaces) & $t(common.opportunties)",
+        "WHITEBOARD": "$t(common.Whiteboard)",
         "WHITEBOARD_COLLECTION": "$t(common.Whiteboard) $t(common.Collection)"
       },
       "discussion-category": {
@@ -397,13 +404,13 @@
       },
       "roleSetContributorType": {
         "ACCOUNT": "Account",
-        "ORGANIZATION": "$t(common.Organization), $t(common.subspaces) & $t(common.opportunties)",
+        "ORGANIZATION": "$t(common.Organization)",
         "SPACE": "$t(common.space)",
         "USER": "Utilisateur",
         "VIRTUAL_CONTRIBUTOR": "$t(common.virtualContributor)"
       },
       "searchVisibility": {
-        "ACCOUNT": "$t(common.Account), $t(common.subspaces) & $t(common.opportunties)",
+        "ACCOUNT": "$t(common.Account)",
         "HIDDEN": "Caché",
         "PUBLIC": "Publique"
       },
@@ -418,7 +425,7 @@
         "CALLOUT_plural": "Collaboration Tool $t(common.templates)",
         "COMMUNITY_GUIDELINES": "$t(common.Community) Guidelines $t(common.template)",
         "COMMUNITY_GUIDELINES_plural": "$t(common.Community) Guidelines $t(common.templates)",
-        "INNOVATION_FLOW": "$t(common.innovation-flow), $t(common.subspaces) & $t(common.opportunties)",
+        "INNOVATION_FLOW": "$t(common.innovation-flow)",
         "INNOVATION_FLOW_plural": "$t(common.innovation-flow) $t(common.templates)",
         "POST": "Post $t(common.template)",
         "POST_plural": "Post $t(common.templates)",
@@ -523,9 +530,13 @@
     "retrying": "Retrying...",
     "role": "Rôle",
     "roles": {
-      "ADMIN": "$t(common.Admin), $t(common.subspaces) & $t(common.opportunties)",
+      "ADMIN": "$t(common.Admin)",
       "ANONYMOUS": "Anonyme",
       "ASSOCIATE": "Associate",
+      "FEATURE_BETA_TESTER": "Fonctionnalité : testeur bêta",
+      "FEATURE_ORGANIZATION_CREATOR": "Fonctionnalité : créateur d'organisations",
+      "FEATURE_VC_CAMPAIGN": "VC Early Access",
+      "FEATURE_VIRTUAL_ASSISTANT": "Fonctionnalité : assistant virtuel",
       "GLOBAL_ADMIN": "Global $t(common.Admin)",
       "GLOBAL_COMMUNITY_READER": "$t(common.Community) Manager",
       "GLOBAL_LICENSE_MANAGER": "License Manager",
@@ -536,9 +547,19 @@
       "GUEST": "Guest",
       "HOST": "Hôte",
       "LEAD": "Référent",
-      "MEMBER": "$t(common.Member), $t(common.subspaces) & $t(common.opportunties)",
+      "MEMBER": "$t(common.Member)",
       "OWNER": "Propriétaire",
+      "PLATFORM_AUDIT_READER": "Lecteur d'audit de la plateforme",
       "PLATFORM_BETA_TESTER": "Beta Tester",
+      "PLATFORM_CONTENT_FULL_ACCESS": "Accès complet au contenu de la plateforme",
+      "PLATFORM_LICENSE_MANAGER": "Gestionnaire de licences de la plateforme",
+      "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin",
+      "PLATFORM_RESOURCE_ADMIN": "Administrateur des ressources de la plateforme",
+      "PLATFORM_ROLES_ADMIN": "Administrateur des rôles de la plateforme",
+      "PLATFORM_SETTINGS_ADMIN": "Administrateur des paramètres de la plateforme",
+      "PLATFORM_SPACES_READER": "Lecteur des espaces de la plateforme",
+      "PLATFORM_SUPPORT": "Support de la plateforme",
+      "PLATFORM_USERS_ADMIN": "Administrateur des utilisateurs de la plateforme",
       "PLATFORM_VC_CAMPAIGN": "VC Early Access",
       "REGISTERED": "Enregistré"
     },
@@ -553,21 +574,21 @@
     "space": "Espace",
     "space-level": {
       "L0": "$t(common.space)",
-      "L1": "$t(common.subspace), $t(common.subspaces) & $t(common.opportunties)",
+      "L1": "$t(common.subspace)",
       "L2": "Subsubspace"
     },
-    "space-settings": "$t(common.Settings), $t(common.subspaces) & $t(common.opportunties)",
+    "space-settings": "$t(common.Settings)",
     "spaceSubspace": "(Sub)Space",
     "spaceSubspaces": "(Sub)Spaces",
     "spaceTypes": {
-      "agreement": "$t(common.agreement), $t(common.subspaces) & $t(common.opportunties)",
+      "agreement": "$t(common.agreement)",
       "agreement_plural": "$t(common.agreements)",
       "space": "$t(common.space)",
-      "space_plural": "$t(common.spaces), $t(common.subspaces) & $t(common.opportunties)",
-      "subspace": "$t(common.subspace), $t(common.subspaces) & $t(common.opportunties)",
-      "subspace_plural": "$t(common.subspaces), $t(common.subspaces) & $t(common.opportunties)",
-      "subsubspace": "$t(common.subsubspace), $t(common.subspaces) & $t(common.opportunties)",
-      "subsubspace_plural": "$t(common.subsubspaces), $t(common.subspaces) & $t(common.opportunties)"
+      "space_plural": "$t(common.spaces)",
+      "subspace": "$t(common.subspace)",
+      "subspace_plural": "$t(common.subspaces)",
+      "subsubspace": "$t(common.subsubspace)",
+      "subsubspace_plural": "$t(common.subsubspaces)"
     },
     "spaces": "Espaces",
     "state": "État",
@@ -760,7 +781,8 @@
         },
         "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
           "description": "",
-          "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}"
+          "subject": "{{triggeredByName}} has assigned {{role}} to {{userName}}",
+          "subjectRemoved": "{{triggeredByName}} a retiré {{role}} à {{userName}}"
         },
         "PLATFORM_ADMIN_SPACE_CREATED": {
           "description": "{{spaceName}}",
@@ -917,9 +939,51 @@
         "ORGANIZATION_ADMIN_SPACE_COMMUNITY_JOINED": {
           "subject": "Votre $t(common.organization) {{organizationName}} a rejoint {{spaceName}}",
           "description": "Aucune action supplémentaire n'est requise."
+        },
+        "USER_ORGANIZATION_ASSOCIATE_INVITATION": {
+          "subject": "{{triggeredByName}} vous a invité(e) à vous associer à {{organizationName}}",
+          "description": "En tant que {{associateRole}}."
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_ACCEPTED": {
+          "subject": "{{triggeredByName}} a accepté l’invitation à s’associer à {{organizationName}}",
+          "description": "{{triggeredByName}} est désormais associé(e) de {{organizationName}}, dont vous êtes $t(common.admin).{{withheld}}"
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_INVITATION_DECLINED": {
+          "subject": "{{triggeredByName}} a refusé l’invitation à s’associer à {{organizationName}}",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_APPLICATION": {
+          "subject": "{{triggeredByName}} a postulé pour s’associer à {{organizationName}}",
+          "description": "Examinez la candidature dans les paramètres de l’organisation"
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_APPROVED": {
+          "subject": "Votre candidature pour vous associer à {{organizationName}} a été approuvée",
+          "description": ""
+        },
+        "USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED": {
+          "subject": "Votre candidature pour vous associer à {{organizationName}} a été refusée",
+          "description": ""
+        },
+        "ORGANIZATION_ADMIN_ASSOCIATE_JOINED": {
+          "subject": "« {{memberName}} » a rejoint {{organizationName}} en tant qu’associé",
+          "description": "{{memberName}} a rejoint {{organizationName}}, dont vous êtes $t(common.admin)."
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_FORM_RESPONSE": {
+          "subject": "{{triggeredByName}} a répondu au formulaire « {{calloutName}} »",
+          "description": "Dans <b>{{spaceName}}</b>, dont vous êtes $t(common.admin)."
         }
       },
-      "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}"
+      "spacesToJoin": "L'acceptation entraîne l'adhésion à : {{spaces}}",
+      "associateRole": {
+        "associate": "Associé",
+        "associateAdmin": "Associé + Admin",
+        "associateOwner": "Associé + Propriétaire"
+      },
+      "withheldRole": {
+        "admin": "Admin",
+        "owner": "Propriétaire"
+      },
+      "associateRoleWithheld": " Le rôle {{role}} n’a pas pu être accordé."
     },
     "profile": {
       "fields": {
@@ -1102,6 +1166,9 @@
     "message": "Message",
     "successfully-sent": "Message envoyé avec succès"
   },
+  "notification": {
+    "close": "Fermer la notification"
+  },
   "ok": "OK",
   "pages": {
     "admin": {
@@ -1208,6 +1275,7 @@
         "urlRequired": "URL is required"
       },
       "transferCallout": {
+        "formNotAllowed": "Une $t(common.post) avec un formulaire ne peut pas être transférée : ses réponses restent dans l'espace où elles ont été données.",
         "urlNotCallout": "URL does not resolve to a $t(common.post)",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space"
@@ -1250,7 +1318,10 @@
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organization"
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
+        "accountNotAccessible": "Ce compte existe mais ne vous est pas accessible.",
+        "successMessage": "Espace transféré avec succès.",
+        "errorMessage": "Impossible de transférer l'espace."
       },
       "transferVc": {
         "confirmButton": "Transfer",
@@ -1315,12 +1386,13 @@
       },
       "vcConversion": {
         "alreadyConverted": "This virtual contributor is already knowledge-base-based. No conversion needed.",
-        "calloutCount": "Callouts to Migrate",
+        "calloutCount": "Publications à migrer",
         "confirmTitle": "Convert Virtual Contributor?",
-        "confirmWarning": "This will convert the virtual contributor from space-based to knowledge-base-based. Callouts will be MOVED from the source space (not copied). This action cannot be undone.",
+        "confirmWarning": "Cela convertira le contributeur virtuel d'un fonctionnement basé sur un espace à un fonctionnement basé sur une base de connaissances. Les publications seront DÉPLACÉES depuis l'espace source (et non copiées). Cette action est irréversible.",
         "convertButton": "Convert to Knowledge Base",
         "errorMessage": "Failed to convert virtual contributor.",
-        "sectionDescription": "Convert a space-based virtual contributor to use a knowledge base. Callouts will be moved from the source space — not copied.",
+        "formNotAllowed": "L'espace de ce contributeur virtuel contient une $t(common.post) avec un formulaire ; il ne peut donc pas être converti en base de connaissances.",
+        "sectionDescription": "Convertir un contributeur virtuel basé sur un espace pour qu'il utilise une base de connaissances. Les publications seront déplacées depuis l'espace source, et non copiées.",
         "sectionTitle": "Virtual Contributor Type Conversion",
         "sourceSpace": "Source Space",
         "successMessage": "Virtual contributor conversion completed successfully.",
@@ -1350,7 +1422,7 @@
       }
     },
     "innovationLibrary": {
-      "fullName": "$t(common.templateLibrary), $t(common.subspaces) & $t(common.opportunties)"
+      "fullName": "$t(common.templateLibrary)"
     },
     "logout": {
       "loading": "Déconnexion en cours..."
@@ -1461,8 +1533,8 @@
   },
   "share": {
     "alkemio": {
-      "defaultMessage": "Je pense que ce {{entity}} pourrait vous intéresser : {{url}}",
-      "description": "Envoyez un lien vers ce {{entity}} en message privé à d'autres utilisateurs d'Alkemio.",
+      "defaultMessage": "Je pense que ceci pourrait vous intéresser : {{url}}",
+      "description": "Envoyez ce lien en message privé à d'autres utilisateurs d'Alkemio.",
       "errors": {
         "atLeastOneUser": "Sélectionnez au moins un utilisateur.",
         "messageRequired": "Le message ne peut pas être vide.",
@@ -1523,5 +1595,60 @@
     "archived": "Archivé",
     "demo": "Démo",
     "inactive": "Inactif"
+  },
+  "messageAttachments": {
+    "videoLabel": "Vidéo jointe : {{name}}",
+    "videoUnavailableHint": "Cette vidéo ne peut pas être lue ici. Téléchargez-la pour la regarder.",
+    "listLabel": "Pièces jointes",
+    "imageAlt": "Image jointe : {{name}}",
+    "download": "Télécharger {{name}}",
+    "unavailableHint": "Ce fichier n’a pas pu être chargé. Téléchargez-le pour le consulter.",
+    "unavailableNoDownload": "Ce fichier n’est pas disponible.",
+    "loading": "Chargement de la pièce jointe",
+    "openMedia": "Ouvrir {{name}} dans la visionneuse"
+  },
+  "unsavedChanges": {
+    "count_one": "{{count}} modification non enregistrée",
+    "count_other": "{{count}} modifications non enregistrées",
+    "save": "Enregistrer les modifications",
+    "discard": "Abandonner",
+    "saving": "Enregistrement…",
+    "saved": "Modifications enregistrées",
+    "regionLabel": "Modifications non enregistrées",
+    "discardDialog": {
+      "title_one": "Abandonner 1 modification non enregistrée ?",
+      "title_other": "Abandonner {{count}} modifications non enregistrées ?",
+      "description": "Chaque champ modifié dans cet onglet reprend sa valeur enregistrée.",
+      "confirm": "Abandonner"
+    },
+    "leaveDialog": {
+      "title": "Modifications non enregistrées",
+      "description": "Vous avez des modifications non enregistrées sur cet onglet. Voulez-vous les enregistrer, les abandonner ou rester sur cet onglet ?",
+      "save": "Enregistrer",
+      "discard": "Abandonner et quitter"
+    },
+    "saveFailedDialog": {
+      "title": "Vos modifications n'ont pas pu être enregistrées",
+      "description": "Quelqu'un a peut-être modifié cette page entre-temps. Actualisez la page pour charger la dernière version — vos modifications non enregistrées seront perdues.",
+      "refresh": "Actualiser la page",
+      "close": "Fermer"
+    }
+  },
+  "vcPaused": {
+    "title": "Les Virtual Contributors font peau neuve ! 🚀",
+    "description": "Nous les reconstruisons pour qu'ils soient plus intelligents et plus utiles. En attendant, vous ne pouvez pas les créer, les ajouter ou les mentionner, mais vos VC existants restent visibles.",
+    "learnMore": "En savoir plus",
+    "contactSupport": "Contacter le support",
+    "mentionUnavailable": "Temporairement indisponible"
+  },
+  "appDownload": {
+    "failed": "Le fichier n'a pas pu être téléchargé."
+  },
+  "emojiPicker": {
+    "more": "Plus d'émojis"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} contributeurs ici : {{names}}",
+    "pinGroupList": "{{count}} contributeurs ici"
   }
 }

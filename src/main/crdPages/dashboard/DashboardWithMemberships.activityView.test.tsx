@@ -1,5 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import {
+  ActivityEventType,
+  type ActivityFeedQueryArgs,
+  type LatestContributionsQueryVariables,
+} from '@/core/apollo/generated/graphql-schema';
 
 // ---- Mocks ----
 // This test exercises the real wiring between `useCurrentUserContext` and the
@@ -11,6 +16,7 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, opts?: { returnObjects?: boolean }) => (opts?.returnObjects ? [] : key),
   }),
+  Trans: ({ i18nKey }: { i18nKey: string }) => i18nKey,
 }));
 
 vi.mock('@/core/routing/useNavigate', () => ({
@@ -32,11 +38,27 @@ vi.mock('@/domain/community/userCurrent/useHomeSpaceSettings', () => ({
 }));
 
 const updateUserSettingsMock = vi.fn().mockResolvedValue({});
+
+// `useLatestContributionsQuery` is called once per activity block with that block's
+// filter. Recording it is what makes the `excludeMyActivity` wiring falsifiable; the
+// space block also needs a cursor so its *Load more* path can actually run.
+const SPACE_END_CURSOR = 'space-cursor-1';
+const fetchMoreSpaceActivityMock = vi.fn().mockResolvedValue({});
+const useLatestContributionsQueryMock = vi.fn((options: { variables: LatestContributionsQueryVariables }) =>
+  options.variables.filter?.myActivity
+    ? { data: undefined, loading: false, fetchMore: vi.fn() }
+    : {
+        data: { activityFeed: { activityFeed: [], pageInfo: { hasNextPage: true, endCursor: SPACE_END_CURSOR } } },
+        loading: false,
+        fetchMore: fetchMoreSpaceActivityMock,
+      }
+);
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   refetchUserSettingsQuery: (v: unknown) => ({ query: 'UserSettings', variables: v }),
   useDashboardExploreSpacesQuery: () => ({ data: undefined }),
   useHomeSpaceLookupQuery: () => ({ data: undefined }),
-  useLatestContributionsQuery: () => ({ data: undefined, loading: false, fetchMore: vi.fn() }),
+  useLatestContributionsQuery: (options: { variables: LatestContributionsQueryVariables }) =>
+    useLatestContributionsQueryMock(options),
   useLatestContributionsSpacesFlatQuery: () => ({ data: undefined }),
   useMyMembershipsQuery: () => ({ data: undefined, loading: false }),
   useNonActivityHostedSpacesQuery: () => ({ data: undefined, loading: false }),
@@ -49,10 +71,15 @@ vi.mock('./useDashboardSidebar', () => ({
 }));
 
 vi.mock('@/crd/components/dashboard/ActivityDialog', () => ({
-  ActivityDialog: () => null,
+  ActivityDialog: ({ open, children }: { open: boolean; children: React.ReactNode }) =>
+    open ? <div>{children}</div> : null,
 }));
 vi.mock('@/crd/components/dashboard/ActivityFeed', () => ({
-  ActivityFeed: () => <div data-testid="activity-feed" />,
+  ActivityFeed: ({ feedId, onLoadMore }: { feedId: string; onLoadMore?: () => void }) => (
+    <div data-testid="activity-feed">
+      {onLoadMore && <button type="button" data-testid={`load-more-${feedId}`} onClick={onLoadMore} />}
+    </div>
+  ),
 }));
 vi.mock('@/crd/components/dashboard/CampaignBanner', () => ({
   CampaignBanner: () => null,
@@ -67,7 +94,7 @@ vi.mock('@/crd/components/dashboard/MyMemberships/MyMembershipsPanel', () => ({
   MyMembershipsPanel: () => null,
 }));
 vi.mock('@/crd/components/dashboard/RecentSpaces', () => ({
-  RecentSpaces: () => null,
+  RecentSpaces: () => <div data-testid="recent-spaces" />,
 }));
 vi.mock('@/crd/components/dashboard/TipsAndTricksDialog', () => ({
   TipsAndTricksDialog: () => null,
@@ -80,6 +107,27 @@ vi.mock('@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog', () => 
 }));
 vi.mock('@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog', () => ({
   CrdVCCreationWizardDialog: () => null,
+}));
+
+let mockUnreadMessages = 0;
+let mockUnreadNotifications = 0;
+const setMessagingOpenMock = vi.fn();
+const setNotificationsOpenMock = vi.fn();
+const trackChatOpenMock = vi.fn();
+vi.mock('@/main/userMessaging/useUnreadConversationsCount', () => ({
+  useUnreadConversationsCount: () => mockUnreadMessages,
+}));
+vi.mock('@/main/inAppNotifications/useUnreadNotificationsCount', () => ({
+  useUnreadNotificationsCount: () => mockUnreadNotifications,
+}));
+vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
+  useUserMessagingContext: () => ({ setIsOpen: setMessagingOpenMock }),
+}));
+vi.mock('@/main/inAppNotifications/InAppNotificationsContext', () => ({
+  useInAppNotificationsContext: () => ({ setIsOpen: setNotificationsOpenMock }),
+}));
+vi.mock('@/core/analytics/events/unifiedChat', () => ({
+  trackChatOpen: (source: string) => trackChatOpenMock(source),
 }));
 
 // Re-import after mock setup.
@@ -132,5 +180,128 @@ describe('DashboardWithMemberships — activity view preference wiring (corr-cli
 
     expect(screen.getAllByTestId('activity-feed').length).toBeGreaterThan(0);
     expect(screen.queryByTestId('non-activity-sections')).toBeNull();
+  });
+});
+
+// The filter object is shared by the initial query and the `fetchMore` call, which are
+// two separate call sites. An implementation that set the flag at the first one only
+// would pass every other check while each *Load more* page silently re-included the
+// user's own activity (AC3).
+describe('DashboardWithMemberships — own activity excluded from the spaces feed (AC1/AC2/AC3)', () => {
+  // Typed against the generated input, so a stale codegen fails this file at typecheck
+  // rather than at runtime (AC7).
+  const expectedSpaceFilter: ActivityFeedQueryArgs = {
+    spaceIds: [],
+    roles: undefined,
+    excludeTypes: [ActivityEventType.CalloutWhiteboardContentModified],
+    excludeMyActivity: true,
+  };
+
+  const renderDashboard = (openDialog: 'my-space-activity' | null) => {
+    mockUserModel = { id: 'user-1', settings: { dashboard: { activityView: true } } };
+    localStorage.setItem('dashboardViewSeeded', '1');
+    render(
+      <DashboardWithMemberships dialogState={{ ...dialogState, openDialog }} onPendingMembershipsClick={vi.fn()} />
+    );
+  };
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    mockUserModel = undefined;
+    localStorage.clear();
+  });
+
+  test("the initial spaces-feed query excludes the user's own activity", () => {
+    renderDashboard(null);
+
+    const spaceFilters = useLatestContributionsQueryMock.mock.calls
+      .map(([options]) => options.variables.filter)
+      .filter(filter => !filter?.myActivity);
+
+    expect(spaceFilters.length).toBeGreaterThan(0);
+    expect(spaceFilters[0]).toEqual(expectedSpaceFilter);
+  });
+
+  test('the spaces-feed fetchMore carries the same exclusion', async () => {
+    renderDashboard('my-space-activity');
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('load-more-dialog-spaces'));
+    });
+
+    expect(fetchMoreSpaceActivityMock).toHaveBeenCalledTimes(1);
+    expect(fetchMoreSpaceActivityMock.mock.calls[0][0]).toEqual({
+      variables: { first: expect.any(Number), after: SPACE_END_CURSOR, filter: expectedSpaceFilter },
+    });
+  });
+
+  test('the My activity query is unchanged — myActivity only, no exclusion flag', () => {
+    renderDashboard(null);
+
+    const personalFilters = useLatestContributionsQueryMock.mock.calls
+      .map(([options]) => options.variables.filter)
+      .filter(filter => filter?.myActivity);
+
+    expect(personalFilters.length).toBeGreaterThan(0);
+    expect(personalFilters[0]).toEqual({
+      spaceIds: [],
+      myActivity: true,
+      excludeTypes: [ActivityEventType.CalloutWhiteboardContentModified],
+    });
+  });
+});
+
+// 108: the phone-only unread rows come first on Home, whichever view is on, and open the
+// chat list / notifications panel the header badges open.
+describe('DashboardWithMemberships — phone unread rows (108)', () => {
+  const renderDashboard = (activityView: boolean) => {
+    mockUserModel = { id: 'user-1', settings: { dashboard: { activityView } } };
+    localStorage.setItem('dashboardViewSeeded', '1');
+    render(<DashboardWithMemberships dialogState={dialogState} onPendingMembershipsClick={vi.fn()} />);
+  };
+
+  const precedes = (a: Element, b: Element) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    mockUserModel = undefined;
+    mockUnreadMessages = 0;
+    mockUnreadNotifications = 0;
+    localStorage.clear();
+  });
+
+  test.each([
+    ['on', true, 'recent-spaces'],
+    ['off', false, 'non-activity-sections'],
+  ])('with Activity View %s, Messages then Notifications precede the existing content', (_, activityView, firstExisting) => {
+    mockUnreadMessages = 2;
+    mockUnreadNotifications = 3;
+    renderDashboard(activityView);
+
+    const messages = screen.getByRole('button', { name: 'unreadSummary.messages.ariaLabel' });
+    const notifications = screen.getByRole('button', { name: 'unreadSummary.notifications.ariaLabel' });
+    expect(precedes(messages, notifications)).toBe(true);
+    expect(precedes(notifications, screen.getByTestId(firstExisting))).toBe(true);
+  });
+
+  test('no row is rendered when both counts are 0', () => {
+    renderDashboard(true);
+
+    expect(screen.queryByRole('button', { name: /unreadSummary/ })).toBeNull();
+    expect(screen.queryByRole('heading', { name: /unreadSummary/ })).toBeNull();
+  });
+
+  test('the Messages row opens the chat list and tracks the open; the Notifications row opens the panel', () => {
+    mockUnreadMessages = 1;
+    mockUnreadNotifications = 1;
+    renderDashboard(true);
+
+    fireEvent.click(screen.getByRole('button', { name: 'unreadSummary.messages.ariaLabel' }));
+    expect(trackChatOpenMock).toHaveBeenCalledWith('homeUnreadRow');
+    expect(setMessagingOpenMock).toHaveBeenCalledWith(true);
+    expect(setNotificationsOpenMock).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'unreadSummary.notifications.ariaLabel' }));
+    expect(setNotificationsOpenMock).toHaveBeenCalledWith(true);
   });
 });

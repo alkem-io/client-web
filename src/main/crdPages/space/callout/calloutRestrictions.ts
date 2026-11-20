@@ -81,3 +81,18 @@ export function clampFormValuesToRestrictions(
 
   return next;
 }
+
+/**
+ * The descriptor a picked template is clamped against in the create dialog: the
+ * caller's restrictions with the framing allow-list the viewer is actually offered.
+ * The default collaboration flow passes no `allowedFramingChips` and gates the
+ * admin-only framings (Form, Contributors, Subspaces) in the connector instead, so
+ * without this a non-admin could load a Form template's framing they cannot create.
+ */
+export function restrictionsForPickedTemplate(
+  restrictions: CrdCalloutRestrictions | undefined,
+  framingAllowList: FramingChipId[] | undefined
+): CrdCalloutRestrictions | undefined {
+  if (!framingAllowList) return restrictions;
+  return { ...restrictions, allowedFramingChips: framingAllowList };
+}

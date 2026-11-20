@@ -8,6 +8,33 @@ fragment OrganizationInfo on Organization {
   }
   roleSet {
     id
+    authorization {
+      id
+      myPrivileges
+    }
+    myMembershipStatus
+    applicationForm {
+      id
+      description
+      questions {
+        question
+        required
+        maxLength
+        sortOrder
+        explanation
+      }
+    }
+  }
+  settings {
+    membership {
+      allowUsersMatchingDomainToJoin
+      allowApplications
+    }
+  }
+  myAssociateEligibility {
+    canApply
+    canJoinDirectly
+    reason
   }
   verification {
     id

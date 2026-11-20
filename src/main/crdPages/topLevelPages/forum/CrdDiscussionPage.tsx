@@ -46,7 +46,12 @@ const CrdDiscussionPage = () => {
   const { getAuthor } = useAuthorsDetails(authorIds);
 
   const { platformPrivilegeWrapper } = useCurrentUserContext();
-  const isPlatformAdmin = platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
+  // 027-platform-role-redesign A15 (spec-clientweb-5): same check as
+  // CrdForumPage — the forum family's own `PLATFORM_FORUM_MANAGE`. Slice B
+  // (T013) retired the `PLATFORM_ADMIN` catch-all that stood alongside it.
+  const canManageForum = Boolean(
+    platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformForumManage)
+  );
   const activeCategories = data?.platform.forum.discussionCategories ?? [];
 
   // Edit / delete dialog state. Always declared (no conditional hooks) — the
@@ -84,8 +89,12 @@ const CrdDiscussionPage = () => {
   const backHref = activeSlug !== ALL_SLUG ? `/forum/${activeSlug}` : '/forum';
 
   const privileges = rawDiscussion.authorization?.myPrivileges ?? [];
-  const canEditDiscussion = privileges.includes(AuthorizationPrivilege.Update);
-  const canDeleteDiscussion = privileges.includes(AuthorizationPrivilege.Delete);
+  // 027-platform-role-redesign L6 (client-3): the server gates discussion
+  // edit/delete on PLATFORM_FORUM_MANAGE alone (the forum family's own
+  // privilege), not on the discussion's Update/Delete privileges.
+  const managesForum = privileges.includes(AuthorizationPrivilege.PlatformForumManage);
+  const canEditDiscussion = managesForum;
+  const canDeleteDiscussion = managesForum;
 
   const detailDataWithActions = {
     ...detailData,
@@ -137,7 +146,7 @@ const CrdDiscussionPage = () => {
             }}
             availableCategories={availableCategoriesFor(
               activeCategories,
-              isPlatformAdmin,
+              canManageForum,
               rawDiscussion.category as ForumDiscussionCategory
             )}
             onStateChange={setEditFormState}

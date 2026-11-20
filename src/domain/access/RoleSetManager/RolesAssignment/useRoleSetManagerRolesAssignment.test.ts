@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Mock the eight generated mutation hooks and the notification helper so the hook can be
+// Mock the ten generated mutation hooks and the notification helper so the hook can be
 // exercised as a plain function (no React runtime needed) — same pattern as useRoleSetManager.test.ts.
 const notify = vi.fn();
 
@@ -18,6 +18,8 @@ const mutationTuple = () => [runMutation, { loading: false }];
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useAssignPlatformRoleToUserMutation: () => mutationTuple(),
   useRemovePlatformRoleFromUserMutation: () => mutationTuple(),
+  useAssignPlatformRoleToOrganizationMutation: () => mutationTuple(),
+  useRemovePlatformRoleFromOrganizationMutation: () => mutationTuple(),
   useAssignRoleToUserMutation: () => mutationTuple(),
   useRemoveRoleFromUserMutation: () => mutationTuple(),
   useAssignRoleToOrganizationMutation: () => mutationTuple(),
@@ -48,11 +50,19 @@ const allActions = [
   ['removeRoleFromUser', (p: ReturnType<typeof provided>) => p.removeRoleFromUser('u1', RoleName.Member)],
   [
     'assignPlatformRoleToUser',
-    (p: ReturnType<typeof provided>) => p.assignPlatformRoleToUser('u1', RoleName.GlobalAdmin),
+    (p: ReturnType<typeof provided>) => p.assignPlatformRoleToUser('u1', RoleName.PlatformRolesAdmin),
   ],
   [
     'removePlatformRoleFromUser',
-    (p: ReturnType<typeof provided>) => p.removePlatformRoleFromUser('u1', RoleName.GlobalAdmin),
+    (p: ReturnType<typeof provided>) => p.removePlatformRoleFromUser('u1', RoleName.PlatformRolesAdmin),
+  ],
+  [
+    'assignPlatformRoleToOrganization',
+    (p: ReturnType<typeof provided>) => p.assignPlatformRoleToOrganization('o1', RoleName.FeatureBetaTester),
+  ],
+  [
+    'removePlatformRoleFromOrganization',
+    (p: ReturnType<typeof provided>) => p.removePlatformRoleFromOrganization('o1', RoleName.FeatureBetaTester),
   ],
   ['assignRoleToOrganization', (p: ReturnType<typeof provided>) => p.assignRoleToOrganization('o1', RoleName.Member)],
   [

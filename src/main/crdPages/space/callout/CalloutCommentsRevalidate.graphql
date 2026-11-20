@@ -1,0 +1,13 @@
+# Re-reads only a callout's own comment room. The result normalizes into the
+# same Room entity that CalloutDetails references, so every view reading
+# `callout.comments` picks up the fresh thread.
+query CalloutCommentsRevalidate($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      comments {
+        ...CommentsWithMessages
+      }
+    }
+  }
+}

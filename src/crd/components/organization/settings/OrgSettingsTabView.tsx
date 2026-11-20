@@ -1,6 +1,8 @@
-import { Eye, Settings as SettingsIcon, Users } from 'lucide-react';
+import { Eye, Settings as SettingsIcon, ShieldCheck, Users } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { Switch } from '@/crd/primitives/switch';
 
@@ -8,35 +10,73 @@ const NS = 'crd-contributorSettings';
 
 export type OrgSettingsTabViewProps = {
   loading: boolean;
-  // Membership
-  allowUsersMatchingDomainToJoin: boolean;
-  membershipSaving: boolean;
-  onToggleAllowDomain: (next: boolean) => void;
-  // Membership — allow Spaces to invite this organization (061)
+  // Membership — all three switches live here (R41). The domain switch never
+  // leaves this tab, and `allowApplications` (062) joins it rather than sitting
+  // on the Associates tab; that tab carries no settings at all.
   allowSpaceInvitations: boolean;
   allowSpaceInvitationsSaving: boolean;
   onToggleAllowSpaceInvitations: (next: boolean) => void;
+  allowUsersMatchingDomainToJoin: boolean;
+  allowUsersMatchingDomainToJoinSaving: boolean;
+  onToggleAllowUsersMatchingDomainToJoin: (next: boolean) => void;
+  allowApplications: boolean;
+  allowApplicationsSaving: boolean;
+  onToggleAllowApplications: (next: boolean) => void;
   // Privacy
   contributionRolesPubliclyVisible: boolean;
   privacySaving: boolean;
   onToggleContributionRoles: (next: boolean) => void;
+  // Security
+  secondFactorRequired: boolean;
+  secondFactorRequiredSaving: boolean;
+  onToggleSecondFactorRequired: (next: boolean) => void;
 };
+
+type SwitchRowProps = {
+  label: string;
+  caption: string;
+  checked: boolean;
+  saving: boolean;
+  onCheckedChange: (next: boolean) => void;
+};
+
+/**
+ * One labelled switch row. Extracted because this card now carries four of them:
+ * the duplicated `allowSpaceInvitations` block Carlos found on 2026-09-11 (R45)
+ * was a merge artefact that survived precisely because the markup was repeated
+ * verbatim, so there is one copy of it here and only the data differs.
+ */
+function SwitchRow({ label, caption, checked, saving, onCheckedChange }: SwitchRowProps) {
+  return (
+    <div className="flex items-start justify-between gap-4">
+      <div className="flex-1">
+        <p className="text-body-emphasis">{label}</p>
+        <p className="mt-0.5 text-caption text-muted-foreground">{caption}</p>
+      </div>
+      <Switch checked={checked} disabled={saving} onCheckedChange={onCheckedChange} aria-label={label} />
+    </div>
+  );
+}
 
 /**
  * Org Settings tab — presentational view (US12).
  *
- * Two `SettingsCard`s:
+ * Three `SettingsCard`s:
  *
- * 1. **Membership** — `allowUsersMatchingDomainToJoin` and
- *    `allowSpaceInvitations` (whether Spaces may invite this organization).
+ * 1. **Membership** — `allowSpaceInvitations` (whether Spaces may invite this
+ *    organization, 061), `allowUsersMatchingDomainToJoin` and `allowApplications`
+ *    (062, R41).
  * 2. **Privacy** (`contributionRolesPubliclyVisible`).
+ * 3. **Security** (`secondFactorRequired`: members must use a second factor).
  *
  * **No Design System toggle** on this tab (FR-132 — User-only). Every
  * switch commits via a callback prop; the parent owns the optimistic
- * flip + hard-failure revert with toast (FR-133).
+ * flip + hard-failure revert with toast (FR-133). Switching the second-factor
+ * requirement off is confirmed first: switching it back on starts a new grace.
  */
 export function OrgSettingsTabView(props: OrgSettingsTabViewProps) {
   const { t } = useTranslation(NS);
+  const [confirmingSecondFactorOff, setConfirmingSecondFactorOff] = useState(false);
 
   if (props.loading) {
     return (
@@ -51,52 +91,62 @@ export function OrgSettingsTabView(props: OrgSettingsTabViewProps) {
   return (
     <div className="space-y-6">
       <SettingsCard icon={Users} title={t('org.settings.membership.title')}>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <p className="text-body-emphasis">{t('org.settings.membership.allowDomainLabel')}</p>
-            <p className="mt-0.5 text-caption text-muted-foreground">
-              {t('org.settings.membership.allowDomainCaption')}
-            </p>
-          </div>
-          <Switch
-            checked={props.allowUsersMatchingDomainToJoin}
-            disabled={props.membershipSaving}
-            onCheckedChange={props.onToggleAllowDomain}
-            aria-label={t('org.settings.membership.allowDomainLabel')}
-          />
-        </div>
-        <div className="mt-4 flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <p className="text-body-emphasis">{t('org.settings.membership.allowSpaceInvitationsLabel')}</p>
-            <p className="mt-0.5 text-caption text-muted-foreground">
-              {t('org.settings.membership.allowSpaceInvitationsCaption')}
-            </p>
-          </div>
-          <Switch
+        <div className="space-y-4">
+          <SwitchRow
+            label={t('org.settings.membership.allowSpaceInvitationsLabel')}
+            caption={t('org.settings.membership.allowSpaceInvitationsCaption')}
             checked={props.allowSpaceInvitations}
-            disabled={props.allowSpaceInvitationsSaving}
+            saving={props.allowSpaceInvitationsSaving}
             onCheckedChange={props.onToggleAllowSpaceInvitations}
-            aria-label={t('org.settings.membership.allowSpaceInvitationsLabel')}
+          />
+          <SwitchRow
+            label={t('org.settings.membership.allowDomainLabel')}
+            caption={t('org.settings.membership.allowDomainCaption')}
+            checked={props.allowUsersMatchingDomainToJoin}
+            saving={props.allowUsersMatchingDomainToJoinSaving}
+            onCheckedChange={props.onToggleAllowUsersMatchingDomainToJoin}
+          />
+          <SwitchRow
+            label={t('org.settings.membership.allowApplicationsLabel')}
+            caption={t('org.settings.membership.allowApplicationsCaption')}
+            checked={props.allowApplications}
+            saving={props.allowApplicationsSaving}
+            onCheckedChange={props.onToggleAllowApplications}
           />
         </div>
       </SettingsCard>
 
       <SettingsCard icon={Eye} title={t('org.settings.privacy.title')}>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <p className="text-body-emphasis">{t('org.settings.privacy.contributionRolesLabel')}</p>
-            <p className="mt-0.5 text-caption text-muted-foreground">
-              {t('org.settings.privacy.contributionRolesCaption')}
-            </p>
-          </div>
-          <Switch
-            checked={props.contributionRolesPubliclyVisible}
-            disabled={props.privacySaving}
-            onCheckedChange={props.onToggleContributionRoles}
-            aria-label={t('org.settings.privacy.contributionRolesLabel')}
-          />
-        </div>
+        <SwitchRow
+          label={t('org.settings.privacy.contributionRolesLabel')}
+          caption={t('org.settings.privacy.contributionRolesCaption')}
+          checked={props.contributionRolesPubliclyVisible}
+          saving={props.privacySaving}
+          onCheckedChange={props.onToggleContributionRoles}
+        />
       </SettingsCard>
+
+      <SettingsCard icon={ShieldCheck} title={t('org.settings.security.title')}>
+        <SwitchRow
+          label={t('org.settings.security.requireSecondFactorLabel')}
+          caption={t('org.settings.security.requireSecondFactorCaption')}
+          checked={props.secondFactorRequired}
+          saving={props.secondFactorRequiredSaving}
+          onCheckedChange={next =>
+            next ? props.onToggleSecondFactorRequired(true) : setConfirmingSecondFactorOff(true)
+          }
+        />
+      </SettingsCard>
+
+      <ConfirmationDialog
+        open={confirmingSecondFactorOff}
+        onOpenChange={setConfirmingSecondFactorOff}
+        variant="destructive"
+        title={t('org.settings.security.turnOffTitle')}
+        description={t('org.settings.security.turnOffDescription')}
+        confirmLabel={t('org.settings.security.turnOffConfirm')}
+        onConfirm={() => props.onToggleSecondFactorRequired(false)}
+      />
     </div>
   );
 }

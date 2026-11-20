@@ -2,6 +2,10 @@ query platformLicensingPlans {
   platform {
     licensingFramework {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       plans {
         id
         type

@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUserSecurityAuthenticationMethodsQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useSecondFactorRequirementQuery,
+  useUserSecurityAuthenticationMethodsQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import { AuthenticationType } from '@/core/apollo/generated/graphql-schema';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import useNavigate from '@/core/routing/useNavigate';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
-import { DeleteAccountCard } from '@/crd/components/user/settings/DeleteAccountCard';
 import { McpApiKeyCreateDialog } from '@/crd/components/user/settings/McpApiKeyCreateDialog';
 import { McpApiKeyRevealPanel } from '@/crd/components/user/settings/McpApiKeyRevealPanel';
 import { McpApiKeysCard } from '@/crd/components/user/settings/McpApiKeysCard';
@@ -15,14 +17,15 @@ import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { platformBaseAddress } from '@/main/constants/endpoints';
 import { flowDescriptorAdapter } from '@/main/crdPages/auth/flowDescriptorAdapter';
 import { invokePasskeyTrigger } from '@/main/crdPages/auth/passkeyTrigger';
-import { buildSettingsTabUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
+import { TwoStepVerification } from '@/main/crdPages/auth/TwoStepVerification';
+import { offersTwoStepVerification } from '@/main/crdPages/auth/twoStepVerificationModel';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import useCanEditUserSettings from '../../useCanEditUserSettings';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import { ConnectedAccountsSection, type ConnectedAccountsSectionStatus } from './ConnectedAccountsSection';
 import { adaptConnectedAccountsFlow } from './connectedAccountsFlowAdapter';
 import PasswordChangeForm from './PasswordChangeForm';
 import { passkeyOwnsFlowMessages } from './passkeyFlowMessages';
-import useDeleteAccount from './useDeleteAccount';
 import useMcpApiKeys from './useMcpApiKeys';
 import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
 
@@ -45,7 +48,7 @@ import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
  */
 const CrdUserSecurityTab = () => {
   const navigate = useNavigate();
-  const { userId, userModel, profileUrl, loading: routeContextLoading } = useUserPageRouteContext();
+  const { userId, profileUrl, loading: routeContextLoading } = useUserPageRouteContext();
   const { isOwner, loading: predicateLoading } = useCanEditUserSettings({ profileUserId: userId });
   const loading = predicateLoading || routeContextLoading;
 
@@ -78,38 +81,23 @@ const CrdUserSecurityTab = () => {
         state={{ kind: 'loading' }}
         passwordForm={null}
         webauthnForm={null}
+        twoStepVerificationSection={null}
         mcpApiKeysCard={null}
         connectedAccountsSection={null}
-        deleteAccountCard={null}
       />
     );
   }
 
-  return (
-    <OwnerSecurityTabContent
-      userId={userId}
-      displayName={userModel?.profile?.displayName ?? ''}
-      profileUrl={profileUrl}
-    />
-  );
+  return <OwnerSecurityTabContent profileUrl={profileUrl} />;
 };
 
-const OwnerSecurityTabContent = ({
-  userId,
-  displayName,
-  profileUrl,
-}: {
-  userId: string | undefined;
-  displayName: string;
-  profileUrl: string;
-}) => {
+const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
   const { i18n } = useTranslation('crd-contributorSettings');
   // The Settings flow is created with `return_to` = this same Security tab
   // URL so an OIDC link's provider round trip and a re-auth resume both land
   // back on the Connected Accounts section instead of the platform apex.
   const flowResult = useUserSecuritySettingsFlow(buildSettingsTabUrl(profileUrl, 'security'));
   const mcpApiKeys = useMcpApiKeys();
-  const deleteAccount = useDeleteAccount(userId, buildSettingsTabUrl(profileUrl, 'security'));
   const dateLocale = resolveDateFnsLocale(i18n.language);
 
   // Load the Ory passkey script so the WebAuthn registration button can run
@@ -173,6 +161,21 @@ const OwnerSecurityTabContent = ({
         }}
       />
     ) : null;
+
+  // Two-step verification: the same settings flow's totp / lookup_secret / webauthn nodes. Whether a
+  // rule requires a second factor of this person decides the warning on removing the last one, and whether its
+  // sign-in counted a single way to pass the second step decides the notice asking for a second.
+  const twoStepFlow =
+    flowResult.kind === 'ready' && offersTwoStepVerification(flowResult.flow) ? flowResult.flow : undefined;
+  const { data: requirementData } = useSecondFactorRequirementQuery({ skip: !twoStepFlow });
+  const twoStepVerificationSection = twoStepFlow ? (
+    // Until the requirement is known (loading or failed), warn as if it applies: the warning is the safe default.
+    <TwoStepVerification
+      flow={twoStepFlow}
+      requirementCovered={requirementData?.me.secondFactorRequirement.covered ?? true}
+      secondWayNeeded={requirementData?.me.secondFactorRequirement.secondWayNeeded}
+    />
+  ) : null;
 
   // Connected Accounts (US1-3, FR-001-FR-012, FR-017-FR-026): derived from
   // the same Settings flow plus the same authentication-methods query the
@@ -240,27 +243,14 @@ const OwnerSecurityTabContent = ({
     </>
   );
 
-  const deleteAccountCard = (
-    <DeleteAccountCard
-      displayName={displayName}
-      dialog={deleteAccount.dialog}
-      onOpen={deleteAccount.onOpen}
-      onTypedNameChange={deleteAccount.onTypedNameChange}
-      onConfirm={deleteAccount.onConfirm}
-      onCancel={deleteAccount.onCancel}
-      onDialogOpenChange={deleteAccount.onDialogOpenChange}
-      accountResourcesUrl={buildUserAccountUrl(profileUrl)}
-    />
-  );
-
   return (
     <UserSecurityTabView
       state={state}
       passwordForm={passwordForm}
       webauthnForm={webauthnForm}
+      twoStepVerificationSection={twoStepVerificationSection}
       mcpApiKeysCard={mcpApiKeysCard}
       connectedAccountsSection={connectedAccountsSection}
-      deleteAccountCard={deleteAccountCard}
     />
   );
 };

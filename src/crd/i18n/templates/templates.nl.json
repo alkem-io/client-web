@@ -10,6 +10,7 @@
     "deleting": "Bezig met verwijderen…",
     "noTemplates": "Nog geen templates",
     "noTemplatesHint": "Maak er een, of importeer er een uit de bibliotheek.",
+    "browseLibrary": "Algemene bibliotheek doorzoeken",
     "noTemplatesReadOnly": "Nog geen templates.",
     "sectionList": "Template-secties",
     "templateList": "Templates",
@@ -20,7 +21,7 @@
       },
       "callout": {
         "title": "Samenwerkingstools",
-        "subtitle": "Herbruikbare callouts voor workshops, brainstorms en groepsactiviteiten."
+        "subtitle": "Herbruikbare Posts voor workshops, brainstorms en groepsactiviteiten."
       },
       "whiteboard": {
         "title": "Whiteboard-templates",
@@ -62,7 +63,8 @@
     "image": "Galerij",
     "poll": "Poll",
     "contributors": "Contributors",
-    "spaces": "Subspaces"
+    "spaces": "Subspaces",
+    "form": "Formulier"
   },
   "contributionType": {
     "post": "Posts",
@@ -87,7 +89,15 @@
       "links": "Links",
       "gallery": "Galerij",
       "pollQuestion": "Vraag",
-      "pollOptions": "Opties"
+      "pollOptions": "Opties",
+      "formQuestions": "Vragen",
+      "formRequired": "Verplicht",
+      "formQuestionType": {
+        "SHORT_TEXT": "Korte tekst",
+        "LONG_TEXT": "Lange tekst",
+        "SINGLE_CHOICE": "Eén antwoord",
+        "MULTIPLE_CHOICE": "Meerdere antwoorden mogelijk"
+      }
     },
     "whiteboard": {
       "empty": "Dit whiteboard-template heeft geen tekening."
@@ -263,8 +273,8 @@
   "setDefault": {
     "subspaceTitle": "Standaard Subspace-template",
     "subspaceSubtitle": "Wordt gebruikt om het formulier vooraf in te vullen bij het maken van een Subspace van deze Space.",
-    "flowStateTitle": "Standaard callout-template",
-    "flowStateSubtitle": "Wordt gebruikt om het formulier vooraf in te vullen bij het toevoegen van een callout aan deze fase.",
+    "flowStateTitle": "Standaard Post-template",
+    "flowStateSubtitle": "Wordt gebruikt om het formulier vooraf in te vullen bij het toevoegen van een Post aan deze fase.",
     "current": "Huidige standaard",
     "none": "Geen standaard",
     "noCandidates": "Er zijn nog geen Space-templates in deze set.",
@@ -274,7 +284,7 @@
     "cancel": "Annuleren"
   },
   "saveAs": {
-    "fromCalloutTitle": "Callout opslaan als template",
+    "fromCalloutTitle": "Post opslaan als template",
     "fromGuidelinesTitle": "Richtlijnen opslaan als template",
     "fromSubspaceTitle": "Subspace opslaan als template",
     "unsavedSourceTitle": "Sla eerst je wijzigingen op",
@@ -315,7 +325,7 @@
     },
     "searchVisibilityHints": {
       "public": "Iedereen kan dit pakket via zoeken vinden.",
-      "account": "Alleen het eigenaarsaccount kan dit pakket via zoeken vinden — inclusief de geassocieerden, als de eigenaar een organisatie is.",
+      "account": "Alleen het eigenaarsaccount kan dit pakket via zoeken vinden — inclusief de betrokkenen, als de eigenaar een organisatie is.",
       "hidden": "Alleen beheerders van het eigenaarsaccount kunnen dit pakket via zoeken vinden."
     },
     "save": "Wijzigingen opslaan",

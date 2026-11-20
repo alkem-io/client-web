@@ -67,6 +67,19 @@ export function SubspacePage() {
 
           <div className="hidden lg:block lg:col-span-2 sticky top-24 self-start">
             <SubspaceSidebar
+              widgets={[
+                'intent',
+                'about',
+                'createPost',
+                'community',
+                'events',
+                'activity',
+                'index',
+                'subspaceLinks',
+                'virtualContributors',
+                'updates',
+              ]}
+              activityEnabled={true}
               description="**Why this subspace?** We need to align municipal stakeholders behind a common decarbonisation roadmap."
               leads={[
                 {

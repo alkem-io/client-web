@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { type ReactNode, useEffect } from 'react';
+import { claimEscape } from '@/crd/lib/claimEscape';
 import { cn } from '@/crd/lib/utils';
 
 export type MobileSidebarDrawerProps = {
@@ -41,7 +42,7 @@ export function MobileSidebarDrawer({
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (claimEscape(e)) onClose();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);

@@ -75,7 +75,7 @@ export type AccountResourceGroup = {
   title: string; // i18n
   /** Visible only when the privilege resolves true. */
   canCreate: boolean;
-  createButtonLabel: string; // i18n
+  // createButtonLabel removed 2026-10-23 — no header Create button; the dashed tile is the only create affordance (spec Session 2026-10-23).
   onCreate: () => void;
   items: AccountResourceCardItem[];
   emptyStateLabel: string; // i18n — shown when items.length === 0 and the section isn't omitted
@@ -85,7 +85,7 @@ export type AccountResourceGroup = {
 
 /** The shared contributor-account view shape. Both User Account and Org Account map to this. */
 export type ContributorAccountViewProps = {
-  helpBannerLabel: string; // i18n — "Here you can view your active resources..."
+  // helpBannerLabel removed 2026-10-23 — no help banner; groups render as collapsible SettingsSection cards (spec Session 2026-10-23).
   groups: AccountResourceGroup[];
   loading: boolean;
 };

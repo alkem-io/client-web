@@ -1,10 +1,9 @@
 import {
   Bot,
   Building,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
-  ChevronUp,
+  Clock,
   Download,
   FileText,
   MoreHorizontal,
@@ -13,15 +12,18 @@ import {
   Shield,
   Trash2,
   UserPlus,
+  Users,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GatedAction } from '@/crd/components/common/GatedAction';
+import { SettingsSection } from '@/crd/components/common/SettingsSection';
 import type { PendingMembership } from '@/crd/components/space/settings/PendingMembershipsTable';
 import { PendingMembershipsTable } from '@/crd/components/space/settings/PendingMembershipsTable';
 import type { PendingOrganizationInvitationItem } from '@/crd/components/space/settings/PendingOrganizationInvitationsList';
 import { PendingOrganizationInvitationsList } from '@/crd/components/space/settings/PendingOrganizationInvitationsList';
+import { VcPausedNotice } from '@/crd/components/virtualContributor/VcPausedNotice';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatShortDate } from '@/crd/lib/dateTimeFormat';
 import { cn } from '@/crd/lib/utils';
@@ -36,7 +38,6 @@ import {
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
 import { Input } from '@/crd/primitives/input';
-import { Separator } from '@/crd/primitives/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/crd/primitives/table';
 
 export type CommunityMember = {
@@ -96,15 +97,9 @@ export type SpaceSettingsCommunityViewProps = {
   pendingOrganizationInvitations: PendingOrganizationInvitation[];
   applicationFormSlot?: ReactNode;
   communityGuidelinesSlot?: ReactNode;
-  /**
-   * The community permissions this view reports upward. None of them decide whether a
-   * launch button is RENDERED — every gated action is rendered always and disabled via
-   * its `*DisabledReason` prop — so adding a flag here never hides anything.
-   */
   permissions: {
     canInvite: boolean;
     canInviteOrganizations: boolean;
-    canAddOrganizations: boolean;
     canAddVirtualContributors: boolean;
   };
   /**
@@ -115,21 +110,18 @@ export type SpaceSettingsCommunityViewProps = {
    * and FR-008 rule out. Undefined means permitted.
    */
   addDisabledReasons?: {
-    organizations?: string;
     virtualContributors?: string;
   };
   /**
    * Tooltip copy for the *Invite organisation* button when the action is unavailable.
-   * Same gated-not-hidden contract as `addDisabledReasons` above — the two controls sit
-   * in the same card and must not use two different conventions. Undefined means
-   * permitted.
+   * Gated, never hidden. Organisations join a Space by invitation only — there is no
+   * direct-add control (alkem-io/server#6623). Undefined means permitted.
    */
   inviteOrganizationsDisabledReason?: string;
   /** Show the destructive "Remove from Space" dropdown item on member rows. Omit to hide. */
   onUserRemove?: (id: string) => void;
   /** Open the Member settings dialog for this user. Replaces the legacy inline lead-toggle dropdown item. */
   onMemberChangeRole?: (member: CommunityMember) => void;
-  onOrgAdd: () => void;
   /** Opens the unified invite dialog with kind='organization'. */
   onInviteOrganizations: () => void;
   /** Show the destructive "Remove from Space" dropdown item on organization rows. Omit to hide. */
@@ -137,15 +129,20 @@ export type SpaceSettingsCommunityViewProps = {
   /** Open the Member settings dialog for this organization. */
   onOrgChangeRole?: (org: CommunityOrg) => void;
   onOrgInvitationRevoke: (id: string) => void;
-  onVCAdd: () => void;
+  // TEMP: VCs disabled (#10398) — optional so the page can stop passing it; restore to required.
+  onVCAdd?: () => void;
   onVCAddExternal?: () => void;
   onVCRemove: (id: string) => void;
   onPendingView: (id: string) => void;
   onPendingApprove: (id: string) => void;
   onPendingReject: (id: string) => void;
   onPendingDelete: (id: string) => void;
+  onPendingResend?: (id: string) => void;
+  resendingIds?: ReadonlySet<string>;
   onInviteUsers: () => void;
   onExportMembers?: () => void;
+  onExportApplications?: () => void;
+  onExportOrganizations?: () => void;
   exportDisabled?: boolean;
   className?: string;
 };
@@ -166,7 +163,6 @@ export function SpaceSettingsCommunityView({
   inviteOrganizationsDisabledReason,
   onUserRemove,
   onMemberChangeRole,
-  onOrgAdd,
   onInviteOrganizations,
   onOrgRemove,
   onOrgChangeRole,
@@ -178,13 +174,19 @@ export function SpaceSettingsCommunityView({
   onPendingApprove,
   onPendingReject,
   onPendingDelete,
+  onPendingResend,
+  resendingIds,
   onInviteUsers,
   onExportMembers,
+  onExportApplications,
+  onExportOrganizations,
   exportDisabled,
   className,
 }: SpaceSettingsCommunityViewProps) {
   const { t, i18n } = useTranslation('crd-spaceSettings');
   const locale = resolveDateFnsLocale(i18n.language);
+  // FR-042: subspace copy via the i18next `_subspace` key variants.
+  const context = level === 'L0' ? undefined : 'subspace';
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [orgSearch, setOrgSearch] = useState('');
@@ -224,35 +226,36 @@ export function SpaceSettingsCommunityView({
   };
 
   return (
-    <div className={cn('flex flex-col gap-8', className)}>
-      <div>
-        <h2 className="text-section-title tracking-tight">{t('community.pageHeader.title')}</h2>
-        <p className="text-body text-muted-foreground mt-2">{t('community.pageHeader.subtitle')}</p>
-      </div>
-
-      <Separator />
-
-      <PendingMembershipsTable
-        items={pendingMemberships}
-        onView={onPendingView}
-        onApprove={onPendingApprove}
-        onReject={onPendingReject}
-        onDelete={onPendingDelete}
-      />
-
-      <Separator />
+    <div className={cn('flex flex-col gap-5', className)}>
+      <SettingsSection
+        title={t('community.pendingMemberships.title')}
+        icon={<Clock className="size-4" />}
+        iconColor="amber"
+        badge={<CountBadge count={pendingMemberships.length} />}
+      >
+        <PendingMembershipsTable
+          hideHeading={true}
+          items={pendingMemberships}
+          onView={onPendingView}
+          onApprove={onPendingApprove}
+          onReject={onPendingReject}
+          onDelete={onPendingDelete}
+          onResend={onPendingResend}
+          resendingIds={resendingIds}
+        />
+      </SettingsSection>
 
       {/* Space Members table */}
-      <div id="members" className="flex flex-col gap-4 scroll-mt-32">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <h3 className="text-subsection-title flex items-center gap-2">
-            {t('community.members.title')}
-            <Badge variant="secondary" className="rounded-full">
-              {filtered.length}
-            </Badge>
-          </h3>
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="relative">
+      <SettingsSection
+        id="members"
+        title={t('community.members.title', { context })}
+        icon={<Users className="size-4" />}
+        iconColor="blue"
+        badge={<CountBadge count={filtered.length} />}
+      >
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <div className="relative flex-1">
               <Search
                 aria-hidden="true"
                 className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
@@ -262,193 +265,216 @@ export function SpaceSettingsCommunityView({
                 placeholder={t('community.members.search')}
                 value={search}
                 onChange={e => handleSearchChange(e.target.value)}
-                className="h-9 w-[220px] pl-9 text-control"
+                className="h-9 w-full pl-9 text-control"
               />
             </div>
-            {permissions.canInvite && (
-              <Button type="button" size="sm" className="gap-2" onClick={onInviteUsers}>
-                <UserPlus aria-hidden="true" className="size-4" />
-                {t('community.members.invite')}
-              </Button>
-            )}
-            {onExportMembers && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                onClick={onExportMembers}
-                disabled={exportDisabled}
-              >
-                <Download aria-hidden="true" className="size-4" />
-                {t('community.members.export')}
-              </Button>
-            )}
-          </div>
-        </div>
-        <div className="rounded-lg border bg-card overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[320px]">{t('community.members.name')}</TableHead>
-                <TableHead>{t('community.members.roleColumn')}</TableHead>
-                <TableHead>{t('community.members.joined')}</TableHead>
-                <TableHead className="w-[140px] text-right">{t('community.members.actions')}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginated.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                    {t('community.members.empty')}
-                  </TableCell>
-                </TableRow>
+            <div className="flex items-center gap-2 flex-wrap">
+              {permissions.canInvite && (
+                <Button type="button" size="sm" className="gap-2" onClick={onInviteUsers}>
+                  <UserPlus aria-hidden="true" className="size-4" />
+                  {t('community.members.invite')}
+                </Button>
               )}
-              {paginated.map((m, index) => (
-                <TableRow key={m.id} className={cn(index % 2 === 1 && 'bg-muted/30')}>
-                  <TableCell>
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Avatar className="size-8 border border-border shrink-0">
-                        {m.avatarUrl ? <AvatarImage src={m.avatarUrl} alt="" /> : null}
-                        <AvatarFallback className="text-caption">
-                          {m.displayName.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0">
-                        {m.url ? (
-                          <a href={m.url} className="block text-body-emphasis truncate hover:underline">
-                            {m.displayName}
-                          </a>
-                        ) : (
-                          <span className="block text-body-emphasis truncate">{m.displayName}</span>
-                        )}
-                        {m.email && (
-                          <span className="block text-caption text-muted-foreground truncate">{m.email}</span>
-                        )}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-body-emphasis text-foreground">{m.roleLabel}</span>
-                  </TableCell>
-                  <TableCell className="text-caption text-muted-foreground">{m.joinedDate || '—'}</TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild={true}>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="size-8"
-                          aria-label={t('community.members.actions')}
-                        >
-                          <MoreHorizontal aria-hidden="true" className="size-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        {(() => {
-                          const hasViewProfile = !!m.url;
-                          const showChangeRole = !!onMemberChangeRole;
-                          const showRemove = !!onUserRemove;
-                          const hasManageActions = showChangeRole;
-                          return (
-                            <>
-                              {hasViewProfile && (
-                                <DropdownMenuItem asChild={true}>
-                                  <a href={m.url}>{t('community.members.dropdown.viewProfile')}</a>
-                                </DropdownMenuItem>
-                              )}
-                              {showChangeRole && (
-                                <DropdownMenuItem onClick={() => onMemberChangeRole?.(m)}>
-                                  {t('community.members.dropdown.changeRole')}
-                                </DropdownMenuItem>
-                              )}
-                              {showRemove && (hasViewProfile || hasManageActions) && <DropdownMenuSeparator />}
-                              {showRemove && (
-                                <DropdownMenuItem
-                                  className="text-destructive focus:text-destructive"
-                                  onClick={() => onUserRemove?.(m.id)}
-                                >
-                                  <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                                  {t('community.members.dropdown.removeFromSpace')}
-                                </DropdownMenuItem>
-                              )}
-                            </>
-                          );
-                        })()}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-
-        {filtered.length > MEMBERS_PAGE_SIZE && (
-          <div className="flex items-center justify-between py-2">
-            <p className="text-caption text-muted-foreground">
-              {t('community.members.pagination.showing', { from: pageStart + 1, to: pageEnd, total: filtered.length })}
-            </p>
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="size-8"
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={safePage === 1}
-                aria-label={t('community.members.pagination.previous')}
-              >
-                <ChevronLeft aria-hidden="true" className="size-4" />
-              </Button>
-              <span className="text-caption text-body-emphasis">
-                {t('community.members.pagination.page', { page: safePage, total: totalPages })}
-              </span>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="size-8"
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={safePage === totalPages}
-                aria-label={t('community.members.pagination.next')}
-              >
-                <ChevronRight aria-hidden="true" className="size-4" />
-              </Button>
+              {onExportMembers && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={onExportMembers}
+                  disabled={exportDisabled}
+                >
+                  <Download aria-hidden="true" className="size-4" />
+                  {t('community.members.export')}
+                </Button>
+              )}
+              {onExportApplications && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={onExportApplications}
+                  disabled={exportDisabled}
+                >
+                  <Download aria-hidden="true" className="size-4" />
+                  {t('community.members.exportApplications')}
+                </Button>
+              )}
             </div>
           </div>
-        )}
-      </div>
+          <div className="rounded-lg border bg-card overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[320px]">{t('community.members.name')}</TableHead>
+                  <TableHead>{t('community.members.roleColumn')}</TableHead>
+                  <TableHead>{t('community.members.joined')}</TableHead>
+                  <TableHead className="w-[140px] text-right">{t('community.members.actions')}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginated.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                      {t('community.members.empty')}
+                    </TableCell>
+                  </TableRow>
+                )}
+                {paginated.map((m, index) => (
+                  <TableRow key={m.id} className={cn(index % 2 === 1 && 'bg-muted/30')}>
+                    <TableCell>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Avatar className="size-8 border border-border shrink-0">
+                          {m.avatarUrl ? <AvatarImage src={m.avatarUrl} alt="" /> : null}
+                          <AvatarFallback className="text-caption">
+                            {m.displayName.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          {m.url ? (
+                            <a href={m.url} className="block text-body-emphasis truncate hover:underline">
+                              {m.displayName}
+                            </a>
+                          ) : (
+                            <span className="block text-body-emphasis truncate">{m.displayName}</span>
+                          )}
+                          {m.email && (
+                            <span className="block text-caption text-muted-foreground truncate">{m.email}</span>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-body-emphasis text-foreground">{m.roleLabel}</span>
+                    </TableCell>
+                    <TableCell className="text-caption text-muted-foreground">{m.joinedDate || '—'}</TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild={true}>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            aria-label={t('community.members.actions')}
+                          >
+                            <MoreHorizontal aria-hidden="true" className="size-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          {(() => {
+                            const hasViewProfile = !!m.url;
+                            const showChangeRole = !!onMemberChangeRole;
+                            const showRemove = !!onUserRemove;
+                            const hasManageActions = showChangeRole;
+                            return (
+                              <>
+                                {hasViewProfile && (
+                                  <DropdownMenuItem asChild={true}>
+                                    <a href={m.url}>{t('community.members.dropdown.viewProfile')}</a>
+                                  </DropdownMenuItem>
+                                )}
+                                {showChangeRole && (
+                                  <DropdownMenuItem onClick={() => onMemberChangeRole?.(m)}>
+                                    {t('community.members.dropdown.changeRole')}
+                                  </DropdownMenuItem>
+                                )}
+                                {showRemove && (hasViewProfile || hasManageActions) && <DropdownMenuSeparator />}
+                                {showRemove && (
+                                  <DropdownMenuItem
+                                    className="text-destructive focus:text-destructive"
+                                    onClick={() => onUserRemove?.(m.id)}
+                                  >
+                                    <Trash2 aria-hidden="true" className="mr-2 size-4" />
+                                    {t('community.members.dropdown.removeFromSpace', { context })}
+                                  </DropdownMenuItem>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
-      <Separator />
+          {filtered.length > MEMBERS_PAGE_SIZE && (
+            <div className="flex items-center justify-between py-2">
+              <p className="text-caption text-muted-foreground">
+                {t('community.members.pagination.showing', {
+                  from: pageStart + 1,
+                  to: pageEnd,
+                  total: filtered.length,
+                })}
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={safePage === 1}
+                  aria-label={t('community.members.pagination.previous')}
+                >
+                  <ChevronLeft aria-hidden="true" className="size-4" />
+                </Button>
+                <span className="text-caption text-body-emphasis">
+                  {t('community.members.pagination.page', { page: safePage, total: totalPages })}
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={safePage === totalPages}
+                  aria-label={t('community.members.pagination.next')}
+                >
+                  <ChevronRight aria-hidden="true" className="size-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </SettingsSection>
 
       {applicationFormSlot && (
-        <SectionCard
-          icon={FileText}
+        <SettingsSection
           title={t('community.applicationForm.title')}
-          description={t('community.applicationForm.description')}
+          icon={<FileText className="size-4" />}
+          iconColor="purple"
+          defaultOpen={false}
+          keepMounted={false}
         >
           {applicationFormSlot}
-        </SectionCard>
+        </SettingsSection>
       )}
 
       {communityGuidelinesSlot && (
-        <SectionCard
+        <SettingsSection
           id="guidelines"
-          icon={Shield}
           title={t('community.guidelines.title')}
-          description={t('community.guidelines.description')}
+          icon={<Shield className="size-4" />}
+          iconColor="green"
+          defaultOpen={false}
+          keepMounted={false}
         >
           {communityGuidelinesSlot}
-        </SectionCard>
+        </SettingsSection>
       )}
 
-      <SectionCard
-        icon={Building}
+      <SettingsSection
         title={t('community.organizations.title')}
-        description={t('community.organizations.description')}
-        count={filteredOrganizations.length}
+        icon={<Building className="size-4" />}
+        iconColor="orange"
+        badge={<CountBadge count={filteredOrganizations.length} />}
+        defaultOpen={false}
+        keepMounted={false}
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div className="relative">
@@ -464,16 +490,31 @@ export function SpaceSettingsCommunityView({
               className="h-9 w-[220px] pl-9 text-control"
             />
           </div>
-          {/* Gated, not hidden — the same contract, and the same mechanism, as the Add
-              organisation button further down this card. Conditionally rendering this
-              button on the privilege would conceal the action's existence from an admin
-              who lacks it, and flip it hidden→shown once the privilege query resolves. */}
-          <GatedAction disabledReason={inviteOrganizationsDisabledReason}>
-            <Button type="button" size="sm" className="gap-2" onClick={onInviteOrganizations}>
-              <UserPlus aria-hidden="true" className="size-4" />
-              {t('community.organizations.invite')}
-            </Button>
-          </GatedAction>
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Gated, not hidden: every Space admin can eventually invite, so concealing this
+                action would hide a capability the user can actually obtain, and it would flip
+                hidden→shown once the privilege query resolves. Invitation is the only way an
+                organisation joins a Space (alkem-io/server#6623). */}
+            <GatedAction disabledReason={inviteOrganizationsDisabledReason}>
+              <Button type="button" size="sm" className="gap-2" onClick={onInviteOrganizations}>
+                <UserPlus aria-hidden="true" className="size-4" />
+                {t('community.organizations.invite')}
+              </Button>
+            </GatedAction>
+            {onExportOrganizations && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={onExportOrganizations}
+                disabled={exportDisabled}
+              >
+                <Download aria-hidden="true" className="size-4" />
+                {t('community.organizations.export')}
+              </Button>
+            )}
+          </div>
         </div>
         <div className="rounded-lg border bg-card overflow-hidden">
           <Table>
@@ -554,7 +595,7 @@ export function SpaceSettingsCommunityView({
                                   onClick={() => onOrgRemove?.(org.id)}
                                 >
                                   <Trash2 aria-hidden="true" className="mr-2 size-4" />
-                                  {t('community.organizations.dropdown.removeFromSpace')}
+                                  {t('community.organizations.dropdown.removeFromSpace', { context })}
                                 </DropdownMenuItem>
                               )}
                             </>
@@ -568,14 +609,6 @@ export function SpaceSettingsCommunityView({
             </TableBody>
           </Table>
         </div>
-        <div className="mt-4">
-          <GatedAction disabledReason={addDisabledReasons?.organizations}>
-            <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onOrgAdd}>
-              <Plus aria-hidden="true" className="size-4" />
-              {t('community.organizations.add')}
-            </Button>
-          </GatedAction>
-        </div>
         <PendingOrganizationInvitationsList
           className="mt-6"
           title={t('community.organizations.pendingInvitations.title')}
@@ -587,14 +620,16 @@ export function SpaceSettingsCommunityView({
           revokeAriaLabel={name => t('community.organizations.pendingInvitations.revokeAriaLabel', { name })}
           onRevoke={onOrgInvitationRevoke}
         />
-      </SectionCard>
+      </SettingsSection>
 
       {level === 'L0' && (
-        <SectionCard
-          icon={Bot}
+        <SettingsSection
           title={t('community.virtualContributors.title')}
-          description={t('community.virtualContributors.description')}
-          count={virtualContributors.length}
+          icon={<Bot className="size-4" />}
+          iconColor="rose"
+          badge={<CountBadge count={virtualContributors.length} />}
+          defaultOpen={false}
+          keepMounted={false}
         >
           <div className="rounded-lg border bg-card overflow-hidden">
             <Table>
@@ -645,79 +680,39 @@ export function SpaceSettingsCommunityView({
               </TableBody>
             </Table>
           </div>
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
-              <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
-                <Plus aria-hidden="true" className="size-4" />
-                {t('community.virtualContributors.add')}
-              </Button>
-            </GatedAction>
-            {onVCAddExternal && (
-              <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
-                <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
-                  <Plus aria-hidden="true" className="size-4" />
-                  {t('community.virtualContributors.addExternal')}
-                </Button>
-              </GatedAction>
-            )}
-          </div>
-        </SectionCard>
+          {/* TEMP: VCs disabled (#10398) — the notice replaces the Add buttons when the page passes none. */}
+          {onVCAdd || onVCAddExternal ? (
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              {onVCAdd && (
+                <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
+                  <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAdd}>
+                    <Plus aria-hidden="true" className="size-4" />
+                    {t('community.virtualContributors.add')}
+                  </Button>
+                </GatedAction>
+              )}
+              {onVCAddExternal && (
+                <GatedAction disabledReason={addDisabledReasons?.virtualContributors}>
+                  <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onVCAddExternal}>
+                    <Plus aria-hidden="true" className="size-4" />
+                    {t('community.virtualContributors.addExternal')}
+                  </Button>
+                </GatedAction>
+              )}
+            </div>
+          ) : (
+            <VcPausedNotice className="mt-4" />
+          )}
+        </SettingsSection>
       )}
     </div>
   );
 }
 
-function SectionCard({
-  id,
-  icon: Icon,
-  title,
-  description,
-  count,
-  defaultOpen = false,
-  children,
-}: {
-  /** Anchor id — when the URL hash matches `#${id}`, the card mounts open. */
-  id?: string;
-  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>;
-  title: string;
-  description: string;
-  count?: number;
-  defaultOpen?: boolean;
-  children: ReactNode;
-}) {
-  const hashMatches = typeof window !== 'undefined' && !!id && window.location.hash === `#${id}`;
-  const [open, setOpen] = useState(defaultOpen || hashMatches);
+function CountBadge({ count }: { count: number }) {
   return (
-    <section id={id} className="rounded-xl border border-border bg-card p-6 scroll-mt-32">
-      <button
-        type="button"
-        className="flex w-full items-start gap-4 text-left group rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2"
-        onClick={() => setOpen(prev => !prev)}
-        aria-expanded={open}
-      >
-        <div className="mt-1 p-2 bg-muted rounded-md shrink-0 group-hover:bg-muted/80 transition-colors">
-          <Icon aria-hidden="true" className="size-5 text-muted-foreground" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="text-subsection-title flex items-center gap-2">
-              {title}
-              {typeof count === 'number' && (
-                <Badge variant="secondary" className="rounded-full">
-                  {count}
-                </Badge>
-              )}
-            </h3>
-            {open ? (
-              <ChevronUp aria-hidden="true" className="size-4 shrink-0" />
-            ) : (
-              <ChevronDown aria-hidden="true" className="size-4 shrink-0" />
-            )}
-          </div>
-          <p className="mt-1 text-body text-muted-foreground pr-8">{description}</p>
-        </div>
-      </button>
-      {open && <div className="mt-6 pl-[52px]">{children}</div>}
-    </section>
+    <Badge variant="secondary" className="rounded-full">
+      {count}
+    </Badge>
   );
 }

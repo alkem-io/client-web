@@ -3,9 +3,10 @@ import { cn } from '@/crd/lib/utils';
 
 /**
  * Shared resource-tab union for the profile pages (User + Organization).
- * Both use the same 3 tabs: Resources Hosted (default), Leading, Member of.
+ * Both use the same tabs, in this order: Leading (only when the profile leads
+ * something), Member of (always), Other Resources (only when there are any).
  */
-export type ResourceTabKey = 'resourcesHosted' | 'leading' | 'memberOf';
+export type ResourceTabKey = 'leading' | 'memberOf' | 'otherResources';
 
 export type ProfileResourceTab = {
   key: ResourceTabKey;

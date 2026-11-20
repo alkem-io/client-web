@@ -1,4 +1,4 @@
-import { Search, SquarePen } from 'lucide-react';
+import { Paperclip, Phone, Search, SquarePen } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -79,7 +79,7 @@ export function ChatConversationList({
       ) : (
         // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
         // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
-        <ul role="list" className="min-h-0 flex-1 list-none overflow-y-auto px-1 pb-2">
+        <ul role="list" className="min-h-0 flex-1 list-none overflow-y-auto overscroll-contain px-1 pb-2">
           {filtered.map(item => {
             const selected = item.id === selectedConversationId;
             const hasUnread = item.unreadCount > 0;
@@ -118,6 +118,14 @@ export function ChatConversationList({
                             {t('guidance.beta')}
                           </Badge>
                         )}
+                        {item.hasActiveCall && (
+                          <Phone
+                            role="img"
+                            aria-label={t('call.listBadge')}
+                            data-testid="call-list-badge"
+                            className="size-3.5 shrink-0 text-primary"
+                          />
+                        )}
                       </span>
                       {item.lastMessageTimestamp && (
                         <span className="shrink-0 text-caption text-muted-foreground">{item.lastMessageTimestamp}</span>
@@ -129,8 +137,17 @@ export function ChatConversationList({
                           <>
                             <span className="text-primary">{t('list.draft')}</span> {item.draftPreview}
                           </>
+                        ) : item.lastMessagePreview?.trim() ? (
+                          item.lastMessagePreview
+                        ) : item.lastMessageAttachmentCount ? (
+                          // Media-only last message: without this the row's
+                          // preview line would just be blank.
+                          <span className="inline-flex items-center gap-1">
+                            <Paperclip aria-hidden="true" className="size-3 shrink-0" />
+                            {t('list.attachmentPreview', { count: item.lastMessageAttachmentCount })}
+                          </span>
                         ) : (
-                          (item.lastMessagePreview ?? '')
+                          ''
                         )}
                       </span>
                       {hasUnread && (

@@ -32,6 +32,10 @@ type CarouselContextProps = {
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
 
+/** Arrow keys on a focused video/audio belong to its native controls (seek, volume). */
+const isMediaControlTarget = (target: EventTarget | null) =>
+  target instanceof Element && target.closest('video, audio') !== null;
+
 function useCarousel() {
   const context = React.useContext(CarouselContext);
   if (!context) {
@@ -50,6 +54,7 @@ const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
     const scrollNext = () => api?.scrollNext();
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (isMediaControlTarget(event.target)) return;
       if (event.key === 'ArrowLeft') {
         event.preventDefault();
         scrollPrev();
@@ -196,4 +201,4 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, CarouselNavButtonProps>
 );
 CarouselNext.displayName = 'CarouselNext';
 
-export { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext };
+export { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, isMediaControlTarget };

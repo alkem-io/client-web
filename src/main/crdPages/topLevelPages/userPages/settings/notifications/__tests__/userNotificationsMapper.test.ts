@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { NotificationSettings } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
+import { buildNotificationUpdate } from '../notificationPayloadBuilders';
 import {
   type ContributorSettingsTranslator,
   mapUserNotifications,
@@ -13,6 +14,7 @@ const t = ((key: string) => key) as ContributorSettingsTranslator;
 
 const noPrivileges: NotificationPrivileges = {
   isPlatformAdmin: false,
+  canReceivePlatformAdminNotifications: false,
   isOrganizationAdmin: false,
   isSpaceAdmin: false,
   isSpaceLead: false,
@@ -203,5 +205,174 @@ describe('mapUserNotifications — spaceAdmin.communityInvitationResponse row (R
   it('applies optimistic overrides on the new row', () => {
     const group = findSpaceAdminGroup(new Map([['spaceAdmin::communityInvitationResponse::inApp', false]]));
     expect(group.rows.find(r => r.property === 'communityInvitationResponse')?.channels.inApp).toBe(false);
+  });
+});
+
+describe('mapUserNotifications — organization-associate rows (062, US6)', () => {
+  it('exposes the two user-side rows under the correct dot-paths', () => {
+    const userGroup = findUserGroup({
+      user: {
+        membership: {
+          organizationAssociateInvitationReceived: { email: true, inApp: true, push: true },
+          organizationAssociateApplicationDecided: { email: false, inApp: true, push: false },
+        },
+      },
+    });
+    const properties = userGroup.rows.map(row => row.property);
+    expect(properties).toContain('membership.organizationAssociateInvitationReceived');
+    expect(properties).toContain('membership.organizationAssociateApplicationDecided');
+    expect(
+      userGroup.rows.find(r => r.property === 'membership.organizationAssociateInvitationReceived')?.channels
+    ).toEqual({ email: true, inApp: true, push: true });
+    expect(
+      userGroup.rows.find(r => r.property === 'membership.organizationAssociateApplicationDecided')?.channels
+    ).toEqual({ email: false, inApp: true, push: false });
+  });
+
+  it('exposes the three organisation-side rows only when the organization group is gated in', () => {
+    const server: NotificationSettings = {
+      organization: {
+        adminAssociateInvitationResponse: { email: true, inApp: true, push: true },
+        adminAssociateApplicationReceived: { email: true, inApp: false, push: true },
+        adminAssociateJoined: { email: false, inApp: false, push: true },
+      },
+    };
+    const { groups: withoutPrivilege } = mapUserNotifications(server, new Map(), noPrivileges, t);
+    expect(withoutPrivilege.find(g => g.groupId === 'organization')).toBeUndefined();
+
+    const { groups: withPrivilege } = mapUserNotifications(
+      server,
+      new Map(),
+      { ...noPrivileges, isOrganizationAdmin: true },
+      t
+    );
+    const orgGroup = withPrivilege.find(g => g.groupId === 'organization');
+    const properties = orgGroup?.rows.map(row => row.property) ?? [];
+    expect(properties).toEqual(
+      expect.arrayContaining([
+        'adminAssociateInvitationResponse',
+        'adminAssociateApplicationReceived',
+        'adminAssociateJoined',
+      ])
+    );
+    expect(orgGroup?.rows.find(r => r.property === 'adminAssociateJoined')?.channels).toEqual({
+      email: false,
+      inApp: false,
+      push: true,
+    });
+  });
+});
+
+describe('mapUserNotifications — platformAdmin group visibility (065, US6)', () => {
+  const server: NotificationSettings = {
+    platformAdmin: {
+      userProfileCreated: { email: true, inApp: false, push: false },
+      userProfileRemoved: { email: true, inApp: false, push: false },
+      userGlobalRoleChanged: { email: true, inApp: false, push: false },
+      userEmailChanged: { email: true, inApp: false, push: false },
+      spaceCreated: { email: true, inApp: false, push: false },
+    },
+  };
+
+  it('is shown when canReceivePlatformAdminNotifications is true, even without isPlatformAdmin (US6-AS1)', () => {
+    const { groups } = mapUserNotifications(
+      server,
+      new Map(),
+      { ...noPrivileges, isPlatformAdmin: false, canReceivePlatformAdminNotifications: true },
+      t
+    );
+    const group = groups.find(g => g.groupId === 'platformAdmin');
+    expect(group).toBeDefined();
+    expect(group?.rows.map(row => row.property)).toEqual([
+      'userProfileCreated',
+      'userProfileRemoved',
+      'userGlobalRoleChanged',
+      'userEmailChanged',
+      'spaceCreated',
+    ]);
+  });
+
+  it('is hidden when canReceivePlatformAdminNotifications is false, even with isPlatformAdmin true (US6-AS2)', () => {
+    const { groups } = mapUserNotifications(
+      server,
+      new Map(),
+      { ...noPrivileges, isPlatformAdmin: true, canReceivePlatformAdminNotifications: false },
+      t
+    );
+    expect(groups.find(g => g.groupId === 'platformAdmin')).toBeUndefined();
+  });
+
+  it('leaves the space-admin and organization gates unaffected by canReceivePlatformAdminNotifications', () => {
+    const combos: Array<[boolean, boolean, boolean, boolean]> = [
+      // [isPlatformAdmin, isSpaceAdmin, isSpaceLead, isOrganizationAdmin]
+      [false, false, false, false],
+      [true, false, false, false],
+      [false, true, false, false],
+      [false, false, true, false],
+      [false, false, false, true],
+    ];
+    for (const [isPlatformAdmin, isSpaceAdmin, isSpaceLead, isOrganizationAdmin] of combos) {
+      const privileges: NotificationPrivileges = {
+        isPlatformAdmin,
+        canReceivePlatformAdminNotifications: false,
+        isSpaceAdmin,
+        isSpaceLead,
+        isOrganizationAdmin,
+      };
+      const { groups } = mapUserNotifications(server, new Map(), privileges, t);
+      const expectSpaceAdmin = isPlatformAdmin || isSpaceAdmin || isSpaceLead;
+      const expectOrganization = isPlatformAdmin || isOrganizationAdmin;
+      expect(Boolean(groups.find(g => g.groupId === 'spaceAdmin'))).toBe(expectSpaceAdmin);
+      expect(Boolean(groups.find(g => g.groupId === 'organization'))).toBe(expectOrganization);
+    }
+  });
+});
+
+describe('mapUserNotifications — spaceAdmin.collaborationCalloutFormResponseReceived row', () => {
+  const spaceAdminPrivileges: NotificationPrivileges = { ...noPrivileges, isSpaceAdmin: true };
+  const server: NotificationSettings = {
+    spaceAdmin: {
+      collaborationCalloutContributionCreated: { email: true, inApp: true, push: true },
+      collaborationCalloutFormResponseReceived: { email: true, inApp: false, push: true },
+    },
+  };
+  const rowsOf = (overrides = new Map<string, boolean>()) => {
+    const group = mapUserNotifications(server, overrides, spaceAdminPrivileges, t).groups.find(
+      g => g.groupId === 'spaceAdmin'
+    );
+    if (!group) throw new Error('spaceAdmin group missing');
+    return group.rows;
+  };
+
+  it('is exposed right after the contribution-created row, with its own label and the three channels bound', () => {
+    const rows = rowsOf();
+    const properties = rows.map(row => row.property);
+    expect(properties.indexOf('collaborationCalloutFormResponseReceived')).toBe(
+      properties.indexOf('collaborationCalloutContributionCreated') + 1
+    );
+    const row = rows.find(r => r.property === 'collaborationCalloutFormResponseReceived');
+    expect(row?.label).toBe('user.notifications.rows.spaceAdmin.collaborationCalloutFormResponseReceived');
+    expect(row?.channels).toEqual({ email: true, inApp: false, push: true });
+  });
+
+  it('applies an optimistic override on the row', () => {
+    const rows = rowsOf(new Map([['spaceAdmin::collaborationCalloutFormResponseReceived::email', false]]));
+    expect(rows.find(r => r.property === 'collaborationCalloutFormResponseReceived')?.channels.email).toBe(false);
+  });
+
+  it('a toggle carries the new key in the update payload, flipping only the toggled channel', () => {
+    const payload = buildNotificationUpdate(
+      server,
+      'spaceAdmin',
+      'collaborationCalloutFormResponseReceived',
+      'inApp',
+      true
+    ) as { space: { admin: Record<string, unknown> } };
+
+    expect(payload.space.admin.collaborationCalloutFormResponseReceived).toEqual({
+      email: true,
+      inApp: true,
+      push: true,
+    });
   });
 });

@@ -7,7 +7,7 @@
  */
 
 /** Rich framing-body kinds nameable from the loaded data. */
-export type CalloutRichContentKind = 'whiteboard' | 'memo' | 'poll' | 'mediaGallery' | 'document';
+export type CalloutRichContentKind = 'whiteboard' | 'memo' | 'poll' | 'mediaGallery' | 'document' | 'form';
 
 /** A nameable item to be listed in the dialog — a contribution (by title) or a link/reference. */
 export type DeletionListItem = {
@@ -30,6 +30,11 @@ export type CalloutDeletionSummaryModel = {
   contributions: DeletionListItem[];
   /** Rich framing body kind, if the callout's own body is one of these. */
   richContent?: CalloutRichContentKind;
+  /**
+   * Number of responses the Form holds, when the viewer can read them all. Loaded lazily when the delete
+   * dialog opens for a Form callout; absent means unknown, and the header then names the form alone.
+   */
+  formResponseCount?: number;
   /** The call-to-action button (link-framing callouts) — rendered as its own table row. */
   callToAction?: DeletionListItem;
   /** Named links: framing references, source order. */
