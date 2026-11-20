@@ -11,6 +11,9 @@ query OrganizationSettings($orgId: UUID!) {
         privacy {
           contributionRolesPubliclyVisible
         }
+        security {
+          secondFactorRequired
+        }
       }
     }
   }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
 import {
   refetchUserSettingsQuery,
   useDashboardExploreSpacesQuery,
@@ -21,11 +22,16 @@ import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { MyMembershipsPanel } from '@/crd/components/dashboard/MyMemberships/MyMembershipsPanel';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
+import { UnreadSummaryRow } from '@/crd/components/dashboard/UnreadSummaryRow';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
 import { CrdCreateSpaceDialog } from '@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog';
 import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
+import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
+import { useUnreadNotificationsCount } from '@/main/inAppNotifications/useUnreadNotificationsCount';
 import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
+import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
+import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 import { LEGACY_VIEW_KEY, resolveActivityView, SEED_FLAG_KEY, shouldSeedFromLegacy } from './activityViewPreference';
 import {
   mapActivityToFeedItems,
@@ -70,6 +76,12 @@ export default function DashboardWithMemberships({
   const { platformRoles, accountEntitlements, accountId, userModel } = useCurrentUserContext();
   const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
   const [createVcOpen, setCreateVcOpen] = useState(false);
+
+  // Phone-only unread rows: the same cache-first counts as the header chat badge and bell.
+  const unreadMessagesCount = useUnreadConversationsCount();
+  const unreadNotificationsCount = useUnreadNotificationsCount();
+  const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
+  const { setIsOpen: setNotificationsOpen } = useInAppNotificationsContext();
 
   // Activity view toggle — persisted per-user in UserSettings.dashboard.activityView.
   // Default: Activity view on (true) when the user has never set it (FR-024). A local
@@ -302,6 +314,20 @@ export default function DashboardWithMemberships({
           />
         }
       >
+        <UnreadSummaryRow
+          kind="messages"
+          count={unreadMessagesCount}
+          onOpen={() => {
+            trackChatOpen('homeUnreadRow');
+            setMessagingOpen(true);
+          }}
+        />
+        <UnreadSummaryRow
+          kind="notifications"
+          count={unreadNotificationsCount}
+          onOpen={() => setNotificationsOpen(true)}
+        />
+
         {activityEnabled && (
           <RecentSpaces
             spaces={recentSpaces}

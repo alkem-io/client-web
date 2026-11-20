@@ -1,0 +1,10 @@
+query SecondFactorRequirement {
+  me {
+    secondFactorRequirement {
+      covered
+      deadline
+      satisfied
+      secondWayNeeded
+    }
+  }
+}

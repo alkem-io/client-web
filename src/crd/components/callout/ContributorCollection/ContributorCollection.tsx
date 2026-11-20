@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, List, Loader2, Map as MapIcon, Maximize2, Search, Users } from 'lucide-react';
-import { type ComponentType, lazy, Suspense, useEffect, useState } from 'react';
+import { type ComponentType, lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ContributorMapFixedView, ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { cn } from '@/crd/lib/utils';
@@ -181,14 +181,23 @@ export function ContributorCollection({
     }));
   const unlocated = filtered.filter(c => !c.hasValidCoordinates);
 
-  // Signature of the active type's located set BEFORE search — drives the map's
-  // auto re-fit so it re-zooms when the dataset changes (switching contributor
-  // type/role, or the set finishing its async load) but stays put while the user
-  // types in the search box.
-  const fitKey = roleScoped
-    .filter(c => c.hasValidCoordinates && c.latitude != null && c.longitude != null)
-    .map(c => c.id)
-    .join(',');
+  // A pin's popup shows the same card as the list; the popup draws the frame.
+  const renderPinCard = (pinId: string): ReactNode => {
+    const contributor = filtered.find(c => c.id === pinId);
+    return contributor ? (
+      <ContributorCard
+        contributor={contributor}
+        onContributorClick={onContributorClick}
+        onMessage={onMessage}
+        className="h-auto rounded-none border-0 shadow-none hover:shadow-none"
+      />
+    ) : null;
+  };
+
+  // What the user chose to show: the map re-fits when this changes (switching the
+  // contributor type or role), never because contributors loaded or refetched,
+  // and not while the user types in the search box.
+  const fitKey = `${activeType}:${roleFilter}`;
 
   return (
     <section className={cn('space-y-4', className)} aria-label={t('contributors.title')}>
@@ -320,6 +329,7 @@ export function ContributorCollection({
                 ariaLabel={t('contributors.viewMap')}
                 fixedView={fixedView ?? undefined}
                 onPinClick={onContributorClick}
+                renderPinCard={renderPinCard}
               />
             </Suspense>
             <Button
@@ -355,6 +365,7 @@ export function ContributorCollection({
                   ariaLabel={t('contributors.viewMap')}
                   fixedView={fixedView ?? undefined}
                   onPinClick={onContributorClick}
+                  renderPinCard={renderPinCard}
                   className="h-full border-0"
                 />
               </Suspense>

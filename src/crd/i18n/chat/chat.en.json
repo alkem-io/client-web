@@ -11,7 +11,8 @@
     "unmuteSound": "Unmute chat sound",
     "soundToggleError": "We couldn't save the chat sound setting. Please try again.",
     "expand": "Expand chat",
-    "collapse": "Collapse chat"
+    "collapse": "Collapse chat",
+    "reconnecting": "Reconnecting… New messages may be delayed."
   },
   "actions": {
     "cancel": "Cancel"
@@ -118,6 +119,8 @@
     "joinVideo": "Join with video",
     "joinAudio": "Join with audio only",
     "joinedOnThisDevice": "Already joined on this device",
+    "preparing": "Preparing your call… It will start in a moment.",
+    "dropped": "Couldn't start the call. Please try again.",
     "overlayLabel": "Call",
     "close": "Close call",
     "license": "Open-source license",

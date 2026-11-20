@@ -1,6 +1,8 @@
-import { Eye, Settings as SettingsIcon, Users } from 'lucide-react';
+import { Eye, Settings as SettingsIcon, ShieldCheck, Users } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { Switch } from '@/crd/primitives/switch';
 
@@ -24,6 +26,10 @@ export type OrgSettingsTabViewProps = {
   contributionRolesPubliclyVisible: boolean;
   privacySaving: boolean;
   onToggleContributionRoles: (next: boolean) => void;
+  // Security
+  secondFactorRequired: boolean;
+  secondFactorRequiredSaving: boolean;
+  onToggleSecondFactorRequired: (next: boolean) => void;
 };
 
 type SwitchRowProps = {
@@ -55,19 +61,22 @@ function SwitchRow({ label, caption, checked, saving, onCheckedChange }: SwitchR
 /**
  * Org Settings tab — presentational view (US12).
  *
- * Two `SettingsCard`s:
+ * Three `SettingsCard`s:
  *
  * 1. **Membership** — `allowSpaceInvitations` (whether Spaces may invite this
  *    organization, 061), `allowUsersMatchingDomainToJoin` and `allowApplications`
  *    (062, R41).
  * 2. **Privacy** (`contributionRolesPubliclyVisible`).
+ * 3. **Security** (`secondFactorRequired`: members must use a second factor).
  *
  * **No Design System toggle** on this tab (FR-132 — User-only). Every
  * switch commits via a callback prop; the parent owns the optimistic
- * flip + hard-failure revert with toast (FR-133).
+ * flip + hard-failure revert with toast (FR-133). Switching the second-factor
+ * requirement off is confirmed first: switching it back on starts a new grace.
  */
 export function OrgSettingsTabView(props: OrgSettingsTabViewProps) {
   const { t } = useTranslation(NS);
+  const [confirmingSecondFactorOff, setConfirmingSecondFactorOff] = useState(false);
 
   if (props.loading) {
     return (
@@ -116,6 +125,28 @@ export function OrgSettingsTabView(props: OrgSettingsTabViewProps) {
           onCheckedChange={props.onToggleContributionRoles}
         />
       </SettingsCard>
+
+      <SettingsCard icon={ShieldCheck} title={t('org.settings.security.title')}>
+        <SwitchRow
+          label={t('org.settings.security.requireSecondFactorLabel')}
+          caption={t('org.settings.security.requireSecondFactorCaption')}
+          checked={props.secondFactorRequired}
+          saving={props.secondFactorRequiredSaving}
+          onCheckedChange={next =>
+            next ? props.onToggleSecondFactorRequired(true) : setConfirmingSecondFactorOff(true)
+          }
+        />
+      </SettingsCard>
+
+      <ConfirmationDialog
+        open={confirmingSecondFactorOff}
+        onOpenChange={setConfirmingSecondFactorOff}
+        variant="destructive"
+        title={t('org.settings.security.turnOffTitle')}
+        description={t('org.settings.security.turnOffDescription')}
+        confirmLabel={t('org.settings.security.turnOffConfirm')}
+        onConfirm={() => props.onToggleSecondFactorRequired(false)}
+      />
     </div>
   );
 }

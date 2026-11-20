@@ -22,6 +22,7 @@ import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
+import { useVisibleViewportArea } from '@/crd/hooks/useVisibleViewportArea';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -114,25 +115,9 @@ export function CrdPostContributionDialog({
 }: CrdPostContributionDialogProps) {
   const { t } = useTranslation('crd-space');
   const { isSmallScreen } = useScreenSize();
-  const [visibleArea, setVisibleArea] = useState<{ top: number; height: number }>();
-
-  // The on-screen keyboard shrinks the visual viewport but not the layout viewport a
-  // fixed element is pinned to, so a full-screen form would keep its actions behind
-  // the keyboard. Following the visual viewport keeps them on screen.
-  useEffect(() => {
-    const viewport = window.visualViewport;
-    if (!open || !isSmallScreen || !viewport) {
-      return;
-    }
-    const update = () => setVisibleArea({ top: viewport.offsetTop, height: viewport.height });
-    update();
-    viewport.addEventListener('resize', update);
-    viewport.addEventListener('scroll', update);
-    return () => {
-      viewport.removeEventListener('resize', update);
-      viewport.removeEventListener('scroll', update);
-    };
-  }, [open, isSmallScreen]);
+  // Full screen on a small screen: follow the visible area so the actions stay above
+  // the on-screen keyboard.
+  const visibleArea = useVisibleViewportArea(open && isSmallScreen);
 
   const translateValidation = useValidationMessageTranslation();
   const notify = useNotification();
@@ -468,7 +453,7 @@ export function CrdPostContributionDialog({
         <DialogContent
           overlayClassName={overlayClassName}
           hideClose={isSmallScreen}
-          style={isSmallScreen && visibleArea ? { ...visibleArea, bottom: 'auto' } : undefined}
+          style={visibleArea ? { ...visibleArea, bottom: 'auto' } : undefined}
           className={cn(
             'flex flex-col overflow-hidden',
             // Full screen on a small screen, like the chat panel. No duration: the height

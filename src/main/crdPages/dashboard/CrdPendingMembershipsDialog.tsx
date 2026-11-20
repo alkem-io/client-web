@@ -150,7 +150,6 @@ const InvitationDetailContainer = ({
   const props = useInvitationActions({
     onAccept: () => onAccept(),
     onReject: () => onReject(),
-    spaceId: currentInvitation?.spacePendingMembershipInfo.id,
   });
 
   if (!hydrated) {

@@ -39,6 +39,28 @@ const typeAndSubmitWithEnter = (text: string) => {
   fireEvent.keyDown(textarea, { key: 'Enter' });
 };
 
+// Mirrors the chat connector: submitting synchronously flips `disabled` on
+// (isSending), and it stays on until the send settles.
+const SendingHarness = ({ onSubmit, value }: { onSubmit: (content: string) => void; value?: string }) => {
+  const [sending, setSending] = useState(false);
+  return (
+    <div>
+      <button type="button" onClick={() => setSending(false)}>
+        settle
+      </button>
+      <CommentInput
+        onSubmit={content => {
+          onSubmit(content);
+          setSending(true);
+        }}
+        refocusAfterSubmit={true}
+        disabled={sending}
+        value={value}
+      />
+    </div>
+  );
+};
+
 describe('CommentInput refocusAfterSubmit', () => {
   test('send button click returns focus to the textarea', () => {
     render(<CommentInput onSubmit={vi.fn()} refocusAfterSubmit={true} />);
@@ -51,36 +73,24 @@ describe('CommentInput refocusAfterSubmit', () => {
     expect(getTextarea()).toHaveFocus();
   });
 
-  test('waits out the in-flight disabled state, then refocuses (Enter send)', () => {
-    // Mirrors the chat connector: submitting synchronously flips `disabled` on
-    // (isSending), and it stays on until the send settles.
-    const Harness = () => {
-      const [sending, setSending] = useState(false);
-      return (
-        <div>
-          <button type="button" onClick={() => setSending(false)}>
-            settle
-          </button>
-          <CommentInput onSubmit={() => setSending(true)} refocusAfterSubmit={true} disabled={sending} />
-        </div>
-      );
-    };
-    render(<Harness />);
+  // iOS raises the keyboard and reveals the field only for a focus made inside
+  // the gesture, and only when that focus is allowed to scroll.
+  test('the focus happens during the send gesture and is allowed to scroll', () => {
+    const focus = vi.spyOn(HTMLTextAreaElement.prototype, 'focus');
+    try {
+      render(<SendingHarness onSubmit={vi.fn()} />);
 
-    getTextarea().focus();
-    typeAndSubmitWithEnter('hello');
-    expect(getTextarea()).toBeDisabled();
+      fireEvent.change(getTextarea(), { target: { value: 'hello' } });
+      focus.mockClear();
+      fireEvent.click(screen.getByRole('button', { name: 'comments.send' }));
 
-    // Browsers drop focus from an element that becomes disabled; jsdom doesn't,
-    // so move it away explicitly.
-    const settleButton = screen.getByRole('button', { name: 'settle' });
-    settleButton.focus();
-    expect(getTextarea()).not.toHaveFocus();
-
-    // Send settles, composer re-enables — focus comes back.
-    fireEvent.click(settleButton);
-    expect(getTextarea()).toBeEnabled();
-    expect(getTextarea()).toHaveFocus();
+      // The send is still in flight here: nothing waited for it to settle.
+      expect(getTextarea()).toHaveAttribute('aria-disabled', 'true');
+      expect(focus).toHaveBeenCalledTimes(1);
+      expect(focus).toHaveBeenCalledWith();
+    } finally {
+      focus.mockRestore();
+    }
   });
 
   test('without the prop, focus is not forced back', () => {
@@ -92,6 +102,72 @@ describe('CommentInput refocusAfterSubmit', () => {
     fireEvent.click(sendButton);
 
     expect(getTextarea()).not.toHaveFocus();
+  });
+});
+
+// A natively disabled field loses focus in a browser, which on a phone drops
+// the on-screen keyboard. jsdom does not blur on disable, so the attribute
+// itself is what is asserted.
+describe('CommentInput while a send is in flight', () => {
+  test('the field keeps focus and is never natively disabled (Enter send)', () => {
+    render(<SendingHarness onSubmit={vi.fn()} />);
+
+    getTextarea().focus();
+    typeAndSubmitWithEnter('hello');
+
+    expect(getTextarea()).not.toHaveAttribute('disabled');
+    expect(getTextarea()).toHaveAttribute('aria-disabled', 'true');
+    expect(getTextarea()).toHaveClass('opacity-50');
+    expect(getTextarea()).toHaveFocus();
+
+    fireEvent.click(screen.getByRole('button', { name: 'settle' }));
+    expect(getTextarea()).not.toHaveAttribute('disabled');
+    expect(getTextarea()).not.toHaveAttribute('aria-disabled');
+    expect(getTextarea()).not.toHaveClass('opacity-50');
+  });
+
+  test('the mentions field is not natively disabled either', () => {
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={vi.fn()} disabled={true} />);
+
+    expect(getTextarea()).not.toHaveAttribute('disabled');
+    expect(getTextarea()).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  test('Enter does not send a second time', () => {
+    const onSubmit = vi.fn();
+    render(<SendingHarness onSubmit={onSubmit} value="hello" />);
+
+    fireEvent.keyDown(getTextarea(), { key: 'Enter' });
+    fireEvent.keyDown(getTextarea(), { key: 'Enter' });
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();
+  });
+
+  // The consumer clears the draft once the send is confirmed and restores the
+  // sent text when it fails, so anything typed meanwhile would be lost.
+  test('typing is ignored for a controlled draft', () => {
+    const onValueChange = vi.fn();
+    render(<CommentInput onSubmit={vi.fn()} disabled={true} value="sent text" onValueChange={onValueChange} />);
+
+    fireEvent.change(getTextarea(), { target: { value: 'sent text and more' } });
+
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(getTextarea()).toHaveValue('sent text');
+  });
+
+  test('typing is ignored for a self-contained draft, and accepted again afterwards', () => {
+    render(<SendingHarness onSubmit={vi.fn()} />);
+
+    typeAndSubmitWithEnter('hello');
+    expect(getTextarea()).toHaveValue('');
+
+    fireEvent.change(getTextarea(), { target: { value: 'typed during the send' } });
+    expect(getTextarea()).toHaveValue('');
+
+    fireEvent.click(screen.getByRole('button', { name: 'settle' }));
+    fireEvent.change(getTextarea(), { target: { value: 'next message' } });
+    expect(getTextarea()).toHaveValue('next message');
   });
 });
 

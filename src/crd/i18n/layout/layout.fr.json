@@ -22,6 +22,7 @@
     "changeLanguage": "Changer de langue",
     "changeLanguageError": "Impossible d'enregistrer la préférence de langue — veuillez réessayer.",
     "getHelp": "Obtenir de l'aide",
+    "refresh": "Actualiser",
     "showGrid": "Afficher la grille",
     "hideGrid": "Masquer la grille"
   },
@@ -57,5 +58,12 @@
     "settings": "paramètres",
     "acceptAll": "Accepter tous les Cookies",
     "confirmChoice": "Confirmer votre choix"
+  },
+  "secondFactorReminder": {
+    "action": "Configurer",
+    "dismiss": "Fermer",
+    "secondWayAction": "Ajouter",
+    "secondWayText": "Ajoutez un second moyen de passer la deuxième étape d'ici le {{deadline}} : une application d'authentification, une autre clé de sécurité ou des codes de récupération. Reconnectez-vous ensuite. Après cette date, vous ne pourrez plus utiliser Alkemio avec un seul moyen.",
+    "text": "Utilisez la validation en deux étapes d'ici le {{deadline}} : configurez-la, ou reconnectez-vous avec elle si c'est déjà fait. Après cette date, vous ne pourrez plus utiliser Alkemio sans elle."
   }
 }

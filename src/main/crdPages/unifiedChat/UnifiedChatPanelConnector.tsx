@@ -2,10 +2,12 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { Info, Loader2, Trash2 } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { rotateActiveSessionIfDue } from '@/core/matrix/activeSession';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
 import { CallControls, chatHeaderIconButtonClass, chatHeaderIconClass } from '@/crd/components/chat/CallControls';
+import { ChatConnectionNotice } from '@/crd/components/chat/ChatConnectionNotice';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
@@ -49,6 +51,11 @@ import { useNewChat } from './useNewChat';
 import { useUnifiedConversations } from './useUnifiedConversations';
 import { useUnifiedConversationView } from './useUnifiedConversationView';
 
+// How long after the click a queued call may still open.
+const QUEUED_CALL_TIMEOUT_MS = 10_000;
+// How long the "try again" notice of a dropped call stays.
+const DROPPED_CALL_NOTICE_MS = 8_000;
+
 /**
  * Wires the unified conversation list + selected thread to the CRD ChatPanel.
  * Owns list/thread selection, realtime, send + reactions, and Guidance behaviors.
@@ -56,9 +63,14 @@ import { useUnifiedConversationView } from './useUnifiedConversationView';
 type UnifiedChatPanelConnectorProps = {
   /** The Matrix sync is catching up. Tracked by the always-mounted launcher, so a resume that happened before the panel opened still counts. */
   catchingUp?: boolean;
+  /** Sync has stayed lost past the notice delay (computed by the always-mounted launcher). */
+  connectionLost?: boolean;
 };
 
-export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPanelConnectorProps) => {
+export const UnifiedChatPanelConnector = ({
+  catchingUp = false,
+  connectionLost = false,
+}: UnifiedChatPanelConnectorProps) => {
   const { t, i18n } = useTranslation('crd-chat');
   const { userModel } = useCurrentUserContext();
   const currentUserId = userModel?.id;
@@ -100,6 +112,46 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
   // Calls: shown only to beta testers, in a synced session, where the environment has calls.
   const callEligibility = useCallEligibility(selectedConversation ?? null);
   const callSession = useRoomCallSession(callEligibility.matrixRoomId);
+  // A call clicked while the chat credential is being replaced: it opens once the new session
+  // has synced and resolved the same room again, so the call never spans the swap.
+  const [queuedCall, setQueuedCall] = useState<{
+    readonly conversationId: string;
+    readonly matrixRoomId: string;
+    readonly intent: ReturnType<typeof callIntentFor>;
+    readonly swapDone: boolean;
+  } | null>(null);
+  useEffect(() => {
+    if (!queuedCall) {
+      return;
+    }
+    if (queuedCall.conversationId !== selectedConversationId) {
+      setQueuedCall(null);
+    } else if (queuedCall.swapDone && callEligibility.matrixRoomId === queuedCall.matrixRoomId) {
+      setQueuedCall(null);
+      openCall({ matrixRoomId: queuedCall.matrixRoomId, intent: queuedCall.intent });
+    }
+  }, [queuedCall, selectedConversationId, callEligibility.matrixRoomId]);
+  // A call that has not opened by then is dropped, so none opens (or rings) long after the click,
+  // and the user is told to try again.
+  const [droppedCallIn, setDroppedCallIn] = useState<string | null>(null);
+  const queuedIn = queuedCall?.conversationId ?? null;
+  useEffect(() => {
+    if (!queuedIn) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      setQueuedCall(null);
+      setDroppedCallIn(queuedIn);
+    }, QUEUED_CALL_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [queuedIn]);
+  useEffect(() => {
+    if (!droppedCallIn) {
+      return;
+    }
+    const timer = setTimeout(() => setDroppedCallIn(null), DROPPED_CALL_NOTICE_MS);
+    return () => clearTimeout(timer);
+  }, [droppedCallIn]);
   const activeCallRooms = useActiveCallRooms(conversations);
 
   // Realtime conversation events are subscribed globally by
@@ -262,10 +314,23 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
   } else if (selectedConversation) {
     const { isGroup } = selectedConversation;
     const { matrixRoomId } = callEligibility;
+    const conversationId = selectedConversation.id;
     const openCallWith = (action: CallAction, media: CallMedia) => {
-      if (matrixRoomId) {
-        openCall({ matrixRoomId, intent: callIntentFor({ isGroup, action, media }) });
+      if (!matrixRoomId || queuedCall) {
+        return;
       }
+      const intent = callIntentFor({ isGroup, action, media });
+      setDroppedCallIn(null);
+      setQueuedCall({ conversationId, matrixRoomId, intent, swapDone: false });
+      // A due chat credential is replaced first: a call open across the swap would end.
+      void rotateActiveSessionIfDue().then(rotated => {
+        if (rotated) {
+          setQueuedCall(queued => (queued ? { ...queued, swapDone: true } : null));
+        } else {
+          setQueuedCall(null);
+          openCall({ matrixRoomId, intent });
+        }
+      });
     };
     let callActions: ReactNode = null;
     if (callEligibility.eligible) {
@@ -407,6 +472,15 @@ export const UnifiedChatPanelConnector = ({ catchingUp = false }: UnifiedChatPan
         onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
         titleActionLabel={isGroupThread ? t('group.settings') : undefined}
         headerActions={view === 'thread' ? headerActions : undefined}
+        notice={
+          queuedCall && view === 'thread' ? (
+            <ChatConnectionNotice kind="busy" message={t('call.preparing')} />
+          ) : droppedCallIn && droppedCallIn === selectedConversationId && view === 'thread' ? (
+            <ChatConnectionNotice kind="failed" message={t('call.dropped')} />
+          ) : connectionLost ? (
+            <ChatConnectionNotice message={t('panel.reconnecting')} />
+          ) : undefined
+        }
       >
         {view === 'thread' && selectedConversationId ? (
           <ConversationThread
