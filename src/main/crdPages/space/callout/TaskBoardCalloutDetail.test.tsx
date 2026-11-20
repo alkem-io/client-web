@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type ReactNode, useEffect } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -281,6 +281,42 @@ describe('a Tasks board callout opened by its link', () => {
     expect(calloutDetailDialog()).toBeInTheDocument();
   });
 
+  it('returns focus to the task that was opened when its dialog closes', async () => {
+    const user = userEvent.setup();
+    renderDeeplink();
+
+    await user.click(within(calloutDetailDialog()).getByRole('button', { name: 'Write the agenda' }));
+    await user.click(screen.getByRole('button', { name: 'close task' }));
+
+    expect(screen.queryByTestId('focused-task')).not.toBeInTheDocument();
+    // Keyboard users land back on the task they opened, not on the page body.
+    await waitFor(() =>
+      expect(within(calloutDetailDialog()).getByRole('button', { name: 'Write the agenda' })).toHaveFocus()
+    );
+  });
+
+  it('returns focus to the task opened from the board-only view when its dialog closes', async () => {
+    const user = userEvent.setup();
+    renderDeeplink();
+
+    await user.click(within(calloutDetailDialog()).getByRole('button', { name: 'callout.fullscreen' }));
+    const task = within(screen.getByTestId('board-only-view')).getByRole('button', { name: 'Write the agenda' });
+    await user.click(task);
+    await user.click(screen.getByRole('button', { name: 'close task' }));
+
+    await waitFor(() => expect(task).toHaveFocus());
+  });
+
+  it('keeps focus in the callout detail when a deep-linked task, which has no opening control, closes', async () => {
+    const user = userEvent.setup();
+    renderDeeplink('task-1');
+
+    await user.click(screen.getByRole('button', { name: 'close task' }));
+
+    expect(screen.queryByTestId('focused-task')).not.toBeInTheDocument();
+    await waitFor(() => expect(calloutDetailDialog()).toContainElement(document.activeElement as HTMLElement));
+  });
+
   it('renders nothing until board detection resolves, so the plain responses never flash', () => {
     state.detectionPending = true;
     renderDeeplink();
@@ -349,5 +385,35 @@ describe('a Tasks board callout opened from its feed card', () => {
     expect(screen.queryByText('Read this before picking up a task.')).not.toBeInTheDocument();
     // The task dialog is the top layer, so assistive technology must reach it.
     expect(screen.getByTestId('focused-task').closest('[aria-hidden="true"]')).toBeNull();
+  });
+
+  it('returns focus to the task opened from the board-only view when its dialog closes', async () => {
+    const user = userEvent.setup();
+    renderFeedItem();
+
+    await user.click(screen.getByRole('button', { name: 'feed fullscreen' }));
+    const task = within(screen.getByTestId('board-only-view')).getByRole('button', { name: 'Write the agenda' });
+    await user.click(task);
+    await user.click(screen.getByRole('button', { name: 'close task' }));
+
+    expect(screen.queryByTestId('focused-task')).not.toBeInTheDocument();
+    await waitFor(() => expect(task).toHaveFocus());
+  });
+
+  it('keeps focus in the board-only view when a task opened from the inline board closes', async () => {
+    const user = userEvent.setup();
+    renderFeedItem();
+
+    // The inline task sits beneath the board-only view that opens with it, so
+    // focus cannot go back there: it stays in the board-only view.
+    await user.click(within(screen.getByTestId('feed-card')).getByRole('button', { name: 'Write the agenda' }));
+    await user.click(screen.getByRole('button', { name: 'close task' }));
+
+    expect(screen.queryByTestId('focused-task')).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getByTestId('board-only-view').closest('[role="dialog"]')).toContainElement(
+        document.activeElement as HTMLElement
+      )
+    );
   });
 });

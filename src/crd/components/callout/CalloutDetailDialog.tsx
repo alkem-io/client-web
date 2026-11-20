@@ -110,6 +110,13 @@ type CalloutDetailDialogProps = {
    * Used to present a single task (post) on top of the Tasks board.
    */
   focusedPost?: boolean;
+  /** Fires before the dialog takes focus on open, while focus is still on whatever opened it. */
+  onOpenAutoFocus?: (event: Event) => void;
+  /**
+   * Where focus goes when the dialog closes. It has no trigger of its own, so
+   * without this focus is left on the page body.
+   */
+  onCloseAutoFocus?: (event: Event) => void;
 };
 
 export function CalloutDetailDialog({
@@ -141,6 +148,8 @@ export function CalloutDetailDialog({
   overlayClassName,
   contentClassName,
   focusedPost = false,
+  onOpenAutoFocus,
+  onCloseAutoFocus,
 }: CalloutDetailDialogProps) {
   const { t } = useTranslation('crd-space');
   const { isSmallScreen } = useScreenSize();
@@ -194,6 +203,8 @@ export function CalloutDetailDialog({
           contentClassName
         )}
         aria-describedby="callout-dialog-description"
+        onOpenAutoFocus={onOpenAutoFocus}
+        onCloseAutoFocus={onCloseAutoFocus}
       >
         {/* In focused mode the selected contribution's own card carries the
             title + actions (including close), so the callout-level header is

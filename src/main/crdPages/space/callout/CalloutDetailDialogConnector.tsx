@@ -379,6 +379,22 @@ function CalloutDetailDialogLayer({
   // any dialog it spawns (edit, delete, share) at z-[120] so it clears both.
   const elevatedDialog = elevated ? { overlayClassName: 'z-[110]', contentClassName: 'z-[110]' } : {};
   const elevatedNested = elevated ? { overlayClassName: 'z-[120]', contentClassName: 'z-[120]' } : {};
+  // A task's focused dialog has no trigger, so focus would drop to the page
+  // body on close: send it back to where it was when the dialog opened — the
+  // task that was clicked, or the dialog beneath when nothing was (a deep link).
+  const openerRef = useRef<HTMLElement | null>(null);
+  const restoreFocusToOpener = elevated
+    ? {
+        onOpenAutoFocus: () => {
+          openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        },
+        onCloseAutoFocus: (event: Event) => {
+          if (!openerRef.current?.isConnected) return;
+          event.preventDefault();
+          openerRef.current.focus();
+        },
+      }
+    : {};
   const contributionType = getCalloutContributionType(callout);
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
   const initialIsPost = contributionType === CalloutContributionType.Post;
@@ -1113,6 +1129,7 @@ function CalloutDetailDialogLayer({
           open={open}
           onOpenChange={onOpenChange}
           {...elevatedDialog}
+          {...restoreFocusToOpener}
           focusedPost={elevated && isPostSelected}
           editing={postEditOpen}
           callout={{
@@ -1181,6 +1198,7 @@ function CalloutDetailDialogLayer({
             open={open}
             onOpenChange={onOpenChange}
             {...elevatedDialog}
+            {...restoreFocusToOpener}
             focusedPost={elevated && isPostSelected}
             // The post/task edit dialog opens over this one; its comment surface stays
             // out of the way until the user saves or cancels. The comments connector
