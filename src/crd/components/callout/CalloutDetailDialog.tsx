@@ -46,6 +46,8 @@ type CalloutDetailDialogProps = {
   contributionsSlot?: ReactNode;
   hasContributions?: boolean;
   contributionsCount?: number;
+  /** Control rendered at the end of the contributions heading (e.g. a fullscreen toggle for a board). */
+  contributionsActionSlot?: ReactNode;
   /**
    * Inline preview of the currently-selected contribution (e.g. CalloutPostPreview).
    * Rendered BELOW the contributions grid so the user keeps the full list in view
@@ -117,6 +119,7 @@ export function CalloutDetailDialog({
   contributionsSlot,
   hasContributions,
   contributionsCount,
+  contributionsActionSlot,
   selectedContributionSlot,
   pollSlot,
   formFramingSlot,
@@ -326,6 +329,7 @@ export function CalloutDetailDialog({
                               {contributionsCount}
                             </Badge>
                           )}
+                          {contributionsActionSlot && <div className="ml-auto">{contributionsActionSlot}</div>}
                         </div>
                         {contributionsSlot}
                       </>
