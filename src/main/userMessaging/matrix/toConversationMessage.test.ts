@@ -66,6 +66,16 @@ describe('toConversationMessage', () => {
     expect(toConversationMessage(media, { ...context, attachmentBucketId: null }).attachments[0].url).toBeUndefined();
   });
 
+  it('keeps voice metadata on the chat attachment', () => {
+    const voice = { durationMs: 7300, waveform: [0, 512, 1024] };
+    const message = parsed({
+      body: 'Voice message',
+      media: { externalReference: 'v1', displayName: 'Voice message', mimeType: 'audio/ogg', voice },
+    });
+    const context = { members: [], otherProfiles: new Map(), attachmentBucketId: 'bucket-A' };
+    expect(toConversationMessage(message, context).attachments[0].voice).toEqual(voice);
+  });
+
   it('maps reactions with their senders', () => {
     const message = toConversationMessage(
       parsed({ reactions: [{ eventId: '$r', emoji: '👍', timestamp: 6, sender: '@bob:hs' }] }),

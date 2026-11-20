@@ -151,6 +151,73 @@ describe('projectMessages', () => {
   });
 });
 
+describe('voice messages', () => {
+  // Element Web's `createVoiceMessageContent`, on local media.
+  const elementVoice = (overrides: Record<string, unknown> = {}): Record<string, unknown> => ({
+    msgtype: 'm.audio',
+    body: 'Voice message',
+    url: `mxc://${HS}/voice-1`,
+    info: { duration: 7300, mimetype: 'audio/ogg', size: 4096 },
+    'org.matrix.msc1767.audio': { duration: 7300, waveform: [0, 512, 1024] },
+    'org.matrix.msc3245.voice': {},
+    ...overrides,
+  });
+  const voiceOf = (content: Record<string, unknown>) =>
+    projectMessages([event('m.room.message', content)], HS)[0].media?.voice;
+
+  it('projects an Element voice message with its duration and waveform', () => {
+    const [message] = projectMessages([event('m.room.message', elementVoice())], HS);
+    expect(message.body).toBe('Voice message');
+    expect(message.media?.externalReference).toBe('voice-1');
+    expect(message.media?.voice).toEqual({ durationMs: 7300, waveform: [0, 512, 1024] });
+  });
+
+  it('ignores the voice marker without m.audio, and m.audio without the marker', () => {
+    const asFile = projectMessages([event('m.room.message', elementVoice({ msgtype: 'm.file' }))], HS)[0];
+    expect(asFile.media).toBeDefined();
+    expect(asFile.media?.voice).toBeUndefined();
+
+    const unmarked = projectMessages(
+      [event('m.room.message', elementVoice({ 'org.matrix.msc3245.voice': undefined }))],
+      HS
+    )[0];
+    expect(unmarked.media).toBeDefined();
+    expect(unmarked.media?.voice).toBeUndefined();
+  });
+
+  it('drops out-of-range voice metadata but keeps the voice player', () => {
+    for (const waveform of [[0, 1025], [0, 1.5], [-1, 3], [0, 'x'], 'not-an-array']) {
+      expect(voiceOf(elementVoice({ 'org.matrix.msc1767.audio': { duration: 7300, waveform } }))).toEqual({
+        durationMs: 7300,
+        waveform: [],
+      });
+    }
+
+    const long = Array.from({ length: 2000 }, (_, index) => index % 1025);
+    expect(voiceOf(elementVoice({ 'org.matrix.msc1767.audio': { duration: 7300, waveform: long } }))).toEqual({
+      durationMs: 7300,
+      waveform: long,
+    });
+
+    for (const duration of [0, -5, 2 ** 31, '7300']) {
+      expect(voiceOf(elementVoice({ 'org.matrix.msc1767.audio': { duration, waveform: [1] } }))).toEqual({
+        durationMs: undefined,
+        waveform: [1],
+      });
+    }
+    // `info.duration` is not a second source.
+    expect(voiceOf(elementVoice({ 'org.matrix.msc1767.audio': { waveform: [1] } }))).toEqual({
+      durationMs: undefined,
+      waveform: [1],
+    });
+
+    // A malformed container must not throw out of `projectMessages`.
+    for (const container of [null, 'x', 7300, [], undefined]) {
+      expect(voiceOf(elementVoice({ 'org.matrix.msc1767.audio': container }))).toEqual({ waveform: [] });
+    }
+  });
+});
+
 describe('lastMessageOf', () => {
   it('returns the newest non-blank message, ignoring reactions and blanks after it', () => {
     const text = event('m.room.message', { msgtype: 'm.text', body: 'latest' });

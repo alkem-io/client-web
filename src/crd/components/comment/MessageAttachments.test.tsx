@@ -387,3 +387,109 @@ test('an unavailable event keeps its filename without a fabricated document URL'
   expect(screen.queryByRole('link')).not.toBeInTheDocument();
   expect(screen.queryByRole('img')).not.toBeInTheDocument();
 });
+
+describe('voice messages', () => {
+  const voiceMsg: MessageAttachment = {
+    id: 'att-voice',
+    url: 'https://alkem.io/storage/document/voice-1',
+    displayName: 'Voice message',
+    mimeType: 'audio/ogg',
+    voice: { durationMs: 7300, waveform: [0, 512, 1024] },
+  };
+  const MIN_BAR = '10%';
+  const barHeights = (container: HTMLElement) =>
+    Array.from(container.querySelectorAll<HTMLElement>('[data-voice-bar]'), bar => bar.style.height);
+  const queryAudio = (container: HTMLElement) => container.querySelector('audio');
+
+  test.each([
+    'audio/ogg',
+    'video/webm',
+    'image/png',
+  ])('plays an Element voice message inline with native controls (%s)', mimeType => {
+    const { container } = render(<MessageAttachments attachments={[{ ...voiceMsg, mimeType }]} />);
+    const player = screen.getByLabelText('Voice message');
+    expect(player.tagName).toBe('AUDIO');
+    expect(player).toHaveAttribute('controls');
+    expect(player).toHaveAttribute('preload', 'none');
+    expect(player).toHaveAttribute('src', voiceMsg.url);
+    expect(container.querySelectorAll('[data-voice-bar]')).toHaveLength(40);
+    expect(screen.getByText('0:07')).toBeInTheDocument();
+    expect(within(screen.getByRole('listitem')).queryByRole('link')).toBeNull();
+    expect(container.querySelector('video')).toBeNull();
+    expect(container.querySelector('img')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'messageAttachments.openMedia:Voice message' })).toBeNull();
+  });
+
+  test('resamples a waveform to 40 bars by slice peak', () => {
+    const { container, rerender } = render(
+      <MessageAttachments attachments={[{ ...voiceMsg, voice: { waveform: [0, 1024] } }]} />
+    );
+    expect(barHeights(container)).toEqual([...Array(20).fill(MIN_BAR), ...Array(20).fill('100%')]);
+
+    // The spike sits mid-slice of bar 21 ([52, 55)): only the slice peak catches it.
+    const spiked = Array.from({ length: 100 }, (_, index) => (index === 53 ? 1024 : 0));
+    rerender(<MessageAttachments attachments={[{ ...voiceMsg, voice: { waveform: spiked } }]} />);
+    expect(barHeights(container)).toEqual(Array.from({ length: 40 }, (_, index) => (index === 21 ? '100%' : MIN_BAR)));
+  });
+
+  test('shows 40 flat bars and no duration without metadata', () => {
+    const { container } = render(<MessageAttachments attachments={[{ ...voiceMsg, voice: { waveform: [] } }]} />);
+    expect(barHeights(container)).toEqual(Array(40).fill(MIN_BAR));
+    expect(screen.queryByText(/\d+:\d\d/)).toBeNull();
+    expect(queryAudio(container)).not.toBeNull();
+  });
+
+  test('formats a duration of a minute or more as m:ss', () => {
+    const { rerender } = render(
+      <MessageAttachments attachments={[{ ...voiceMsg, voice: { durationMs: 65000, waveform: [] } }]} />
+    );
+    expect(screen.getByText('1:05')).toBeInTheDocument();
+    rerender(<MessageAttachments attachments={[{ ...voiceMsg, voice: { durationMs: 900000, waveform: [] } }]} />);
+    expect(screen.getByText('15:00')).toBeInTheDocument();
+  });
+
+  test('falls back to the download chip when a voice message fails to load', () => {
+    const onLoadError = vi.fn();
+    const attachment = { ...voiceMsg, onLoadError };
+    const { container, rerender } = render(<MessageAttachments attachments={[attachment]} />);
+
+    fireEvent.error(screen.getByLabelText('Voice message'));
+    expect(screen.getByText('messageAttachments.voiceUnavailableHint')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'messageAttachments.download:Voice message' })).toHaveAttribute(
+      'href',
+      voiceMsg.url
+    );
+    expect(queryAudio(container)).toBeNull();
+    expect(onLoadError).toHaveBeenCalledTimes(1);
+
+    rerender(<MessageAttachments attachments={[{ ...attachment, retryKey: 1 }]} />);
+    expect(queryAudio(container)).not.toBeNull();
+    expect(screen.queryByText('messageAttachments.voiceUnavailableHint')).toBeNull();
+
+    fireEvent.error(screen.getByLabelText('Voice message'));
+    expect(screen.getByText('messageAttachments.voiceUnavailableHint')).toBeInTheDocument();
+
+    const rehomed = { ...attachment, retryKey: 1, url: `${voiceMsg.url}-rehomed` };
+    rerender(<MessageAttachments attachments={[rehomed]} />);
+    expect(screen.getByLabelText('Voice message')).toHaveAttribute('src', rehomed.url);
+    expect(screen.queryByText('messageAttachments.voiceUnavailableHint')).toBeNull();
+  });
+
+  test.each([undefined, 'javascript:alert(1)'])('shows the unavailable chip without a playable URL (%s)', url => {
+    const onLoadError = vi.fn();
+    const { container } = render(<MessageAttachments attachments={[{ ...voiceMsg, url, onLoadError }]} />);
+    expect(screen.getByText('messageAttachments.unavailableNoDownload')).toBeInTheDocument();
+    expect(screen.queryByText('messageAttachments.voiceUnavailableHint')).toBeNull();
+    expect(queryAudio(container)).toBeNull();
+    expect(screen.queryByRole('link')).toBeNull();
+    expect(onLoadError).not.toHaveBeenCalled();
+  });
+
+  test('renders non-voice audio as a file chip', () => {
+    const mp3: MessageAttachment = { ...file, id: 'att-mp3', displayName: 'song.mp3', mimeType: 'audio/mpeg' };
+    const { container } = render(<MessageAttachments attachments={[mp3]} />);
+    expect(screen.getByRole('link', { name: 'messageAttachments.download:song.mp3' })).toBeInTheDocument();
+    expect(queryAudio(container)).toBeNull();
+    expect(container.querySelector('[data-voice-bar]')).toBeNull();
+  });
+});
