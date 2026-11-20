@@ -7,7 +7,7 @@ import {
   DragOverlay,
   type DragStartEvent,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
   pointerWithin,
   TouchSensor,
   useDroppable,
@@ -99,8 +99,8 @@ const findColumnOfCard = (columns: TaskBoardColumnModel[], cardId: string): Task
  * siblings visibly move aside and the source fades in place as a placeholder,
  * while a `DragOverlay` (portaled to <body>, see `TaskBoardView`) carries the
  * floating clone that tracks the cursor. The whole card is the drag surface — a
- * click still opens the task, since the pointer sensor only starts a drag past a
- * small threshold. When dragging is disabled it renders as a plain card.
+ * click or tap still opens the task, since a drag only starts past a small
+ * mouse movement or after a press-and-hold with a finger. When dragging is disabled it renders as a plain card.
  */
 function SortableCard({
   card,
@@ -129,7 +129,13 @@ function SortableCard({
     <div
       ref={setNodeRef}
       style={style}
-      className={cn(draggable && 'cursor-grab touch-none', isDragging && 'opacity-40')}
+      // No `touch-none`: the browser keeps scrolling on a swipe that starts on a
+      // card. `select-none` and the touch-callout reset stop the press-and-hold
+      // from selecting text or opening the iOS link menu instead of picking up.
+      className={cn(
+        draggable && 'cursor-grab touch-manipulation select-none [-webkit-touch-callout:none]',
+        isDragging && 'opacity-40'
+      )}
       {...(draggable ? attributes : {})}
       {...(draggable ? listeners : {})}
     >
@@ -223,8 +229,13 @@ export function TaskBoardView({
   const fromColumnRef = useRef<string | null>(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
+    // Mouse and touch are separate sensors on purpose. A pointer sensor also
+    // fires for touch and would start a drag on the first few pixels of a
+    // swipe, so scrolling the page over a board dragged cards around. With a
+    // finger, a card is picked up by pressing and holding; a swipe that moves
+    // before the hold completes stays a scroll.
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
