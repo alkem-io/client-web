@@ -46,6 +46,8 @@ type CalloutDetailDialogProps = {
   contributionsSlot?: ReactNode;
   hasContributions?: boolean;
   contributionsCount?: number;
+  /** Replaces the default "Contributions" heading (e.g. "Tasks (3)" for a board). */
+  contributionsTitle?: string;
   /** Control rendered at the end of the contributions heading (e.g. a fullscreen toggle for a board). */
   contributionsActionSlot?: ReactNode;
   /**
@@ -119,6 +121,7 @@ export function CalloutDetailDialog({
   contributionsSlot,
   hasContributions,
   contributionsCount,
+  contributionsTitle,
   contributionsActionSlot,
   selectedContributionSlot,
   pollSlot,
@@ -323,7 +326,9 @@ export function CalloutDetailDialog({
                     {contributionsSlot && (
                       <>
                         <div className="flex items-center gap-2 mb-6">
-                          <h2 className="text-section-title text-foreground">{t('calloutDialog.contributions')}</h2>
+                          <h2 className="text-section-title text-foreground">
+                            {contributionsTitle ?? t('calloutDialog.contributions')}
+                          </h2>
                           {contributionsCount !== undefined && (
                             <Badge variant="secondary" className="rounded-full px-2">
                               {contributionsCount}

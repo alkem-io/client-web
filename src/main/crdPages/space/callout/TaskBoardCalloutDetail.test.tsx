@@ -232,6 +232,9 @@ describe('a Tasks board callout opened by its link', () => {
     expect(detail.getByText('Read this before picking up a task.')).toBeInTheDocument();
     expect(detail.getByTestId('whiteboard-framing')).toBeInTheDocument();
     expect(detail.getByTestId('inline-board')).toBeInTheDocument();
+    // The board is headed as tasks, not as contributions.
+    expect(detail.getByRole('heading', { level: 2, name: /tasksHeader/ })).toBeInTheDocument();
+    expect(detail.queryByRole('heading', { name: /calloutDialog\.contributions/ })).not.toBeInTheDocument();
     // The board replaces the responses grid; the board-only view is not forced open.
     expect(screen.queryByTestId('responses-grid')).not.toBeInTheDocument();
     expect(screen.queryByTestId('board-only-view')).not.toBeInTheDocument();

@@ -302,6 +302,14 @@ export function CalloutDetailDialogConnector({ taskBoard = false, ...props }: Ca
     if (taskBoard && initialContributionId) setFocusedTaskId(initialContributionId);
   }, [taskBoard, initialContributionId]);
 
+  // The layers on top belong to one opening of the callout dialog: a later
+  // opening must start from the callout, not from a leftover board view or task.
+  useEffect(() => {
+    if (open) return;
+    setBoardViewOpen(false);
+    setFocusedTaskId(undefined);
+  }, [open]);
+
   // Same as the feed card's fullscreen control: the board-only view opens in
   // browser fullscreen, which must be requested inside the click gesture.
   const boardViewLauncherRef = useRef<HTMLElement | null>(null);
@@ -694,6 +702,10 @@ function CalloutDetailDialogLayer({
       onOpenMemoSignedCopies={setSignedCopiesMemoId}
     />
   ) : undefined;
+  // A board's responses are tasks: head them as the feed does, count included.
+  const contributionsTitle = taskBoardView
+    ? t('callout.tasksHeader', { count: callout.contributions.length })
+    : undefined;
   const contributionsActionSlot = taskBoardView ? (
     <Button
       type="button"
@@ -1121,7 +1133,8 @@ function CalloutDetailDialogLayer({
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
           contributionsActionSlot={contributionsActionSlot}
-          contributionsCount={callout.contributions.length}
+          contributionsTitle={contributionsTitle}
+          contributionsCount={contributionsTitle ? undefined : callout.contributions.length}
           selectedContributionSlot={selectedContributionSlot}
           reactionsSlot={reactionsSlot}
           settingsSlot={settingsSlot}
@@ -1187,7 +1200,8 @@ function CalloutDetailDialogLayer({
             hasContributions={hasContributionType}
             contributionsSlot={contributionsSlot}
             contributionsActionSlot={contributionsActionSlot}
-            contributionsCount={callout.contributions.length}
+            contributionsTitle={contributionsTitle}
+            contributionsCount={contributionsTitle ? undefined : callout.contributions.length}
             selectedContributionSlot={selectedContributionSlot}
             pollSlot={pollSlot}
             formFramingSlot={formFramingSlot}
