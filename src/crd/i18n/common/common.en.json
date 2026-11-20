@@ -36,6 +36,7 @@
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Unable to initialise login flow.",
           "platformSupportSelfTarget": "You can't do this to your own account. Ask another Platform Support user or an organisation admin.",
+          "secondFactorRequired": "Two-step verification is required for your account.",
           "sessionExpired": "Session expired.",
           "sessionExtend": "Unable to extend session.",
           "subscriptionNotAuthenticated": "Subscription requires authentication.",
@@ -1639,5 +1640,15 @@
     "learnMore": "Learn more",
     "contactSupport": "Contact support",
     "mentionUnavailable": "Temporarily unavailable"
+  },
+  "appDownload": {
+    "failed": "The file could not be downloaded."
+  },
+  "emojiPicker": {
+    "more": "More emojis"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} contributors here: {{names}}",
+    "pinGroupList": "{{count}} contributors here"
   }
 }

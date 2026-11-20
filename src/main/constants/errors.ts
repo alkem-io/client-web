@@ -18,4 +18,6 @@ export enum AlkemioGraphqlErrorCode {
   PLATFORM_SUPPORT_SELF_TARGET = 'PLATFORM_SUPPORT_SELF_TARGET',
   // The recipient has turned direct messaging off.
   MESSAGING_NOT_ENABLED = 'MESSAGING_NOT_ENABLED',
+  // A rule requires a second factor this session did not use; the client routes to /second-factor.
+  SECOND_FACTOR_REQUIRED = 'SECOND_FACTOR_REQUIRED',
 }

@@ -3,7 +3,8 @@ import { passkeyOwnsFlowMessages } from './passkeyFlowMessages';
 
 describe('passkeyOwnsFlowMessages — flow-level message attribution (T028)', () => {
   it.each([
-    ['webauthn', true],
+    // A security key's outcome belongs to the two-step verification section.
+    ['webauthn', false],
     ['passkey', true],
     ['password', false],
     ['profile', false],

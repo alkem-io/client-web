@@ -22,6 +22,7 @@
     "changeLanguage": "Sprache ändern",
     "changeLanguageError": "Spracheinstellung konnte nicht gespeichert werden — bitte erneut versuchen.",
     "getHelp": "Hilfe erhalten",
+    "refresh": "Aktualisieren",
     "showGrid": "Raster anzeigen",
     "hideGrid": "Raster ausblenden"
   },
@@ -57,5 +58,12 @@
     "settings": "einstellungen",
     "acceptAll": "Alle Cookies akzeptieren",
     "confirmChoice": "Auswahl bestätigen"
+  },
+  "secondFactorReminder": {
+    "action": "Jetzt einrichten",
+    "dismiss": "Schließen",
+    "secondWayAction": "Jetzt hinzufügen",
+    "secondWayText": "Fügen Sie bis zum {{deadline}} eine zweite Möglichkeit für den zweiten Schritt hinzu: eine Authenticator-App, einen weiteren Sicherheitsschlüssel oder Wiederherstellungscodes. Melden Sie sich danach erneut an. Ab diesem Datum können Sie Alkemio nicht mehr mit nur einer Möglichkeit nutzen.",
+    "text": "Nutzen Sie die Bestätigung in zwei Schritten bis zum {{deadline}}: Richten Sie sie ein oder melden Sie sich erneut damit an, wenn Sie sie bereits eingerichtet haben. Danach können Sie Alkemio nicht mehr ohne sie nutzen."
   }
 }

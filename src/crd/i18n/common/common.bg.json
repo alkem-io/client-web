@@ -36,6 +36,7 @@
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Unable to initialize login flow.",
           "platformSupportSelfTarget": "Не можете да направите това за собствения си акаунт. Помолете друг потребител от поддръжката на платформата или администратор на организацията.",
+          "secondFactorRequired": "За вашия акаунт е задължителна двустепенна проверка.",
           "sessionExpired": "Session expired.",
           "sessionExtend": "Unable to extend session.",
           "subscriptionNotAuthenticated": "Subscription requires authentication.",
@@ -1639,5 +1640,15 @@
     "learnMore": "Научете повече",
     "contactSupport": "Свържете се с поддръжката",
     "mentionUnavailable": "Временно недостъпно"
+  },
+  "appDownload": {
+    "failed": "Файлът не можа да бъде изтеглен."
+  },
+  "emojiPicker": {
+    "more": "Още емоджита"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} участници тук: {{names}}",
+    "pinGroupList": "{{count}} участници тук"
   }
 }

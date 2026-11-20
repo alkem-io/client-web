@@ -66,7 +66,9 @@
     "lastName": "Last Name",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
-    "invalidEmail": "Please enter a valid email address."
+    "invalidEmail": "Please enter a valid email address.",
+    "totpCode": "Authentication code",
+    "recoveryCode": "Recovery code"
   },
   "providers": {
     "connectWith": "Continue with {{provider}}",
@@ -84,5 +86,23 @@
     "websiteButton": "Go to our website",
     "contributeTitle": "Want to contribute more?",
     "contributeDescription": "Sign up for an Alkemio account below to collaborate with teams and access advanced tools."
+  },
+  "secondFactor": {
+    "subtitle": "Confirm it's you with your second factor to finish signing in.",
+    "title": "Two-step verification",
+    "useAuthenticator": "Use your authenticator app instead",
+    "useRecoveryCode": "Use a recovery code",
+    "useSecurityKey": "Use a security key",
+    "verify": "Verify"
+  },
+  "secondFactorPage": {
+    "app": "Set up two-step verification in a web browser first, then sign in to the app again.",
+    "enrolled": "Your second factor is set up. Sign in again to continue.",
+    "required": "Your account requires two-step verification. Set up a second factor below to continue.",
+    "secondWay": "Your account needs a second way to pass the second step: an authenticator app, another security key, or recovery codes. Add one below, then sign in again.",
+    "signInAgain": "Sign in again",
+    "signOut": "Sign out",
+    "title": "Set up two-step verification",
+    "unavailable": "Couldn't load your security settings. Sign in again to retry."
   }
 }

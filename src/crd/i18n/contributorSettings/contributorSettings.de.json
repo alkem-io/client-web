@@ -249,6 +249,9 @@
         "description": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können diese Einstellungen nicht geladen werden. Ein Neuladen hilft nicht — melde dich ab und wieder an, um sie wiederherzustellen. Der Rest von Alkemio funktioniert währenddessen weiter.",
         "action": "Abmelden und erneut anmelden"
       },
+      "manageInBrowser": {
+        "description": "Dein Passwort, deine Passkeys, die Bestätigung in zwei Schritten und deine verbundenen Konten werden in einem Webbrowser verwaltet, nicht in der App. Öffne {{address}} in einem beliebigen Webbrowser, melde dich an und gehe zu Einstellungen › Sicherheit. Der Rest von Alkemio funktioniert in der App weiter."
+      },
       "password": {
         "title": "Passwort ändern",
         "description": "Aktualisiere das Passwort, mit dem du dich in deinem Konto anmeldest.",
@@ -384,7 +387,8 @@
             "label": "Passkey",
             "set": "Eingerichtet",
             "notSet": "Nicht eingerichtet",
-            "manage": "Passkeys verwalten"
+            "manage": "Passkeys verwalten",
+            "explanation": "Meldet Sie ohne Passwort an. Er ist kein zweiter Schritt."
           }
         }
       },
@@ -424,6 +428,60 @@
             "SOLE_ORGANIZATION_OWNER": "Organisation (einziger Eigentümer)"
           }
         }
+      },
+      "twoStep": {
+        "authenticator": {
+          "active": "Ihre Authenticator-App ist aktiv.",
+          "codeLabel": "Code aus der App",
+          "confirm": "Bestätigen",
+          "explanation": "Eine App auf Ihrem Telefon, etwa Google Authenticator, Microsoft Authenticator oder 1Password, zeigt alle 30 Sekunden einen neuen sechsstelligen Code.",
+          "qrAlt": "QR-Code für Ihre Authenticator-App",
+          "removeDescription": "Sie können sich dann nicht mehr mit Codes aus dieser App anmelden.",
+          "removeTitle": "Authenticator-App entfernen?",
+          "secretLabel": "Schlüssel:",
+          "setUp": "Richten Sie eine Authenticator-App ein: Scannen Sie den QR-Code mit der App oder geben Sie den Schlüssel von Hand ein, und tippen Sie dann den angezeigten Code ein.",
+          "title": "Authenticator-App"
+        },
+        "description": "Fügen Sie der Anmeldung einen zweiten Schritt hinzu: Nach Ihrem Passwort bestätigen Sie zusätzlich mit Ihrem Telefon oder einem Sicherheitsschlüssel.",
+        "lastFactorWarning": "Dies ist Ihr letzter zweiter Faktor. Die Bestätigung in zwei Schritten ist für Sie vorgeschrieben, daher müssen Sie bei der nächsten Anmeldung erneut einen einrichten.",
+        "neverShare": "Ein Code wird niemals vorgelesen oder an jemanden gesendet, und Alkemio wird Sie nie danach fragen. Geben Sie Ihre Codes nicht weiter.",
+        "recoveryCodes": {
+          "active": "Sie haben Wiederherstellungscodes.",
+          "confirm": "Ich habe diese Codes gespeichert",
+          "copied": "Kopiert",
+          "copy": "Codes kopieren",
+          "copyFailed": "Kopieren fehlgeschlagen. Markieren Sie die Codes und kopieren Sie sie selbst.",
+          "download": "Codes herunterladen",
+          "explanation": "Einmalcodes für den Fall, dass Sie Ihre App oder Ihren Schlüssel nicht verwenden können. Jeder Code funktioniert einmal.",
+          "generate": "Wiederherstellungscodes erzeugen",
+          "needsFactor": "Richten Sie zuerst eine Authenticator-App oder einen Sicherheitsschlüssel ein.",
+          "regenerate": "Neu erzeugen",
+          "regenerateDescription": "Ihre aktuellen Wiederherstellungscodes funktionieren dann nicht mehr.",
+          "regenerateTitle": "Neue Wiederherstellungscodes erzeugen?",
+          "remove": "Wiederherstellungscodes entfernen",
+          "removeDescription": "Sie können sich dann nicht mehr mit einem Wiederherstellungscode anmelden.",
+          "removeTitle": "Ihre Wiederherstellungscodes entfernen?",
+          "shownOnce": "Bewahren Sie diese Codes jetzt sicher auf. Sie werden nicht noch einmal angezeigt.",
+          "title": "Wiederherstellungscodes"
+        },
+        "remove": "Entfernen",
+        "secondWay": {
+          "added": "Ihre zweite Möglichkeit für den zweiten Schritt ist eingerichtet. Melden Sie sich erneut an, damit sie zählt.",
+          "needed": "Ihr Konto benötigt eine zweite Möglichkeit für den zweiten Schritt: eine Authenticator-App, einen weiteren Sicherheitsschlüssel oder Wiederherstellungscodes. Fügen Sie unten eine hinzu und melden Sie sich danach erneut an.",
+          "suggested": "Die Bestätigung in zwei Schritten ist aktiv. Fügen Sie jetzt eine zweite Möglichkeit für den zweiten Schritt hinzu (eine Authenticator-App, einen weiteren Sicherheitsschlüssel oder Wiederherstellungscodes), damit Sie sich weiterhin anmelden können, wenn Sie diese verlieren."
+        },
+        "securityKeys": {
+          "add": "Sicherheitsschlüssel hinzufügen",
+          "empty": "Noch keine Sicherheitsschlüssel hinzugefügt.",
+          "explanation": "Verwenden Sie einen Passkey aus Ihrem Passwort-Manager oder auf diesem Gerät (Face ID, Touch ID, Windows Hello) oder einen physischen Schlüssel wie einen YubiKey. Ihr Browser fragt, welchen Sie verwenden möchten.",
+          "nameLabel": "Name des Schlüssels",
+          "nameRequired": "Geben Sie dem Schlüssel einen Namen.",
+          "removeDescription": "Sie können sich dann nicht mehr mit diesem Schlüssel anmelden.",
+          "removeNamed": "{{name}} entfernen",
+          "removeTitle": "Sicherheitsschlüssel „{{name}}“ entfernen?",
+          "title": "Passkeys und Sicherheitsschlüssel"
+        },
+        "title": "Bestätigung in zwei Schritten"
       }
     },
     "settings": {
@@ -825,7 +883,15 @@
         "contributionRolesLabel": "Beitragsrollen öffentlich anzeigen",
         "contributionRolesCaption": "Wenn aktiviert, sind die Rollenzuweisungen der Organisation (Administrator, Eigentümer, Mitglied) im öffentlichen Profil sichtbar."
       },
-      "errorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
+      "errorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen",
+      "security": {
+        "requireSecondFactorCaption": "Inhaber, Admins und Mitarbeitende dieser Organisation müssen bei der Anmeldung einen zweiten Faktor verwenden. Sie haben 14 Tage Zeit, ihn einzurichten.",
+        "requireSecondFactorLabel": "Bestätigung in zwei Schritten für Mitglieder vorschreiben",
+        "title": "Sicherheit",
+        "turnOffTitle": "Bestätigung in zwei Schritten nicht mehr vorschreiben?",
+        "turnOffDescription": "Mitglieder brauchen bei der Anmeldung keinen zweiten Faktor mehr. Wenn du die Vorgabe wieder einschaltest, haben sie erneut 14 Tage Zeit, ihn einzurichten.",
+        "turnOffConfirm": "Nicht mehr vorschreiben"
+      }
     },
     "invitations": {
       "title": "Space-Einladungen",

@@ -81,4 +81,33 @@ describe('MarkdownContent — iframe rendering', () => {
   it('keeps the allow value the editor writes', () => {
     expect(renderWithAllow('clipboard-write')?.getAttribute('allow')).toBe('clipboard-write');
   });
+
+  it('keeps position: relative on the editor’s iframe wrapper', () => {
+    const { container } = render(
+      <MarkdownConfigProvider iframeAllowedUrls={['https://www.youtube.com']}>
+        <MarkdownContent
+          content={`<div class="iframe-wrapper" style="position: relative; height: 442px; width: 100%;">${YT}</div>`}
+        />
+      </MarkdownConfigProvider>
+    );
+    const wrapper = container.querySelector('[data-embed]')?.parentElement;
+    expect(wrapper?.querySelector('iframe')).not.toBeNull();
+    expect(wrapper?.style.position).toBe('relative');
+    expect(wrapper?.style.height).toBe('442px');
+  });
+
+  it('strips fixed positioning and stacking from author HTML', () => {
+    const { container } = render(
+      <MarkdownContent content='<div style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;width:100%">PWNED</div>' />
+    );
+    const div = container.firstElementChild?.querySelector('div');
+    expect(div?.textContent).toBe('PWNED');
+    expect(div?.style.position).toBe('');
+    expect(div?.style.zIndex).toBe('');
+    expect(div?.style.top).toBe('');
+    expect(div?.style.left).toBe('');
+    expect(div?.style.right).toBe('');
+    expect(div?.style.bottom).toBe('');
+    expect(div?.style.width).toBe('100%');
+  });
 });

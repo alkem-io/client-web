@@ -9,17 +9,20 @@ export interface AuthContext {
   isAuthenticated: boolean;
   session?: Session;
   verified: boolean;
+  /** The server refuses this session until it signs in with a second factor (see `/second-factor`). */
+  secondFactorRequired: boolean;
 }
 
 const AuthenticationContext = React.createContext<AuthContext>({
   loading: true,
   isAuthenticated: false,
   verified: false,
+  secondFactorRequired: false,
 });
 
 const AuthenticationProvider = ({ children }: PropsWithChildren) => {
   const { session, isAuthenticated: kratosAuthenticated, loading: kratosLoading, verified } = useWhoami();
-  const { active: oidcActive, loading: oidcLoading } = useOidcSessionStatus();
+  const { active: oidcActive, loading: oidcLoading, secondFactorRequired } = useOidcSessionStatus();
 
   // The BFF OIDC session is the authoritative gate for any call hitting
   // /api/private/graphql, so it is also the sole signal for "logged in": a
@@ -44,6 +47,7 @@ const AuthenticationProvider = ({ children }: PropsWithChildren) => {
         loading,
         session,
         verified: true || verified, // Remove until smtp server is configured.
+        secondFactorRequired,
       }}
     >
       {children}

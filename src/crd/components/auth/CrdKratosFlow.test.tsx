@@ -2,8 +2,10 @@ import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { FormEvent } from 'react';
 import { describe, expect, test, vi } from 'vitest';
+import { aal2LoginFlow, WEBAUTHN_LOGIN_OPTIONS } from '@/main/crdPages/auth/__fixtures__/secondFactorFlows';
+import { flowDescriptorAdapter } from '@/main/crdPages/auth/flowDescriptorAdapter';
 import { CrdKratosFlow } from './CrdKratosFlow';
-import type { KratosFlowDescriptor, KratosTextInputNode } from './flowDescriptor';
+import { emptySecondFactorGroup, type KratosFlowDescriptor, type KratosTextInputNode } from './flowDescriptor';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -41,6 +43,9 @@ const registrationDescriptor = (): KratosFlowDescriptor => ({
     submit: [{ name: 'method', value: 'profile', label: 'Next', disabled: false }],
     oidc: [{ name: 'provider', value: 'linkedin', label: 'LinkedIn', disabled: false }],
     passkey: [],
+    totp: emptySecondFactorGroup(),
+    lookupSecret: emptySecondFactorGroup(),
+    webauthn: emptySecondFactorGroup(),
     anchors: [],
   },
 });
@@ -129,5 +134,21 @@ describe('CrdKratosFlow email validation gate', () => {
     await user.click(getButton(container, 'provider'));
 
     expect(onSubmit).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('CrdKratosFlow second-factor nodes', () => {
+  test('the aal2 login form holds the security-key trigger beside the hidden result input', async () => {
+    const user = userEvent.setup();
+    const onPasskeyTrigger = vi.fn();
+    const { container } = render(
+      <CrdKratosFlow descriptor={flowDescriptorAdapter(aal2LoginFlow, 'login')} onPasskeyTrigger={onPasskeyTrigger} />
+    );
+
+    const trigger = getButton(container, 'webauthn_login_trigger');
+    expect(trigger.closest('form')?.querySelector('input[type="hidden"][name="webauthn_login"]')).not.toBeNull();
+    expect(container.querySelectorAll('[name="webauthn_login_trigger"]')).toHaveLength(1);
+    await user.click(trigger);
+    expect(onPasskeyTrigger).toHaveBeenCalledWith('oryWebAuthnLogin', WEBAUTHN_LOGIN_OPTIONS);
   });
 });

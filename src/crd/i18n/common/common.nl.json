@@ -36,6 +36,7 @@
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Kan de login-flow niet initialiseren.",
           "platformSupportSelfTarget": "Je kunt dit niet voor je eigen account doen. Vraag een andere Platform Support-gebruiker of een beheerder van de organisatie.",
+          "secondFactorRequired": "Verificatie in twee stappen is verplicht voor je account.",
           "sessionExpired": "Sessie verlopen.",
           "sessionExtend": "Kan sessie niet verlengen.",
           "subscriptionNotAuthenticated": "Abonnement vereist authenticatie.",
@@ -1639,5 +1640,15 @@
     "learnMore": "Meer informatie",
     "contactSupport": "Contact opnemen met support",
     "mentionUnavailable": "Tijdelijk niet beschikbaar"
+  },
+  "appDownload": {
+    "failed": "Het bestand kon niet worden gedownload."
+  },
+  "emojiPicker": {
+    "more": "Meer emoji's"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} bijdragers hier: {{names}}",
+    "pinGroupList": "{{count}} bijdragers hier"
   }
 }

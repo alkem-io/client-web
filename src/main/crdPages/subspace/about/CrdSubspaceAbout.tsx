@@ -10,7 +10,9 @@ import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { mapAboutLeads } from '@/main/crdPages/space/dataMappers/spacePageDataMapper';
+import { useContactableUsers } from '@/main/crdPages/space/hooks/useContactableUsers';
 import { isApplyUnavailable } from '@/main/crdPages/space/isApplyUnavailable';
+import { useMessageContributor } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { mapClassificationEntries } from '@/main/crdPages/topLevelPages/spaceSettings/about/aboutMapper';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { useSpaceApplyFlow } from '../../space/useSpaceApplyFlow';
@@ -72,11 +74,18 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
   const about = data?.lookup.space?.about;
   const profile = about?.profile;
 
-  const { leadUsers, leadOrganizations } = mapAboutLeads(
+  const { leadUsers: mappedLeadUsers, leadOrganizations } = mapAboutLeads(
     about?.membership?.leadUsers,
     about?.membership?.leadOrganizations,
     userModel?.id
   );
+  // Message only for leads who accept direct messages (FR-004).
+  const withContactability = useContactableUsers(
+    mappedLeadUsers.map(lead => lead.preview),
+    !userModel || !open
+  );
+  const leadUsers = mappedLeadUsers.map(lead => ({ ...lead, preview: withContactability(lead.preview) }));
+  const onMessageContributor = useMessageContributor();
 
   const provider = about?.provider?.profile
     ? {
@@ -178,6 +187,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
           }
         }}
         data={aboutData}
+        onMessageContributor={onMessageContributor}
         hasEditPrivilege={permissions.canUpdate}
         whyTitle={whyTitle}
         whoTitle={whoTitle}

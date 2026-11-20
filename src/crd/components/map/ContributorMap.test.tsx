@@ -16,7 +16,7 @@
  */
 import { describe, expect, test } from 'vitest';
 import type { ContributorMapPin } from './ContributorMap';
-import { isRenderableMapView, resolveView } from './ContributorMap';
+import { groupOverlappingPins, isRenderableMapView, resolveView } from './ContributorMap';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -170,5 +170,35 @@ describe('resolveView — re-frame target (fitKey delegation)', () => {
     const pins = [makePin('p1', 40, 0), makePin('p2', 80, 50)];
     const result = resolveView(undefined, pins);
     expect('bounds' in result).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// groupOverlappingPins — pins drawn on top of each other become one group
+// ---------------------------------------------------------------------------
+
+describe('groupOverlappingPins', () => {
+  const ada = makePin('ada', 52.37, 4.9);
+  const alan = makePin('alan', 52.36, 4.88); // ~1.7 km from Ada
+  const tulip = makePin('tulip', 52.37, 4.9); // exactly on Ada
+  const paris = makePin('paris', 48.85, 2.35);
+  const ids = (groups: ReturnType<typeof groupOverlappingPins>) => groups.map(g => g.pins.map(p => p.id));
+
+  test('pins a kilometre or two apart overlap at a city-level zoom and form one group', () => {
+    expect(ids(groupOverlappingPins([ada, alan, paris], 10))).toEqual([['ada', 'alan'], ['paris']]);
+  });
+
+  test('zoomed in far enough, the same pins no longer overlap and stand alone', () => {
+    expect(ids(groupOverlappingPins([ada, alan, paris], 15))).toEqual([['ada'], ['alan'], ['paris']]);
+  });
+
+  test('pins at identical coordinates stay grouped at any zoom', () => {
+    expect(ids(groupOverlappingPins([ada, tulip], 22))).toEqual([['ada', 'tulip']]);
+  });
+
+  test('a group is identified by its first pin, which also places it', () => {
+    const [group] = groupOverlappingPins([ada, alan], 10);
+    expect(group.id).toBe('ada');
+    expect(group.pins[0]).toBe(ada);
   });
 });
