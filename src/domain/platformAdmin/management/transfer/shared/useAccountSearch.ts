@@ -31,12 +31,10 @@ const useAccountSearch = () => {
   // client-1: denied only when EVERY error the two queries reported is an
   // authorization code — a genuinely mixed/other failure is not "denied",
   // it's a normal search failure the global error handler already covers.
-  const denied = useMemo(() => {
-    const codes = [usersError, orgsError]
-      .filter(error => error !== undefined)
-      .flatMap(error => error.graphQLErrors.map(graphQLError => graphQLError.extensions?.code as string));
-    return codes.length > 0 && codes.every(code => DENIED_ERROR_CODES.includes(code));
-  }, [usersError, orgsError]);
+  const deniedCodes = [usersError, orgsError]
+    .filter(error => error !== undefined)
+    .flatMap(error => error.graphQLErrors.map(graphQLError => graphQLError.extensions?.code as string));
+  const denied = deniedCodes.length > 0 && deniedCodes.every(code => DENIED_ERROR_CODES.includes(code));
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
