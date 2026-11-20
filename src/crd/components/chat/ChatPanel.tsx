@@ -9,6 +9,7 @@ import {
   chatHeaderLargeIconClass,
 } from '@/crd/components/chat/CallControls';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
+import { useVisibleViewportArea } from '@/crd/hooks/useVisibleViewportArea';
 import { claimEscape } from '@/crd/lib/claimEscape';
 import { cn } from '@/crd/lib/utils';
 
@@ -94,6 +95,9 @@ export function ChatPanel({
   const [expanded, setExpanded] = useState(false);
   const isExpanded = expanded && !isSmallScreen;
   const coversPage = open && (isSmallScreen || isExpanded);
+  // Full screen on a phone: follow the visible area so the composer at the
+  // bottom of the panel stays above the on-screen keyboard.
+  const visibleArea = useVisibleViewportArea(open && isSmallScreen);
 
   useEffect(() => {
     if (!coversPage) {
@@ -158,6 +162,7 @@ export function ChatPanel({
             role="dialog"
             aria-label={title}
             data-expanded={isExpanded}
+            style={visibleArea ? { ...visibleArea, bottom: 'auto' } : undefined}
             className={cn(
               'pointer-events-auto fixed z-50 flex flex-col overflow-hidden bg-card text-card-foreground shadow-xl',
               isSmallScreen
