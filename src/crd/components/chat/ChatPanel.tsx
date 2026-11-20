@@ -1,11 +1,15 @@
+import { FocusScope } from '@radix-ui/react-focus-scope';
 import { ChevronLeft, Maximize2, Minimize2, Settings, Volume2, VolumeX, X } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { RemoveScroll } from 'react-remove-scroll';
 import {
   chatHeaderIconButtonClass,
   chatHeaderIconClass,
   chatHeaderLargeIconClass,
 } from '@/crd/components/chat/CallControls';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
+import { useVisibleViewportArea } from '@/crd/hooks/useVisibleViewportArea';
 import { claimEscape } from '@/crd/lib/claimEscape';
 import { cn } from '@/crd/lib/utils';
 
@@ -56,6 +60,14 @@ type ChatPanelProps = {
  * page (expanded, or full-screen on a small screen) the page itself does not
  * scroll behind it; expanded, the page is dimmed like behind any other dialog,
  * and a click on the dimmed page collapses the panel again.
+ *
+ * Opened while a modal dialog is open (Message from inside the callout dialog),
+ * the panel floats above that dialog and stays usable. It is portalled to the
+ * end of <body>, so it paints above the dialog and is outside the dialog's
+ * aria-hidden siblings; it takes pointer events back from the dialog's body lock;
+ * its focus scope pauses the dialog's focus trap; its scroll lock replaces the
+ * dialog's as the active one; and it carries the dialog's dismiss-ignore marker,
+ * so presses in it do not dismiss the dialog. A dialog opened afterwards covers the panel in the same way.
  */
 export function ChatPanel({
   open,
@@ -83,6 +95,9 @@ export function ChatPanel({
   const [expanded, setExpanded] = useState(false);
   const isExpanded = expanded && !isSmallScreen;
   const coversPage = open && (isSmallScreen || isExpanded);
+  // Full screen on a phone: follow the visible area so the composer at the
+  // bottom of the panel stays above the on-screen keyboard.
+  const visibleArea = useVisibleViewportArea(open && isSmallScreen);
 
   useEffect(() => {
     if (!coversPage) {
@@ -131,94 +146,100 @@ export function ChatPanel({
     </>
   );
 
-  return (
-    <>
+  return createPortal(
+    <div data-dialog-dismiss-ignore="">
       {isExpanded && (
         <div
           aria-hidden="true"
           data-slot="chat-backdrop"
-          className="fixed inset-0 z-50 bg-black/50"
+          className="pointer-events-auto fixed inset-0 z-50 bg-black/50"
           onClick={() => setExpanded(false)}
         />
       )}
-      <div
-        role="dialog"
-        aria-label={title}
-        data-expanded={isExpanded}
-        className={cn(
-          'fixed z-50 flex flex-col overflow-hidden bg-card text-card-foreground shadow-xl',
-          isSmallScreen
-            ? 'inset-0 rounded-none'
-            : isExpanded
-              ? 'left-1/2 top-1/2 h-[min(800px,calc(100vh-4rem))] w-[min(960px,calc(100vw-10rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-border'
-              : 'bottom-24 right-4 h-[600px] max-h-[calc(100vh-7rem)] w-[380px] rounded-xl border border-border'
-        )}
-      >
-        <header className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-2">
-          {onBack && (
-            <button type="button" onClick={onBack} aria-label={backLabel} className={chatHeaderIconButtonClass}>
-              <ChevronLeft aria-hidden="true" className={chatHeaderLargeIconClass} />
-            </button>
-          )}
-          {onTitleClick ? (
-            <button
-              type="button"
-              onClick={onTitleClick}
-              className="flex min-w-8 flex-1 items-center gap-1 rounded-md text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              {titleContent}
-              {titleActionLabel && <span className="sr-only">, {titleActionLabel}</span>}
-            </button>
-          ) : (
-            titleContent
-          )}
-          {headerActions}
-          {!isSmallScreen && (
-            <button
-              type="button"
-              onClick={() => setExpanded(!expanded)}
-              aria-label={isExpanded ? collapseLabel : expandLabel}
-              aria-expanded={isExpanded}
-              className={chatHeaderIconButtonClass}
-            >
-              {isExpanded ? (
-                <Minimize2 aria-hidden="true" className={chatHeaderIconClass} />
-              ) : (
-                <Maximize2 aria-hidden="true" className={chatHeaderIconClass} />
+      <FocusScope asChild={true} onMountAutoFocus={event => event.preventDefault()}>
+        <RemoveScroll forwardProps={true} noIsolation={true} removeScrollBar={false}>
+          <div
+            role="dialog"
+            aria-label={title}
+            data-expanded={isExpanded}
+            style={visibleArea ? { ...visibleArea, bottom: 'auto' } : undefined}
+            className={cn(
+              'pointer-events-auto fixed z-50 flex flex-col overflow-hidden bg-card text-card-foreground shadow-xl',
+              isSmallScreen
+                ? 'inset-0 rounded-none'
+                : isExpanded
+                  ? 'left-1/2 top-1/2 h-[min(800px,calc(100vh-4rem))] w-[min(960px,calc(100vw-10rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-border'
+                  : 'bottom-24 right-4 h-[600px] max-h-[calc(100vh-7rem)] w-[380px] rounded-xl border border-border'
+            )}
+          >
+            <header className="flex shrink-0 items-center gap-1 border-b border-border px-2 py-2">
+              {onBack && (
+                <button type="button" onClick={onBack} aria-label={backLabel} className={chatHeaderIconButtonClass}>
+                  <ChevronLeft aria-hidden="true" className={chatHeaderLargeIconClass} />
+                </button>
               )}
-            </button>
-          )}
-          {onToggleSound && (
-            <button
-              type="button"
-              onClick={onToggleSound}
-              aria-label={soundMuted ? unmuteSoundLabel : muteSoundLabel}
-              className={chatHeaderIconButtonClass}
-            >
-              {soundMuted ? (
-                <VolumeX aria-hidden="true" className={chatHeaderLargeIconClass} />
+              {onTitleClick ? (
+                <button
+                  type="button"
+                  onClick={onTitleClick}
+                  className="flex min-w-8 flex-1 items-center gap-1 rounded-md text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {titleContent}
+                  {titleActionLabel && <span className="sr-only">, {titleActionLabel}</span>}
+                </button>
               ) : (
-                <Volume2 aria-hidden="true" className={chatHeaderLargeIconClass} />
+                titleContent
               )}
-            </button>
-          )}
-          {onGoToSettings && (
-            <button
-              type="button"
-              onClick={onGoToSettings}
-              aria-label={settingsLabel}
-              className={chatHeaderIconButtonClass}
-            >
-              <Settings aria-hidden="true" className={chatHeaderLargeIconClass} />
-            </button>
-          )}
-          <button type="button" onClick={onClose} aria-label={closeLabel} className={chatHeaderIconButtonClass}>
-            <X aria-hidden="true" className={chatHeaderLargeIconClass} />
-          </button>
-        </header>
-        {notice}
-        <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-      </div>
-    </>
+              {headerActions}
+              {!isSmallScreen && (
+                <button
+                  type="button"
+                  onClick={() => setExpanded(!expanded)}
+                  aria-label={isExpanded ? collapseLabel : expandLabel}
+                  aria-expanded={isExpanded}
+                  className={chatHeaderIconButtonClass}
+                >
+                  {isExpanded ? (
+                    <Minimize2 aria-hidden="true" className={chatHeaderIconClass} />
+                  ) : (
+                    <Maximize2 aria-hidden="true" className={chatHeaderIconClass} />
+                  )}
+                </button>
+              )}
+              {onToggleSound && (
+                <button
+                  type="button"
+                  onClick={onToggleSound}
+                  aria-label={soundMuted ? unmuteSoundLabel : muteSoundLabel}
+                  className={chatHeaderIconButtonClass}
+                >
+                  {soundMuted ? (
+                    <VolumeX aria-hidden="true" className={chatHeaderLargeIconClass} />
+                  ) : (
+                    <Volume2 aria-hidden="true" className={chatHeaderLargeIconClass} />
+                  )}
+                </button>
+              )}
+              {onGoToSettings && (
+                <button
+                  type="button"
+                  onClick={onGoToSettings}
+                  aria-label={settingsLabel}
+                  className={chatHeaderIconButtonClass}
+                >
+                  <Settings aria-hidden="true" className={chatHeaderLargeIconClass} />
+                </button>
+              )}
+              <button type="button" onClick={onClose} aria-label={closeLabel} className={chatHeaderIconButtonClass}>
+                <X aria-hidden="true" className={chatHeaderLargeIconClass} />
+              </button>
+            </header>
+            {notice}
+            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+          </div>
+        </RemoveScroll>
+      </FocusScope>
+    </div>,
+    document.body
   );
 }

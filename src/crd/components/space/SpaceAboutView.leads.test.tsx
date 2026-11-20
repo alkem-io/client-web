@@ -24,17 +24,27 @@ const data = (leadUsers: SpaceAboutData['leadUsers']): SpaceAboutData => ({
 const mila = { name: 'Mila Janssen', type: 'person' as const, href: '/user/mila' };
 
 describe('SpaceAboutView leads', () => {
-  test('a lead with a preview opens the card, without a Message action inside the dialog', async () => {
+  const milaPreview = {
+    id: 'mila',
+    type: 'user' as const,
+    name: 'Mila Janssen',
+    tagline: 'Maps cities',
+    canMessage: true,
+  };
+
+  test('a lead with a preview opens the card with a Message action that messages that lead', async () => {
+    const onMessageContributor = vi.fn();
     render(
-      <SpaceAboutView
-        data={data([
-          {
-            ...mila,
-            preview: { id: 'mila', type: 'user', name: 'Mila Janssen', tagline: 'Maps cities', canMessage: true },
-          },
-        ])}
-      />
+      <SpaceAboutView data={data([{ ...mila, preview: milaPreview }])} onMessageContributor={onMessageContributor} />
     );
+    await userEvent.hover(screen.getByRole('link', { name: /Mila Janssen/ }));
+    expect(await screen.findByText('Maps cities')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'contributors.card.message' }));
+    expect(onMessageContributor).toHaveBeenCalledWith(milaPreview);
+  });
+
+  test('without a Message handler the card has no Message action', async () => {
+    render(<SpaceAboutView data={data([{ ...mila, preview: milaPreview }])} />);
     await userEvent.hover(screen.getByRole('link', { name: /Mila Janssen/ }));
     expect(await screen.findByText('Maps cities')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'contributors.card.message' })).not.toBeInTheDocument();

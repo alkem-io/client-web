@@ -177,20 +177,20 @@ describe('ChatPanel', () => {
 
     test('dims the page behind the expanded panel, like other dialogs, and a click on it collapses the panel', async () => {
       const user = userEvent.setup();
-      const { container } = renderPanel();
-      expect(container.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
+      renderPanel();
+      expect(document.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
       await user.click(screen.getByRole('button', { name: 'Expand chat' }));
-      const backdrop = container.querySelector('[data-slot="chat-backdrop"]');
+      const backdrop = document.querySelector('[data-slot="chat-backdrop"]');
       expect(backdrop).toHaveClass('bg-black/50');
       await user.click(backdrop as Element);
       expect(screen.getByRole('dialog', { name: 'Design team' })).toHaveAttribute('data-expanded', 'false');
-      expect(container.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
+      expect(document.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
     });
 
     test('has no backdrop full-screen on a small screen', () => {
       screenSize.isSmallScreen = true;
-      const { container } = renderPanel();
-      expect(container.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
+      renderPanel();
+      expect(document.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
     });
 
     test('tells assistive technology whether the panel is expanded', async () => {
@@ -339,6 +339,44 @@ describe('ChatPanel', () => {
       rerender(<ChatPanel {...baseProps} onClose={onClose} open={false} />);
       expect(back()).toBe(false);
       expect(onClose).not.toHaveBeenCalled();
+    });
+  });
+
+  // The on-screen keyboard shrinks the visual viewport, not the layout viewport
+  // a fixed panel is pinned to, so the composer at the bottom would sit behind it.
+  describe('on-screen keyboard', () => {
+    const stubVisualViewport = (offsetTop: number, height: number) => {
+      const viewport = Object.assign(new EventTarget(), { offsetTop, height });
+      vi.stubGlobal('visualViewport', viewport);
+      return viewport;
+    };
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    test('on a small screen the panel follows the visible area above the keyboard', () => {
+      screenSize.isSmallScreen = true;
+      const viewport = stubVisualViewport(0, 844);
+      renderPanel();
+
+      const panel = screen.getByRole('dialog');
+      expect(panel).toHaveStyle({ top: '0px', height: '844px', bottom: 'auto' });
+
+      Object.assign(viewport, { offsetTop: 24, height: 460 });
+      act(() => {
+        viewport.dispatchEvent(new Event('resize'));
+      });
+      expect(panel).toHaveStyle({ top: '24px', height: '460px', bottom: 'auto' });
+    });
+
+    test('the floating desktop card is left where its classes put it', () => {
+      const viewport = stubVisualViewport(0, 500);
+      const addEventListener = vi.spyOn(viewport, 'addEventListener');
+      renderPanel();
+
+      expect(screen.getByRole('dialog').getAttribute('style')).toBeNull();
+      expect(addEventListener).not.toHaveBeenCalled();
     });
   });
 });
