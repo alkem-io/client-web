@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -17,7 +17,12 @@ const calls = vi.hoisted(() => ({
   session: { participants: [] as string[], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false },
   activeRooms: new Set<string>(),
   openCall: vi.fn(),
+  rotate: vi.fn(),
   eligibilityInput: [] as unknown[],
+}));
+vi.mock('@/core/matrix/activeSession', async importOriginal => ({
+  ...(await importOriginal<typeof import('@/core/matrix/activeSession')>()),
+  rotateActiveSessionIfDue: calls.rotate,
 }));
 vi.mock('@/main/userMessaging/calls/useCallEligibility', () => ({
   useCallEligibility: (conversation: unknown) => {
@@ -102,6 +107,7 @@ type PanelProps = {
   expandLabel: string;
   collapseLabel: string;
   headerActions?: ReactNode;
+  notice?: ReactNode;
   children: ReactNode;
 };
 vi.mock('@/crd/components/chat/ChatPanel', () => ({
@@ -109,6 +115,7 @@ vi.mock('@/crd/components/chat/ChatPanel', () => ({
     return (
       <>
         {props.headerActions}
+        {props.notice}
         {props.children}
       </>
     );
@@ -172,6 +179,8 @@ describe('UnifiedChatPanelConnector calls', () => {
     calls.session = { participants: [], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false };
     calls.activeRooms = new Set();
     calls.openCall.mockClear();
+    calls.rotate.mockReset();
+    calls.rotate.mockResolvedValue(false);
     calls.eligibilityInput.length = 0;
     state.conversations = [directChat, groupChat];
     state.selectedConversationId = 'group';
@@ -196,6 +205,140 @@ describe('UnifiedChatPanelConnector calls', () => {
       intent: 'start_call_voice',
     });
     expect(menuProps).toBeDefined();
+  });
+
+  it('opens the call when the chat session has nothing to rotate', async () => {
+    eligible();
+    let settle: (rotated: boolean) => void = () => {};
+    calls.rotate.mockReturnValue(
+      new Promise<boolean>(resolve => {
+        settle = resolve;
+      })
+    );
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    render(<UnifiedChatPanelConnector />);
+
+    await user.click(screen.getByRole('button', { name: 'call.startVideo' }));
+    expect(calls.openCall).not.toHaveBeenCalled();
+    expect(calls.rotate).toHaveBeenCalledOnce();
+    await act(async () => settle(false));
+    expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!group:hs', intent: 'start_call' });
+    expect(screen.queryByText('call.preparing')).not.toBeInTheDocument();
+  });
+
+  const rotationPending = () => {
+    let settle: (rotated: boolean) => void = () => {};
+    calls.rotate.mockReturnValue(
+      new Promise<boolean>(resolve => {
+        settle = resolve;
+      })
+    );
+    return (rotated: boolean) => settle(rotated);
+  };
+
+  it('queues the call through a rotation and opens it once the new session has the same room', async () => {
+    eligible();
+    const settle = rotationPending();
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    const { rerender } = render(<UnifiedChatPanelConnector />);
+
+    await user.click(screen.getByRole('button', { name: 'call.startVideo' }));
+    expect(screen.getByText('call.preparing')).toBeInTheDocument();
+    // The swap: the old client is gone and the new one has not synced yet.
+    calls.eligibility = { eligible: false, matrixRoomId: null };
+    await act(async () => settle(true));
+    rerender(<UnifiedChatPanelConnector />);
+    expect(calls.openCall).not.toHaveBeenCalled();
+    expect(screen.getByText('call.preparing')).toBeInTheDocument();
+
+    eligible();
+    rerender(<UnifiedChatPanelConnector />);
+    expect(calls.openCall).toHaveBeenCalledExactlyOnceWith({ matrixRoomId: '!group:hs', intent: 'start_call' });
+    expect(screen.queryByText('call.preparing')).not.toBeInTheDocument();
+  });
+
+  it('drops a queued call that has not opened 10 s after the click', async () => {
+    eligible();
+    const settle = rotationPending();
+    vi.useFakeTimers();
+    try {
+      const { rerender } = render(<UnifiedChatPanelConnector />);
+      fireEvent.click(screen.getByRole('button', { name: 'call.startVideo' }));
+      act(() => vi.advanceTimersByTime(9_999));
+      expect(screen.getByText('call.preparing')).toBeInTheDocument();
+      act(() => vi.advanceTimersByTime(1));
+      expect(screen.queryByText('call.preparing')).not.toBeInTheDocument();
+      expect(screen.getByText('call.dropped')).toBeInTheDocument();
+
+      // The rotation finishing late opens nothing.
+      await act(async () => settle(true));
+      rerender(<UnifiedChatPanelConnector />);
+      expect(calls.openCall).not.toHaveBeenCalled();
+
+      act(() => vi.advanceTimersByTime(8_000));
+      expect(screen.queryByText('call.dropped')).not.toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('clears the try-again notice when the user clicks call again', async () => {
+    eligible();
+    rotationPending();
+    vi.useFakeTimers();
+    try {
+      render(<UnifiedChatPanelConnector />);
+      fireEvent.click(screen.getByRole('button', { name: 'call.startVideo' }));
+      act(() => vi.advanceTimersByTime(10_000));
+      expect(screen.getByText('call.dropped')).toBeInTheDocument();
+
+      calls.rotate.mockResolvedValue(false);
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: 'call.startVideo' }));
+      });
+      expect(screen.queryByText('call.dropped')).not.toBeInTheDocument();
+      expect(calls.openCall).toHaveBeenCalledExactlyOnceWith({ matrixRoomId: '!group:hs', intent: 'start_call' });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('opens a queued call on the old session when the rotation could not swap it', async () => {
+    eligible();
+    calls.rotate.mockResolvedValue(true);
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    render(<UnifiedChatPanelConnector />);
+
+    await user.click(screen.getByRole('button', { name: 'call.startAudio' }));
+    await act(async () => {});
+    expect(calls.openCall).toHaveBeenCalledExactlyOnceWith({ matrixRoomId: '!group:hs', intent: 'start_call_voice' });
+  });
+
+  it('ignores another call click while a call is queued', async () => {
+    eligible();
+    rotationPending();
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    render(<UnifiedChatPanelConnector />);
+
+    await user.click(screen.getByRole('button', { name: 'call.startVideo' }));
+    await user.click(screen.getByRole('button', { name: 'call.startAudio' }));
+    expect(calls.rotate).toHaveBeenCalledOnce();
+  });
+
+  it('drops a queued call when another conversation is opened', async () => {
+    eligible();
+    const settle = rotationPending();
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    const { rerender } = render(<UnifiedChatPanelConnector />);
+
+    await user.click(screen.getByRole('button', { name: 'call.startVideo' }));
+    state.selectedConversationId = 'direct';
+    rerender(<UnifiedChatPanelConnector />);
+    await act(async () => settle(true));
+    state.selectedConversationId = 'group';
+    rerender(<UnifiedChatPanelConnector />);
+    expect(calls.openCall).not.toHaveBeenCalled();
+    expect(screen.queryByText('call.preparing')).not.toBeInTheDocument();
   });
 
   it('shows nothing call-related when the conversation is not eligible', () => {
