@@ -249,6 +249,9 @@
         "description": "Je sessie bij onze aanmeldprovider is verlopen, waardoor deze instellingen niet geladen kunnen worden. Vernieuwen helpt niet — meld je af en opnieuw aan om de sessie te herstellen. De rest van Alkemio blijft ondertussen gewoon werken.",
         "action": "Afmelden en opnieuw aanmelden"
       },
+      "manageInBrowser": {
+        "description": "Je wachtwoord, passkeys, verificatie in twee stappen en gekoppelde accounts beheer je in een webbrowser, niet in de app. Open {{address}} in een willekeurige webbrowser, meld je aan en ga naar Instellingen › Beveiliging. De rest van Alkemio blijft gewoon werken in de app."
+      },
       "password": {
         "title": "Wachtwoord wijzigen",
         "description": "Wijzig het wachtwoord waarmee je inlogt op je account.",

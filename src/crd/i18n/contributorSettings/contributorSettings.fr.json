@@ -249,6 +249,9 @@
         "description": "Votre session auprès de notre fournisseur de connexion a expiré, ces paramètres ne peuvent donc pas être chargés. Actualiser la page n'y changera rien : déconnectez-vous puis reconnectez-vous pour la rétablir. Le reste d'Alkemio continue de fonctionner entre-temps.",
         "action": "Se déconnecter et se reconnecter"
       },
+      "manageInBrowser": {
+        "description": "Votre mot de passe, vos passkeys, la validation en deux étapes et vos comptes connectés se gèrent dans un navigateur web, pas dans l'application. Ouvrez {{address}} dans n'importe quel navigateur web, connectez-vous et allez dans Paramètres › Sécurité. Le reste d'Alkemio continue de fonctionner dans l'application."
+      },
       "password": {
         "title": "Changer le mot de passe",
         "description": "Mettez à jour le mot de passe utilisé pour vous connecter à votre compte.",

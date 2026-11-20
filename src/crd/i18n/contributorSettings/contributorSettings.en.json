@@ -249,6 +249,9 @@
         "description": "Your session with our sign-in provider has expired, so these settings can't be loaded. Refreshing won't help — sign out and sign in again to restore it. The rest of Alkemio keeps working in the meantime.",
         "action": "Sign out and sign in again"
       },
+      "manageInBrowser": {
+        "description": "Your password, passkeys, two-step verification and connected accounts are managed in a web browser, not in the app. Open {{address}} in any web browser, sign in, and go to Settings › Security. The rest of Alkemio keeps working in the app."
+      },
       "password": {
         "title": "Change password",
         "description": "Update the password used to sign in to your account.",
