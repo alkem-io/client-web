@@ -100,16 +100,35 @@ describe('TaskBoardView', () => {
           vi.advanceTimersByTime(100);
         });
         expect(isDragging()).toBe(true);
+
+        // End the gesture and let the sensor remove its document listeners, so
+        // an active drag does not leak into later tests.
+        fireEvent.touchEnd(card);
+        act(() => {
+          vi.advanceTimersByTime(100);
+        });
+        expect(isDragging()).toBe(false);
       } finally {
         vi.useRealTimers();
       }
     });
 
     it('picks the card up with the mouse after a small movement', () => {
-      const { card, isDragging } = renderBoard();
-      fireEvent.mouseDown(card, { button: 0, clientX: 20, clientY: 100 });
-      fireEvent.mouseMove(document, { clientX: 20, clientY: 120 });
-      expect(isDragging()).toBe(true);
+      vi.useFakeTimers();
+      try {
+        const { card, isDragging } = renderBoard();
+        fireEvent.mouseDown(card, { button: 0, clientX: 20, clientY: 100 });
+        fireEvent.mouseMove(document, { clientX: 20, clientY: 120 });
+        expect(isDragging()).toBe(true);
+
+        fireEvent.mouseUp(document);
+        act(() => {
+          vi.advanceTimersByTime(100);
+        });
+        expect(isDragging()).toBe(false);
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 });
