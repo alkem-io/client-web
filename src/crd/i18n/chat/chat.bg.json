@@ -63,7 +63,12 @@
     "loading": "Зареждане на разговори",
     "draft": "Чернова:",
     "attachmentPreview_one": "{{count}} прикачен файл",
-    "attachmentPreview_other": "{{count}} прикачени файла"
+    "attachmentPreview_other": "{{count}} прикачени файла",
+    "pin": "Закачи",
+    "unpin": "Откачи",
+    "pinned": "Закачен",
+    "rowOptions": "Опции за {{name}}",
+    "pinError": "Закачането не можа да бъде обновено. Моля, опитайте отново."
   },
   "guidance": {
     "beta": "Бета",

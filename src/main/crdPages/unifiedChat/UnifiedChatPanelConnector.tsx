@@ -2,6 +2,7 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { Info, Loader2, Trash2 } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useMatrixClient } from '@/core/matrix/activeClient';
 import { rotateActiveSessionIfDue } from '@/core/matrix/activeSession';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -30,6 +31,7 @@ import { useActiveCallRooms } from '@/main/userMessaging/calls/useActiveCallRoom
 import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibility';
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
 import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
+import { setFavourite } from '@/main/userMessaging/matrix/matrixRooms';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useChatSound } from '@/main/userMessaging/useChatSound';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
@@ -41,6 +43,7 @@ import {
   mapMembersToGroupMembers,
   mapMemberToCommentAuthor,
   mapMessageToChatMessage,
+  sortUnifiedConversations,
   withActiveCallsFirst,
 } from './dataMapper';
 import { useUnifiedChatContext } from './UnifiedChatProvider';
@@ -192,8 +195,56 @@ export const UnifiedChatPanelConnector = ({
   const formatTimestamp = (timestampMs: number) =>
     formatDistanceToNowStrict(new Date(timestampMs), { addSuffix: true, locale });
 
+  // A pin shows at once; the Matrix sync echoing the tag back replaces it.
+  const matrixClient = useMatrixClient();
+  const [pendingPins, setPendingPins] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    setPendingPins(pending => {
+      const synced = Object.keys(pending).filter(
+        id => conversations.find(conversation => conversation.id === id)?.userPinned === pending[id]
+      );
+      if (synced.length === 0) {
+        return pending;
+      }
+      const next = { ...pending };
+      for (const id of synced) {
+        delete next[id];
+      }
+      return next;
+    });
+  }, [conversations]);
+  // The hook already sorts; only a pending pin moves a row.
+  const listedConversations =
+    Object.keys(pendingPins).length === 0
+      ? conversations
+      : sortUnifiedConversations(
+          conversations.map(conversation =>
+            conversation.id in pendingPins
+              ? { ...conversation, userPinned: pendingPins[conversation.id] }
+              : conversation
+          ),
+          newlyCreatedConversationId
+        );
+
+  const handleTogglePin = (id: string) => {
+    const conversation = listedConversations.find(item => item.id === id);
+    if (!conversation) {
+      return;
+    }
+    if (!matrixClient) {
+      notify(t('list.pinError'), 'error');
+      return;
+    }
+    const userPinned = !conversation.userPinned;
+    setPendingPins(pending => ({ ...pending, [id]: userPinned }));
+    setFavourite(matrixClient, conversation.roomId, userPinned).catch(() => {
+      setPendingPins(({ [id]: _rolledBack, ...rest }) => rest);
+      notify(t('list.pinError'), 'error');
+    });
+  };
+
   const listItems = withActiveCallsFirst(
-    conversations.map(conversation => {
+    listedConversations.map(conversation => {
       const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
       const item = activeCallRooms.has(conversation.roomId) ? { ...mapped, hasActiveCall: true } : mapped;
       const draft = drafts[conversation.id];
@@ -524,6 +575,7 @@ export const UnifiedChatPanelConnector = ({
             isLoading={isLoading}
             onSelectConversation={handleSelect}
             onNewMessage={newChat.openDialog}
+            onTogglePin={handleTogglePin}
           />
         )}
       </ChatPanel>

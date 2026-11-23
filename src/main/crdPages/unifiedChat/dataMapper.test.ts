@@ -193,4 +193,14 @@ describe('withActiveCallsFirst', () => {
     const items = [{ id: 'pinned', pinned: true }, { id: 'new' }, { id: 'call', hasActiveCall: true }];
     expect(withActiveCallsFirst(items, 'new').map(item => item.id)).toEqual(['pinned', 'new', 'call']);
   });
+
+  it('keeps user-pinned conversations above the newly-created one and running calls', () => {
+    const items = [
+      { id: 'guidance', pinned: true },
+      { id: 'new' },
+      { id: 'call', hasActiveCall: true },
+      { id: 'user-pinned', userPinned: true },
+    ];
+    expect(withActiveCallsFirst(items, 'new').map(item => item.id)).toEqual(['guidance', 'user-pinned', 'new', 'call']);
+  });
 });

@@ -79,17 +79,20 @@ export const sortUnifiedConversations = <T extends UnifiedConversation>(
 
 /**
  * Moves the conversations with a call running to the top, below the pinned
- * one and the newly-created one: a call is their latest activity, though not a
+ * ones and the newly-created one: a call is their latest activity, though not a
  * message. The order is otherwise kept.
  */
-export const withActiveCallsFirst = <T extends { id: string; pinned?: boolean; hasActiveCall?: boolean }>(
+export const withActiveCallsFirst = <
+  T extends { id: string; pinned?: boolean; userPinned?: boolean; hasActiveCall?: boolean },
+>(
   items: T[],
   newlyCreatedConversationId: string | null
 ): T[] => {
   const rank = (item: T) => {
     if (item.pinned) return 0;
-    if (item.id === newlyCreatedConversationId) return 1;
-    return item.hasActiveCall ? 2 : 3;
+    if (item.userPinned) return 1;
+    if (item.id === newlyCreatedConversationId) return 2;
+    return item.hasActiveCall ? 3 : 4;
   };
   return [...items].sort((a, b) => rank(a) - rank(b));
 };
@@ -166,6 +169,7 @@ export const mapConversationToListItem = (
     lastMessageTimestamp: conv.lastMessage ? formatTimestamp(conv.lastMessage.timestamp) : undefined,
     unreadCount: conv.unreadCount,
     pinned: conv.pinned,
+    userPinned: conv.userPinned,
   };
 };
 
