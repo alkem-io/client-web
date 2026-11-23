@@ -16,6 +16,9 @@ const DSN = 'http://public@127.0.0.1:9/1';
 
 afterEach(async () => {
   await Sentry.getClient()?.close(0);
+  Sentry.getCurrentScope().setClient(undefined);
+  Sentry.getCurrentScope().clear();
+  Reflect.deleteProperty(window, 'Capacitor');
 });
 
 describe('sentry bootstrap', () => {
@@ -27,5 +30,19 @@ describe('sentry bootstrap', () => {
 
     expect(firstClient).toBeDefined();
     expect(Sentry.getClient()).toBe(firstClient);
+  });
+
+  it('tags browser traffic as web', () => {
+    bootstrap(true, DSN, 'test');
+
+    expect(Sentry.getCurrentScope().getScopeData().tags).toEqual({ app_mode: false, app_platform: 'web' });
+  });
+
+  it('tags app-shell traffic with the native platform', () => {
+    window.Capacitor = { isNativePlatform: () => true, getPlatform: () => 'ios' };
+
+    bootstrap(true, DSN, 'test');
+
+    expect(Sentry.getCurrentScope().getScopeData().tags).toEqual({ app_mode: true, app_platform: 'ios' });
   });
 });
