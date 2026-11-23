@@ -181,8 +181,8 @@ export function ChatConversationList({
                       <button
                         type="button"
                         aria-label={t('list.rowOptions', { name: item.displayName })}
-                        // Always shown on touch screens; revealed on hover or focus where there is a pointer.
-                        className="mr-1 flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-opacity hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [@media(hover:hover)]:opacity-0 group-hover/row:opacity-100 group-focus-within/row:opacity-100 data-[state=open]:opacity-100"
+                        // Always shown, at a 44px target, on touch screens; revealed on hover or focus where there is a pointer.
+                        className="mr-1 flex size-8 shrink-0 [@media(pointer:coarse)]:size-11 items-center justify-center rounded-md text-muted-foreground transition-opacity hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [@media(hover:hover)]:opacity-0 group-hover/row:opacity-100 group-focus-within/row:opacity-100 data-[state=open]:opacity-100"
                       >
                         <EllipsisVertical aria-hidden="true" className="size-4" />
                       </button>

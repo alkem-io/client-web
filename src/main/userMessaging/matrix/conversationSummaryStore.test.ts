@@ -59,7 +59,9 @@ const makeClient = (rooms: FakeRoom[], delaysMs: number[] = []) => {
             }),
             getAccountData: () => (room.marker ? { getContent: () => ({ event_id: room.marker }) } : undefined),
             getUnreadNotificationCount: () => room.notifications,
-            tags: room.tags ?? {},
+            get tags() {
+              return room.tags ?? {};
+            },
           }
         : null;
     },
@@ -272,6 +274,30 @@ describe('ConversationSummaryStore', () => {
     await expect(store.togglePin('a')).rejects.toThrow('M_FORBIDDEN');
 
     expect(pinned(store)).toBe(false);
+  });
+
+  it('a failed unpin right after a pin, before sync echoes the tag, keeps the pin', async () => {
+    const { store, deleteRoomTag } = await pinnedRoom();
+    await store.togglePin('a');
+    deleteRoomTag.mockRejectedValueOnce(new Error('M_LIMIT_EXCEEDED'));
+
+    await expect(store.togglePin('a')).rejects.toThrow();
+
+    expect(pinned(store)).toBe(true);
+  });
+
+  it('a failed write leaves the pin as tags that changed meanwhile give it', async () => {
+    const { room, store, emit, setRoomTag } = await pinnedRoom();
+    let fail: () => void = () => {};
+    setRoomTag.mockReturnValueOnce(new Promise((_, reject) => (fail = () => reject(new Error('timeout')))));
+
+    const write = store.togglePin('a');
+    room.tags = { 'm.favourite': {} };
+    emit('Room.tags', {}, { roomId: '!a', tags: room.tags });
+    fail();
+    await expect(write).rejects.toThrow();
+
+    expect(pinned(store)).toBe(true);
   });
 
   it('togglePin ignores a second toggle while a write is in flight', async () => {

@@ -53,7 +53,8 @@ class ConversationSummaryStore {
   private readonly dirty = new Set<string>();
   // Rooms that changed while nobody watched them.
   private readonly stale = new Set<string>();
-  private readonly pinWrites = new Set<string>();
+  // Rooms with a pin write in flight, and whether their tags changed meanwhile.
+  private readonly pinWrites = new Map<string, boolean>();
 
   constructor(private readonly client: MatrixClient) {
     client.on(
@@ -90,6 +91,9 @@ class ConversationSummaryStore {
       ((_event: MatrixEvent, room: Room) => {
         const alkemioRoomId = this.alkemioByMatrixId.get(room.roomId);
         if (alkemioRoomId) {
+          if (this.pinWrites.has(alkemioRoomId)) {
+            this.pinWrites.set(alkemioRoomId, true);
+          }
           this.setPinned(alkemioRoomId, isFavourite(room));
         }
       }) as never
@@ -164,7 +168,7 @@ class ConversationSummaryStore {
 
   /**
    * Pins or unpins at once, then writes the user's favourite tag. Rejects, with
-   * the pin back as the room has it, when the room is not known yet or the
+   * the pin back as it was, when the room is not known yet or the
    * write fails. A toggle during a write is ignored, so two writes can never
    * reach the homeserver out of order.
    */
@@ -179,14 +183,16 @@ class ConversationSummaryStore {
       return;
     }
     const pinned = !summary.pinned;
-    this.pinWrites.add(alkemioRoomId);
+    this.pinWrites.set(alkemioRoomId, false);
     this.setPinned(alkemioRoomId, pinned);
     try {
       await (pinned
         ? this.client.setRoomTag(matrixRoomId, FAVOURITE_TAG)
         : this.client.deleteRoomTag(matrixRoomId, FAVOURITE_TAG));
     } catch (error) {
-      this.setPinned(alkemioRoomId, isFavourite(room));
+      // Back to the pin before this toggle: the room's own tags may not have
+      // caught up with an earlier write yet. Tags that changed meanwhile win.
+      this.setPinned(alkemioRoomId, this.pinWrites.get(alkemioRoomId) ? isFavourite(room) : summary.pinned);
       throw error;
     } finally {
       this.pinWrites.delete(alkemioRoomId);
