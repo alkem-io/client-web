@@ -63,7 +63,12 @@
     "loading": "Gesprekken laden",
     "draft": "Concept:",
     "attachmentPreview_one": "{{count}} bijlage",
-    "attachmentPreview_other": "{{count}} bijlagen"
+    "attachmentPreview_other": "{{count}} bijlagen",
+    "pin": "Vastzetten",
+    "unpin": "Losmaken",
+    "pinned": "Vastgezet",
+    "rowOptions": "Opties voor {{name}}",
+    "pinError": "Kon het vastzetten niet bijwerken. Probeer het opnieuw."
   },
   "guidance": {
     "beta": "Bèta",
