@@ -147,7 +147,8 @@
     "offline": "Offline"
   },
   "status": {
-    "set": "Set a status",
+    "set": "Set status",
+    "change": "Edit status",
     "label": "Your status",
     "placeholder": "What are you up to?",
     "edit": "Edit your status: {{status}}",

@@ -148,6 +148,7 @@
   },
   "status": {
     "set": "Définir un statut",
+    "change": "Modifier le statut",
     "label": "Votre statut",
     "placeholder": "Que faites-vous en ce moment ?",
     "edit": "Modifier votre statut : {{status}}",

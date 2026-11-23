@@ -148,6 +148,7 @@
   },
   "status": {
     "set": "Status instellen",
+    "change": "Status bewerken",
     "label": "Je status",
     "placeholder": "Waar ben je mee bezig?",
     "edit": "Je status bewerken: {{status}}",

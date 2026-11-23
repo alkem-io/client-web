@@ -1,5 +1,5 @@
 import { FocusScope } from '@radix-ui/react-focus-scope';
-import { ChevronLeft, Maximize2, Minimize2, Settings, Volume2, VolumeX, X } from 'lucide-react';
+import { ChevronLeft, Maximize2, Minimize2, Volume2, VolumeX, X } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { RemoveScroll } from 'react-remove-scroll';
@@ -23,9 +23,8 @@ type ChatPanelProps = {
   /** Required: these buttons are icon-only, so an empty aria-label would leave them
    * with no accessible name (WCAG 2.1 AA 4.1.2). Mandatory labels make that unrepresentable. */
   backLabel: string;
-  /** When provided, a shortcut to the notification (sound) settings is shown in the header. */
-  onGoToSettings?: () => void;
-  settingsLabel: string;
+  /** The settings control (e.g. a gear menu), shown in the header between the sound toggle and close. */
+  settingsMenu?: ReactNode;
   /** When provided, a mute / unmute toggle for the chat sound is shown in the header. */
   onToggleSound?: () => void;
   /** Whether the chat sound is currently off. */
@@ -42,6 +41,8 @@ type ChatPanelProps = {
   onTitleClick?: () => void;
   /** What the title button does, appended to its accessible name after the title. */
   titleActionLabel?: string;
+  /** A line under the title in small muted text, truncated to one line. Not for use with onTitleClick when interactive. */
+  subtitle?: ReactNode;
   /** Conversation-specific actions (e.g. group/guidance menu) shown in the header. */
   headerActions?: ReactNode;
   /** A status strip shown under the header, e.g. a connection notice. */
@@ -76,8 +77,7 @@ export function ChatPanel({
   closeLabel,
   onBack,
   backLabel,
-  onGoToSettings,
-  settingsLabel,
+  settingsMenu,
   onToggleSound,
   soundMuted = false,
   muteSoundLabel,
@@ -87,6 +87,7 @@ export function ChatPanel({
   titleAvatar,
   onTitleClick,
   titleActionLabel,
+  subtitle,
   headerActions,
   notice,
   children,
@@ -138,7 +139,15 @@ export function ChatPanel({
   const titleContent = (
     <>
       {titleAvatar && <span className="shrink-0">{titleAvatar}</span>}
-      <span className="text-subsection-title min-w-0 flex-1 truncate px-1">{title}</span>
+      {subtitle ? (
+        // Tighter line heights keep the two lines close to the height of a single-line header.
+        <span className="flex min-w-0 flex-1 flex-col px-1">
+          <span className="text-subsection-title truncate leading-6">{title}</span>
+          <span className="flex min-w-0 text-caption leading-4 text-muted-foreground">{subtitle}</span>
+        </span>
+      ) : (
+        <span className="text-subsection-title min-w-0 flex-1 truncate px-1">{title}</span>
+      )}
     </>
   );
 
@@ -216,16 +225,7 @@ export function ChatPanel({
                   )}
                 </button>
               )}
-              {onGoToSettings && (
-                <button
-                  type="button"
-                  onClick={onGoToSettings}
-                  aria-label={settingsLabel}
-                  className={chatHeaderIconButtonClass}
-                >
-                  <Settings aria-hidden="true" className={chatHeaderLargeIconClass} />
-                </button>
-              )}
+              {settingsMenu}
               <button type="button" onClick={onClose} aria-label={closeLabel} className={chatHeaderIconButtonClass}>
                 <X aria-hidden="true" className={chatHeaderLargeIconClass} />
               </button>

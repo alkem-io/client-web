@@ -12,12 +12,13 @@ import { ChatConnectionNotice } from '@/crd/components/chat/ChatConnectionNotice
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
+import { ChatSettingsMenu } from '@/crd/components/chat/ChatSettingsMenu';
 import { ConversationAvatar } from '@/crd/components/chat/ConversationAvatar';
 import { GroupAvatar } from '@/crd/components/chat/GroupAvatar';
 import { GroupSettingsDialog } from '@/crd/components/chat/GroupSettingsDialog';
 import { GuidanceInfoDialog } from '@/crd/components/chat/GuidanceInfoDialog';
 import { NewChatDialog } from '@/crd/components/chat/NewChatDialog';
-import { OwnStatusMessage } from '@/crd/components/chat/OwnStatusMessage';
+import { SetStatusDialog } from '@/crd/components/chat/SetStatusDialog';
 import type { ChatThreadHeader } from '@/crd/components/chat/types';
 import { UserPresencePopover } from '@/crd/components/chat/UserPresencePopover';
 import type { CommentAuthor } from '@/crd/components/comment/types';
@@ -214,6 +215,7 @@ export const UnifiedChatPanelConnector = ({
   };
 
   const ownStatus = useOwnStatusMessage();
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const handleSaveStatus = (statusMessage: string) => {
     ownStatus.setStatusMessage(statusMessage).catch(() => notify(t('status.saveError'), 'error'));
   };
@@ -486,18 +488,23 @@ export const UnifiedChatPanelConnector = ({
         backLabel={t('thread.back')}
         // The gear is about chat in general, so it lives in the list header only; a
         // conversation's own options are in its header menu.
-        onGoToSettings={
-          view === 'list'
-            ? () => {
+        settingsMenu={
+          view === 'list' ? (
+            <ChatSettingsMenu
+              label={t('panel.settings')}
+              statusLabel={ownStatus.statusMessage ? t('status.change') : t('status.set')}
+              onEditStatus={() => setStatusDialogOpen(true)}
+              notificationSettingsLabel={t('panel.settings')}
+              onOpenNotificationSettings={() => {
                 // Close first: the panel lives outside <Routes> and the messaging context has
                 // no route listener, so navigating alone leaves it mounted. On a small screen
                 // it is `fixed inset-0`, which would cover the settings page it just opened.
                 setIsOpen(false);
                 navigate(buildUserNotificationSettingsUrl());
-              }
-            : undefined
+              }}
+            />
+          ) : undefined
         }
-        settingsLabel={t('panel.settings')}
         // The sound is on or off for the whole chat, never per conversation, so like the gear
         // the toggle lives in the list header only.
         onToggleSound={
@@ -515,6 +522,18 @@ export const UnifiedChatPanelConnector = ({
         titleAvatar={titleAvatar}
         onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
         titleActionLabel={isGroupThread ? t('group.settings') : undefined}
+        subtitle={
+          view === 'list' && ownStatus.statusMessage ? (
+            <button
+              type="button"
+              onClick={() => setStatusDialogOpen(true)}
+              aria-label={t('status.edit', { status: ownStatus.statusMessage })}
+              className="min-w-0 truncate rounded-sm text-left hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {ownStatus.statusMessage}
+            </button>
+          ) : undefined
+        }
         headerActions={view === 'thread' ? headerActions : undefined}
         notice={
           queuedCall && view === 'thread' ? (
@@ -562,20 +581,23 @@ export const UnifiedChatPanelConnector = ({
             onRemoveReaction={onRemoveReaction}
           />
         ) : (
-          <>
-            <OwnStatusMessage statusMessage={ownStatus.statusMessage} onSave={handleSaveStatus} />
-            <ChatConversationList
-              conversations={listItems}
-              selectedConversationId={selectedConversationId ?? undefined}
-              isLoading={isLoading}
-              onSelectConversation={handleSelect}
-              onNewMessage={newChat.openDialog}
-              onTogglePin={handleTogglePin}
-            />
-          </>
+          <ChatConversationList
+            conversations={listItems}
+            selectedConversationId={selectedConversationId ?? undefined}
+            isLoading={isLoading}
+            onSelectConversation={handleSelect}
+            onNewMessage={newChat.openDialog}
+            onTogglePin={handleTogglePin}
+          />
         )}
       </ChatPanel>
 
+      <SetStatusDialog
+        open={statusDialogOpen}
+        onOpenChange={setStatusDialogOpen}
+        statusMessage={ownStatus.statusMessage}
+        onSave={handleSaveStatus}
+      />
       <NewChatDialog
         open={newChat.open}
         onOpenChange={newChat.onOpenChange}

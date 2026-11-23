@@ -147,7 +147,8 @@
     "offline": "Desconectado"
   },
   "status": {
-    "set": "Establecer un estado",
+    "set": "Establecer estado",
+    "change": "Editar estado",
     "label": "Tu estado",
     "placeholder": "¿Qué estás haciendo?",
     "edit": "Editar tu estado: {{status}}",
