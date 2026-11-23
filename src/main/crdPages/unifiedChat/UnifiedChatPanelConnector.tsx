@@ -2,6 +2,7 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { Info, Loader2, Trash2 } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useMatrixClient } from '@/core/matrix/activeClient';
 import { rotateActiveSessionIfDue } from '@/core/matrix/activeSession';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -31,6 +32,7 @@ import { useActiveCallRooms } from '@/main/userMessaging/calls/useActiveCallRoom
 import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibility';
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
 import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
+import { storeFor } from '@/main/userMessaging/matrix/conversationSummaryStore';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useChatSound } from '@/main/userMessaging/useChatSound';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
@@ -192,6 +194,22 @@ export const UnifiedChatPanelConnector = ({
   const locale = resolveDateFnsLocale(i18n.language);
   const formatTimestamp = (timestampMs: number) =>
     formatDistanceToNowStrict(new Date(timestampMs), { addSuffix: true, locale });
+
+  const matrixClient = useMatrixClient();
+  const handleTogglePin = (id: string) => {
+    const conversation = conversations.find(item => item.id === id);
+    if (!conversation) {
+      return;
+    }
+    if (!matrixClient) {
+      notify(t('list.pinError'), 'error');
+      return;
+    }
+    // The store shows the pin at once and takes it back if the write fails.
+    storeFor(matrixClient)
+      .togglePin(conversation.roomId)
+      .catch(() => notify(t('list.pinError'), 'error'));
+  };
 
   const listItems = withActiveCallsFirst(
     conversations.map(conversation => {
@@ -543,6 +561,7 @@ export const UnifiedChatPanelConnector = ({
             isLoading={isLoading}
             onSelectConversation={handleSelect}
             onNewMessage={newChat.openDialog}
+            onTogglePin={handleTogglePin}
           />
         )}
       </ChatPanel>

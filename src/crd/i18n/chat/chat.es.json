@@ -63,7 +63,12 @@
     "loading": "Cargando conversaciones",
     "draft": "Borrador:",
     "attachmentPreview_one": "{{count}} archivo adjunto",
-    "attachmentPreview_other": "{{count}} archivos adjuntos"
+    "attachmentPreview_other": "{{count}} archivos adjuntos",
+    "pin": "Fijar",
+    "unpin": "Desfijar",
+    "pinned": "Fijada",
+    "rowOptions": "Opciones de {{name}}",
+    "pinError": "No se pudo actualizar la fijación. Inténtalo de nuevo."
   },
   "guidance": {
     "beta": "Beta",

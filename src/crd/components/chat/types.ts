@@ -38,6 +38,8 @@ export type ChatListItem = {
   unreadCount: number;
   /** True for the Guidance row; sorts first while search is empty. */
   pinned?: boolean;
+  /** Pinned by the user: shows the pin indicator and offers Unpin. */
+  userPinned?: boolean;
   /** A call is running in this conversation. */
   hasActiveCall?: boolean;
   /** The counterpart's availability in a 1:1 conversation. */
