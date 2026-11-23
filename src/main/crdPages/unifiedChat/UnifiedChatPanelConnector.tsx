@@ -17,6 +17,7 @@ import { GroupSettingsDialog } from '@/crd/components/chat/GroupSettingsDialog';
 import { GuidanceInfoDialog } from '@/crd/components/chat/GuidanceInfoDialog';
 import { NewChatDialog } from '@/crd/components/chat/NewChatDialog';
 import type { ChatThreadHeader } from '@/crd/components/chat/types';
+import { UserPresencePopover } from '@/crd/components/chat/UserPresencePopover';
 import type { CommentAuthor } from '@/crd/components/comment/types';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -210,17 +211,35 @@ export const UnifiedChatPanelConnector = ({
   // list renders for this conversation — header ≡ list row by construction
   // (research D4), so the two surfaces can never disagree (US2/US3).
   const selectedListItem = listItems.find(item => item.id === selectedConversationId);
-  const titleAvatar =
-    view === 'thread' && selectedListItem ? (
-      <ConversationAvatar
-        size="sm"
-        displayName={selectedListItem.displayName}
-        avatarUrl={selectedListItem.avatarUrl}
-        isGroup={selectedListItem.isGroup}
-        isGuidance={selectedListItem.isGuidance}
-        memberAvatars={selectedListItem.memberAvatars}
-      />
-    ) : undefined;
+  const conversationAvatar = selectedListItem && (
+    <ConversationAvatar
+      size="sm"
+      displayName={selectedListItem.displayName}
+      avatarUrl={selectedListItem.avatarUrl}
+      isGroup={selectedListItem.isGroup}
+      isGuidance={selectedListItem.isGuidance}
+      memberAvatars={selectedListItem.memberAvatars}
+    />
+  );
+  // A 1:1 header avatar is the counterpart's: it carries their availability and opens their card.
+  const counterpart =
+    selectedConversation && !selectedConversation.isGroup && !selectedConversation.isGuidance
+      ? selectedConversation.members.find(member => member.id !== currentUserId)
+      : undefined;
+  let titleAvatar: ReactNode;
+  if (view === 'thread' && conversationAvatar) {
+    titleAvatar = counterpart ? (
+      <UserPresencePopover
+        displayName={counterpart.displayName}
+        tagline={counterpart.tagline}
+        presence={counterpart.presence}
+      >
+        {conversationAvatar}
+      </UserPresencePopover>
+    ) : (
+      conversationAvatar
+    );
+  }
 
   const threadHeader: ChatThreadHeader | undefined = selectedConversation
     ? {

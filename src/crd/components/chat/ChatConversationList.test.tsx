@@ -89,3 +89,15 @@ describe('ChatConversationList call badge', () => {
     expect(badges[0].closest('li')).not.toHaveTextContent('Other team');
   });
 });
+
+describe('ChatConversationList presence', () => {
+  test('a 1:1 row shows the counterpart availability dot on its avatar', () => {
+    renderList([conversation({ presence: 'online' })]);
+    expect(screen.getByRole('img', { name: 'presence.online' })).toBeInTheDocument();
+  });
+
+  test('a row with unknown or no presence shows no dot', () => {
+    renderList([conversation({ id: 'a', presence: 'unknown' }), conversation({ id: 'b' })]);
+    expect(screen.queryByRole('img', { name: /presence\./ })).not.toBeInTheDocument();
+  });
+});

@@ -135,5 +135,10 @@
     "listBadge": "Активен разговор",
     "callingYou": "{{name}} ви се обажда",
     "groupCall": "Разговор в {{name}}"
+  },
+  "presence": {
+    "online": "На линия",
+    "away": "Отсъства",
+    "offline": "Офлайн"
   }
 }

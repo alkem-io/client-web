@@ -135,5 +135,10 @@
     "listBadge": "Gesprek actief",
     "callingYou": "{{name}} belt je",
     "groupCall": "Gesprek in {{name}}"
+  },
+  "presence": {
+    "online": "Online",
+    "away": "Afwezig",
+    "offline": "Offline"
   }
 }

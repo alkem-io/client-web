@@ -135,5 +135,10 @@
     "listBadge": "Appel en cours",
     "callingYou": "{{name}} vous appelle",
     "groupCall": "Appel dans {{name}}"
+  },
+  "presence": {
+    "online": "En ligne",
+    "away": "Absent",
+    "offline": "Hors ligne"
   }
 }

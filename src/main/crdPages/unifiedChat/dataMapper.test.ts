@@ -5,6 +5,7 @@ import {
   GUIDANCE_INTRO_ID,
   injectGuidanceIntro,
   isGuidanceConversation,
+  mapConversationToListItem,
   mapMessageToChatMessage,
   mapReactionsToCommentReactions,
   sortUnifiedConversations,
@@ -108,6 +109,44 @@ describe('mapMessageToChatMessage', () => {
       attachments: [],
     };
     expect(mapMessageToChatMessage(msg, { currentUserId: ME }).isOwn).toBe(false);
+  });
+
+  it('carries the sender tagline and presence to the author', () => {
+    const msg: ConversationMessage = {
+      id: 'm3',
+      message: 'hi',
+      timestamp: 1,
+      sender: { id: 'other', displayName: 'Other', tagline: 'Builds bridges', presence: 'away' },
+      reactions: [],
+      attachments: [],
+    };
+    expect(mapMessageToChatMessage(msg, { currentUserId: ME }).author).toMatchObject({
+      tagline: 'Builds bridges',
+      presence: 'away',
+    });
+  });
+});
+
+describe('mapConversationToListItem presence', () => {
+  const member = (id: string, presence: 'online' | 'offline') => ({
+    id,
+    type: ActorType.User,
+    displayName: id,
+    presence,
+  });
+  const options = { currentUserId: ME, formatTimestamp: String };
+
+  it('a 1:1 row carries the counterpart presence', () => {
+    const conversation = makeConversation({ members: [member(ME, 'offline'), member('ann', 'online')] });
+    expect(mapConversationToListItem(conversation, options).presence).toBe('online');
+  });
+
+  it.each([
+    ['a group', { isGroup: true }],
+    ['the guidance conversation', { isGuidance: true }],
+  ])('%s row carries no presence', (_name, overrides) => {
+    const conversation = makeConversation({ ...overrides, members: [member(ME, 'online'), member('ann', 'online')] });
+    expect(mapConversationToListItem(conversation, options).presence).toBeUndefined();
   });
 });
 

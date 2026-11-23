@@ -36,7 +36,7 @@ type ChatPanelProps = {
   /** Labels of the expand / collapse toggle (desktop only). */
   expandLabel: string;
   collapseLabel: string;
-  /** Conversation identity (avatar) rendered between the back affordance and the title. */
+  /** Conversation identity (avatar) rendered between the back affordance and the title; mark its decorative parts aria-hidden. */
   titleAvatar?: ReactNode;
   /** When provided, the avatar and title become one button that calls this (e.g. open the chat's settings). */
   onTitleClick?: () => void;
@@ -137,11 +137,7 @@ export function ChatPanel({
 
   const titleContent = (
     <>
-      {titleAvatar && (
-        <span aria-hidden="true" className="shrink-0">
-          {titleAvatar}
-        </span>
-      )}
+      {titleAvatar && <span className="shrink-0">{titleAvatar}</span>}
       <span className="text-subsection-title min-w-0 flex-1 truncate px-1">{title}</span>
     </>
   );

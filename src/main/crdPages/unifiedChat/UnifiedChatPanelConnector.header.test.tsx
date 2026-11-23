@@ -1,9 +1,10 @@
 import { render } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { UserPresencePopover } from '@/crd/components/chat/UserPresencePopover';
 import { UnifiedChatPanelConnector } from './UnifiedChatPanelConnector';
 
-type Member = { id: string; displayName: string; avatarUri?: string };
+type Member = { id: string; displayName: string; avatarUri?: string; tagline?: string; presence?: string };
 type Conversation = { id: string; roomId: string; members: Member[]; isGuidance: boolean; isGroup: boolean };
 
 const state: { selectedConversationId: string | null; conversations: Conversation[] } = {
@@ -78,6 +79,7 @@ type PanelProps = {
   unmuteSoundLabel: string;
   onTitleClick?: () => void;
   titleActionLabel?: string;
+  titleAvatar?: ReactNode;
   expandLabel: string;
   collapseLabel: string;
   headerActions?: ReactNode;
@@ -134,7 +136,7 @@ const directChat: Conversation = {
   isGuidance: false,
   members: [
     { id: 'me', displayName: 'Me' },
-    { id: 'u1', displayName: 'Ann' },
+    { id: 'u1', displayName: 'Ann', tagline: 'Builds bridges', presence: 'online' },
   ],
 };
 const groupChat: Conversation = {
@@ -222,6 +224,24 @@ describe('UnifiedChatPanelConnector header', () => {
     expect(panelProps.onGoToSettings).toBeUndefined();
     expect(menuProps).toBeUndefined();
     expect(panelProps.onTitleClick).toBeUndefined();
+  });
+
+  it('a 1:1 chat header avatar opens the counterpart card with their tagline and presence', () => {
+    state.selectedConversationId = 'direct';
+    render(<UnifiedChatPanelConnector />);
+    const titleAvatar = panelProps.titleAvatar as ReactElement<Record<string, unknown>>;
+    expect(titleAvatar.type).toBe(UserPresencePopover);
+    expect(titleAvatar.props).toMatchObject({
+      displayName: 'Ann',
+      tagline: 'Builds bridges',
+      presence: 'online',
+    });
+  });
+
+  it('a group chat header avatar is the plain conversation avatar', () => {
+    state.selectedConversationId = 'group';
+    render(<UnifiedChatPanelConnector />);
+    expect((panelProps.titleAvatar as ReactElement).type).not.toBe(UserPresencePopover);
   });
 
   it('a group chat header has no gear; its options menu and its title both open the group settings', () => {
