@@ -6,7 +6,7 @@ import { UnifiedChatPanelConnector } from './UnifiedChatPanelConnector';
 
 const pin = vi.hoisted(() => ({
   client: {} as object | null,
-  setFavourite: vi.fn(),
+  togglePin: vi.fn(),
   notify: vi.fn(),
   conversations: [] as UnifiedConversation[],
 }));
@@ -14,9 +14,9 @@ vi.mock('@/core/matrix/activeClient', async importOriginal => ({
   ...(await importOriginal<typeof import('@/core/matrix/activeClient')>()),
   useMatrixClient: () => pin.client,
 }));
-vi.mock('@/main/userMessaging/matrix/matrixRooms', async importOriginal => ({
-  ...(await importOriginal<typeof import('@/main/userMessaging/matrix/matrixRooms')>()),
-  setFavourite: pin.setFavourite,
+vi.mock('@/main/userMessaging/matrix/conversationSummaryStore', async importOriginal => ({
+  ...(await importOriginal<typeof import('@/main/userMessaging/matrix/conversationSummaryStore')>()),
+  storeFor: () => ({ togglePin: pin.togglePin }),
 }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => pin.notify }));
 vi.mock('react-i18next', () => ({
@@ -95,69 +95,46 @@ const order = () => listProps.conversations.map(item => `${item.id}${item.userPi
 describe('UnifiedChatPanelConnector pinning', () => {
   beforeEach(() => {
     pin.client = {};
-    pin.setFavourite.mockReset();
+    pin.togglePin.mockReset();
     pin.notify.mockReset();
     pin.conversations = [conversation('newer', 2), conversation('older', 1)];
   });
 
-  it('moves a pinned conversation to the top before the Matrix write settles', () => {
-    pin.setFavourite.mockReturnValue(new Promise(() => {}));
+  it("toggles the pin of the conversation's room in the summary store", async () => {
+    pin.togglePin.mockResolvedValue(undefined);
     render(<UnifiedChatPanelConnector />);
-    expect(order()).toEqual(['newer', 'older']);
 
-    act(() => listProps.onTogglePin('older'));
+    await act(async () => listProps.onTogglePin('older'));
 
-    expect(order()).toEqual(['older*', 'newer']);
-    expect(pin.setFavourite).toHaveBeenCalledWith(pin.client, 'room-older', true);
+    expect(pin.togglePin).toHaveBeenCalledWith('room-older');
+    expect(pin.notify).not.toHaveBeenCalled();
   });
 
-  it('rolls the pin back and shows exactly one error toast when the Matrix write fails', async () => {
-    let reject: (reason: Error) => void = () => {};
-    pin.setFavourite.mockReturnValue(new Promise<void>((_, rej) => (reject = rej)));
+  it('shows exactly one error toast when the toggle is rejected', async () => {
+    pin.togglePin.mockRejectedValue(new Error('refused'));
     render(<UnifiedChatPanelConnector />);
 
-    act(() => listProps.onTogglePin('older'));
-    await act(async () => reject(new Error('refused')));
+    await act(async () => listProps.onTogglePin('older'));
 
-    expect(order()).toEqual(['newer', 'older']);
     expect(pin.notify).toHaveBeenCalledTimes(1);
     expect(pin.notify).toHaveBeenCalledWith('list.pinError', 'error');
   });
 
-  it('shows one error toast and changes nothing without a Matrix session', () => {
+  it('shows one error toast and writes nothing without a Matrix session', () => {
     pin.client = null;
     render(<UnifiedChatPanelConnector />);
 
     act(() => listProps.onTogglePin('older'));
 
-    expect(order()).toEqual(['newer', 'older']);
-    expect(pin.setFavourite).not.toHaveBeenCalled();
+    expect(pin.togglePin).not.toHaveBeenCalled();
     expect(pin.notify).toHaveBeenCalledTimes(1);
     expect(pin.notify).toHaveBeenCalledWith('list.pinError', 'error');
   });
 
-  it('unpins a conversation pinned by the sync', () => {
-    pin.setFavourite.mockReturnValue(new Promise(() => {}));
-    pin.conversations = [conversation('pinned', 1, true), conversation('other', 2)];
+  it('lists conversations in the order the hook gives, pins included', () => {
+    pin.conversations = [conversation('older', 1, true), conversation('newer', 2)];
     render(<UnifiedChatPanelConnector />);
 
-    act(() => listProps.onTogglePin('pinned'));
-
-    expect(order()).toEqual(['other', 'pinned']);
-    expect(pin.setFavourite).toHaveBeenCalledWith(pin.client, 'room-pinned', false);
-  });
-
-  it('follows the sync again once it has echoed the pin, so another device can unpin it', async () => {
-    pin.setFavourite.mockResolvedValue(undefined);
-    const { rerender } = render(<UnifiedChatPanelConnector />);
-    await act(async () => listProps.onTogglePin('older'));
-
-    pin.conversations = [conversation('newer', 2), conversation('older', 1, true)];
-    rerender(<UnifiedChatPanelConnector />);
     expect(order()).toEqual(['older*', 'newer']);
-
-    pin.conversations = [conversation('newer', 2), conversation('older', 1)];
-    rerender(<UnifiedChatPanelConnector />);
-    expect(order()).toEqual(['newer', 'older']);
   });
 });

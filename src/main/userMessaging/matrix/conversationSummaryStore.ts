@@ -5,6 +5,7 @@ import { lastMessageOf, type ParsedMessage, type RawEvent } from './matrixEvents
 import {
   CLIENT_ROOM,
   CLIENT_SYNC,
+  FAVOURITE_TAG,
   FULLY_READ,
   fetchBackward,
   fullyReadEventId,
@@ -38,7 +39,7 @@ const MAX_CONCURRENT_ROOMS = 10;
  * Per-conversation latest message, unread count and pin, computed from sync
  * for the rooms some hook currently watches. A room is computed once when
  * first watched (or once its Matrix room appears), then again only when its
- * own timeline, read marker or tags change.
+ * own timeline or read marker changes. The pin follows the room's tags.
  */
 class ConversationSummaryStore {
   private readonly watchers = new Map<string, number>();
@@ -52,6 +53,7 @@ class ConversationSummaryStore {
   private readonly dirty = new Set<string>();
   // Rooms that changed while nobody watched them.
   private readonly stale = new Set<string>();
+  private readonly pinWrites = new Set<string>();
 
   constructor(private readonly client: MatrixClient) {
     client.on(
@@ -86,7 +88,10 @@ class ConversationSummaryStore {
     client.on(
       ROOM_TAGS as never,
       ((_event: MatrixEvent, room: Room) => {
-        this.touchMatrixRoom(room.roomId);
+        const alkemioRoomId = this.alkemioByMatrixId.get(room.roomId);
+        if (alkemioRoomId) {
+          this.setPinned(alkemioRoomId, isFavourite(room));
+        }
       }) as never
     );
     // A watched room may resolve before the client has it (first sync, or a
@@ -155,6 +160,54 @@ class ConversationSummaryStore {
         }
       }
     };
+  }
+
+  /**
+   * Pins or unpins at once, then writes the user's favourite tag. Rejects, with
+   * the pin back as the room has it, when the room is not known yet or the
+   * write fails. A toggle during a write is ignored, so two writes can never
+   * reach the homeserver out of order.
+   */
+  async togglePin(alkemioRoomId: string): Promise<void> {
+    const matrixRoomId = this.matrixByAlkemioId.get(alkemioRoomId);
+    const room = matrixRoomId ? this.client.getRoom(matrixRoomId) : null;
+    const summary = this.summaries.get(alkemioRoomId);
+    if (!matrixRoomId || !room || !summary) {
+      throw new Error(`No Matrix room for conversation room ${alkemioRoomId}`);
+    }
+    if (this.pinWrites.has(alkemioRoomId)) {
+      return;
+    }
+    const pinned = !summary.pinned;
+    this.pinWrites.add(alkemioRoomId);
+    this.setPinned(alkemioRoomId, pinned);
+    try {
+      await (pinned
+        ? this.client.setRoomTag(matrixRoomId, FAVOURITE_TAG)
+        : this.client.deleteRoomTag(matrixRoomId, FAVOURITE_TAG));
+    } catch (error) {
+      this.setPinned(alkemioRoomId, isFavourite(room));
+      throw error;
+    } finally {
+      this.pinWrites.delete(alkemioRoomId);
+    }
+  }
+
+  private setPinned(alkemioRoomId: string, pinned: boolean): void {
+    const summary = this.summaries.get(alkemioRoomId);
+    if (!summary || summary.pinned === pinned) {
+      return;
+    }
+    this.publish(alkemioRoomId, { ...summary, pinned });
+  }
+
+  private publish(alkemioRoomId: string, summary: RoomSummary): void {
+    const next = new Map(this.summaries);
+    next.set(alkemioRoomId, summary);
+    this.summaries = next;
+    for (const listener of this.listeners) {
+      listener();
+    }
   }
 
   private async resolve(alkemioRoomId: string): Promise<void> {
@@ -229,12 +282,9 @@ class ConversationSummaryStore {
           notificationCount: () => notificationCount(room),
         }),
       ]);
-      const next = new Map(this.summaries);
-      next.set(alkemioRoomId, { lastMessage, unreadCount, pinned: isFavourite(room) });
-      this.summaries = next;
-      for (const listener of this.listeners) {
-        listener();
-      }
+      // An existing pin is kept: tags changes and the user's own toggle own it.
+      const pinned = this.summaries.get(alkemioRoomId)?.pinned ?? isFavourite(room);
+      this.publish(alkemioRoomId, { lastMessage, unreadCount, pinned });
     } catch {
       // Left as it was; the room's next change recomputes it.
     }

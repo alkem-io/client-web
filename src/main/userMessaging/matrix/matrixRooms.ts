@@ -71,15 +71,6 @@ const fullyReadEventId = (room: Room): string | undefined => {
 
 const isFavourite = (room: Room): boolean => FAVOURITE_TAG in room.tags;
 
-/** Rejects when the conversation's Matrix room is not known to the client yet. */
-const setFavourite = async (client: MatrixClient, alkemioRoomId: string, favourite: boolean): Promise<void> => {
-  const roomId = await resolveMatrixRoomId(client, alkemioRoomId);
-  if (!roomId || !client.getRoom(roomId)) {
-    throw new Error(`No Matrix room for conversation room ${alkemioRoomId}`);
-  }
-  await (favourite ? client.setRoomTag(roomId, FAVOURITE_TAG) : client.deleteRoomTag(roomId, FAVOURITE_TAG));
-};
-
 const fetchBackward =
   (client: MatrixClient, roomId: string) =>
   async (from: string | undefined, limit: number): Promise<{ events: RawEvent[]; end?: string }> => {
@@ -107,6 +98,7 @@ const notificationCount = (room: Room): number =>
 export {
   CLIENT_ROOM,
   CLIENT_SYNC,
+  FAVOURITE_TAG,
   FULLY_READ,
   ROOM_ACCOUNT_DATA,
   ROOM_LOCAL_ECHO_UPDATED,
@@ -121,6 +113,5 @@ export {
   notificationCount,
   ownUserId,
   resolveMatrixRoomId,
-  setFavourite,
   toRawEvent,
 };
