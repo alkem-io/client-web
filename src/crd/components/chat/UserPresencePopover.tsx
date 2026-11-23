@@ -13,13 +13,25 @@ type UserPresencePopoverProps = {
 };
 
 /**
- * A person's avatar with their availability dot. Hovering or focusing it opens
- * a card with their name, tagline and availability; a tap opens it too, since
- * touch has no hover.
+ * A person's avatar with their availability dot. Hovering, focusing or tapping
+ * it shows their tagline, or their availability when they have no tagline. The
+ * name and the dot are already on screen, so the card repeats neither.
  */
 export function UserPresencePopover({ displayName, tagline, presence, children }: UserPresencePopoverProps) {
   const { t } = useTranslation('crd-chat');
   const [open, setOpen] = useState(false);
+
+  const known = presence && presence !== 'unknown' ? presence : undefined;
+  const text = tagline || (known && t(`presence.${known}` as 'presence.online'));
+
+  if (!text) {
+    return (
+      <span className="relative flex shrink-0">
+        {children}
+        <PresenceIndicator presence={presence} />
+      </span>
+    );
+  }
 
   return (
     <HoverCard open={open} onOpenChange={setOpen} openDelay={300} closeDelay={150}>
@@ -36,12 +48,11 @@ export function UserPresencePopover({ displayName, tagline, presence, children }
       </HoverCardTrigger>
       {/* Portalled to body, outside ChatPanel's marker: without its own, a press here
           dismisses a dialog the chat is floating over. */}
-      <HoverCardContent className="w-60 p-3" data-dialog-dismiss-ignore="">
-        <p className="truncate text-body-emphasis text-foreground">{displayName}</p>
-        {tagline && <p className="text-caption text-muted-foreground">{tagline}</p>}
-        {presence && presence !== 'unknown' && (
-          <p className="mt-1 text-caption text-muted-foreground">{t(`presence.${presence}` as 'presence.online')}</p>
-        )}
+      <HoverCardContent
+        className="w-auto max-w-60 px-2.5 py-1.5 text-caption text-popover-foreground"
+        data-dialog-dismiss-ignore=""
+      >
+        {text}
       </HoverCardContent>
     </HoverCard>
   );
