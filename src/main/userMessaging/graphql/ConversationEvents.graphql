@@ -18,7 +18,6 @@ subscription ConversationEvents {
           profile {
             id
             displayName
-            tagline
             url
             avatar: visual(type: AVATAR) {
               id
@@ -52,7 +51,6 @@ subscription ConversationEvents {
         profile {
           id
           displayName
-          tagline
           url
           avatar: visual(type: AVATAR) {
             id

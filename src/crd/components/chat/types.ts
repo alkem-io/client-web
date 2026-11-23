@@ -5,8 +5,8 @@ export type ChatPresence = 'online' | 'away' | 'offline' | 'unknown';
 
 /** A message author, with what the avatar popover shows. */
 export type ChatAuthor = CommentAuthor & {
-  tagline?: string;
   presence?: ChatPresence;
+  statusMessage?: string;
 };
 
 /** A single avatar shown in a group composite avatar. */

@@ -65,7 +65,7 @@ describe('ChatMessageBubble', () => {
       <ChatMessageBubble
         message={{
           ...baseMessage,
-          author: { id: 'u1', name: 'Alice Smith', tagline: 'Builds bridges', presence: 'online' },
+          author: { id: 'u1', name: 'Alice Smith', statusMessage: 'In a workshop', presence: 'online' },
         }}
         avatarGutter={true}
         showAvatar={true}
@@ -73,7 +73,7 @@ describe('ChatMessageBubble', () => {
       />
     );
     fireEvent.click(getByRole('button', { name: 'Alice Smith presence.online' }));
-    expect(await findByText('Builds bridges')).toBeInTheDocument();
+    expect(await findByText('In a workshop')).toBeInTheDocument();
   });
 
   test('avatarGutter without showAvatar renders the spacer and no avatar', () => {

@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { UserPresencePopover } from '@/crd/components/chat/UserPresencePopover';
 import { UnifiedChatPanelConnector } from './UnifiedChatPanelConnector';
 
-type Member = { id: string; displayName: string; avatarUri?: string; tagline?: string; presence?: string };
+type Member = { id: string; displayName: string; avatarUri?: string; presence?: string; statusMessage?: string };
 type Conversation = { id: string; roomId: string; members: Member[]; isGuidance: boolean; isGroup: boolean };
 
 const state: { selectedConversationId: string | null; conversations: Conversation[] } = {
@@ -136,7 +136,7 @@ const directChat: Conversation = {
   isGuidance: false,
   members: [
     { id: 'me', displayName: 'Me' },
-    { id: 'u1', displayName: 'Ann', tagline: 'Builds bridges', presence: 'online' },
+    { id: 'u1', displayName: 'Ann', presence: 'online', statusMessage: 'In a workshop' },
   ],
 };
 const groupChat: Conversation = {
@@ -226,14 +226,14 @@ describe('UnifiedChatPanelConnector header', () => {
     expect(panelProps.onTitleClick).toBeUndefined();
   });
 
-  it('a 1:1 chat header avatar opens the counterpart card with their tagline and presence', () => {
+  it('a 1:1 chat header avatar opens the counterpart card with their status message and presence', () => {
     state.selectedConversationId = 'direct';
     render(<UnifiedChatPanelConnector />);
     const titleAvatar = panelProps.titleAvatar as ReactElement<Record<string, unknown>>;
     expect(titleAvatar.type).toBe(UserPresencePopover);
     expect(titleAvatar.props).toMatchObject({
       displayName: 'Ann',
-      tagline: 'Builds bridges',
+      statusMessage: 'In a workshop',
       presence: 'online',
     });
   });

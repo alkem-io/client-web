@@ -16,7 +16,6 @@ query ConversationDetails($conversationId: UUID!) {
         profile {
           id
           displayName
-          tagline
           url
           avatar: visual(type: AVATAR) {
             id

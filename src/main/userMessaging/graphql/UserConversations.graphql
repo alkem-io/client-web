@@ -17,7 +17,6 @@ query UserConversations {
           profile {
             id
             displayName
-            tagline
             url
             avatar: visual(type: AVATAR) {
               id

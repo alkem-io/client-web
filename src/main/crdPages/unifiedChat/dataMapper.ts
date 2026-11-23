@@ -188,8 +188,8 @@ export const mapMessageToChatMessage = (
         id: message.sender.id,
         name: message.sender.displayName,
         avatarUrl: message.sender.avatarUri,
-        tagline: message.sender.tagline,
         presence: message.sender.presence,
+        statusMessage: message.sender.statusMessage,
       }
     : undefined,
   content: message.message,

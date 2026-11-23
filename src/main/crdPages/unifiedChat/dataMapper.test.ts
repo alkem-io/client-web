@@ -143,18 +143,18 @@ describe('mapMessageToChatMessage', () => {
     expect(mapMessageToChatMessage(msg, { currentUserId: ME }).isOwn).toBe(false);
   });
 
-  it('carries the sender tagline and presence to the author', () => {
+  it('carries the sender presence and status message to the author', () => {
     const msg: ConversationMessage = {
       id: 'm3',
       message: 'hi',
       timestamp: 1,
-      sender: { id: 'other', displayName: 'Other', tagline: 'Builds bridges', presence: 'away' },
+      sender: { id: 'other', displayName: 'Other', presence: 'away', statusMessage: 'In a workshop' },
       reactions: [],
       attachments: [],
     };
     expect(mapMessageToChatMessage(msg, { currentUserId: ME }).author).toMatchObject({
-      tagline: 'Builds bridges',
       presence: 'away',
+      statusMessage: 'In a workshop',
     });
   });
 });

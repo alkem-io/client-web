@@ -8,7 +8,7 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-const renderPopover = (props: { tagline?: string; presence?: ChatPresence }) =>
+const renderPopover = (props: { statusMessage?: string; presence?: ChatPresence }) =>
   render(
     <UserPresencePopover displayName="Ann Lee" {...props}>
       <span aria-hidden="true">AL</span>
@@ -23,17 +23,23 @@ describe('UserPresencePopover', () => {
     expect(screen.getByRole('button', { name: 'Ann Lee presence.away' })).toBeInTheDocument();
   });
 
-  test('a tap shows the tagline alone: no name, no availability', async () => {
-    renderPopover({ tagline: 'Builds bridges', presence: 'online' });
+  test('a tap shows the status message alone: no name, no availability', async () => {
+    renderPopover({ statusMessage: 'In a workshop', presence: 'online' });
     expect(card()).toBeNull();
 
     fireEvent.click(screen.getByRole('button'));
 
-    await screen.findByText('Builds bridges');
-    expect(card()?.textContent).toBe('Builds bridges');
+    await screen.findByText('In a workshop');
+    expect(card()?.textContent).toBe('In a workshop');
   });
 
-  test('without a tagline, hovering shows the availability', async () => {
+  test('a status message opens a card even when the availability is unknown', async () => {
+    renderPopover({ statusMessage: 'In a workshop', presence: 'unknown' });
+    fireEvent.click(screen.getByRole('button', { name: 'Ann Lee' }));
+    await waitFor(() => expect(card()?.textContent).toBe('In a workshop'));
+  });
+
+  test('without a status message, hovering shows the availability', async () => {
     renderPopover({ presence: 'offline' });
     await userEvent.hover(screen.getByRole('button'));
     await waitFor(() => expect(card()?.textContent).toBe('presence.offline'));
@@ -46,7 +52,7 @@ describe('UserPresencePopover', () => {
     expect(card()?.closest('[data-dialog-dismiss-ignore]')).not.toBeNull();
   });
 
-  test('with no tagline and unknown presence there is nothing to open, and no dot', () => {
+  test('with no status message and unknown presence there is nothing to open, and no dot', () => {
     renderPopover({ presence: 'unknown' });
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
     expect(screen.queryByRole('img')).not.toBeInTheDocument();

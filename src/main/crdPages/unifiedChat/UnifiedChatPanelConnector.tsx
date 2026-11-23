@@ -17,6 +17,7 @@ import { GroupAvatar } from '@/crd/components/chat/GroupAvatar';
 import { GroupSettingsDialog } from '@/crd/components/chat/GroupSettingsDialog';
 import { GuidanceInfoDialog } from '@/crd/components/chat/GuidanceInfoDialog';
 import { NewChatDialog } from '@/crd/components/chat/NewChatDialog';
+import { OwnStatusMessage } from '@/crd/components/chat/OwnStatusMessage';
 import type { ChatThreadHeader } from '@/crd/components/chat/types';
 import { UserPresencePopover } from '@/crd/components/chat/UserPresencePopover';
 import type { CommentAuthor } from '@/crd/components/comment/types';
@@ -33,6 +34,7 @@ import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibilit
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
 import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
 import { storeFor } from '@/main/userMessaging/matrix/conversationSummaryStore';
+import { useOwnStatusMessage } from '@/main/userMessaging/matrix/useMatrixPresence';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useChatSound } from '@/main/userMessaging/useChatSound';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
@@ -211,6 +213,11 @@ export const UnifiedChatPanelConnector = ({
       .catch(() => notify(t('list.pinError'), 'error'));
   };
 
+  const ownStatus = useOwnStatusMessage();
+  const handleSaveStatus = (statusMessage: string) => {
+    ownStatus.setStatusMessage(statusMessage).catch(() => notify(t('status.saveError'), 'error'));
+  };
+
   const listItems = withActiveCallsFirst(
     conversations.map(conversation => {
       const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
@@ -249,7 +256,7 @@ export const UnifiedChatPanelConnector = ({
     titleAvatar = counterpart ? (
       <UserPresencePopover
         displayName={counterpart.displayName}
-        tagline={counterpart.tagline}
+        statusMessage={counterpart.statusMessage}
         presence={counterpart.presence}
       >
         {conversationAvatar}
@@ -555,14 +562,17 @@ export const UnifiedChatPanelConnector = ({
             onRemoveReaction={onRemoveReaction}
           />
         ) : (
-          <ChatConversationList
-            conversations={listItems}
-            selectedConversationId={selectedConversationId ?? undefined}
-            isLoading={isLoading}
-            onSelectConversation={handleSelect}
-            onNewMessage={newChat.openDialog}
-            onTogglePin={handleTogglePin}
-          />
+          <>
+            <OwnStatusMessage statusMessage={ownStatus.statusMessage} onSave={handleSaveStatus} />
+            <ChatConversationList
+              conversations={listItems}
+              selectedConversationId={selectedConversationId ?? undefined}
+              isLoading={isLoading}
+              onSelectConversation={handleSelect}
+              onNewMessage={newChat.openDialog}
+              onTogglePin={handleTogglePin}
+            />
+          </>
         )}
       </ChatPanel>
 

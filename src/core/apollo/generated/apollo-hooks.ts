@@ -36333,7 +36333,6 @@ export const ActorProfileDocument = gql`
     profile {
       id
       displayName
-      tagline
       avatar: visual(type: AVATAR) {
         id
         uri
@@ -36464,7 +36463,6 @@ export const ConversationDetailsDocument = gql`
         profile {
           id
           displayName
-          tagline
           url
           avatar: visual(type: AVATAR) {
             id
@@ -36563,7 +36561,6 @@ export const ConversationEventsDocument = gql`
           profile {
             id
             displayName
-            tagline
             url
             avatar: visual(type: AVATAR) {
               id
@@ -36597,7 +36594,6 @@ export const ConversationEventsDocument = gql`
         profile {
           id
           displayName
-          tagline
           url
           avatar: visual(type: AVATAR) {
             id
@@ -36664,7 +36660,6 @@ export const CreateConversationDocument = gql`
       profile {
         id
         displayName
-        tagline
         url
         avatar: visual(type: AVATAR) {
           id
@@ -36921,7 +36916,6 @@ export const UserConversationsDocument = gql`
           profile {
             id
             displayName
-            tagline
             url
             avatar: visual(type: AVATAR) {
               id

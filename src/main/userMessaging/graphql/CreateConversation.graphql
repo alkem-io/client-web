@@ -15,7 +15,6 @@ mutation CreateConversation($conversationData: CreateConversationInput!) {
       profile {
         id
         displayName
-        tagline
         url
         avatar: visual(type: AVATAR) {
           id

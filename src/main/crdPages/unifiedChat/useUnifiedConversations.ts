@@ -37,7 +37,7 @@ export const useUnifiedConversations = () => {
   // Latest message and unread count come from Matrix sync; GraphQL carries the
   // conversation list, membership and metadata.
   const summaries = useConversationSummaries(listed.flatMap(conv => (conv.room ? [conv.room.id] : [])));
-  const presences = useMatrixPresence([...new Set(listed.flatMap(conv => conv.members.map(member => member.id)))]);
+  const statuses = useMatrixPresence([...new Set(listed.flatMap(conv => conv.members.map(member => member.id)))]);
 
   const conversations: UnifiedConversation[] = (() => {
     if (!data?.me?.conversations?.conversations) {
@@ -57,8 +57,8 @@ export const useUnifiedConversations = () => {
           displayName: member.profile?.displayName ?? '',
           avatarUri: member.profile?.avatar?.uri,
           url: member.profile?.url,
-          tagline: member.profile?.tagline,
-          presence: presences.get(member.id) ?? 'unknown',
+          presence: statuses.get(member.id)?.presence ?? 'unknown',
+          statusMessage: statuses.get(member.id)?.statusMessage,
         }));
 
         const isGroup = room.type === RoomType.ConversationGroup;

@@ -214,7 +214,11 @@ export function ChatMessageBubble({
     <div className="flex items-start gap-2">
       <div className="flex w-8 shrink-0 justify-center">
         {showAvatar && author ? (
-          <UserPresencePopover displayName={author.name} tagline={author.tagline} presence={author.presence}>
+          <UserPresencePopover
+            displayName={author.name}
+            statusMessage={author.statusMessage}
+            presence={author.presence}
+          >
             <Avatar className="size-8" aria-hidden="true">
               {author.avatarUrl && <AvatarImage src={author.avatarUrl} alt="" />}
               <AvatarFallback className="text-caption">{initials(author.name)}</AvatarFallback>

@@ -6,7 +6,7 @@ import type { ChatPresence } from './types';
 
 type UserPresencePopoverProps = {
   displayName: string;
-  tagline?: string;
+  statusMessage?: string;
   presence?: ChatPresence;
   /** The person's avatar, marked aria-hidden: the trigger names the person itself. */
   children: ReactNode;
@@ -14,15 +14,15 @@ type UserPresencePopoverProps = {
 
 /**
  * A person's avatar with their availability dot. Hovering, focusing or tapping
- * it shows their tagline, or their availability when they have no tagline. The
+ * it shows their status message, or their availability when they set none. The
  * name and the dot are already on screen, so the card repeats neither.
  */
-export function UserPresencePopover({ displayName, tagline, presence, children }: UserPresencePopoverProps) {
+export function UserPresencePopover({ displayName, statusMessage, presence, children }: UserPresencePopoverProps) {
   const { t } = useTranslation('crd-chat');
   const [open, setOpen] = useState(false);
 
   const known = presence && presence !== 'unknown' ? presence : undefined;
-  const text = tagline || (known && t(`presence.${known}` as 'presence.online'));
+  const text = statusMessage || (known && t(`presence.${known}` as 'presence.online'));
 
   if (!text) {
     return (

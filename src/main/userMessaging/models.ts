@@ -13,8 +13,9 @@ export interface ConversationMember {
   displayName: string;
   avatarUri?: string;
   url?: string;
-  tagline?: string;
   presence: UserPresence;
+  /** The Matrix presence status message the member set, if any. */
+  statusMessage?: string;
 }
 
 export interface UserConversation {
@@ -37,8 +38,8 @@ export interface MessageSender {
   id: string;
   displayName: string;
   avatarUri?: string;
-  tagline?: string;
   presence: UserPresence;
+  statusMessage?: string;
 }
 
 export interface MessageReaction {

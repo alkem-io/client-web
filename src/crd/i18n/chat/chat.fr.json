@@ -145,5 +145,15 @@
     "online": "En ligne",
     "away": "Absent",
     "offline": "Hors ligne"
+  },
+  "status": {
+    "set": "Définir un statut",
+    "label": "Votre statut",
+    "placeholder": "Que faites-vous en ce moment ?",
+    "edit": "Modifier votre statut : {{status}}",
+    "save": "Enregistrer le statut",
+    "clear": "Effacer le statut",
+    "hint": "Les personnes avec qui vous discutez le voient sur votre avatar.",
+    "saveError": "Impossible d'enregistrer votre statut. Veuillez réessayer."
   }
 }

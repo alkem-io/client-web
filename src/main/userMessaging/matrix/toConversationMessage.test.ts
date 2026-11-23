@@ -8,8 +8,8 @@ const member = (id: string, displayName: string): ConversationMember =>
     id,
     displayName,
     avatarUri: `https://avatar/${id}`,
-    tagline: `${displayName}'s tagline`,
     presence: 'away',
+    statusMessage: `${displayName} is busy`,
     type: 'USER',
   }) as ConversationMember;
 
@@ -23,7 +23,7 @@ const parsed = (overrides: Partial<ParsedMessage> = {}): ParsedMessage => ({
 });
 
 describe('toConversationMessage', () => {
-  it('maps the sender to the member whose actor id is the Matrix localpart, with its tagline and presence', () => {
+  it('maps the sender to the member whose actor id is the Matrix localpart, with its presence and status message', () => {
     const message = toConversationMessage(parsed(), {
       members: [member('alice', 'Alice')],
       otherProfiles: new Map(),
@@ -37,8 +37,8 @@ describe('toConversationMessage', () => {
         id: 'alice',
         displayName: 'Alice',
         avatarUri: 'https://avatar/alice',
-        tagline: "Alice's tagline",
         presence: 'away',
+        statusMessage: 'Alice is busy',
       },
       reactions: [],
       attachments: [],
@@ -48,12 +48,13 @@ describe('toConversationMessage', () => {
   it('uses a looked-up profile for a former member, and no profile when the lookup gave none', () => {
     const context = {
       members: [],
-      otherProfiles: new Map([['alice', { displayName: 'Alice (left)', tagline: 'Gone' }]]),
+      otherProfiles: new Map([['alice', { displayName: 'Alice (left)' }]]),
       attachmentBucketId: undefined,
     };
-    expect(toConversationMessage(parsed(), context).sender).toMatchObject({
+    expect(toConversationMessage(parsed(), context).sender).toEqual({
+      id: 'alice',
       displayName: 'Alice (left)',
-      tagline: 'Gone',
+      avatarUri: undefined,
       presence: 'unknown',
     });
     expect(toConversationMessage(parsed({ sender: '@ghost:hs' }), context).sender).toEqual({

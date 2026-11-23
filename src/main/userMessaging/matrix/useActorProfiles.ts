@@ -33,11 +33,7 @@ const useActorProfiles = (actorIds: readonly string[]): ReadonlyMap<string, Send
             return;
           }
           setProfiles(previous =>
-            new Map(previous).set(actorId, {
-              displayName: profile.displayName,
-              avatarUri: profile.avatar?.uri,
-              tagline: profile.tagline,
-            })
+            new Map(previous).set(actorId, { displayName: profile.displayName, avatarUri: profile.avatar?.uri })
           );
         })
         .catch(() => {});

@@ -6,7 +6,7 @@ import {
 } from '../models';
 import { actorIdOf, type ParsedMessage } from './matrixEvents';
 
-type SenderProfile = { readonly displayName: string; readonly avatarUri?: string; readonly tagline?: string };
+type SenderProfile = { readonly displayName: string; readonly avatarUri?: string };
 
 type MappingContext = {
   readonly members: readonly ConversationMember[];
@@ -19,18 +19,12 @@ const senderOf = (matrixUserId: string, context: MappingContext): MessageSender 
   const actorId = actorIdOf(matrixUserId);
   const member = context.members.find(candidate => candidate.id === actorId);
   if (member) {
-    const { displayName, avatarUri, tagline, presence } = member;
-    return { id: actorId, displayName, avatarUri, tagline, presence };
+    const { displayName, avatarUri, presence, statusMessage } = member;
+    return { id: actorId, displayName, avatarUri, presence, statusMessage };
   }
-  // A former member's presence is not tracked.
+  // A former member's presence and status message are not tracked.
   const profile = context.otherProfiles.get(actorId);
-  return {
-    id: actorId,
-    displayName: profile?.displayName ?? '',
-    avatarUri: profile?.avatarUri,
-    tagline: profile?.tagline,
-    presence: 'unknown',
-  };
+  return { id: actorId, displayName: profile?.displayName ?? '', avatarUri: profile?.avatarUri, presence: 'unknown' };
 };
 
 const toConversationMessage = (message: ParsedMessage, context: MappingContext): ConversationMessage => ({

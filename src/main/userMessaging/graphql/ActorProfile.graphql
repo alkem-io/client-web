@@ -5,7 +5,6 @@ query ActorProfile($actorId: UUID!) {
     profile {
       id
       displayName
-      tagline
       avatar: visual(type: AVATAR) {
         id
         uri
