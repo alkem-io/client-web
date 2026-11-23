@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({
   client: null as unknown,
@@ -79,6 +79,13 @@ const startCall = async () => {
 };
 
 describe('CallOverlayHost', () => {
+  // The host loads the call frame lazily. Load it once up front so the first test's wait
+  // covers rendering the call, not compiling the frame's modules, which takes over a second
+  // when the whole suite runs in parallel.
+  beforeAll(async () => {
+    await import('./CallWidgetFrame');
+  });
+
   beforeEach(() => {
     harness.client = makeClient();
     harness.isJoinedHere = false;

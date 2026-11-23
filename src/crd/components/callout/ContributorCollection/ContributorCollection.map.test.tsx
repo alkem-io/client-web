@@ -139,6 +139,10 @@ vi.mock('react-map-gl/maplibre', async () => {
 const i18n = i18next.createInstance();
 
 beforeAll(async () => {
+  // The collection loads the map lazily. Load it once up front so the first test's wait
+  // covers rendering the map, not compiling the map's modules, which takes over a second
+  // when the whole suite runs in parallel.
+  await import('@/crd/components/map/ContributorMap');
   await i18n.use(initReactI18next).init({
     lng: 'en',
     fallbackLng: 'en',
