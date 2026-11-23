@@ -1,3 +1,4 @@
+import { localpartOf, withCredentialLock } from './sharedDevice';
 import { type CredentialRecord, loadCredentials, replaceTokens } from './storage';
 
 const REFRESH_TIMEOUT_MS = 20_000;
@@ -57,7 +58,7 @@ const postRefresh = async (current: CredentialRecord): Promise<Tokens | null> =>
  * refresh token again until the new access token has been used.
  */
 const renewTokens = (current: CredentialRecord): Promise<Tokens | null> =>
-  navigator.locks.request(`alkemio-matrix-refresh/${current.userId}`, async () => {
+  withCredentialLock(localpartOf(current.userId), async () => {
     const stored = await loadCredentials(current.userId);
     if (!stored || stored.deviceId !== current.deviceId) {
       return null;

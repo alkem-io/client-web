@@ -200,10 +200,12 @@ describe('ssoLogin', () => {
       // built from — live session and stored credential on two Synapse devices.
       setMatrixHomeserver(HOMESERVER);
       let captured: AbortSignal | undefined;
+      let settled = false;
       const exchangeAndStore = vi.fn(async (_homeserver: string, _token: string, signal?: AbortSignal) => {
         captured = signal;
-        // The homeserver took the token and went quiet.
-        await new Promise(() => {});
+        // The homeserver took the token and went quiet; like fetch, the exchange ends on abort.
+        await new Promise<void>(resolve => signal?.addEventListener('abort', () => resolve()));
+        settled = true;
       });
       vi.doMock('./matrixCallback', () => ({ exchangeAndStore }));
       const { attemptSilentSso: fresh } = await import('./ssoLogin');
@@ -218,6 +220,8 @@ describe('ssoLogin', () => {
       expect(await attempt).toBe('timeout');
       expect(exchangeAndStore).toHaveBeenCalledOnce();
       expect(captured?.aborted).toBe(true);
+      // Settled before returning: the caller's credential lock is still held until then.
+      expect(settled).toBe(true);
       vi.doUnmock('./matrixCallback');
     });
   });

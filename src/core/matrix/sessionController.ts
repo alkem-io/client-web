@@ -5,8 +5,21 @@ import { registerActiveSession, unregisterActiveSession } from './activeSession'
 import { serverSideLogout } from './logoutCleanup';
 import { mintAndStore } from './mintSession';
 import { quietSdkLogging } from './sdkLogging';
+import {
+  announceDeviceChanged,
+  askOtherTabs,
+  canCoordinate,
+  listenToOtherTabs,
+  withCredentialLock,
+} from './sharedDevice';
 import { attemptSilentSso } from './ssoLogin';
-import { type CredentialRecord, clearNamespace, loadActorCredentials, loadCredentials } from './storage';
+import {
+  type CredentialRecord,
+  clearNamespace,
+  loadActorCredentials,
+  loadCredentials,
+  storeCredentials,
+} from './storage';
 import { renewTokens } from './tokenRefresh';
 
 // matrix-js-sdk's HttpApiEvent.SessionLoggedOut: emitted when the homeserver
@@ -60,6 +73,12 @@ type SessionOptions = {
  * restart is rejected before it has synced, the session stays stopped. A
  * restart that syncs earns a fresh recovery for the next expiry.
  * A call click first rotates a non-renewable credential near its expiry, on a new device.
+ *
+ * All tabs of the browser share one device: every acquisition, recovery and
+ * rotation runs under the user's credential lock and reuses a stored credential
+ * before creating a device; a tab with nothing stored first adopts the one a
+ * running tab holds. A sign-out or a replaced device in another tab reaches
+ * this one at once.
  */
 const establishSession = async (
   actorId: string,
@@ -95,12 +114,31 @@ const establishSession = async (
     setSessionEstablishing(false);
     stopClient();
     unregisterActiveSession(stop);
+    stopListening();
   };
-  const loadOrAcquireRecord = async (replacing?: string): Promise<CredentialRecord | null> => {
+
+  // Runs under the credential lock. `created` is false when an existing device was reused.
+  const loadOrAcquireRecord = async (
+    replacing?: string
+  ): Promise<{ record: CredentialRecord; created: boolean } | null> => {
     const record = await loadActorCredentials(actorId);
     if (record && record.deviceId !== replacing) {
-      return record;
+      return { record, created: false };
     }
+    // Nothing stored, yet another tab may still be running on a live device:
+    // that device is shared rather than a second one created. Only under the
+    // lock, so two tabs starting together cannot both miss it.
+    if (!record && replacing === undefined && canCoordinate()) {
+      const live = await askOtherTabs(actorId, abort.signal);
+      if (live && !abort.signal.aborted && (await storeCredentials(live))) {
+        return { record: live, created: false };
+      }
+    }
+    const acquired = await acquireRecord(replacing);
+    return acquired ? { record: acquired, created: true } : null;
+  };
+
+  const acquireRecord = async (replacing?: string): Promise<CredentialRecord | null> => {
     // The app skips silent SSO entirely: no identity-origin cookie exists in
     // this WebView's jar, so the iframe cannot complete — and on Android the
     // attempt is actively harmful, because the shell intercepts the iframe's
@@ -148,6 +186,7 @@ const establishSession = async (
             }
             if (tokens) {
               current = { ...current, ...tokens };
+              running = current;
               client.setAccessToken(tokens.accessToken);
             } else {
               void recover(current);
@@ -216,34 +255,45 @@ const establishSession = async (
 
   const recover = async (rejected: CredentialRecord): Promise<void> => {
     stopClient();
+    let establishing = false;
     try {
-      const stored = await loadCredentials(rejected.userId);
-      if (!stored || stored.deviceId === rejected.deviceId) {
-        // A refused renewal can mean a thief rotated this device's refresh
-        // chain. Logging out with the last access token ends that chain only
-        // if the thief has not yet refreshed again: a second rotation deletes
-        // this token on Synapse, and the logout fails (accepted residual R-5).
-        // Started first, so a failed local delete cannot skip it.
-        void serverSideLogout(rejected);
-        await clearNamespace(rejected.userId);
-      }
-    } catch {
-      // The record is unusable either way; a failed delete must not block recovery.
-    }
-    if (abort.signal.aborted || recoveryUsed) {
-      return;
-    }
-    recoveryUsed = true;
-    setSessionEstablishing(true);
-    try {
-      const record = await loadOrAcquireRecord();
+      const record = await withCredentialLock(actorId, async () => {
+        try {
+          const stored = await loadCredentials(rejected.userId);
+          if (!stored || stored.deviceId === rejected.deviceId) {
+            // A refused renewal can mean a thief rotated this device's refresh
+            // chain. Logging out with the last access token ends that chain only
+            // if the thief has not yet refreshed again: a second rotation deletes
+            // this token on Synapse, and the logout fails (accepted residual R-5).
+            // Started first, so a failed local delete cannot skip it.
+            void serverSideLogout(rejected);
+            await clearNamespace(rejected.userId);
+          }
+        } catch {
+          // The record is unusable either way; a failed delete must not block recovery.
+        }
+        if (abort.signal.aborted || recoveryUsed) {
+          return null;
+        }
+        recoveryUsed = true;
+        establishing = true;
+        setSessionEstablishing(true);
+        // The rejected device is never taken back, from storage or from another tab.
+        const acquired = await loadOrAcquireRecord(rejected.deviceId);
+        if (acquired?.created) {
+          announceDeviceChanged(acquired.record);
+        }
+        return acquired?.record ?? null;
+      });
       if (!abort.signal.aborted && record) {
         await start(record);
       }
     } catch {
       // Fails closed: the session stays stopped until the next page load.
     } finally {
-      finishEstablishing();
+      if (establishing) {
+        finishEstablishing();
+      }
     }
   };
 
@@ -262,7 +312,13 @@ const establishSession = async (
       let swapped = false;
       try {
         // A stored record of another device means another tab already rotated: it is taken over, not re-acquired.
-        const fresh = await loadOrAcquireRecord(old.deviceId);
+        const fresh = await withCredentialLock(actorId, async () => {
+          const acquired = await loadOrAcquireRecord(old.deviceId);
+          if (acquired?.created) {
+            announceDeviceChanged(acquired.record);
+          }
+          return acquired?.record ?? null;
+        });
         // Overtaken by stop() or recover(), or nothing acquired: leave the session as it is.
         if (running === old && fresh) {
           swapped = true;
@@ -285,6 +341,33 @@ const establishSession = async (
     return rotation;
   };
 
+  // Another tab replaced the shared device (it rotated it, or recovered after
+  // the homeserver rejected it): this tab's device is retired or already dead,
+  // so it moves to the new one at once.
+  const moveTo = (record: CredentialRecord): void => {
+    if (abort.signal.aborted || !running || running.deviceId === record.deviceId) {
+      return;
+    }
+    stopClient();
+    void start(record).catch(() => undefined);
+  };
+
+  // The browser signed out in another tab. The device that tab logged out is
+  // this tab's own, unless the two had diverged; then this one is logged out here.
+  const signedOutElsewhere = (deviceIds: readonly string[]): void => {
+    const own = running;
+    stop();
+    if (own && !deviceIds.includes(own.deviceId)) {
+      void serverSideLogout(own);
+    }
+  };
+
+  const stopListening = listenToOtherTabs(actorId, {
+    running: () => running,
+    onDeviceChanged: moveTo,
+    onSignedOut: signedOutElsewhere,
+  });
+
   registerActiveSession(stop, rotateIfDue);
   if (signal?.aborted) {
     stop();
@@ -295,7 +378,7 @@ const establishSession = async (
     setSessionEstablishing(true);
   }
   try {
-    const record = await loadOrAcquireRecord();
+    const record = await withCredentialLock(actorId, async () => (await loadOrAcquireRecord())?.record ?? null);
     if (!abort.signal.aborted && record) {
       await start(record);
     }
