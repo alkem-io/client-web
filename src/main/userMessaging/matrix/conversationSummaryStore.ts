@@ -9,12 +9,14 @@ import {
   fetchBackward,
   fullyReadEventId,
   homeserverOf,
+  isFavourite,
   liveEvents,
   notificationCount,
   ownUserId,
   ROOM_ACCOUNT_DATA,
   ROOM_LOCAL_ECHO_UPDATED,
   ROOM_REDACTION,
+  ROOM_TAGS,
   ROOM_TIMELINE,
   resolveMatrixRoomId,
 } from './matrixRooms';
@@ -23,6 +25,8 @@ import { BATCH_SIZES, computeUnreadCount } from './unreadCount';
 type RoomSummary = {
   readonly lastMessage?: ParsedMessage;
   readonly unreadCount: number;
+  /** The user has pinned the conversation (its room carries their favourite tag). */
+  readonly pinned: boolean;
 };
 
 type Summaries = ReadonlyMap<string, RoomSummary>;
@@ -31,10 +35,10 @@ type Summaries = ReadonlyMap<string, RoomSummary>;
 const MAX_CONCURRENT_ROOMS = 10;
 
 /**
- * Per-conversation latest message and unread count, computed from sync for
- * the rooms some hook currently watches. A room is computed once when first
- * watched (or once its Matrix room appears), then again only when its own
- * timeline or read marker changes.
+ * Per-conversation latest message, unread count and pin, computed from sync
+ * for the rooms some hook currently watches. A room is computed once when
+ * first watched (or once its Matrix room appears), then again only when its
+ * own timeline, read marker or tags change.
  */
 class ConversationSummaryStore {
   private readonly watchers = new Map<string, number>();
@@ -76,6 +80,13 @@ class ConversationSummaryStore {
         if (event.getType() === FULLY_READ) {
           this.touchMatrixRoom(room.roomId);
         }
+      }) as never
+    );
+    // A pin made on any of the user's devices arrives as a tags change on sync.
+    client.on(
+      ROOM_TAGS as never,
+      ((_event: MatrixEvent, room: Room) => {
+        this.touchMatrixRoom(room.roomId);
       }) as never
     );
     // A watched room may resolve before the client has it (first sync, or a
@@ -219,7 +230,7 @@ class ConversationSummaryStore {
         }),
       ]);
       const next = new Map(this.summaries);
-      next.set(alkemioRoomId, { lastMessage, unreadCount });
+      next.set(alkemioRoomId, { lastMessage, unreadCount, pinned: isFavourite(room) });
       this.summaries = next;
       for (const listener of this.listeners) {
         listener();
@@ -269,7 +280,7 @@ const EMPTY: Summaries = new Map();
 const noSubscription = () => () => {};
 
 /**
- * Latest message and unread count per Alkemio room id, from sync. Undefined
+ * Latest message, unread count and pin per Alkemio room id, from sync. Undefined
  * while no Matrix client is established.
  */
 const useConversationSummaries = (alkemioRoomIds: readonly string[]): Summaries | undefined => {

@@ -14,6 +14,7 @@ type FakeRoom = {
   older?: FakeEvent[];
   marker?: string;
   notifications: number;
+  tags?: Record<string, object>;
 };
 
 // Each /messages call answers with the room as it was when the call was made,
@@ -56,6 +57,7 @@ const makeClient = (rooms: FakeRoom[], delaysMs: number[] = []) => {
             }),
             getAccountData: () => (room.marker ? { getContent: () => ({ event_id: room.marker }) } : undefined),
             getUnreadNotificationCount: () => room.notifications,
+            tags: room.tags ?? {},
           }
         : null;
     },
@@ -90,6 +92,7 @@ describe('ConversationSummaryStore', () => {
     expect(store.getSnapshot().get('alk-1')).toEqual({
       lastMessage: expect.objectContaining({ body: 'hello' }),
       unreadCount: 3,
+      pinned: false,
     });
     expect(store.alkemioRoomIdFor('!alk-1')).toBe('alk-1');
   });
@@ -153,6 +156,7 @@ describe('ConversationSummaryStore', () => {
     expect(store.getSnapshot().get('a')).toEqual({
       lastMessage: expect.objectContaining({ body: 'second' }),
       unreadCount: 2,
+      pinned: false,
     });
     expect(createMessagesRequest).toHaveBeenCalledTimes(2);
   });
@@ -208,5 +212,18 @@ describe('ConversationSummaryStore', () => {
     await vi.waitFor(() => expect(store.getSnapshot().get('b')?.lastMessage?.body).toBe('b while unwatched'));
     expect(store.getSnapshot().get('a')).toBe(before.get('a'));
     expect(client.getRoomIdForAlias).toHaveBeenCalledTimes(2);
+  });
+
+  it("a tags change on sync updates the room's pin", async () => {
+    const room: FakeRoom = { roomId: '!a', events: [text('$1', 'x')], notifications: 0, tags: { 'm.favourite': {} } };
+    const { client, emit } = makeClient([room]);
+    const store = new ConversationSummaryStore(client);
+    store.watch(['a']);
+    await vi.waitFor(() => expect(store.getSnapshot().get('a')?.pinned).toBe(true));
+
+    room.tags = {};
+    emit('Room.tags', {}, { roomId: '!a' });
+
+    await vi.waitFor(() => expect(store.getSnapshot().get('a')?.pinned).toBe(false));
   });
 });
