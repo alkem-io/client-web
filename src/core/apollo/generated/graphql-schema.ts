@@ -53087,6 +53087,7 @@ export type ActorProfileQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
@@ -53100,6 +53101,7 @@ export type ActorProfileQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
@@ -53113,6 +53115,7 @@ export type ActorProfileQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
@@ -53126,6 +53129,7 @@ export type ActorProfileQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
@@ -53139,6 +53143,7 @@ export type ActorProfileQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
@@ -53152,6 +53157,7 @@ export type ActorProfileQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
@@ -53165,6 +53171,7 @@ export type ActorProfileQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             }
           | undefined;
@@ -53208,6 +53215,7 @@ export type ConversationDetailsQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  tagline?: string | undefined;
                   url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 }
@@ -53249,6 +53257,7 @@ export type ConversationEventsSubscription = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    tagline?: string | undefined;
                     url: string;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   }
@@ -53287,6 +53296,7 @@ export type ConversationEventsSubscription = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  tagline?: string | undefined;
                   url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 }
@@ -53331,6 +53341,7 @@ export type CreateConversationMutation = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
+            tagline?: string | undefined;
             url: string;
             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           }
@@ -53400,6 +53411,7 @@ export type UserConversationsQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                tagline?: string | undefined;
                 url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               }
