@@ -14,6 +14,7 @@ type FakeRoom = {
   older?: FakeEvent[];
   marker?: string;
   notifications: number;
+  tags?: Record<string, object>;
 };
 
 // Each /messages call answers with the room as it was when the call was made,
@@ -33,6 +34,8 @@ const makeClient = (rooms: FakeRoom[], delaysMs: number[] = []) => {
     await new Promise(resolve => setTimeout(resolve, delaysMs[call++] ?? 0));
     return { chunk };
   });
+  const setRoomTag = vi.fn(async () => ({}));
+  const deleteRoomTag = vi.fn(async () => ({}));
   const client = {
     getUserId: () => ME,
     on: (name: string, handler: (...args: unknown[]) => void) => {
@@ -56,15 +59,20 @@ const makeClient = (rooms: FakeRoom[], delaysMs: number[] = []) => {
             }),
             getAccountData: () => (room.marker ? { getContent: () => ({ event_id: room.marker }) } : undefined),
             getUnreadNotificationCount: () => room.notifications,
+            get tags() {
+              return room.tags ?? {};
+            },
           }
         : null;
     },
     createMessagesRequest,
+    setRoomTag,
+    deleteRoomTag,
   };
   const emit = (name: string, ...args: unknown[]) => {
     for (const handler of handlers.get(name) ?? []) handler(...args);
   };
-  return { client: client as unknown as MatrixClient, emit, createMessagesRequest };
+  return { client: client as unknown as MatrixClient, emit, createMessagesRequest, setRoomTag, deleteRoomTag };
 };
 
 const text = (eventId: string, body: string, sender = `@other:${HS}`, ts = 1) => ({
@@ -90,6 +98,7 @@ describe('ConversationSummaryStore', () => {
     expect(store.getSnapshot().get('alk-1')).toEqual({
       lastMessage: expect.objectContaining({ body: 'hello' }),
       unreadCount: 3,
+      pinned: false,
     });
     expect(store.alkemioRoomIdFor('!alk-1')).toBe('alk-1');
   });
@@ -153,6 +162,7 @@ describe('ConversationSummaryStore', () => {
     expect(store.getSnapshot().get('a')).toEqual({
       lastMessage: expect.objectContaining({ body: 'second' }),
       unreadCount: 2,
+      pinned: false,
     });
     expect(createMessagesRequest).toHaveBeenCalledTimes(2);
   });
@@ -208,5 +218,110 @@ describe('ConversationSummaryStore', () => {
     await vi.waitFor(() => expect(store.getSnapshot().get('b')?.lastMessage?.body).toBe('b while unwatched'));
     expect(store.getSnapshot().get('a')).toBe(before.get('a'));
     expect(client.getRoomIdForAlias).toHaveBeenCalledTimes(2);
+  });
+
+  const pinnedRoom = async (tags: Record<string, object> = {}) => {
+    const room: FakeRoom = { roomId: '!a', events: [text('$1', 'x')], notifications: 0, tags };
+    const fake = makeClient([room]);
+    const store = new ConversationSummaryStore(fake.client);
+    store.watch(['a']);
+    await vi.waitFor(() => expect(store.getSnapshot().get('a')).toBeDefined());
+    return { room, store, ...fake };
+  };
+  const pinned = (store: ConversationSummaryStore) => store.getSnapshot().get('a')?.pinned;
+
+  it("a tags change on sync updates the room's pin at once, without recomputing the room", async () => {
+    const { room, store, emit, createMessagesRequest } = await pinnedRoom({ 'm.favourite': {} });
+    expect(pinned(store)).toBe(true);
+    const requests = createMessagesRequest.mock.calls.length;
+
+    emit('Room.tags', {}, { roomId: '!a', tags: {} });
+    room.tags = {};
+
+    expect(pinned(store)).toBe(false);
+    await settle();
+    expect(createMessagesRequest).toHaveBeenCalledTimes(requests);
+  });
+
+  it('a later timeline change keeps the pin the tags gave', async () => {
+    const { room, store, emit } = await pinnedRoom();
+    emit('Room.tags', {}, { roomId: '!a', tags: { 'm.favourite': {} } });
+
+    room.events = [...room.events, text('$2', 'y', undefined, 2)];
+    emit('Room.timeline', {}, { roomId: '!a' }, false);
+
+    await vi.waitFor(() => expect(store.getSnapshot().get('a')?.lastMessage?.body).toBe('y'));
+    expect(pinned(store)).toBe(true);
+  });
+
+  it('togglePin pins at once and writes the favourite tag; unpin deletes it', async () => {
+    const { store, setRoomTag, deleteRoomTag } = await pinnedRoom();
+
+    const write = store.togglePin('a');
+    expect(pinned(store)).toBe(true);
+    await write;
+    expect(setRoomTag).toHaveBeenCalledWith('!a', 'm.favourite');
+
+    await store.togglePin('a');
+    expect(pinned(store)).toBe(false);
+    expect(deleteRoomTag).toHaveBeenCalledWith('!a', 'm.favourite');
+  });
+
+  it('togglePin takes the pin back and rejects when the homeserver refuses the write', async () => {
+    const { store, setRoomTag } = await pinnedRoom();
+    setRoomTag.mockRejectedValueOnce(new Error('M_FORBIDDEN'));
+
+    await expect(store.togglePin('a')).rejects.toThrow('M_FORBIDDEN');
+
+    expect(pinned(store)).toBe(false);
+  });
+
+  it('a failed unpin right after a pin, before sync echoes the tag, keeps the pin', async () => {
+    const { store, deleteRoomTag } = await pinnedRoom();
+    await store.togglePin('a');
+    deleteRoomTag.mockRejectedValueOnce(new Error('M_LIMIT_EXCEEDED'));
+
+    await expect(store.togglePin('a')).rejects.toThrow();
+
+    expect(pinned(store)).toBe(true);
+  });
+
+  it('a failed write leaves the pin as tags that changed meanwhile give it', async () => {
+    const { room, store, emit, setRoomTag } = await pinnedRoom();
+    let fail: () => void = () => {};
+    setRoomTag.mockReturnValueOnce(new Promise((_, reject) => (fail = () => reject(new Error('timeout')))));
+
+    const write = store.togglePin('a');
+    room.tags = { 'm.favourite': {} };
+    emit('Room.tags', {}, { roomId: '!a', tags: room.tags });
+    fail();
+    await expect(write).rejects.toThrow();
+
+    expect(pinned(store)).toBe(true);
+  });
+
+  it('togglePin ignores a second toggle while a write is in flight', async () => {
+    const { store, setRoomTag, deleteRoomTag } = await pinnedRoom();
+    let finish: () => void = () => {};
+    setRoomTag.mockReturnValueOnce(new Promise(resolve => (finish = () => resolve({}))));
+
+    const first = store.togglePin('a');
+    await store.togglePin('a');
+
+    expect(pinned(store)).toBe(true);
+    expect(deleteRoomTag).not.toHaveBeenCalled();
+    finish();
+    await first;
+  });
+
+  it('togglePin rejects without writing for a room the client does not have', async () => {
+    const { client, setRoomTag } = makeClient([]);
+    const store = new ConversationSummaryStore(client);
+    store.watch(['a']);
+    await settle();
+
+    await expect(store.togglePin('a')).rejects.toThrow();
+
+    expect(setRoomTag).not.toHaveBeenCalled();
   });
 });
