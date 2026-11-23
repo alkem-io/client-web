@@ -89,7 +89,7 @@ describe('mapMessageToChatMessage', () => {
       id: 'm1',
       message: 'hello',
       timestamp: 500,
-      sender: { id: ME, displayName: 'Me', avatarUri: undefined },
+      sender: { id: ME, displayName: 'Me', avatarUri: undefined, presence: 'unknown' },
       reactions: [],
       attachments: [],
     };
@@ -103,7 +103,7 @@ describe('mapMessageToChatMessage', () => {
       id: 'm2',
       message: 'hi',
       timestamp: 1,
-      sender: { id: 'other', displayName: 'Other' },
+      sender: { id: 'other', displayName: 'Other', presence: 'unknown' },
       reactions: [],
       attachments: [],
     };
@@ -133,6 +133,7 @@ describe('mapMemberToCommentAuthor virtual contributor flag', () => {
     const author = mapMemberToCommentAuthor({
       id: GUIDANCE_VC,
       type: ActorType.VirtualContributor,
+      presence: 'unknown',
       displayName: 'Guidance',
     });
     expect(author.isVirtualContributor).toBe(true);
