@@ -34,7 +34,9 @@ export function UserPresencePopover({ displayName, tagline, presence, children }
           <PresenceIndicator presence={presence} />
         </button>
       </HoverCardTrigger>
-      <HoverCardContent className="w-60 p-3">
+      {/* Portalled to body, outside ChatPanel's marker: without its own, a press here
+          dismisses a dialog the chat is floating over. */}
+      <HoverCardContent className="w-60 p-3" data-dialog-dismiss-ignore="">
         <p className="truncate text-body-emphasis text-foreground">{displayName}</p>
         {tagline && <p className="text-caption text-muted-foreground">{tagline}</p>}
         {presence && presence !== 'unknown' && (

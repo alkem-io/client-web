@@ -35,6 +35,13 @@ describe('UserPresencePopover', () => {
     expect(card()).toHaveTextContent('presence.online');
   });
 
+  test('the card is marked so a press on it does not dismiss a dialog under the chat', async () => {
+    renderPopover({ presence: 'online' });
+    fireEvent.click(screen.getByRole('button'));
+    await screen.findByText('presence.online', { selector: 'p' });
+    expect(card()?.closest('[data-dialog-dismiss-ignore]')).not.toBeNull();
+  });
+
   test('hovering opens the card', async () => {
     renderPopover({ presence: 'offline' });
     await userEvent.hover(screen.getByRole('button'));
