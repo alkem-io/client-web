@@ -56,6 +56,7 @@ const conversation = (overrides: Partial<UnifiedConversation> = {}): UnifiedConv
   members: [],
   isGuidance: false,
   pinned: false,
+  userPinned: false,
   ...overrides,
 });
 

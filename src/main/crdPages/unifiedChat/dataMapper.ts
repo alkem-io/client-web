@@ -11,7 +11,10 @@ import type {
 /** A conversation enriched with unified-chat presentation flags. */
 export type UnifiedConversation = UserConversation & {
   isGuidance: boolean;
+  /** Fixed at the top: the Guidance conversation. */
   pinned: boolean;
+  /** Pinned by the user, from their Matrix favourite tag on the room. */
+  userPinned: boolean;
 };
 
 /**
@@ -47,9 +50,13 @@ export const isVirtualContributorChat = (
 ): boolean =>
   members.length <= 2 && members.some(m => m.id !== currentUserId && m.type === ActorType.VirtualContributor);
 
+const activityTime = (conversation: UnifiedConversation): number =>
+  conversation.lastMessage ? conversation.lastMessage.timestamp : conversation.createdDate.getTime();
+
 /**
- * Sorts unified conversations: pinned (guidance) first, then the newly-created
- * conversation, then by most-recent activity (last message, else created date).
+ * Sorts unified conversations: pinned (guidance) first, then the user-pinned
+ * ones, then the newly-created conversation, then the rest. Each group is
+ * ordered by most-recent activity (last message, else created date).
  */
 export const sortUnifiedConversations = <T extends UnifiedConversation>(
   conversations: T[],
@@ -59,11 +66,15 @@ export const sortUnifiedConversations = <T extends UnifiedConversation>(
     if (a.pinned !== b.pinned) {
       return a.pinned ? -1 : 1;
     }
+    if (a.userPinned !== b.userPinned) {
+      return a.userPinned ? -1 : 1;
+    }
+    if (a.userPinned) {
+      return activityTime(b) - activityTime(a);
+    }
     if (a.id === newlyCreatedConversationId) return -1;
     if (b.id === newlyCreatedConversationId) return 1;
-    const aTime = a.lastMessage ? a.lastMessage.timestamp : a.createdDate.getTime();
-    const bTime = b.lastMessage ? b.lastMessage.timestamp : b.createdDate.getTime();
-    return bTime - aTime;
+    return activityTime(b) - activityTime(a);
   });
 
 /**

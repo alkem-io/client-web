@@ -27,6 +27,7 @@ const makeConversation = (overrides: Partial<UnifiedConversation> = {}): Unified
   members: [],
   isGuidance: false,
   pinned: false,
+  userPinned: false,
   ...overrides,
 });
 
@@ -63,6 +64,37 @@ describe('sortUnifiedConversations', () => {
 
     const sorted = sortUnifiedConversations([older, newly, newer, guidance], 'new');
     expect(sorted.map(c => c.id)).toEqual(['g', 'new', 'newer', 'older']);
+  });
+
+  it('places user-pinned conversations below guidance and above the rest, newest first within each group', () => {
+    const message = (timestamp: number) => ({
+      id: `m${timestamp}`,
+      message: 'x',
+      timestamp,
+      reactions: [],
+      attachments: [],
+    });
+    const guidance = makeConversation({ id: 'g', pinned: true, isGuidance: true, createdDate: new Date(1) });
+    const pinnedOld = makeConversation({ id: 'pinned-old', userPinned: true, lastMessage: message(100) });
+    const pinnedNew = makeConversation({ id: 'pinned-new', userPinned: true, lastMessage: message(300) });
+    const newly = makeConversation({ id: 'new', createdDate: new Date(2) });
+    const recent = makeConversation({ id: 'recent', lastMessage: message(500) });
+    const stale = makeConversation({ id: 'stale', lastMessage: message(50) });
+
+    const sorted = sortUnifiedConversations([stale, pinnedOld, recent, newly, pinnedNew, guidance], 'new');
+    expect(sorted.map(c => c.id)).toEqual(['g', 'pinned-new', 'pinned-old', 'new', 'recent', 'stale']);
+  });
+
+  it('keeps a user-pinned newly-created conversation in the pinned group by recency', () => {
+    const pinnedNewly = makeConversation({ id: 'new', userPinned: true, createdDate: new Date(10) });
+    const pinnedRecent = makeConversation({
+      id: 'pinned-recent',
+      userPinned: true,
+      lastMessage: { id: 'm', message: 'x', timestamp: 500, reactions: [], attachments: [] },
+    });
+
+    const sorted = sortUnifiedConversations([pinnedNewly, pinnedRecent], 'new');
+    expect(sorted.map(c => c.id)).toEqual(['pinned-recent', 'new']);
   });
 });
 
