@@ -1,6 +1,6 @@
 import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { announceDeviceChanged } from './sharedDevice';
+import { announceDeviceChanged, announceSignedOut } from './sharedDevice';
 import { clearNamespace, loadCredentials, storeCredentials } from './storage';
 
 // Two tabs of one browser: each runs its own copy of the session controller
@@ -317,6 +317,34 @@ describe('tabs of one browser share one chat device', () => {
     await new Promise(resolve => setTimeout(resolve, 50));
 
     expect(a.client()?.opts.deviceId).toBe('DEV3');
+  });
+
+  it('a sign-out that lands while a tab is reading the changed device keeps that tab stopped', async () => {
+    const server = scriptChatServer();
+    vi.stubGlobal('fetch', server.fetchStub);
+    await seed();
+    const a = await tab();
+    await a.boot();
+    await storeCredentials(recordOf('DEV2'));
+    // Another tab holds the credential lock, so A's read of the changed device waits on it.
+    let release: () => void = () => undefined;
+    void navigator.locks.request(
+      `alkemio-matrix/${ACTOR}`,
+      () =>
+        new Promise<void>(resolve => {
+          release = resolve;
+        })
+    );
+
+    announceDeviceChanged(recordOf('DEV2'));
+    await new Promise(resolve => setTimeout(resolve, 10));
+    announceSignedOut(['DEV2']);
+    await vi.waitFor(() => expect(a.client()).toBeNull());
+    release();
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    expect(a.client()).toBeNull();
+    expect(sdk.createClient.mock.calls.map(([opts]) => opts.deviceId)).toEqual(['DEV1']);
   });
 
   it('two tabs renewing the shared device make one refresh, and the second adopts the new pair', async () => {

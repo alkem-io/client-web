@@ -126,8 +126,10 @@ const establishSession = async (
   };
 
   // Runs under the credential lock. A device it creates is announced, so the other tabs move to it.
-  const loadOrAcquireRecord = async (replacing?: string): Promise<CredentialRecord | null> => {
-    const { signal: attemptSignal } = attempt;
+  const loadOrAcquireRecord = async (
+    attemptSignal: AbortSignal,
+    replacing?: string
+  ): Promise<CredentialRecord | null> => {
     const record = await loadActorCredentials(actorId);
     if (record && record.deviceId !== replacing) {
       return record;
@@ -192,16 +194,18 @@ const establishSession = async (
       return;
     }
     void transition(async () => {
+      const { signal: attemptSignal } = attempt;
       const record = await withCredentialLock(actorId, () => loadActorCredentials(actorId));
-      if (!abort.signal.aborted && record && record.deviceId !== running?.deviceId) {
+      if (!abort.signal.aborted && !attemptSignal.aborted && record && record.deviceId !== running?.deviceId) {
         stopClient();
-        await start(record);
+        await start(record, attemptSignal);
       }
     }).catch(() => undefined);
   };
 
-  const start = async (record: CredentialRecord): Promise<void> => {
-    const { signal: attemptSignal } = attempt;
+  // `attemptSignal` is the attempt current when the caller read `record`: a
+  // sign-out elsewhere since then means that record is being logged out.
+  const start = async (record: CredentialRecord, attemptSignal: AbortSignal): Promise<void> => {
     await quietSdkLogging();
     const sdk = (await import('matrix-js-sdk')) as unknown as {
       createClient(opts: {
@@ -301,6 +305,7 @@ const establishSession = async (
   const recover = (rejected: CredentialRecord): Promise<void> => transition(() => recoverNow(rejected));
 
   const recoverNow = async (rejected: CredentialRecord): Promise<void> => {
+    const { signal: attemptSignal } = attempt;
     stopClient();
     let establishing = false;
     try {
@@ -326,10 +331,10 @@ const establishSession = async (
         establishing = true;
         setSessionEstablishing(true);
         // The rejected device is never taken back, from storage or from another tab.
-        return loadOrAcquireRecord(rejected.deviceId);
+        return loadOrAcquireRecord(attemptSignal, rejected.deviceId);
       });
       if (!abort.signal.aborted && record) {
-        await start(record);
+        await start(record, attemptSignal);
       }
     } catch {
       // Fails closed: the session stays stopped until the next page load.
@@ -352,10 +357,11 @@ const establishSession = async (
     }
     tried = old;
     rotation = transition(async () => {
+      const { signal: attemptSignal } = attempt;
       let swapped = false;
       try {
         // A stored record of another device means another tab already rotated: it is taken over, not re-acquired.
-        const fresh = await withCredentialLock(actorId, () => loadOrAcquireRecord(old.deviceId));
+        const fresh = await withCredentialLock(actorId, () => loadOrAcquireRecord(attemptSignal, old.deviceId));
         // Overtaken by stop() or recover(), or nothing acquired: leave the session as it is.
         if (running === old && fresh) {
           swapped = true;
@@ -363,7 +369,7 @@ const establishSession = async (
           stopClient();
           // Best effort, so the replaced device is gone early rather than at its expiry.
           void serverSideLogout(old);
-          await start(fresh);
+          await start(fresh, attemptSignal);
         }
       } catch {
         // Before the swap nothing changed. After stopClient() chat fails closed until reload, like recover().
@@ -410,9 +416,10 @@ const establishSession = async (
   }
   try {
     await transition(async () => {
-      const record = await withCredentialLock(actorId, () => loadOrAcquireRecord());
+      const { signal: attemptSignal } = attempt;
+      const record = await withCredentialLock(actorId, () => loadOrAcquireRecord(attemptSignal));
       if (!abort.signal.aborted && record) {
-        await start(record);
+        await start(record, attemptSignal);
       }
     });
   } catch {
