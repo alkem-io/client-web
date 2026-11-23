@@ -1,5 +1,5 @@
 import { type MatrixClient, type User, UserEvent } from 'matrix-js-sdk';
-import { useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import type { UserPresence } from '../models';
 import { homeserverOf } from './matrixRooms';
@@ -60,6 +60,13 @@ export const useMatrixPresence = (actorIds: readonly string[]): ReadonlyMap<stri
   return new Map(actorIds.map((actorId, index) => [actorId, statuses[index]]));
 };
 
+// Synapse allows one presence update per user every 10 seconds by default and
+// answers 429 with the wait, so setting then clearing in quick succession is refused.
+const retryAfterMs = (error: unknown): number | undefined => {
+  const data = (error as { errcode?: string; data?: { retry_after_ms?: number } } | null) ?? {};
+  return data.errcode === 'M_LIMIT_EXCEEDED' ? (data.data?.retry_after_ms ?? 10_000) : undefined;
+};
+
 /** The signed-in user's own status message, live, and a setter; an empty message clears it. */
 export const useOwnStatusMessage = () => {
   const client = useMatrixClient();
@@ -67,15 +74,30 @@ export const useOwnStatusMessage = () => {
     const userId = client?.getUserId();
     return client && userId ? statusMessageOf(client.getUser(userId)) : '';
   };
-  const statusMessage = useSyncExternalStore(subscribeToPresence(client), readSnapshot, readSnapshot);
+  const synced = useSyncExternalStore(subscribeToPresence(client), readSnapshot, readSnapshot);
+  // What the user just saved, shown until the homeserver has taken it.
+  const [pending, setPending] = useState<string | null>(null);
 
   // Rejects when there is no client or the homeserver refuses the update.
   const setStatusMessage = async (text: string) => {
     if (!client) {
       throw new Error('Chat is not connected');
     }
-    await client.setPresence({ presence: 'online', status_msg: text.trim().slice(0, 100) });
+    const update = { presence: 'online' as const, status_msg: text.trim().slice(0, 100) };
+    setPending(update.status_msg);
+    try {
+      await client.setPresence(update).catch(async error => {
+        const wait = retryAfterMs(error);
+        if (wait === undefined) {
+          throw error;
+        }
+        await new Promise(resolve => setTimeout(resolve, wait));
+        await client.setPresence(update);
+      });
+    } finally {
+      setPending(null);
+    }
   };
 
-  return { statusMessage, setStatusMessage };
+  return { statusMessage: pending ?? synced, setStatusMessage };
 };

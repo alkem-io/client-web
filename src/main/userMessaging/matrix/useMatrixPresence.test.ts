@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { UserEvent } from 'matrix-js-sdk';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -138,6 +138,23 @@ describe('useOwnStatusMessage', () => {
     await result.current.setStatusMessage('x'.repeat(120));
 
     expect(client.setPresence).toHaveBeenLastCalledWith({ presence: 'online', status_msg: 'x'.repeat(100) });
+  });
+
+  it('when the homeserver rate-limits, shows the saved text, waits as told and retries once', async () => {
+    const client = makeClient({ '@me:hs': reported('online', 'In a workshop') });
+    client.setPresence.mockRejectedValueOnce({ errcode: 'M_LIMIT_EXCEEDED', data: { retry_after_ms: 20 } });
+    harness.client = client;
+    const { result } = renderHook(() => useOwnStatusMessage());
+
+    let saving: Promise<void> = Promise.resolve();
+    act(() => {
+      saving = result.current.setStatusMessage('');
+    });
+    await waitFor(() => expect(result.current.statusMessage).toBe(''));
+    await act(() => saving);
+
+    expect(client.setPresence).toHaveBeenCalledTimes(2);
+    expect(client.setPresence).toHaveBeenLastCalledWith({ presence: 'online', status_msg: '' });
   });
 
   it('rejects when the homeserver refuses, and without a client', async () => {
