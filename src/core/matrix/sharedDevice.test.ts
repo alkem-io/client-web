@@ -54,6 +54,8 @@ describe('sharedDevice', () => {
     });
     try {
       await expect(askOtherTabs('abc', new AbortController().signal)).resolves.toEqual(answering);
+      // The same user however the asker spells the actor id.
+      await expect(askOtherTabs('ABC', new AbortController().signal)).resolves.toEqual(answering);
       running = { ...answering, userId: '@someone-else:hs' };
       await expect(askOtherTabs('abc', new AbortController().signal)).resolves.toBeNull();
       running = { ...answering, accessToken: '' };

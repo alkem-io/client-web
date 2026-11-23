@@ -80,6 +80,27 @@ describe('renewTokens', () => {
     expect(await loadCredentials(USER_ID)).toEqual({ ...CURRENT, ...a });
   });
 
+  it('waits for a tab of the previous build renewing under its own lock name', async () => {
+    await storeCredentials(CURRENT);
+    let release: () => void = () => undefined;
+    void navigator.locks.request(
+      `alkemio-matrix-refresh/${USER_ID}`,
+      () =>
+        new Promise<void>(resolve => {
+          release = resolve;
+        })
+    );
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(jsonResponse(REFRESHED));
+
+    const renewal = renewTokens(CURRENT);
+    await new Promise(resolve => setTimeout(resolve, 20));
+    expect(fetchSpy).not.toHaveBeenCalled();
+
+    release();
+    expect(await renewal).toEqual({ accessToken: 'syt_new', refreshToken: 'syr_new', expiresAt: expect.any(Number) });
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
   it('adopts the pair another tab already rotated without calling the homeserver', async () => {
     const rotated = { accessToken: 'syt_other_tab', refreshToken: 'syr_other_tab', expiresAt: 1_700_000_900_000 };
     await storeCredentials({ ...CURRENT, ...rotated });

@@ -1,5 +1,6 @@
 import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { announceDeviceChanged } from './sharedDevice';
 import { clearNamespace, loadCredentials, storeCredentials } from './storage';
 
 // Two tabs of one browser: each runs its own copy of the session controller
@@ -147,6 +148,7 @@ const openTab = async () => {
     boot: () => controller.establishSession(ACTOR),
     client: () => active.getActiveClient() as unknown as FakeClient | null,
     close: () => registry.stopActiveSession(),
+    rotate: () => registry.rotateActiveSessionIfDue(),
     signOut: () => cleanup.runMatrixLogoutCleanup(),
   };
 };
@@ -160,6 +162,13 @@ const seed = (expiresAt = Date.now() + LIFETIME_MS) =>
     refreshToken: 'syr_dev1',
     expiresAt,
   });
+
+const recordOf = (deviceId: string) => ({
+  userId: USER_ID,
+  deviceId,
+  accessToken: `syt_${deviceId}`,
+  homeserverUrl: HOMESERVER,
+});
 
 describe('tabs of one browser share one chat device', () => {
   let tabs: Awaited<ReturnType<typeof openTab>>[] = [];
@@ -255,6 +264,59 @@ describe('tabs of one browser share one chat device', () => {
     expect(server.to('/logout').map(r => r.token)).toEqual(['syt_dev1']);
     expect(bBefore?.stopClient).toHaveBeenCalled();
     expect(await loadCredentials(USER_ID)).toMatchObject({ deviceId: 'DEV_NEW_1' });
+  });
+
+  it('a tab stopped by a sign-out elsewhere resumes on the device the next sign-in stores', async () => {
+    const server = scriptChatServer();
+    vi.stubGlobal('fetch', server.fetchStub);
+    await seed();
+    const a = await tab();
+    const b = await tab();
+    await a.boot();
+    await b.boot();
+
+    await b.signOut();
+    await vi.waitFor(() => expect(a.client()).toBeNull());
+    await b.boot();
+    await vi.waitFor(() => expect(a.client()?.opts.deviceId).toBe('DEV_NEW_1'));
+
+    expect(b.client()?.opts.deviceId).toBe('DEV_NEW_1');
+    expect(server.to('/login')).toHaveLength(1);
+  });
+
+  it('a rotation logs the replaced device out once and every tab moves to the new one', async () => {
+    const server = scriptChatServer();
+    vi.stubGlobal('fetch', server.fetchStub);
+    // Non-renewable and of unknown age: due for rotation.
+    await storeCredentials({ userId: USER_ID, deviceId: 'DEV1', accessToken: 'syt_dev1', homeserverUrl: HOMESERVER });
+    const a = await tab();
+    const b = await tab();
+    await a.boot();
+    await b.boot();
+
+    expect(await a.rotate()).toBe(true);
+    await vi.waitFor(() => expect(b.client()?.opts.deviceId).toBe('DEV_NEW_1'));
+
+    expect(a.client()?.opts.deviceId).toBe('DEV_NEW_1');
+    expect(server.to('/login')).toHaveLength(1);
+    expect(server.to('/logout').map(r => r.token)).toEqual(['syt_dev1']);
+  });
+
+  it('a tab told of two device changes in a row ends on the latest', async () => {
+    const server = scriptChatServer();
+    vi.stubGlobal('fetch', server.fetchStub);
+    await seed();
+    const a = await tab();
+    await a.boot();
+
+    // Another tab replaced the device twice; the second announcement lands while the first move is under way.
+    await storeCredentials(recordOf('DEV3'));
+    announceDeviceChanged(recordOf('DEV2'));
+    announceDeviceChanged(recordOf('DEV3'));
+    await vi.waitFor(() => expect(a.client()?.opts.deviceId).toBe('DEV3'));
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    expect(a.client()?.opts.deviceId).toBe('DEV3');
   });
 
   it('two tabs renewing the shared device make one refresh, and the second adopts the new pair', async () => {

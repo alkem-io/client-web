@@ -30,10 +30,12 @@ const serverSideLogout = async (record: CredentialRecord): Promise<void> => {
  * session: a sign-out page loaded directly runs before any session has
  * registered, yet the credentials an earlier page load stored are still on disk.
  *
- * Each namespace is cleared under its credential lock, so a credential another
- * tab is storing at that moment is cleared too rather than outliving the
- * sign-out. The other tabs are told first, which ends their acquisitions and
- * so releases the lock; one not granted within LOGOUT_TIMEOUT_MS is not waited for.
+ * Each stored namespace is cleared under its credential lock, so a tab
+ * renewing or replacing that user's credential at that moment finishes first
+ * and its write is cleared too. A credential stored for a user with nothing
+ * stored when the sign-out began is not covered. The other tabs are told
+ * first, which ends their acquisitions and so releases the lock; one not
+ * granted within LOGOUT_TIMEOUT_MS is not waited for.
  */
 const runMatrixLogoutCleanup = async (): Promise<void> => {
   stopActiveSession();

@@ -120,7 +120,7 @@ const askOtherTabs = (localpart: string, signal: AbortSignal): Promise<Credentia
       }
     });
     ownAsks.add(id);
-    channel.postMessage({ type: 'ask', id, localpart } satisfies TabMessage);
+    channel.postMessage({ type: 'ask', id, localpart: localpart.toLowerCase() } satisfies TabMessage);
   });
 
 /** Tells the other tabs this user's device was replaced, so they move to `record`. */
@@ -132,7 +132,7 @@ const announceSignedOut = (deviceIds: readonly string[]): void => post({ type: '
 type TabHandlers = {
   /** The credential this tab is running on, if any. */
   readonly running: () => CredentialRecord | null;
-  readonly onDeviceChanged: (record: CredentialRecord) => void;
+  readonly onDeviceChanged: () => void;
   readonly onSignedOut: (deviceIds: readonly string[]) => void;
 };
 
@@ -153,7 +153,7 @@ const listenToOtherTabs = (localpart: string, handlers: TabHandlers): (() => voi
       }
       case 'changed':
         if (isRecordOf(data.record, localpart)) {
-          handlers.onDeviceChanged(data.record);
+          handlers.onDeviceChanged();
         }
         return;
       case 'signed-out':
