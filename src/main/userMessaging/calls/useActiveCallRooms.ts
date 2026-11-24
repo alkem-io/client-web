@@ -4,7 +4,7 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { actorIdOf } from '@/main/userMessaging/matrix/matrixEvents';
 import { resolveMatrixRoomId } from '@/main/userMessaging/matrix/matrixRooms';
 import { isCallsConfigured } from './callConfig';
-import { type MembershipLike, watchLiveMemberships } from './matrixRtc';
+import { isThisDevice, type MembershipLike, watchLiveMemberships } from './matrixRtc';
 import { type CallableConversation, isBetaTester, isCallableConversation, useIsSynced } from './useCallEligibility';
 
 /** A running call, as its live memberships describe it. */
@@ -17,6 +17,8 @@ type LiveCall = {
   readonly latestTs: number;
   /** Whether the current user is in it, on any device. */
   readonly withMe: boolean;
+  /** Whether this browser's chat device is in it. */
+  readonly withMyDevice: boolean;
   /** The Alkemio actor ids of the people in it, sorted, each once. */
   readonly participants: readonly string[];
 };
@@ -35,6 +37,7 @@ const sameCalls = (a: LiveCalls, b: LiveCalls): boolean =>
       other.startedTs === call.startedTs &&
       other.latestTs === call.latestTs &&
       other.withMe === call.withMe &&
+      other.withMyDevice === call.withMyDevice &&
       other.participants.join('\n') === call.participants.join('\n')
     );
   });
@@ -42,7 +45,8 @@ const sameCalls = (a: LiveCalls, b: LiveCalls): boolean =>
 const describeCall = (
   matrixRoomId: string,
   memberships: readonly MembershipLike[],
-  myUserId: string | null
+  myUserId: string | null,
+  myDeviceId: string | null
 ): LiveCall => {
   const created = memberships.map(membership => membership.createdTs());
   return {
@@ -50,6 +54,7 @@ const describeCall = (
     startedTs: Math.min(...created),
     latestTs: Math.max(...created),
     withMe: memberships.some(membership => membership.sender === myUserId),
+    withMyDevice: memberships.some(membership => isThisDevice(membership, myUserId, myDeviceId)),
     participants: [
       ...new Set(memberships.flatMap(membership => (membership.sender ? [actorIdOf(membership.sender)] : []))),
     ].sort(),
@@ -102,12 +107,13 @@ const useLiveCalls = (conversations: readonly CallableConversation[]): LiveCalls
         return;
       }
       const myUserId = client.getUserId();
+      const myDeviceId = client.getDeviceId();
       stopWatching = watchLiveMemberships(client, [...alkemioByMatrixId.keys()], live => {
         const next: LiveCalls = new Map(
           [...alkemioByMatrixId].flatMap(([matrixRoomId, alkemioRoomId]) => {
             const memberships = live.get(matrixRoomId) ?? [];
             return memberships.length > 0
-              ? [[alkemioRoomId, describeCall(matrixRoomId, memberships, myUserId)] as const]
+              ? [[alkemioRoomId, describeCall(matrixRoomId, memberships, myUserId, myDeviceId)] as const]
               : [];
           })
         );

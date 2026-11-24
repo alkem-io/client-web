@@ -99,6 +99,7 @@ const makeClient = () =>
     matrixRTC: Object.assign(new EventEmitter(), { getRoomSession: () => session }),
     getRoom: (roomId: string) => ({ roomId }),
     getUserId: () => '@me:hs',
+    getDeviceId: () => 'MINE',
     getSyncState: () => 'SYNCING',
   });
 

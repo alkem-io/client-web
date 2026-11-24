@@ -18,7 +18,7 @@ const calls = vi.hoisted(() => ({
   session: { participants: [] as string[], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false },
   live: new Map<
     string,
-    { participants: string[]; startedTs?: number; latestTs?: number; matrixRoomId?: string; withMe?: boolean }
+    { participants: string[]; startedTs?: number; latestTs?: number; matrixRoomId?: string; withMyDevice?: boolean }
   >(),
   incoming: new Map<string, unknown>(),
   dismissCall: vi.fn(),
@@ -548,11 +548,18 @@ describe('UnifiedChatPanelConnector calls', () => {
     expect(calls.openCall).toHaveBeenCalledExactlyOnceWith({ matrixRoomId: '!direct:hs', intent: 'join_existing_dm' });
   });
 
-  it('offers no Join on a row whose call the user is already in', () => {
+  it('offers no Join on a row whose call this device is already in, as the banner does', () => {
     state.selectedConversationId = null;
-    calls.live = new Map([['r-group', { participants: ['me', 'u2'], matrixRoomId: '!group:hs', withMe: true }]]);
+    calls.live = new Map([['r-group', { participants: ['me', 'u2'], matrixRoomId: '!group:hs', withMyDevice: true }]]);
     render(<UnifiedChatPanelConnector />);
     expect(listProps?.conversations[0]).toMatchObject({ id: 'group', hasActiveCall: true });
     expect(listProps?.conversations[0].onJoinCall).toBeUndefined();
+  });
+
+  it('offers Join on a row whose call the user is in on another device only, as the banner does', () => {
+    state.selectedConversationId = null;
+    calls.live = new Map([['r-group', { participants: ['me', 'u2'], matrixRoomId: '!group:hs', withMyDevice: false }]]);
+    render(<UnifiedChatPanelConnector />);
+    expect(listProps?.conversations[0].onJoinCall).toBeTypeOf('function');
   });
 });

@@ -280,9 +280,9 @@ export const UnifiedChatPanelConnector = ({
             ...mapped,
             hasActiveCall: true,
             presence: groupBusy ? ('busy' as const) : mapped.presence,
-            // Joining opens the conversation too. No Join while the user is in the call on any
-            // device: a second join from this browser would write over its membership.
-            onJoinCall: call.withMe
+            // Joining opens the conversation too. As in the banner, no Join while this browser's
+            // device is in the call; joined on another device, the user may still join here.
+            onJoinCall: call.withMyDevice
               ? undefined
               : () => {
                   handleSelect(conversation.id);
