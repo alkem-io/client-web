@@ -1,5 +1,5 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMatrixClient, useMatrixSessionEstablishing } from '@/core/matrix/activeClient';
 import { useCallsShown } from '../calls/useCallEligibility';
 import { newestEntryId, type ParsedMessage, projectMessages, ringingUntil } from './matrixEvents';
@@ -59,6 +59,10 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
     readUpToEventId: null,
     isLoading: false,
   });
+  // Read by the subscription's refresh, so showing calls or not re-projects the loaded events in place:
+  // loading them again would blank the thread and lose its scroll position.
+  const withCallsRef = useRef(withCalls);
+  const refreshRef = useRef<() => void>(undefined);
 
   useEffect(() => {
     if (!client || !roomKey) {
@@ -72,6 +76,7 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
 
     const refresh = () => {
       if (!cancelled && room) {
+        const withCalls = withCallsRef.current;
         const events = liveEvents(room);
         const now = Date.now();
         setState({
@@ -86,6 +91,7 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
         ringEnd = until === undefined ? undefined : setTimeout(refresh, until - now);
       }
     };
+    refreshRef.current = refresh;
 
     // Re-projects once per page rather than once per paginated event.
     const load = async () => {
@@ -171,7 +177,12 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
       client.removeListener(CLIENT_ROOM as never, onRoom as never);
       client.removeListener(CLIENT_SYNC as never, onSync as never);
     };
-  }, [client, roomKey, withCalls]);
+  }, [client, roomKey]);
+
+  useEffect(() => {
+    withCallsRef.current = withCalls;
+    refreshRef.current?.();
+  }, [withCalls]);
 
   if (!client) {
     // Without a client the thread waits only while the session is being established

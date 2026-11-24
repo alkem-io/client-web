@@ -199,6 +199,33 @@ describe('useConversationTimeline', () => {
     harness.callsShown = false;
   });
 
+  it('shows or hides ring entries in place when calls start or stop showing, without loading again', async () => {
+    const ring = {
+      getId: () => '$ring',
+      getType: () => 'org.matrix.msc4075.rtc.notification',
+      getSender: () => `@a:${HS}`,
+      getTs: () => 0,
+      getOriginalContent: () => ({ notification_type: 'ring', lifetime: 1 }),
+    };
+    const { client } = makeClient(0, 0);
+    harness.client = {
+      ...client,
+      getRoom: () => ({ roomId: '!r', getLiveTimeline: () => ({ getEvents: () => [ring] }) }),
+    };
+
+    const { result, rerender } = renderHook(() => useConversationTimeline('alk-room', false));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.messages).toEqual([]);
+    const subscriptions = client.on.mock.calls.length;
+
+    harness.callsShown = true;
+    rerender();
+    expect(result.current.messages.map(message => message.eventId)).toEqual(['$ring']);
+    expect(result.current.isLoading).toBe(false);
+    expect(client.on.mock.calls.length).toBe(subscriptions);
+    harness.callsShown = false;
+  });
+
   it('does nothing without an opened conversation or without a Matrix session', () => {
     const { client, scrollback } = makeClient(10, 10);
     harness.client = client;
