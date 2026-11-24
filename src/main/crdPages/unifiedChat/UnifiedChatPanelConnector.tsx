@@ -2,6 +2,8 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { Info, Loader2, Trash2 } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useMatrixClient } from '@/core/matrix/activeClient';
+import { rotateActiveSessionIfDue } from '@/core/matrix/activeSession';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
@@ -10,12 +12,15 @@ import { ChatConnectionNotice } from '@/crd/components/chat/ChatConnectionNotice
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatOptionsMenu } from '@/crd/components/chat/ChatOptionsMenu';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
+import { ChatSettingsMenu } from '@/crd/components/chat/ChatSettingsMenu';
 import { ConversationAvatar } from '@/crd/components/chat/ConversationAvatar';
 import { GroupAvatar } from '@/crd/components/chat/GroupAvatar';
 import { GroupSettingsDialog } from '@/crd/components/chat/GroupSettingsDialog';
 import { GuidanceInfoDialog } from '@/crd/components/chat/GuidanceInfoDialog';
 import { NewChatDialog } from '@/crd/components/chat/NewChatDialog';
+import { SetStatusDialog } from '@/crd/components/chat/SetStatusDialog';
 import type { ChatThreadHeader } from '@/crd/components/chat/types';
+import { UserPresencePopover } from '@/crd/components/chat/UserPresencePopover';
 import type { CommentAuthor } from '@/crd/components/comment/types';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -29,6 +34,8 @@ import { useActiveCallRooms } from '@/main/userMessaging/calls/useActiveCallRoom
 import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibility';
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
 import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
+import { storeFor } from '@/main/userMessaging/matrix/conversationSummaryStore';
+import { useOwnStatusMessage } from '@/main/userMessaging/matrix/useMatrixPresence';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useChatSound } from '@/main/userMessaging/useChatSound';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
@@ -49,6 +56,11 @@ import { useGuidanceResponseState } from './useGuidanceResponseState';
 import { useNewChat } from './useNewChat';
 import { useUnifiedConversations } from './useUnifiedConversations';
 import { useUnifiedConversationView } from './useUnifiedConversationView';
+
+// How long after the click a queued call may still open.
+const QUEUED_CALL_TIMEOUT_MS = 10_000;
+// How long the "try again" notice of a dropped call stays.
+const DROPPED_CALL_NOTICE_MS = 8_000;
 
 /**
  * Wires the unified conversation list + selected thread to the CRD ChatPanel.
@@ -106,6 +118,46 @@ export const UnifiedChatPanelConnector = ({
   // Calls: shown only to beta testers, in a synced session, where the environment has calls.
   const callEligibility = useCallEligibility(selectedConversation ?? null);
   const callSession = useRoomCallSession(callEligibility.matrixRoomId);
+  // A call clicked while the chat credential is being replaced: it opens once the new session
+  // has synced and resolved the same room again, so the call never spans the swap.
+  const [queuedCall, setQueuedCall] = useState<{
+    readonly conversationId: string;
+    readonly matrixRoomId: string;
+    readonly intent: ReturnType<typeof callIntentFor>;
+    readonly swapDone: boolean;
+  } | null>(null);
+  useEffect(() => {
+    if (!queuedCall) {
+      return;
+    }
+    if (queuedCall.conversationId !== selectedConversationId) {
+      setQueuedCall(null);
+    } else if (queuedCall.swapDone && callEligibility.matrixRoomId === queuedCall.matrixRoomId) {
+      setQueuedCall(null);
+      openCall({ matrixRoomId: queuedCall.matrixRoomId, intent: queuedCall.intent });
+    }
+  }, [queuedCall, selectedConversationId, callEligibility.matrixRoomId]);
+  // A call that has not opened by then is dropped, so none opens (or rings) long after the click,
+  // and the user is told to try again.
+  const [droppedCallIn, setDroppedCallIn] = useState<string | null>(null);
+  const queuedIn = queuedCall?.conversationId ?? null;
+  useEffect(() => {
+    if (!queuedIn) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      setQueuedCall(null);
+      setDroppedCallIn(queuedIn);
+    }, QUEUED_CALL_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [queuedIn]);
+  useEffect(() => {
+    if (!droppedCallIn) {
+      return;
+    }
+    const timer = setTimeout(() => setDroppedCallIn(null), DROPPED_CALL_NOTICE_MS);
+    return () => clearTimeout(timer);
+  }, [droppedCallIn]);
   const activeCallRooms = useActiveCallRooms(conversations);
 
   // Realtime conversation events are subscribed globally by
@@ -146,6 +198,28 @@ export const UnifiedChatPanelConnector = ({
   const formatTimestamp = (timestampMs: number) =>
     formatDistanceToNowStrict(new Date(timestampMs), { addSuffix: true, locale });
 
+  const matrixClient = useMatrixClient();
+  const handleTogglePin = (id: string) => {
+    const conversation = conversations.find(item => item.id === id);
+    if (!conversation) {
+      return;
+    }
+    if (!matrixClient) {
+      notify(t('list.pinError'), 'error');
+      return;
+    }
+    // The store shows the pin at once and takes it back if the write fails.
+    storeFor(matrixClient)
+      .togglePin(conversation.roomId)
+      .catch(() => notify(t('list.pinError'), 'error'));
+  };
+
+  const ownStatus = useOwnStatusMessage();
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+  const handleSaveStatus = (statusMessage: string) => {
+    ownStatus.setStatusMessage(statusMessage).catch(() => notify(t('status.saveError'), 'error'));
+  };
+
   const listItems = withActiveCallsFirst(
     conversations.map(conversation => {
       const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
@@ -164,17 +238,35 @@ export const UnifiedChatPanelConnector = ({
   // list renders for this conversation — header ≡ list row by construction
   // (research D4), so the two surfaces can never disagree (US2/US3).
   const selectedListItem = listItems.find(item => item.id === selectedConversationId);
-  const titleAvatar =
-    view === 'thread' && selectedListItem ? (
-      <ConversationAvatar
-        size="sm"
-        displayName={selectedListItem.displayName}
-        avatarUrl={selectedListItem.avatarUrl}
-        isGroup={selectedListItem.isGroup}
-        isGuidance={selectedListItem.isGuidance}
-        memberAvatars={selectedListItem.memberAvatars}
-      />
-    ) : undefined;
+  const conversationAvatar = selectedListItem && (
+    <ConversationAvatar
+      size="sm"
+      displayName={selectedListItem.displayName}
+      avatarUrl={selectedListItem.avatarUrl}
+      isGroup={selectedListItem.isGroup}
+      isGuidance={selectedListItem.isGuidance}
+      memberAvatars={selectedListItem.memberAvatars}
+    />
+  );
+  // A 1:1 header avatar is the counterpart's: it carries their availability and opens their card.
+  const counterpart =
+    selectedConversation && !selectedConversation.isGroup && !selectedConversation.isGuidance
+      ? selectedConversation.members.find(member => member.id !== currentUserId)
+      : undefined;
+  let titleAvatar: ReactNode;
+  if (view === 'thread' && conversationAvatar) {
+    titleAvatar = counterpart ? (
+      <UserPresencePopover
+        displayName={counterpart.displayName}
+        statusMessage={counterpart.statusMessage}
+        presence={counterpart.presence}
+      >
+        {conversationAvatar}
+      </UserPresencePopover>
+    ) : (
+      conversationAvatar
+    );
+  }
 
   const threadHeader: ChatThreadHeader | undefined = selectedConversation
     ? {
@@ -268,10 +360,23 @@ export const UnifiedChatPanelConnector = ({
   } else if (selectedConversation) {
     const { isGroup } = selectedConversation;
     const { matrixRoomId } = callEligibility;
+    const conversationId = selectedConversation.id;
     const openCallWith = (action: CallAction, media: CallMedia) => {
-      if (matrixRoomId) {
-        openCall({ matrixRoomId, intent: callIntentFor({ isGroup, action, media }) });
+      if (!matrixRoomId || queuedCall) {
+        return;
       }
+      const intent = callIntentFor({ isGroup, action, media });
+      setDroppedCallIn(null);
+      setQueuedCall({ conversationId, matrixRoomId, intent, swapDone: false });
+      // A due chat credential is replaced first: a call open across the swap would end.
+      void rotateActiveSessionIfDue().then(rotated => {
+        if (rotated) {
+          setQueuedCall(queued => (queued ? { ...queued, swapDone: true } : null));
+        } else {
+          setQueuedCall(null);
+          openCall({ matrixRoomId, intent });
+        }
+      });
     };
     let callActions: ReactNode = null;
     if (callEligibility.eligible) {
@@ -383,18 +488,23 @@ export const UnifiedChatPanelConnector = ({
         backLabel={t('thread.back')}
         // The gear is about chat in general, so it lives in the list header only; a
         // conversation's own options are in its header menu.
-        onGoToSettings={
-          view === 'list'
-            ? () => {
+        settingsMenu={
+          view === 'list' ? (
+            <ChatSettingsMenu
+              label={t('panel.settings')}
+              statusLabel={ownStatus.statusMessage ? t('status.change') : t('status.set')}
+              onEditStatus={() => setStatusDialogOpen(true)}
+              notificationSettingsLabel={t('panel.settings')}
+              onOpenNotificationSettings={() => {
                 // Close first: the panel lives outside <Routes> and the messaging context has
                 // no route listener, so navigating alone leaves it mounted. On a small screen
                 // it is `fixed inset-0`, which would cover the settings page it just opened.
                 setIsOpen(false);
                 navigate(buildUserNotificationSettingsUrl());
-              }
-            : undefined
+              }}
+            />
+          ) : undefined
         }
-        settingsLabel={t('panel.settings')}
         // The sound is on or off for the whole chat, never per conversation, so like the gear
         // the toggle lives in the list header only.
         onToggleSound={
@@ -412,8 +522,28 @@ export const UnifiedChatPanelConnector = ({
         titleAvatar={titleAvatar}
         onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
         titleActionLabel={isGroupThread ? t('group.settings') : undefined}
+        subtitle={
+          view === 'list' && ownStatus.statusMessage ? (
+            <button
+              type="button"
+              onClick={() => setStatusDialogOpen(true)}
+              aria-label={t('status.edit', { status: ownStatus.statusMessage })}
+              className="min-w-0 truncate rounded-sm text-left hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {ownStatus.statusMessage}
+            </button>
+          ) : undefined
+        }
         headerActions={view === 'thread' ? headerActions : undefined}
-        notice={connectionLost ? <ChatConnectionNotice message={t('panel.reconnecting')} /> : undefined}
+        notice={
+          queuedCall && view === 'thread' ? (
+            <ChatConnectionNotice kind="busy" message={t('call.preparing')} />
+          ) : droppedCallIn && droppedCallIn === selectedConversationId && view === 'thread' ? (
+            <ChatConnectionNotice kind="failed" message={t('call.dropped')} />
+          ) : connectionLost ? (
+            <ChatConnectionNotice message={t('panel.reconnecting')} />
+          ) : undefined
+        }
       >
         {view === 'thread' && selectedConversationId ? (
           <ConversationThread
@@ -457,10 +587,17 @@ export const UnifiedChatPanelConnector = ({
             isLoading={isLoading}
             onSelectConversation={handleSelect}
             onNewMessage={newChat.openDialog}
+            onTogglePin={handleTogglePin}
           />
         )}
       </ChatPanel>
 
+      <SetStatusDialog
+        open={statusDialogOpen}
+        onOpenChange={setStatusDialogOpen}
+        statusMessage={ownStatus.statusMessage}
+        onSave={handleSaveStatus}
+      />
       <NewChatDialog
         open={newChat.open}
         onOpenChange={newChat.onOpenChange}

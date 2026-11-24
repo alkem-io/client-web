@@ -10,6 +10,8 @@ type CredentialRecord = {
   // Epoch ms. Present together, or not at all.
   readonly refreshToken?: string;
   readonly expiresAt?: number;
+  /** epoch ms (client clock) when the homeserver issued this credential; absent on records stored before it was recorded */
+  readonly issuedAt?: number;
 };
 
 const dbName = (userId: string): string => `${DB_PREFIX}${userId}`;

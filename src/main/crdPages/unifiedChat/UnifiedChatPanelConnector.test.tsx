@@ -45,6 +45,7 @@ vi.mock('./dataMapper', () => ({
   mapMembersToGroupMembers: () => [],
   mapMemberToCommentAuthor: () => ({}),
   mapMessageToChatMessage: (m: unknown) => m,
+  sortUnifiedConversations: (c: unknown) => c,
   withActiveCallsFirst: (items: unknown) => items,
 }));
 vi.mock('@/main/userMessaging/useConversationMessages', () => ({

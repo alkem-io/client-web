@@ -22,6 +22,12 @@ import type { CommentAuthor, ComposerAttachment, CrdMentionSearch, CrdMentionSug
 type CommentInputProps = {
   currentUser?: CommentAuthor;
   onSubmit: (content: string) => void;
+  /**
+   * A send is in flight (or the composer is otherwise busy). The textarea is
+   * not natively disabled — that would blur it and, on a phone, drop the
+   * on-screen keyboard mid-conversation. It keeps focus, is marked
+   * `aria-disabled`, and ignores input until the composer is free again.
+   */
   disabled?: boolean;
   maxLength?: number;
   /**
@@ -47,10 +53,9 @@ type CommentInputProps = {
    */
   autoFocus?: boolean;
   /**
-   * Chat-composer behaviour: return focus to the textarea after a submit, once
-   * the input is enabled again. Submitting drops focus either way — Enter
-   * blurs the textarea when `disabled` kicks in for the in-flight send, and
-   * clicking Send parks focus on a button that then disables itself.
+   * Chat-composer behaviour: return focus to the textarea on submit. Clicking
+   * Send (or attaching a file first) parks focus on a button, which would
+   * close the on-screen keyboard between messages.
    */
   refocusAfterSubmit?: boolean;
   /**
@@ -175,13 +180,15 @@ export function CommentInput({
   const { isSmallScreen } = useScreenSize();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [pendingRefocus, setPendingRefocus] = useState(false);
   const [uncontrolledContent, setUncontrolledContent] = useState('');
   const [isDraggingFiles, setIsDraggingFiles] = useState(false);
 
   const controlled = value !== undefined;
   const content = controlled ? value : uncontrolledContent;
   const setContent = (next: string) => {
+    // Text typed during a send would be lost: the consumer clears the draft
+    // when the send is confirmed and restores the sent text when it fails.
+    if (disabled) return;
     if (controlled) {
       onValueChange?.(next);
     } else {
@@ -281,22 +288,15 @@ export function CommentInput({
     textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [autoFocus]);
 
-  // A disabled textarea can't take focus, so the refocus waits out the
-  // in-flight send (`disabled`) and fires on the re-enable render.
-  // `preventScroll` because the composer was in view when the user submitted —
-  // if they scrolled away during a slow send, focus shouldn't yank them back.
-  useEffect(() => {
-    if (!pendingRefocus || disabled) return;
-
-    setPendingRefocus(false);
-    textareaRef.current?.focus({ preventScroll: true });
-  }, [pendingRefocus, disabled]);
-
   const handleSubmit = () => {
     if (!canSend) return;
 
+    // Synchronously, inside the user's gesture: iOS raises the keyboard and
+    // reveals the field only for a focus that comes from a gesture, and a
+    // focus that scrolls. A deferred or `preventScroll` focus leaves the
+    // keyboard on top of the field.
     if (refocusAfterSubmit) {
-      setPendingRefocus(true);
+      textareaRef.current?.focus();
     }
     onSubmit(trimmedContent);
     // Controlled: the consumer clears its draft on submit and restores it if the send is not confirmed.
@@ -442,7 +442,12 @@ export function CommentInput({
               textarea inherits its font from this wrapper (and its overlay must
               match it), so the size is set here rather than on the textarea. */}
           {mentionsEnabled ? (
-            <div className="min-h-6 min-w-0 flex-1 text-body ios:text-base [&_textarea]:placeholder:text-muted-foreground">
+            <div
+              className={cn(
+                'min-h-6 min-w-0 flex-1 text-body ios:text-base [&_textarea]:placeholder:text-muted-foreground',
+                disabled && 'opacity-50'
+              )}
+            >
               <MentionsInput
                 value={content}
                 onChange={(_event, newValue) => {
@@ -450,7 +455,7 @@ export function CommentInput({
                   setContent(newValue);
                 }}
                 onKeyDown={handleKeyDown}
-                disabled={disabled}
+                aria-disabled={disabled || undefined}
                 maxLength={maxLength}
                 placeholder={t('comments.addComment')}
                 aria-label={t('comments.addComment')}
@@ -529,12 +534,15 @@ export function CommentInput({
             <textarea
               ref={textareaRef}
               value={content}
-              disabled={disabled}
+              aria-disabled={disabled || undefined}
               maxLength={maxLength}
               onChange={event => setContent(event.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={t('comments.addComment')}
-              className="min-h-6 min-w-0 flex-1 resize-none bg-transparent px-1 py-1 text-body ios:text-base outline-hidden placeholder:text-muted-foreground"
+              className={cn(
+                'min-h-6 min-w-0 flex-1 resize-none bg-transparent px-1 py-1 text-body ios:text-base outline-hidden placeholder:text-muted-foreground',
+                disabled && 'opacity-50'
+              )}
               rows={1}
               aria-label={t('comments.addComment')}
             />

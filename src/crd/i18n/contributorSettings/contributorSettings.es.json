@@ -139,7 +139,7 @@
       "aboutYou": {
         "title": "Sobre ti",
         "tagline": {
-          "label": "Lema",
+          "label": "Titular",
           "hint": "Una frase corta visible en tu perfil."
         },
         "location": {
@@ -149,7 +149,7 @@
           "countryPlaceholder": "Selecciona un país"
         },
         "bio": {
-          "label": "Biografía",
+          "label": "Acerca de",
           "hint": "Compatible con Markdown."
         },
         "skills": {
@@ -248,6 +248,9 @@
       "sessionExpired": {
         "description": "Tu sesión con nuestro proveedor de inicio de sesión ha caducado, por lo que no se puede cargar esta configuración. Actualizar la página no sirve: cierra sesión y vuelve a iniciarla para restaurarla. Mientras tanto, el resto de Alkemio sigue funcionando.",
         "action": "Cerrar sesión e iniciar sesión de nuevo"
+      },
+      "manageInBrowser": {
+        "description": "Tu contraseña, tus claves de acceso, la verificación en dos pasos y tus cuentas conectadas se gestionan en un navegador web, no en la aplicación. Abre {{address}} en cualquier navegador web, inicia sesión y ve a Ajustes › Seguridad. El resto de Alkemio sigue funcionando en la aplicación."
       },
       "password": {
         "title": "Cambiar contraseña",
@@ -538,7 +541,7 @@
           "description": "Personaliza las alertas de interacciones como respuestas, menciones e invitaciones."
         },
         "platform": {
-          "title": "Notificaciones de plataforma",
+          "title": "Notificaciones del foro",
           "description": "Mantente al día con las discusiones de la plataforma, nuevas funciones y anuncios."
         },
         "platformAdmin": {
@@ -593,8 +596,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Recibir una notificación cuando una organización decida sobre mi solicitud de asociación"
         },
         "platform": {
-          "forumDiscussionComment": "Recibir una notificación cuando alguien comenta una discusión que he creado",
-          "forumDiscussionCreated": "Recibir una notificación cuando se crea una nueva discusión en la plataforma"
+          "forumDiscussionComment": "Recibir una notificación cuando alguien comenta una discusión que he creado en el foro",
+          "forumDiscussionCreated": "Recibir una notificación cuando se crea una nueva discusión en el foro"
         },
         "platformAdmin": {
           "userProfileCreated": "Recibir una notificación cuando se crea un nuevo perfil de usuario",

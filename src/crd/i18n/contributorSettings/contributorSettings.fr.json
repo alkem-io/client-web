@@ -139,7 +139,7 @@
       "aboutYou": {
         "title": "À propos de vous",
         "tagline": {
-          "label": "Slogan",
+          "label": "Titre",
           "hint": "Une courte ligne affichée sur votre profil."
         },
         "location": {
@@ -149,7 +149,7 @@
           "countryPlaceholder": "Sélectionnez un pays"
         },
         "bio": {
-          "label": "Biographie",
+          "label": "À propos",
           "hint": "Markdown pris en charge."
         },
         "skills": {
@@ -248,6 +248,9 @@
       "sessionExpired": {
         "description": "Votre session auprès de notre fournisseur de connexion a expiré, ces paramètres ne peuvent donc pas être chargés. Actualiser la page n'y changera rien : déconnectez-vous puis reconnectez-vous pour la rétablir. Le reste d'Alkemio continue de fonctionner entre-temps.",
         "action": "Se déconnecter et se reconnecter"
+      },
+      "manageInBrowser": {
+        "description": "Votre mot de passe, vos passkeys, la validation en deux étapes et vos comptes connectés se gèrent dans un navigateur web, pas dans l'application. Ouvrez {{address}} dans n'importe quel navigateur web, connectez-vous et allez dans Paramètres › Sécurité. Le reste d'Alkemio continue de fonctionner dans l'application."
       },
       "password": {
         "title": "Changer le mot de passe",
@@ -538,7 +541,7 @@
           "description": "Personnalisez les alertes pour les interactions — réponses, mentions et invitations."
         },
         "platform": {
-          "title": "Notifications de plateforme",
+          "title": "Notifications du forum",
           "description": "Restez informé des discussions de la plateforme, des nouvelles fonctionnalités et des annonces."
         },
         "platformAdmin": {
@@ -593,8 +596,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Recevoir une notification lorsqu’une organisation statue sur ma candidature d’association"
         },
         "platform": {
-          "forumDiscussionComment": "Recevoir une notification lorsque quelqu'un commente une discussion que j'ai créée",
-          "forumDiscussionCreated": "Recevoir une notification lorsqu'une nouvelle discussion de plateforme est créée"
+          "forumDiscussionComment": "Recevoir une notification lorsque quelqu'un commente une discussion que j'ai créée dans le forum",
+          "forumDiscussionCreated": "Recevoir une notification lorsqu'une nouvelle discussion du forum est créée"
         },
         "platformAdmin": {
           "userProfileCreated": "Recevoir une notification lorsqu'un nouveau profil utilisateur est créé",

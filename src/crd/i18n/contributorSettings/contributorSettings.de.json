@@ -139,7 +139,7 @@
       "aboutYou": {
         "title": "Über dich",
         "tagline": {
-          "label": "Slogan",
+          "label": "Überschrift",
           "hint": "Eine kurze Zeile, die in deinem Profil erscheint."
         },
         "location": {
@@ -149,7 +149,7 @@
           "countryPlaceholder": "Land auswählen"
         },
         "bio": {
-          "label": "Biografie",
+          "label": "Info",
           "hint": "Markdown wird unterstützt."
         },
         "skills": {
@@ -248,6 +248,9 @@
       "sessionExpired": {
         "description": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können diese Einstellungen nicht geladen werden. Ein Neuladen hilft nicht — melde dich ab und wieder an, um sie wiederherzustellen. Der Rest von Alkemio funktioniert währenddessen weiter.",
         "action": "Abmelden und erneut anmelden"
+      },
+      "manageInBrowser": {
+        "description": "Dein Passwort, deine Passkeys, die Bestätigung in zwei Schritten und deine verbundenen Konten werden in einem Webbrowser verwaltet, nicht in der App. Öffne {{address}} in einem beliebigen Webbrowser, melde dich an und gehe zu Einstellungen › Sicherheit. Der Rest von Alkemio funktioniert in der App weiter."
       },
       "password": {
         "title": "Passwort ändern",
@@ -538,7 +541,7 @@
           "description": "Personalisiere Hinweise zu Interaktionen wie Antworten, Erwähnungen und Einladungen."
         },
         "platform": {
-          "title": "Plattform-Benachrichtigungen",
+          "title": "Forum-Benachrichtigungen",
           "description": "Bleibe über plattformweite Diskussionen, neue Funktionen und Ankündigungen informiert."
         },
         "platformAdmin": {
@@ -593,8 +596,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Benachrichtigung erhalten, wenn eine Organisation über meine Bewerbung entscheidet"
         },
         "platform": {
-          "forumDiscussionComment": "Benachrichtigung erhalten, wenn jemand eine Diskussion kommentiert, die ich erstellt habe",
-          "forumDiscussionCreated": "Benachrichtigung erhalten, wenn eine neue Plattform-Diskussion erstellt wird"
+          "forumDiscussionComment": "Benachrichtigung erhalten, wenn jemand eine Diskussion kommentiert, die ich im Forum erstellt habe",
+          "forumDiscussionCreated": "Benachrichtigung erhalten, wenn eine neue Forum-Diskussion erstellt wird"
         },
         "platformAdmin": {
           "userProfileCreated": "Benachrichtigung erhalten, wenn ein neues Nutzerprofil erstellt wird",

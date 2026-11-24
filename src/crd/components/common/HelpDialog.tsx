@@ -10,6 +10,8 @@ type HelpDialogProps = {
   version: string;
   /** Server version string (e.g. "0.149.4"), without the leading "v". */
   serverVersion: string;
+  /** Installed store-app version (e.g. "0.5.0"); only set inside an app build that reports it. */
+  appVersion?: string;
   docsHref: string;
   supportHref?: string;
   welcomeSpaceHref: string;
@@ -21,6 +23,7 @@ function HelpDialog({
   onClose,
   version,
   serverVersion,
+  appVersion,
   docsHref,
   supportHref,
   welcomeSpaceHref,
@@ -72,6 +75,16 @@ function HelpDialog({
               components={{ b: <strong /> }}
             />
           </p>
+          {appVersion && (
+            <p className="text-caption text-foreground">
+              <Trans
+                ns="crd-help"
+                i18nKey="appVersionNumber"
+                values={{ version: appVersion }}
+                components={{ b: <strong /> }}
+              />
+            </p>
+          )}
         </div>
       </DialogContent>
     </Dialog>

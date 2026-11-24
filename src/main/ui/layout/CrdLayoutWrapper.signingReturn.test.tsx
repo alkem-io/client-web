@@ -231,14 +231,12 @@ vi.mock('@/main/crdPages/space/callout/TaskBoardConnector', () => ({
     return null;
   },
 }));
-vi.mock('@/main/crdPages/space/callout/TaskBoardDialog', () => ({
-  TaskBoardDialog: () => <div data-testid="task-board">task board</div>,
-}));
 vi.mock('@/main/crdPages/space/callout/CalloutDetailDialogConnector', () => ({
   CalloutDetailDialogConnector: (props: {
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
     initialContributionId?: string;
+    taskBoard?: boolean;
     memoSigningRestore?: {
       attemptId: string;
       kind: 'framing' | 'contribution';
@@ -270,7 +268,7 @@ vi.mock('@/main/crdPages/space/callout/CalloutDetailDialogConnector', () => ({
     }
 
     return (
-      <div data-testid="callout-dialog">
+      <div data-testid="callout-dialog" data-task-board={props.taskBoard ? 'true' : 'false'}>
         {editorKind && (
           <MemoEditorShell
             open={true}
@@ -686,7 +684,7 @@ describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
     renderRoute();
 
     expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
-    expect(screen.getByTestId('task-board')).toBeInTheDocument();
+    expect(screen.getByTestId('callout-dialog')).toHaveAttribute('data-task-board', 'true');
     expect(screen.queryByTestId('framing-memo-editor')).not.toBeInTheDocument();
   });
 
@@ -709,7 +707,7 @@ describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
       </BrowserRouter>
     );
 
-    expect(await screen.findByTestId('task-board')).toBeInTheDocument();
+    expect(await screen.findByTestId('callout-dialog')).toHaveAttribute('data-task-board', 'true');
     expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
   });
 
@@ -723,7 +721,7 @@ describe('CrdLayoutWrapper memo-signing return lifecycle', () => {
 
     expect(await screen.findByRole('dialog', { name: 'memo.signing.savedTitle' })).toBeInTheDocument();
     expect(await screen.findByTestId('framing-memo-editor')).toBeInTheDocument();
-    expect(screen.queryByTestId('task-board')).not.toBeInTheDocument();
+    expect(screen.getByTestId('callout-dialog')).toHaveAttribute('data-task-board', 'false');
   });
 
   it.each([
