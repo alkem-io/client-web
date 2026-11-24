@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { VCSettingsTabView } from '@/crd/components/virtualContributor/settings/VCSettingsTabView';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
@@ -34,11 +33,7 @@ const CrdVCSettingsTab = () => {
 const CrdVCSettingsTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUploadProps }) => {
   const { t } = useTranslation('crd-contributorSettings');
   const { vcId } = useUrlResolver();
-  const notify = useNotification();
-  const data = useVcSettingsTabData({
-    vcId,
-    onCommitError: () => notify(t('vc.settings.commitErrorToast'), 'error'),
-  });
+  const data = useVcSettingsTabData({ vcId });
 
   return (
     <VCSettingsTabView

@@ -121,16 +121,20 @@ describe('CrdOrganizationProfilePage — message when the hourly message allowan
     expect(toastSuccessMock).not.toHaveBeenCalled();
   });
 
-  test('another failure shows what the composer showed before, not the limit text', async () => {
+  test("another refusal shows the server's reason, not the limit text", async () => {
     sendMessageToOrganizationMock.mockRejectedValue(
       new ApolloError({
-        graphQLErrors: [new GraphQLError('Something failed', { extensions: { code: 'UNSPECIFIED' } })],
+        graphQLErrors: [
+          new GraphQLError('Organization does not accept messages', {
+            extensions: { code: 'OPERATION_NOT_ALLOWED', userMessage: 'userMessages.operations.operationNotAllowed' },
+          }),
+        ],
       })
     );
 
     await sendFromHero();
 
-    expect(await screen.findByText('Something failed')).toBeInTheDocument();
+    expect(await screen.findByText(/Organization does not accept messages/)).toBeInTheDocument();
     expect(screen.queryByText(limitText)).not.toBeInTheDocument();
   });
 });

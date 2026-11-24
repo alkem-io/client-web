@@ -164,8 +164,8 @@ export function CalloutSettingsConnector({
       await changeCalloutVisibility(callout, nextVisibility, sendNotification);
       setVisibilityAction(null);
     } catch (err) {
+      // The global error handler reports the failure, with the server's reason.
       logError(new Error('Callout visibility change failed', { cause: err as Error }));
-      notify(t('visibilityChange.saveFailed'), 'error');
     } finally {
       setMutating(false);
     }
@@ -187,8 +187,8 @@ export function CalloutSettingsConnector({
       setDeleteOpen(false);
       onDeleted?.();
     } catch (err) {
+      // The global error handler reports the failure, with the server's reason.
       logError(new Error('Callout delete failed', { cause: err as Error }));
-      notify(t('deleteCallout.saveFailed'), 'error');
     } finally {
       setMutating(false);
       deletingRef.current = false;
@@ -203,8 +203,8 @@ export function CalloutSettingsConnector({
       });
       setSortOpen(false);
     } catch (err) {
+      // The global error handler reports the failure, with the server's reason.
       logError(new Error('Contribution sort-order update failed', { cause: err as Error }));
-      notify(t('sortContributions.saveFailed'), 'error');
     }
   };
 

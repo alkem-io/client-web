@@ -18,15 +18,14 @@
  * FR-020a: dismiss = decline.
  */
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   trackLanguageOfferAccepted,
   trackLanguageOfferDeclined,
   trackLanguageOfferShown,
 } from '@/core/analytics/events/languageOffer';
 import { useUpdateUserSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import i18n from '@/core/i18n/config';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { LanguageConfig } from '@/domain/platform/config/configuration';
 import type { AnonymousLanguageChoice } from './LanguageOfferContext';
 import { resolveOfferLanguage } from './useLanguageResolution';
@@ -64,9 +63,8 @@ export function useLanguageOffer({
   invitationSuggestedLanguage,
   preBannerActionsComplete,
 }: UseLanguageOfferOpts): UseLanguageOfferResult {
+  // A failed accept/decline is reported by the global error handler, with the server's reason.
   const [updateUserSettings] = useUpdateUserSettingsMutation();
-  const notify = useNotification();
-  const { t } = useTranslation('crd-language');
   // Local dismissed state so the banner hides immediately after action without waiting for refetch.
   const [dismissed, setDismissed] = useState(false);
 
@@ -123,6 +121,7 @@ export function useLanguageOffer({
       } = shownAndUnansweredRef.current;
       // Only fire for authenticated users who saw the offer but never clicked.
       if (!wasAuth || !uid || !lang || wasDismissed) return;
+      // Runs unasked, so a failure shows no message.
       void updateUserSettings({
         variables: {
           settingsData: {
@@ -130,6 +129,7 @@ export function useLanguageOffer({
             settings: { languageOfferAnswered: true },
           },
         },
+        context: OWN_ERROR_HANDLING,
       });
     };
   }, []);
@@ -152,7 +152,6 @@ export function useLanguageOffer({
         // Revert optimistic language change and un-dismiss so the banner can retry.
         void i18n.changeLanguage((i18n.options.fallbackLng as string) ?? 'en');
         setDismissed(false);
-        notify(t('settings.languageSaveError'), 'error');
       });
     } else {
       setAnonymousChoice({ language: offerLanguage, answered: true });
@@ -176,7 +175,6 @@ export function useLanguageOffer({
       }).catch(() => {
         // Revert: un-dismiss so the banner can retry.
         setDismissed(false);
-        notify(t('settings.languageSaveError'), 'error');
       });
     } else {
       setAnonymousChoice({ language: null, answered: true });

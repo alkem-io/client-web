@@ -1,5 +1,10 @@
+import { ApolloError } from '@apollo/client';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key, i18n: { exists: () => false } }),
+}));
 
 // ─── Apollo hook mocks ────────────────────────────────────────────────────
 
@@ -9,6 +14,7 @@ const mockCreateReference = vi.fn();
 const mockDeleteReference = vi.fn();
 const mockCreateTagset = vi.fn();
 const mockUploadVisual = vi.fn();
+const mockMutationOptions: Record<string, unknown> = {};
 
 let mockUserData: { lookup: { user: ReturnType<typeof buildUser> | null } } | undefined;
 
@@ -49,10 +55,22 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     error: undefined,
     refetch: mockRefetch,
   }),
-  useUpdateUserMutation: () => [mockUpdateUser, { loading: false }],
-  useCreateReferenceOnProfileMutation: () => [mockCreateReference, { loading: false }],
-  useDeleteReferenceMutation: () => [mockDeleteReference, { loading: false }],
-  useCreateTagsetOnProfileMutation: () => [mockCreateTagset, { loading: false }],
+  useUpdateUserMutation: (options: unknown) => {
+    mockMutationOptions.updateUser = options;
+    return [mockUpdateUser, { loading: false }];
+  },
+  useCreateReferenceOnProfileMutation: (options: unknown) => {
+    mockMutationOptions.createReference = options;
+    return [mockCreateReference, { loading: false }];
+  },
+  useDeleteReferenceMutation: (options: unknown) => {
+    mockMutationOptions.deleteReference = options;
+    return [mockDeleteReference, { loading: false }];
+  },
+  useCreateTagsetOnProfileMutation: (options: unknown) => {
+    mockMutationOptions.createTagset = options;
+    return [mockCreateTagset, { loading: false }];
+  },
   useUploadVisualMutation: () => [mockUploadVisual, { loading: false }],
 }));
 
@@ -143,6 +161,17 @@ describe('useUserProfileTabData — unsaved changes', () => {
 });
 
 describe('useUserProfileTabData — saveAll', () => {
+  it('shows its own save failure, so its save mutations opt out of the global error handler', () => {
+    renderHook(() => useUserProfileTabData('user-1'));
+    const ownErrorHandling = { context: { skipGlobalErrorHandler: true } };
+    expect(mockMutationOptions).toEqual({
+      updateUser: ownErrorHandling,
+      createReference: ownErrorHandling,
+      deleteReference: ownErrorHandling,
+      createTagset: ownErrorHandling,
+    });
+  });
+
   it('sends every changed field in ONE updateUser call', async () => {
     const { result } = renderHook(() => useUserProfileTabData('user-1'));
     act(() => result.current.onChange({ firstName: 'Augusta', tagline: 'Poet', city: 'Paris' }));
@@ -180,6 +209,28 @@ describe('useUserProfileTabData — saveAll', () => {
     expect(result.current.unsaved.error).toBe('Server says no');
     expect(result.current.values?.displayName).toBe('Ada L.');
     expect(result.current.unsaved.count).toBe(1);
+  });
+
+  it("shows the server's reason, without ids, when the update is refused", async () => {
+    mockUpdateUser.mockRejectedValueOnce(
+      new ApolloError({
+        graphQLErrors: [
+          {
+            message: 'Display name (6df9be66-1c2d-4e5f-8a9b-0c1d2e3f4a5b) is already taken',
+            extensions: { code: 'OPERATION_NOT_ALLOWED' },
+          } as never,
+        ],
+      })
+    );
+    const { result } = renderHook(() => useUserProfileTabData('user-1'));
+    act(() => result.current.onChange({ displayName: 'Ada L.' }));
+
+    await act(async () => {
+      await result.current.unsaved.saveAll();
+    });
+
+    expect(result.current.unsaved.error).toContain('Display name is already taken');
+    expect(result.current.unsaved.error).not.toContain('6df9be66');
   });
 
   it('reports the Save as failed when the refresh afterwards fails, so a retry cannot create the references twice', async () => {

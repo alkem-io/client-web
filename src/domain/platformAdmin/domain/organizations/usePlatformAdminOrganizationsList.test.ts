@@ -1,8 +1,7 @@
 /**
- * client-7: verification (RESET / MANUALLY_VERIFY) and license-plan mutations are wrapped in
- * the shared `usePermissionDeniedNotifier` guard, so a denial that would otherwise be silent
- * surfaces the standard toast. VERIFICATION_REQUEST is deliberately NOT guarded — it always
- * falls through to MANUALLY_VERIFY, so it must not notify on its own.
+ * Verification (RESET / MANUALLY_VERIFY) failures are reported by the global error link; the hook
+ * adds no message of its own. VERIFICATION_REQUEST always falls through to MANUALLY_VERIFY, so it
+ * opts out of the global handler.
  */
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -25,6 +24,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   refetchPlatformAdminOrganizationsListQuery: (variables: unknown) => ({ variables }),
 }));
 
+import { OrgVerificationLifecycleEvents } from '@/domain/community/organization/model/OrganizationVerification';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 import usePlatformAdminOrganizationsList from './usePlatformAdminOrganizationsList';
 
@@ -63,38 +63,33 @@ describe('usePlatformAdminOrganizationsList — permission-denied notification',
     return renderHook(() => usePlatformAdminOrganizationsList());
   };
 
-  it('notifies on a MANUALLY_VERIFY rejection consisting exclusively of FORBIDDEN_POLICY', async () => {
-    verifyOrgMock.mockResolvedValueOnce({ data: {} }).mockRejectedValueOnce(forbiddenPolicyRejection);
-    const { result } = setup('NOT_VERIFIED');
-
+  const verify = async (state: string) => {
+    const { result } = setup(state);
     await act(async () => {
       await result.current.handleVerification({ id: 'o1', value: 'o1', url: '/org/o1' }).catch(() => undefined);
     });
+  };
 
-    expect(notify).toHaveBeenCalledTimes(1);
-    expect(notify).toHaveBeenCalledWith('permissions.errorDenied', 'error');
-  });
+  it.each([
+    ['MANUALLY_VERIFY', 'NOT_VERIFIED'],
+    ['RESET', 'manuallyVerified'],
+  ])('raises no message of its own when %s is refused', async (_event, state) => {
+    verifyOrgMock.mockResolvedValueOnce({ data: {} }).mockRejectedValue(forbiddenPolicyRejection);
 
-  it('notifies on a RESET rejection consisting exclusively of FORBIDDEN_POLICY', async () => {
-    verifyOrgMock.mockRejectedValueOnce(forbiddenPolicyRejection);
-    const { result } = setup('manuallyVerified');
-
-    await act(async () => {
-      await result.current.handleVerification({ id: 'o1', value: 'o1', url: '/org/o1' }).catch(() => undefined);
-    });
-
-    expect(notify).toHaveBeenCalledTimes(1);
-    expect(notify).toHaveBeenCalledWith('permissions.errorDenied', 'error');
-  });
-
-  it('does not notify for the swallowed VERIFICATION_REQUEST leg — only the MANUALLY_VERIFY fallback counts', async () => {
-    verifyOrgMock.mockRejectedValueOnce(forbiddenPolicyRejection).mockResolvedValueOnce({ data: {} });
-    const { result } = setup('NOT_VERIFIED');
-
-    await act(async () => {
-      await result.current.handleVerification({ id: 'o1', value: 'o1', url: '/org/o1' });
-    });
+    await verify(state);
 
     expect(notify).not.toHaveBeenCalled();
+  });
+
+  it('opts the VERIFICATION_REQUEST attempt out of the global handler, and only that one', async () => {
+    verifyOrgMock.mockResolvedValue({ data: {} });
+
+    await verify('NOT_VERIFIED');
+
+    const [request, manual] = verifyOrgMock.mock.calls.map(([options]) => options);
+    expect(request.variables.input.eventName).toBe(OrgVerificationLifecycleEvents.VERIFICATION_REQUEST);
+    expect(request.context).toEqual({ skipGlobalErrorHandler: true });
+    expect(manual.variables.input.eventName).toBe(OrgVerificationLifecycleEvents.MANUALLY_VERIFY);
+    expect(manual.context).toBeUndefined();
   });
 });

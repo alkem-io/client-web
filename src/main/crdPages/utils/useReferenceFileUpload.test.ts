@@ -1,9 +1,11 @@
+import { ApolloError } from '@apollo/client';
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
 import { useReferenceFileUpload } from './useReferenceFileUpload';
 
 const uploadFileMock = vi.fn();
+const notifyMock = vi.fn();
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -14,7 +16,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 }));
 
 vi.mock('@/core/ui/notifications/useNotification', () => ({
-  useNotification: () => vi.fn(),
+  useNotification: () => notifyMock,
 }));
 
 const baseConfig: StorageConfig = {
@@ -53,6 +55,19 @@ describe('useReferenceFileUpload accept derivation', () => {
     const { result } = renderHook(() => useReferenceFileUpload(storageConfig));
 
     expect(result.current.accept?.split(',')).not.toContain('.ics');
+  });
+});
+
+describe('useReferenceFileUpload failure reporting', () => {
+  test("leaves a refused upload to the global error handler, which shows the server's reason", async () => {
+    uploadFileMock.mockRejectedValueOnce(new ApolloError({ graphQLErrors: [{ message: 'File type not allowed' }] }));
+    notifyMock.mockClear();
+    const { result } = renderHook(() => useReferenceFileUpload(baseConfig));
+    const url = await result.current.onFileUpload?.(new File(['x'], 'ref.pdf', { type: 'application/pdf' }));
+
+    expect(url).toBeNull();
+    expect(uploadFileMock.mock.calls[0][0]).not.toHaveProperty('context');
+    expect(notifyMock).not.toHaveBeenCalled();
   });
 });
 

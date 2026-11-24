@@ -45,6 +45,7 @@ export function useCreateInnovationPack({
 }: UseCreateInnovationPackArgs): UseCreateInnovationPackResult {
   const [creating, startCreating] = useTransition();
   const [pending, setPending] = useState(false);
+  // A failed create is reported by the global error handler, with the server's reason.
   const [createMutation] = useCreateInnovationPackMutation({
     refetchQueries: ['AccountInformation', 'AdminInnovationPacksList', 'InnovationLibrary'],
   });

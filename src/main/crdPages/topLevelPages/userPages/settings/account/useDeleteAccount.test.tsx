@@ -7,12 +7,16 @@ import useDeleteAccount from './useDeleteAccount';
 
 const mockRunPreflight = vi.fn();
 const mockDeleteUserMutation = vi.fn();
+const mockUseDeleteUserMutation = vi.fn();
 const mockNavigate = vi.fn();
 const mockEndKratosSsoSession = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useAccountDeletionPreflightLazyQuery: () => [mockRunPreflight],
-  useDeleteUserMutation: () => [mockDeleteUserMutation],
+  useDeleteUserMutation: (options?: unknown) => {
+    mockUseDeleteUserMutation(options);
+    return [mockDeleteUserMutation];
+  },
 }));
 
 vi.mock('@/core/routing/useNavigate', () => ({
@@ -328,6 +332,16 @@ describe('useDeleteAccount', () => {
     });
 
     expect(result.current.result.dialog).toMatchObject({ kind: 'confirm', deleting: false, error: true });
+  });
+
+  it('renders every deletion failure in its own dialog, so the deletion opts out of the global error handler', () => {
+    renderHook(() => useHarness('user-1', '/user/me/settings/account'), {
+      wrapper: wrapperWithUrl('/user/me/settings/account'),
+    });
+
+    expect(mockUseDeleteUserMutation).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
   });
 
   it('cancelling closes the dialog without ever calling the mutation', async () => {

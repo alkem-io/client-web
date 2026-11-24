@@ -4,8 +4,8 @@ import type { MessageAttachment } from '@/crd/components/comment/types';
  * Shared types and utilities for user messaging
  */
 
-/** Matrix presence; 'unknown' when the homeserver has sent none for the user. */
-export type UserPresence = 'online' | 'away' | 'offline' | 'unknown';
+/** Matrix presence, or 'busy' while the user is in a live call; 'unknown' when the homeserver has sent none for the user. */
+export type UserPresence = 'online' | 'away' | 'offline' | 'busy' | 'unknown';
 
 export interface ConversationMember {
   id: string;

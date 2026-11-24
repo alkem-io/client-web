@@ -2,6 +2,7 @@ import { type FC, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useCurrentUserLightQuery } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import { CrdFullscreenButton } from '@/crd/components/common/CrdFullscreenButton';
 import { Loading } from '@/crd/components/common/Loading';
@@ -31,7 +32,7 @@ const CrdPublicWhiteboardPageContent: FC = () => {
 
   const { data: currentUser, loading: userLoading } = useCurrentUserLightQuery({
     errorPolicy: 'ignore',
-    context: { skipGlobalErrorHandler: true },
+    context: OWN_ERROR_HANDLING,
   });
   const isAuthenticated = !!currentUser?.me?.user;
 

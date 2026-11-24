@@ -7,6 +7,7 @@ import {
   usePendingInvitationsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import useNavigate from '@/core/routing/useNavigate';
 import { ApplicationsBlock } from '@/crd/components/dashboard/ApplicationsBlock';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
@@ -114,7 +115,7 @@ export default function DashboardWithoutMemberships({
   const { data: welcomeData, loading: welcomeLoading } = useDashboardWelcomeSpaceQuery({
     variables: { nameId: WELCOME_SPACE_NAMEID },
     errorPolicy: 'ignore',
-    context: { skipGlobalErrorHandler: true },
+    context: OWN_ERROR_HANDLING,
   });
   const exploreCards = (() => {
     const ranked = mapMostActivitySection(exploreData?.exploreSpaces ?? []);

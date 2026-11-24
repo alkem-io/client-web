@@ -77,7 +77,8 @@ beforeAll(async () => {
     lng: 'en',
     ns: ['crd-space', 'crd-profilePages'],
     defaultNS: 'crd-space',
-    resources: { en: { 'crd-space': spaceEnJson } },
+    fallbackNS: 'crd-common',
+    resources: { en: { 'crd-space': spaceEnJson, 'crd-common': commonEN } },
     interpolation: { escapeValue: false },
     react: { useSuspense: false },
   });
@@ -115,10 +116,14 @@ describe('ContributorCollectionConnector — message to an organisation when the
     expect(toastSuccessMock).not.toHaveBeenCalled();
   });
 
-  test('another failure shows what the composer showed before, not the limit text', async () => {
+  test("another failure shows the server's reason, not the limit text", async () => {
     sendMessageToOrganizationMock.mockRejectedValue(
       new ApolloError({
-        graphQLErrors: [new GraphQLError('Something failed', { extensions: { code: 'UNSPECIFIED' } })],
+        graphQLErrors: [
+          new GraphQLError('Something failed', {
+            extensions: { code: 'BAD_USER_INPUT', userMessage: 'userMessages.validation.badUserInput' },
+          }),
+        ],
       })
     );
 

@@ -9,7 +9,6 @@
     "settings": "Notification settings",
     "muteSound": "Mute chat sound",
     "unmuteSound": "Unmute chat sound",
-    "soundToggleError": "We couldn't save the chat sound setting. Please try again.",
     "expand": "Expand chat",
     "collapse": "Collapse chat",
     "reconnecting": "Reconnecting… New messages may be delayed."
@@ -144,7 +143,8 @@
   "presence": {
     "online": "Online",
     "away": "Away",
-    "offline": "Offline"
+    "offline": "Offline",
+    "busy": "In a call"
   },
   "status": {
     "set": "Set status",

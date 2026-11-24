@@ -59,13 +59,20 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
     data: mockTargetL1Data,
     loading: false,
   }),
-  useConvertSpaceL1ToL0Mutation: () => [mockPromoteL1ToL0, { loading: false }],
-  useConvertSpaceL1ToL2Mutation: () => [mockDemoteL1ToL2, { loading: false }],
-  useConvertSpaceL2ToL1Mutation: () => [mockPromoteL2ToL1, { loading: false }],
-  useMoveSpaceL1ToL0Mutation: () => [mockMoveL1ToL0, { loading: false }],
-  useMoveSpaceL1ToL2Mutation: () => [mockMoveL1ToL2, { loading: false }],
-  useMoveSpaceL2ToL1Mutation: () => [mockMoveL2ToL1, { loading: false }],
+  useConvertSpaceL1ToL0Mutation: (options: unknown) => mutationHook('convertL1ToL0', options, mockPromoteL1ToL0),
+  useConvertSpaceL1ToL2Mutation: (options: unknown) => mutationHook('convertL1ToL2', options, mockDemoteL1ToL2),
+  useConvertSpaceL2ToL1Mutation: (options: unknown) => mutationHook('convertL2ToL1', options, mockPromoteL2ToL1),
+  useMoveSpaceL1ToL0Mutation: (options: unknown) => mutationHook('moveL1ToL0', options, mockMoveL1ToL0),
+  useMoveSpaceL1ToL2Mutation: (options: unknown) => mutationHook('moveL1ToL2', options, mockMoveL1ToL2),
+  useMoveSpaceL2ToL1Mutation: (options: unknown) => mutationHook('moveL2ToL1', options, mockMoveL2ToL1),
 }));
+
+// Records the options each mutation hook is created with.
+const mutationHookOptions: Record<string, unknown> = {};
+const mutationHook = (name: string, options: unknown, run: unknown) => {
+  mutationHookOptions[name] = options;
+  return [run, { loading: false }];
+};
 
 // Resolve data helpers
 const resolveL1 = (id = 'space-l1', levelZeroSpaceID = 'space-l0') => ({
@@ -443,21 +450,47 @@ describe('useSpaceConversion', () => {
   });
 
   describe('error surface propagated', () => {
-    test('move error is surfaced via notify', async () => {
-      const errorMsg = 'Server error: same-L0 lateral not supported';
-      mockMoveL2ToL1.mockRejectedValueOnce(new Error(errorMsg));
+    test('every conversion leaves its failure to the global error handler', () => {
+      renderHook(() => useSpaceConversion());
+
+      for (const name of ['convertL1ToL0', 'convertL1ToL2', 'convertL2ToL1']) {
+        expect(mutationHookOptions[name]).toBeUndefined();
+      }
+    });
+
+    test('every move opts out, because the panel shows why it failed', () => {
+      renderHook(() => useSpaceConversion());
+
+      for (const name of ['moveL1ToL0', 'moveL1ToL2', 'moveL2ToL1']) {
+        expect(mutationHookOptions[name]).toEqual({ context: { skipGlobalErrorHandler: true } });
+      }
+    });
+
+    test('a failed move rejects and adds no message of its own', async () => {
+      const failure = new Error('Server error: same-L0 lateral not supported');
+      mockMoveL2ToL1.mockRejectedValueOnce(failure);
+      mockNotify.mockClear();
       mockResolveData = resolveL2('l2-id', 'l0-own');
       mockSpaceData = spaceDataFor('l2-id', SpaceLevel.L2);
 
       const { result } = renderHook(() => useSpaceConversion());
       await act(async () => {
-        try {
-          await result.current.moveL2ToL1('target-l1-id');
-        } catch {
-          // expected to throw
-        }
+        await expect(result.current.moveL2ToL1('target-l1-id')).rejects.toBe(failure);
       });
-      expect(mockNotify).toHaveBeenCalledWith(errorMsg, 'error');
+      expect(mockNotify).not.toHaveBeenCalled();
+    });
+
+    test('a failed conversion resolves and adds no message of its own', async () => {
+      mockPromoteL2ToL1.mockRejectedValueOnce(new Error('Server error'));
+      mockNotify.mockClear();
+      mockResolveData = resolveL2('l2-id', 'l0-own');
+      mockSpaceData = spaceDataFor('l2-id', SpaceLevel.L2);
+
+      const { result } = renderHook(() => useSpaceConversion());
+      await act(async () => {
+        await result.current.handlePromoteL2ToL1();
+      });
+      expect(mockNotify).not.toHaveBeenCalled();
     });
   });
 });

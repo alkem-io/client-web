@@ -114,6 +114,8 @@ export const mapMembersToGroupMembers = (
     name: member.displayName,
     avatarUrl: member.avatarUri,
     isCurrentUser: member.id === currentUserId,
+    presence: member.presence,
+    statusMessage: member.statusMessage,
   }));
 
 /**

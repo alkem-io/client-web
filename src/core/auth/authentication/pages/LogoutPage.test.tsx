@@ -12,6 +12,7 @@ import { DEVICE_PUSH_TOKEN_KEY } from '@/main/pushNotifications/constants';
 const unregisterDeviceToken = vi.hoisted(() => vi.fn());
 const unsubscribeMutation = vi.hoisted(() => vi.fn());
 const getLogoutUrl = vi.hoisted(() => vi.fn());
+const mutationHookOptions = vi.hoisted(() => ({ unsubscribe: vi.fn(), unregister: vi.fn() }));
 const logout = vi.hoisted(() => ({
   outcome: { kind: 'redirect', url: '/end-session' } as
     | { kind: string; url?: string; signInAgain?: boolean }
@@ -35,12 +36,18 @@ vi.mock('@/core/auth/authentication/utils/useSignUpReturnUrl', () => ({
 }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUnsubscribeFromPushNotificationsMutation: () => [unsubscribeMutation],
+  useUnsubscribeFromPushNotificationsMutation: (options?: unknown) => {
+    mutationHookOptions.unsubscribe(options);
+    return [unsubscribeMutation];
+  },
 }));
 
 vi.mock('@apollo/client', () => ({
   gql: (strings: TemplateStringsArray) => strings.join(''),
-  useMutation: () => [unregisterDeviceToken],
+  useMutation: (_document: unknown, options?: unknown) => {
+    mutationHookOptions.unregister(options);
+    return [unregisterDeviceToken];
+  },
 }));
 
 import LogoutPage from './LogoutPage';
@@ -79,6 +86,15 @@ describe('LogoutPage — native device-token unbind (SC-017)', () => {
 
     releaseUnbind();
     await waitFor(() => expect(replace).toHaveBeenCalledWith('/end-session'));
+  });
+
+  it('cleans up push unasked on the way out, so the unsubscribe and the unbind opt out of the global error handler', async () => {
+    render(<LogoutPage />);
+
+    await waitFor(() => expect(replace).toHaveBeenCalled());
+    const optedOut = expect.objectContaining({ context: { skipGlobalErrorHandler: true } });
+    expect(mutationHookOptions.unsubscribe).toHaveBeenCalledWith(optedOut);
+    expect(mutationHookOptions.unregister).toHaveBeenCalledWith(optedOut);
   });
 
   it('clears the stored token once cleanup has run', async () => {

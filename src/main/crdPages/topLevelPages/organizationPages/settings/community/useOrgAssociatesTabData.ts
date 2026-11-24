@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOrgAssociatesTabQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type {
   PendingMembership,
@@ -48,17 +50,6 @@ const graphQLErrorInfo = (error: unknown): { code?: string; message?: string } =
   const first = error.graphQLErrors[0];
   return { code: first?.extensions?.code as string | undefined, message: first?.message };
 };
-
-// Authorization failures already surfaced their own toast (useRoleSetManagerRolesAssignment).
-const isAuthorizationCode = (code: string | undefined) =>
-  code === AlkemioGraphqlErrorCode.FORBIDDEN || code === AlkemioGraphqlErrorCode.FORBIDDEN_POLICY;
-
-/**
- * Every mutation this tab owns renders its own failure (inline copy or one toast), so the
- * global error link must stay quiet for them — otherwise the admin sees two messages for
- * one refusal.
- */
-const OWN_ERROR_HANDLING = { skipGlobalErrorHandler: true } as const;
 
 /**
  * A transient `approving` / `accepting` row stays listed — the admin can see that the
@@ -132,6 +123,7 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   const { t: tCommon } = useTranslation('crd-common');
   const notifySelfTargetRefusal = () => notify(tCommon(SELF_TARGET_REFUSAL_MESSAGE_KEY), 'error');
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
 
   const { data, loading, refetch } = useOrgAssociatesTabQuery({
     variables: { roleSetId: roleSetId ?? '' },
@@ -159,6 +151,7 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
   } = useRoleSetManagerRolesAssignment({
     roleSetId,
     refetchRoleSetOnMutation: false,
+    // Every mutation of this tab shows its own message (inline copy or one toast) for a failure.
     context: OWN_ERROR_HANDLING,
   });
 
@@ -187,8 +180,8 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
         setRoleLimitError(limit);
       } else if (isSelfTargetRefusal(error)) {
         notifySelfTargetRefusal();
-      } else if (!isAuthorizationCode(code)) {
-        notify(t('org.associates.errors.generic'), 'error');
+      } else {
+        notify(serverErrorMessage(error, t('org.associates.errors.generic')), 'error');
       }
       throw error;
     }
@@ -217,8 +210,8 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
         notify(t(`org.associates.errors.${limit}`), 'error');
       } else if (isSelfTargetRefusal(error)) {
         notifySelfTargetRefusal();
-      } else if (!isAuthorizationCode(code)) {
-        notify(t('org.associates.editor.removeError', { name: row.displayName }), 'error');
+      } else {
+        notify(serverErrorMessage(error, t('org.associates.editor.removeError', { name: row.displayName })), 'error');
       }
     }
   };
@@ -326,7 +319,7 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
       .catch(error =>
         isSelfTargetRefusal(error)
           ? notifySelfTargetRefusal()
-          : notify(t('org.associates.pending.actionError'), 'error')
+          : notify(serverErrorMessage(error, t('org.associates.pending.actionError')), 'error')
       );
   };
   const nameOfPendingRow = (id: string) => pendingMemberships.find(m => m.id === id)?.displayName ?? '';
@@ -367,7 +360,7 @@ export const useOrgAssociatesTabData = (roleSetId: string | undefined): UseOrgAs
       await refetchApplicationsAndInvitations();
     } catch (error) {
       if (isSelfTargetRefusal(error)) notifySelfTargetRefusal();
-      else notify(t('org.associates.pending.actionError'), 'error');
+      else notify(serverErrorMessage(error, t('org.associates.pending.actionError')), 'error');
     }
   };
 

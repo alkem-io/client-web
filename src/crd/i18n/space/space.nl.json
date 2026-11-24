@@ -311,9 +311,6 @@
     "postUnsavedCloseConfirm": "Wijzigingen verwijderen",
     "postUnsavedCloseCancel": "Verder bewerken",
     "uploadAfterCreateFailed": "De $t(common.callout) is aangemaakt, maar het uploaden van de voorbeeldafbeelding is mislukt. Je kunt het opnieuw proberen via het bewerkscherm van de $t(common.callout).",
-    "pollOptionsSaveFailed": "Een of meer wijzigingen aan peilingsopties konden niet worden opgeslagen. Je kunt het opnieuw proberen vanuit dit venster.",
-    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw.",
-    "updateFailed": "De wijzigingen aan de $t(common.callout) konden niet worden opgeslagen. Probeer het opnieuw.",
     "contributors": "Contributors",
     "subspaces": "Subspaces",
     "spacesHidden": "Sommige Spaces in dit overzicht worden niet weergegeven omdat je er geen toegang tot hebt.",
@@ -474,8 +471,7 @@
     "moveUp": "Omhoog verplaatsen",
     "moveDown": "Omlaag verplaatsen",
     "moveToBottom": "Naar onder verplaatsen",
-    "delete": "Verwijderen",
-    "moveFailed": "Herschikken mislukt. Probeer het opnieuw."
+    "delete": "Verwijderen"
   },
   "visibilityChange": {
     "publishTitle": "Deze $t(common.callout) publiceren?",
@@ -484,16 +480,14 @@
     "unpublishTitle": "Deze $t(common.callout) als concept zetten?",
     "unpublishDescription": "De $t(common.callout) is niet langer zichtbaar voor leden van de space.",
     "unpublishConfirm": "Naar concept",
-    "notifyMembers": "Leden van de space waarschuwen",
-    "saveFailed": "De zichtbaarheid kon niet worden gewijzigd. Probeer het opnieuw."
+    "notifyMembers": "Leden van de space waarschuwen"
   },
   "sortContributions": {
     "title": "Bijdragen sorteren",
     "description": "Sleep om de volgorde te wijzigen. De nieuwe volgorde wordt pas bij opslaan actief.",
     "empty": "Deze $t(common.callout) heeft nog geen bijdragen om te sorteren.",
     "confirm": "Volgorde opslaan",
-    "dragHandle": "Sleep om te herschikken",
-    "saveFailed": "De nieuwe volgorde kon niet worden opgeslagen. Probeer het opnieuw."
+    "dragHandle": "Sleep om te herschikken"
   },
   "deleteCallout": {
     "title": "Deze $t(common.callout) verwijderen?",
@@ -524,7 +518,6 @@
     "comments_one": "{{count}} reactie wordt verwijderd",
     "comments_other": "{{count}} reacties worden verwijderd",
     "success": "$t(common.Callout) “{{title}}” is verwijderd.",
-    "saveFailed": "De $t(common.callout) kon niet worden verwijderd. Probeer het opnieuw.",
     "headerRichForm_one": "Het formulier en de {{count}} reactie worden verwijderd",
     "headerRichForm_other": "Het formulier en de {{count}} reacties worden verwijderd",
     "headerRichFormContributions_one": "Het formulier, de reacties en {{count}} bijdrage worden verwijderd",
@@ -536,8 +529,7 @@
   "deleteContribution": {
     "title": "Deze bijdrage verwijderen?",
     "description": "“{{title}}” wordt definitief verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
-    "confirm": "Verwijderen",
-    "saveFailed": "De bijdrage kon niet worden verwijderd. Probeer het opnieuw."
+    "confirm": "Verwijderen"
   },
   "saveAsTemplate": {
     "saveFailed": "De template kon niet worden opgeslagen. Probeer het opnieuw."
@@ -980,8 +972,7 @@
   "postLocation": {
     "label": "Postlocatie",
     "warning": "Wees voorzichtig met het wijzigen van de reactielocatie. Door de reactie naar een andere Post te verplaatsen, verdwijnt deze uit de huidige Post. Dit kan het voor mensen, waaronder de persoon die deze reactie heeft gemaakt, moeilijk maken om hem terug te vinden. Houd er rekening mee dat je reacties alleen binnen dezelfde Space of Subspace kunt verplaatsen.",
-    "moved": "Reactie succesvol verplaatst.",
-    "moveFailed": "Reactie kon niet worden verplaatst. Probeer het opnieuw."
+    "moved": "Reactie succesvol verplaatst."
   },
   "whiteboardPreview": {
     "label": "Voorbeeld van geselecteerd whiteboard",
@@ -1084,9 +1075,6 @@
     "customOption": {
       "placeholder": "Voeg je eigen optie toe..."
     },
-    "error": {
-      "voteFailed": "Het verzenden van je stem is mislukt. Probeer het opnieuw."
-    },
     "subscription": {
       "voteRevoked": "Je stem is verwijderd."
     }
@@ -1109,8 +1097,7 @@
     },
     "statusChange": {
       "closeSuccess": "De peiling is nu gesloten.",
-      "reopenSuccess": "De peiling staat nu open voor stemmen.",
-      "failed": "De status van de peiling kon niet worden gewijzigd. Probeer het opnieuw."
+      "reopenSuccess": "De peiling staat nu open voor stemmen."
     },
     "closePollConfirm": {
       "title": "Deze peiling sluiten?",
@@ -1338,7 +1325,6 @@
     "noAnswer": "Geen antwoord gegeven",
     "success": "Je reactie is verzonden.",
     "withdrawn": "Je reactie is ingetrokken.",
-    "withdrawFailed": "Je reactie kon niet worden ingetrokken. Probeer het opnieuw.",
     "visibilityChanged": "Wie de reacties kan zien is gewijzigd — controleer en verzend opnieuw.",
     "errors": {
       "generic": "Je reactie kon niet worden verzonden. Probeer het opnieuw.",
@@ -1393,7 +1379,6 @@
       "confirm": "Verwijderen"
     },
     "singleTitle": "Reactie van {{name}}",
-    "deleteFailed": "De reactie kon niet worden verwijderd. Probeer het opnieuw.",
     "loadFailed": "De reacties konden niet worden geladen.",
     "exportCsv": "CSV exporteren",
     "exporting": "Exporteren…",

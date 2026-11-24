@@ -48,7 +48,7 @@ vi.mock('./useActiveCallRooms', () => ({
   },
 }));
 
-const othersCall: LiveCall = { startedTs: 1, latestTs: 1, withMe: false };
+const othersCall: LiveCall = { startedTs: 1, latestTs: 1, withMe: false, participants: ['ann'] };
 const running = (...roomIds: string[]) => new Map(roomIds.map(roomId => [roomId, othersCall]));
 
 import { getIncomingCallRooms } from './incomingCallStore';
@@ -107,7 +107,7 @@ describe('useIncomingCallsWatcher', () => {
   // Last: the call joined here stays dealt with for the rest of the file.
   it('leaves out a call the user is in on any device', () => {
     harness.active = new Map([
-      ['direct', { startedTs: 1, latestTs: 2, withMe: true }],
+      ['direct', { startedTs: 1, latestTs: 2, withMe: true, participants: ['ann', 'me'] }],
       ['group', othersCall],
     ]);
     renderHook(() => useIncomingCallsWatcher());

@@ -82,7 +82,7 @@ describe('useOrgInvitationResponse — the withheld notice belongs to one answer
 });
 
 describe('useOrgInvitationResponse — exactly one message per failure', () => {
-  it('owns its error handling and toasts once when the answer fails', async () => {
+  it("leaves a failed answer to the global error handler, so the server's reason is the one message", async () => {
     runEvent.mockRejectedValueOnce(new Error('nope'));
     const onSettled = vi.fn();
     const { result } = renderHook(() => useOrgInvitationResponse(onSettled));
@@ -91,9 +91,8 @@ describe('useOrgInvitationResponse — exactly one message per failure', () => {
       await result.current.onDecline('inv-a');
     });
 
-    expect(runEvent).toHaveBeenCalledWith(expect.objectContaining({ context: { skipGlobalErrorHandler: true } }));
-    expect(notify).toHaveBeenCalledTimes(1);
-    expect(notify).toHaveBeenCalledWith('orgProfile.invitationDialog.declineError', 'error');
+    expect(runEvent.mock.calls[0][0]).not.toHaveProperty('context');
+    expect(notify).not.toHaveBeenCalled();
     expect(onSettled).not.toHaveBeenCalled();
   });
 });

@@ -1,3 +1,4 @@
+import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -75,9 +76,8 @@ const useTransferSpace = () => {
     handleAccountOwnerSubmit(url);
   };
 
-  // client-1: never throws — a rejected mutation (e.g. FORBIDDEN_POLICY) is
-  // surfaced as a notification, not an unhandled promise rejection, since the
-  // page has nowhere to render a thrown error for this hook.
+  // Never throws: the page has nowhere to render a thrown error for this hook. A rejected
+  // mutation is reported by the global error handler, with the server's reason.
   const handleTransfer = async () => {
     if (!space?.id || !accountOwner?.accountId) return;
     try {
@@ -90,8 +90,9 @@ const useTransferSpace = () => {
       setMutationCompleted(true);
       notify(t('pages.admin.transferSpace.successMessage'), 'success');
     } catch (error) {
-      const message = error instanceof Error ? error.message : t('pages.admin.transferSpace.errorMessage');
-      notify(message, 'error');
+      if (!(error instanceof ApolloError)) {
+        notify(t('pages.admin.transferSpace.errorMessage'), 'error');
+      }
     }
   };
 

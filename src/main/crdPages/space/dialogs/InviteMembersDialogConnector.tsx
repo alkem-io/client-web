@@ -357,7 +357,10 @@ export function InviteMembersDialogConnector({
     invitations: existingInvitations,
     inviteContributorsOnRoleSet,
     loading: loadingRoleSet,
-  } = useRoleSetApplicationsAndInvitations({ roleSetId, includeApplications: false });
+  } = useRoleSetApplicationsAndInvitations({
+    roleSetId,
+    includeApplications: false,
+  });
   // "Open" must mean the same thing here as in the Member Organisations >
   // Pending invitations list (`useCommunityTabData.isOpenOrganizationInvitation`):
   // 'invited' PLUS the brief in-flight 'accepting'. Excluding only 'invited'
@@ -417,7 +420,9 @@ export function InviteMembersDialogConnector({
   // internal `useRoleSetManager` skips its queries when roleSetId is falsy, so passing ''
   // for the other kinds costs nothing. Reused (not re-derived) because virtualContributorAdmin
   // .onAdd (a role ASSIGNMENT, not an invitation) and .inviteContributors already exist there.
-  const vcCommunity = useCommunityAdmin({ roleSetId: kind === 'virtualContributor' ? (roleSetId ?? '') : '' });
+  const vcCommunity = useCommunityAdmin({
+    roleSetId: kind === 'virtualContributor' ? (roleSetId ?? '') : '',
+  });
   const currentVcMemberIds = vcCommunity.virtualContributorAdmin.members.map(m => m.id).join(',');
   const { virtualContributorAdmin: vcLookup } = useVirtualContributorsAdmin({
     level: spaceLevel ?? SpaceLevel.L0,
@@ -487,7 +492,7 @@ export function InviteMembersDialogConnector({
       notify(t('inviteMembers.dialog.virtualContributor.addedNotice'), 'success');
       closeAndReset();
     } catch {
-      notify(t('inviteMembers.dialog.virtualContributor.error'), 'error');
+      // The global error handler reports the failure, with the server's reason.
     } finally {
       setVcBusyId(null);
     }
@@ -504,7 +509,7 @@ export function InviteMembersDialogConnector({
       notify(t('inviteMembers.dialog.virtualContributor.invitedNotice'), 'success');
       closeAndReset();
     } catch {
-      notify(t('inviteMembers.dialog.virtualContributor.error'), 'error');
+      // The global error handler reports the failure, with the server's reason.
     } finally {
       setVcBusyId(null);
     }
@@ -639,9 +644,9 @@ export function InviteMembersDialogConnector({
               : t('inviteMembers.toast.someFailed', { count: notSent.length });
           notify(message, hasFailure ? 'error' : 'info');
         }
-      } catch (_err) {
-        notify(t('inviteMembers.errors.networkFailure'), 'error');
-        // Stay on the form view with chips intact (per spec FR-007 edge case).
+      } catch {
+        // The global error handler reports the failure, with the server's reason. Stay on the form
+        // view with the chips intact.
       }
     });
   };

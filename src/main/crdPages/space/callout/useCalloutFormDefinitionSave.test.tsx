@@ -6,6 +6,10 @@ import { CalloutFormQuestionType } from '@/core/apollo/generated/graphql-schema'
 import { createFormOption, createFormQuestion, DEFAULT_FORM_SETTINGS } from '@/crd/forms/callout/formValues';
 import { translateFormDefinitionError, useCalloutFormDefinitionSave } from './useCalloutFormDefinitionSave';
 
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key, i18n: { exists: () => false } }),
+}));
+
 const updateCalloutForm = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useUpdateCalloutFormMutation: () => [updateCalloutForm],
@@ -71,7 +75,11 @@ describe('useCalloutFormDefinitionSave', () => {
       settings: DEFAULT_FORM_SETTINGS,
     });
 
-    expect(outcome).toMatchObject({ ok: false, code: 'FORM_UNKNOWN_QUESTION_ID' });
+    expect(outcome).toMatchObject({
+      ok: false,
+      code: 'FORM_UNKNOWN_QUESTION_ID',
+      message: 'formForm.errors.FORM_UNKNOWN_QUESTION_ID',
+    });
   });
 
   it('an error without a reason code still fails cleanly with no code', async () => {
@@ -85,7 +93,26 @@ describe('useCalloutFormDefinitionSave', () => {
       settings: DEFAULT_FORM_SETTINGS,
     });
 
+    expect(outcome).toMatchObject({ ok: false, code: undefined, message: 'formForm.errors.saveFailed' });
+  });
+
+  it("a rejection without a form reason carries the server's reason as its message", async () => {
+    updateCalloutForm.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [new GraphQLError('The form is archived', { extensions: { code: 'OPERATION_NOT_ALLOWED' } })],
+      })
+    );
+    const { result } = renderHook(() => useCalloutFormDefinitionSave());
+
+    const outcome = await result.current.save('form-1', {
+      title: '',
+      description: '',
+      questions: [createFormQuestion({ prompt: 'x' })],
+      settings: DEFAULT_FORM_SETTINGS,
+    });
+
     expect(outcome).toMatchObject({ ok: false, code: undefined });
+    expect(outcome.ok === false && outcome.message).toContain('The form is archived');
   });
 });
 

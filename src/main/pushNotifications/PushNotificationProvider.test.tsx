@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const auth = vi.hoisted(() => ({ isAuthenticated: true, secondFactorRequired: false }));
 const usePushNotifications = vi.hoisted(() => vi.fn());
+const useSubscribeToPushNotificationsMutation = vi.hoisted(() => vi.fn((_options?: unknown) => [vi.fn()]));
 
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ isAuthenticated: auth.isAuthenticated }),
@@ -15,7 +16,7 @@ vi.mock('@/main/pushNotifications/useNativePushRegistration', () => ({ useNative
 vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }));
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useMyPushSubscriptionsLazyQuery: () => [vi.fn().mockResolvedValue({})],
-  useSubscribeToPushNotificationsMutation: () => [vi.fn()],
+  useSubscribeToPushNotificationsMutation,
 }));
 
 import { PushNotificationProvider } from './PushNotificationProvider';
@@ -32,6 +33,14 @@ describe('PushNotificationProvider', () => {
     render(<PushNotificationProvider />);
 
     expect(usePushNotifications).toHaveBeenCalled();
+  });
+
+  it('re-registers the subscription unasked, so it opts out of the global error handler', () => {
+    render(<PushNotificationProvider />);
+
+    expect(useSubscribeToPushNotificationsMutation).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
   });
 
   it('asks the server nothing for a session refused for a missing second factor', () => {

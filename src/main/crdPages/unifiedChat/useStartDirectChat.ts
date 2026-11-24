@@ -1,5 +1,6 @@
 import { UserConversationsDocument, useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
 import { ConversationCreationType, type UserConversationsQuery } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
 export type StartDirectChatResult = {
@@ -41,7 +42,7 @@ export const useStartDirectChat = (userId: string | undefined) => {
       // Callers (e.g. `useOpenDirectChatHandler`) map a
       // failure — such as the recipient having messaging disabled — to their own
       // friendly toast; the global error-handler link must not add a second, raw one.
-      context: { skipGlobalErrorHandler: true },
+      context: OWN_ERROR_HANDLING,
       update: (cache, { data }) => {
         const conversation = data?.createConversation;
         const room = conversation?.room;

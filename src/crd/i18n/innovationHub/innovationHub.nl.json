@@ -145,8 +145,7 @@
       "toast": {
         "added": "Space toegevoegd.",
         "removed": "Space verwijderd.",
-        "reordered": "Volgorde bijgewerkt.",
-        "error": "Actie mislukt."
+        "reordered": "Volgorde bijgewerkt."
       }
     },
     "packs": {
@@ -174,8 +173,7 @@
       "toast": {
         "added": "Innovation Pack toegevoegd.",
         "removed": "Innovation Pack verwijderd.",
-        "reordered": "Volgorde bijgewerkt.",
-        "error": "Actie mislukt."
+        "reordered": "Volgorde bijgewerkt."
       }
     },
     "virtualContributors": {
@@ -202,8 +200,7 @@
       "toast": {
         "added": "Virtual Contributor toegevoegd.",
         "removed": "Virtual Contributor verwijderd.",
-        "reordered": "Volgorde bijgewerkt.",
-        "error": "Actie mislukt."
+        "reordered": "Volgorde bijgewerkt."
       }
     },
     "addResourceDialog": {
@@ -278,7 +275,6 @@
       "subdomainMin": "Moet minimaal 3 tekens bevatten.",
       "subdomainMax": "Mag maximaal 25 tekens bevatten."
     },
-    "createError": "Er is een fout opgetreden bij het aanmaken van de Innovation Hub.",
     "createSuccess": "De Innovation Hub is succesvol aangemaakt!"
   }
 }

@@ -9,7 +9,6 @@
     "settings": "Benachrichtigungseinstellungen",
     "muteSound": "Chat-Ton stummschalten",
     "unmuteSound": "Chat-Ton einschalten",
-    "soundToggleError": "Die Einstellung für den Chat-Ton konnte nicht gespeichert werden. Bitte versuche es erneut.",
     "expand": "Chat vergrößern",
     "collapse": "Chat verkleinern",
     "reconnecting": "Verbindung wird wiederhergestellt… Neue Nachrichten können verzögert ankommen."
@@ -144,7 +143,8 @@
   "presence": {
     "online": "Online",
     "away": "Abwesend",
-    "offline": "Offline"
+    "offline": "Offline",
+    "busy": "Im Gespräch"
   },
   "status": {
     "set": "Status festlegen",

@@ -311,9 +311,6 @@
     "postUnsavedCloseConfirm": "Annuler les modifications",
     "postUnsavedCloseCancel": "Continuer la modification",
     "uploadAfterCreateFailed": "La publication a été créée mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition de la publication.",
-    "pollOptionsSaveFailed": "Certaines modifications des options du sondage n'ont pas pu être enregistrées. Vous pouvez réessayer depuis cette boîte de dialogue.",
-    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
-    "updateFailed": "Les modifications de la publication n'ont pas pu être enregistrées. Veuillez réessayer.",
     "contributors": "Contributeurs",
     "subspaces": "Sous-espaces",
     "spacesHidden": "Certains espaces de cet aperçu ne sont pas affichés car vous n’y avez pas accès.",
@@ -474,8 +471,7 @@
     "moveUp": "Déplacer vers le haut",
     "moveDown": "Déplacer vers le bas",
     "moveToBottom": "Déplacer en bas",
-    "delete": "Supprimer",
-    "moveFailed": "Impossible de réorganiser. Veuillez réessayer."
+    "delete": "Supprimer"
   },
   "visibilityChange": {
     "publishTitle": "Mettre en ligne cette publication ?",
@@ -484,16 +480,14 @@
     "unpublishTitle": "Remettre cette publication en brouillon ?",
     "unpublishDescription": "La publication ne sera plus visible pour les membres de l'espace.",
     "unpublishConfirm": "Remettre en brouillon",
-    "notifyMembers": "Avertir les membres de l'espace",
-    "saveFailed": "Impossible de modifier la visibilité. Veuillez réessayer."
+    "notifyMembers": "Avertir les membres de l'espace"
   },
   "sortContributions": {
     "title": "Trier les contributions",
     "description": "Glissez pour réorganiser. Le nouvel ordre s'applique à l'enregistrement.",
     "empty": "Cette publication n'a encore aucune contribution à trier.",
     "confirm": "Enregistrer l'ordre",
-    "dragHandle": "Glisser pour réorganiser",
-    "saveFailed": "Impossible d'enregistrer le nouvel ordre. Veuillez réessayer."
+    "dragHandle": "Glisser pour réorganiser"
   },
   "deleteCallout": {
     "title": "Supprimer cette publication ?",
@@ -524,7 +518,6 @@
     "comments_one": "{{count}} commentaire sera supprimé",
     "comments_other": "{{count}} commentaires seront supprimés",
     "success": "La publication « {{title}} » a été supprimée.",
-    "saveFailed": "Impossible de supprimer la publication. Veuillez réessayer.",
     "headerRichForm_one": "Le formulaire et sa {{count}} réponse seront supprimés",
     "headerRichForm_other": "Le formulaire et ses {{count}} réponses seront supprimés",
     "headerRichFormContributions_one": "Le formulaire, ses réponses et {{count}} contribution seront supprimés",
@@ -536,8 +529,7 @@
   "deleteContribution": {
     "title": "Supprimer cette contribution ?",
     "description": "« {{title}} » sera définitivement supprimé. Cette action est irréversible.",
-    "confirm": "Supprimer",
-    "saveFailed": "Impossible de supprimer la contribution. Veuillez réessayer."
+    "confirm": "Supprimer"
   },
   "saveAsTemplate": {
     "saveFailed": "Impossible d'enregistrer le modèle. Veuillez réessayer."
@@ -980,8 +972,7 @@
   "postLocation": {
     "label": "Emplacement du post",
     "warning": "Soyez prudent en modifiant l'emplacement de la réponse. La déplacer vers un autre post la fera disparaître du post actuel. Cela peut compliquer la récupération pour les utilisateurs — y compris l'auteur de la réponse. Vous ne pouvez déplacer les réponses qu'au sein du même Espace ou Sous-espace.",
-    "moved": "Réponse déplacée avec succès.",
-    "moveFailed": "Impossible de déplacer la réponse. Veuillez réessayer."
+    "moved": "Réponse déplacée avec succès."
   },
   "whiteboardPreview": {
     "label": "Aperçu du whiteboard sélectionné",
@@ -1084,9 +1075,6 @@
     "customOption": {
       "placeholder": "Ajoutez votre propre option..."
     },
-    "error": {
-      "voteFailed": "Échec de l'envoi de votre vote. Veuillez réessayer."
-    },
     "subscription": {
       "voteRevoked": "Votre vote a été retiré."
     }
@@ -1109,8 +1097,7 @@
     },
     "statusChange": {
       "closeSuccess": "Le sondage est désormais fermé.",
-      "reopenSuccess": "Le sondage est désormais ouvert aux votes.",
-      "failed": "Le statut du sondage n'a pas pu être modifié. Veuillez réessayer."
+      "reopenSuccess": "Le sondage est désormais ouvert aux votes."
     },
     "closePollConfirm": {
       "title": "Fermer ce sondage ?",
@@ -1338,7 +1325,6 @@
     "noAnswer": "Pas de réponse",
     "success": "Votre réponse a été envoyée.",
     "withdrawn": "Votre réponse a été retirée.",
-    "withdrawFailed": "Votre réponse n'a pas pu être retirée. Veuillez réessayer.",
     "visibilityChanged": "Les personnes pouvant voir les réponses ont changé — vérifiez et envoyez à nouveau.",
     "errors": {
       "generic": "Votre réponse n'a pas pu être envoyée. Veuillez réessayer.",
@@ -1393,7 +1379,6 @@
       "confirm": "Supprimer"
     },
     "singleTitle": "Réponse de {{name}}",
-    "deleteFailed": "La réponse n'a pas pu être supprimée. Veuillez réessayer.",
     "loadFailed": "Les réponses n'ont pas pu être chargées.",
     "exportCsv": "Exporter en CSV",
     "exporting": "Exportation…",

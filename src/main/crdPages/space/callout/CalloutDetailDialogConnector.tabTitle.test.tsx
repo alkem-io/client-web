@@ -26,7 +26,6 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useDeleteContributionMutation: () => [vi.fn()],
   useMemoMarkdownLazyQuery: () => [vi.fn()],
 }));
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
 vi.mock('@/main/crdPages/topLevelPages/common/useSendMessageHandler', () => ({
   useMessageContributor: () => vi.fn(),
 }));

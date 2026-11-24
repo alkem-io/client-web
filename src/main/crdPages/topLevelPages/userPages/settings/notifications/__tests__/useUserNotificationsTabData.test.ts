@@ -6,10 +6,14 @@ import { overrideKey, soundOverrideKey } from '../userNotificationsMapper';
 // ─── Apollo hook mocks ────────────────────────────────────────────────────
 
 const mockUpdateUserSettings = vi.fn();
+const mockUseUpdateUserSettingsMutation = vi.fn();
 const mockRefetchUserSettings = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUpdateUserSettingsMutation: () => [mockUpdateUserSettings, { loading: false }],
+  useUpdateUserSettingsMutation: (options?: unknown) => {
+    mockUseUpdateUserSettingsMutation(options);
+    return [mockUpdateUserSettings, { loading: false }];
+  },
   refetchUserSettingsQuery: (vars: unknown) => mockRefetchUserSettings(vars),
 }));
 
@@ -46,6 +50,15 @@ afterEach(() => vi.useRealTimers());
 
 // ─── Tests ────────────────────────────────────────────────────────────────
 
+describe('useUserNotificationsTabData — error reporting', () => {
+  it("leaves a failed write to the global error handler, so the server's reason is the one message", () => {
+    renderHook(() => useUserNotificationsTabData({ userId: 'user-1', serverSettings: baseServer }));
+
+    expect(mockUseUpdateUserSettingsMutation).toHaveBeenCalled();
+    expect(mockUseUpdateUserSettingsMutation.mock.calls[0][0]).toBeUndefined();
+  });
+});
+
 describe('useUserNotificationsTabData — optimistic flip', () => {
   it('writes the override immediately so the UI flips before the mutation resolves', () => {
     const { result } = renderHook(() => useUserNotificationsTabData({ userId: 'user-1', serverSettings: baseServer }));
@@ -76,7 +89,7 @@ describe('useUserNotificationsTabData — optimistic flip', () => {
 });
 
 describe('useUserNotificationsTabData — hard-failure revert (FR-064 / Q5)', () => {
-  it('rolls back the override AND re-throws so the integration layer can show a toast', async () => {
+  it('rolls back the override AND re-throws', async () => {
     mockUpdateUserSettings.mockRejectedValueOnce(new Error('Network down'));
     const { result } = renderHook(() => useUserNotificationsTabData({ userId: 'user-1', serverSettings: baseServer }));
 
