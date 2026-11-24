@@ -539,7 +539,12 @@ export const UnifiedChatPanelConnector = ({
         onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
         titleActionLabel={isGroupThread ? t('group.settings') : undefined}
         subtitle={
-          view === 'list' && ownStatus.statusMessage ? (
+          // In a 1:1 thread: the counterpart's status message, never their availability label.
+          view === 'thread' && counterpart?.statusMessage ? (
+            <span className="min-w-0 truncate" title={counterpart.statusMessage}>
+              {counterpart.statusMessage}
+            </span>
+          ) : view === 'list' && ownStatus.statusMessage ? (
             <button
               type="button"
               onClick={() => setStatusDialogOpen(true)}
