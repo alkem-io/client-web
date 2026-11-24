@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
 import { Button } from '@/crd/primitives/button';
 import {
   Dialog,
@@ -22,49 +24,62 @@ type SetStatusDialogProps = {
 /** Sets, edits or clears the signed-in user's status message, which others see on their avatar card. */
 export function SetStatusDialog({ open, onOpenChange, statusMessage, onSave }: SetStatusDialogProps) {
   const { t } = useTranslation('crd-chat');
+  // Null until the user types, so each opening starts from the current status.
+  const [draft, setDraft] = useState<string | null>(null);
 
-  const save = (text: string) => {
-    onSave(text.trim());
+  const close = () => {
+    setDraft(null);
     onOpenChange(false);
   };
+  const save = (text: string) => {
+    onSave(text.trim());
+    close();
+  };
+
+  const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+    isDirty: draft !== null && draft.trim() !== statusMessage,
+    onClose: close,
+  });
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      {/* No corner close: Cancel and Escape close it. */}
-      <DialogContent hideClose={true}>
-        <DialogHeader>
-          <DialogTitle>{statusMessage ? t('status.change') : t('status.set')}</DialogTitle>
-          <DialogDescription>{t('status.hint')}</DialogDescription>
-        </DialogHeader>
-        {/* The content mounts on every open, so the field starts from the current status each time. */}
-        <form
-          className="grid gap-4"
-          onSubmit={event => {
-            event.preventDefault();
-            save(String(new FormData(event.currentTarget).get('statusMessage')));
-          }}
-        >
-          <Input
-            name="statusMessage"
-            defaultValue={statusMessage}
-            maxLength={100}
-            autoFocus={true}
-            placeholder={t('status.placeholder')}
-            aria-label={t('status.label')}
-          />
-          <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-              {t('actions.cancel')}
-            </Button>
-            {statusMessage && (
-              <Button type="button" variant="outline" onClick={() => save('')}>
-                {t('status.clear')}
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        {/* No corner close: Cancel and Escape close it. */}
+        <DialogContent hideClose={true}>
+          <DialogHeader>
+            <DialogTitle>{statusMessage ? t('status.change') : t('status.set')}</DialogTitle>
+            <DialogDescription>{t('status.hint')}</DialogDescription>
+          </DialogHeader>
+          <form
+            className="grid gap-4"
+            onSubmit={event => {
+              event.preventDefault();
+              save(draft ?? statusMessage);
+            }}
+          >
+            <Input
+              value={draft ?? statusMessage}
+              onChange={event => setDraft(event.target.value)}
+              maxLength={100}
+              autoFocus={true}
+              placeholder={t('status.placeholder')}
+              aria-label={t('status.label')}
+            />
+            <DialogFooter>
+              <Button type="button" variant="ghost" onClick={requestClose}>
+                {t('actions.cancel')}
               </Button>
-            )}
-            <Button type="submit">{t('status.save')}</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+              {statusMessage && (
+                <Button type="button" variant="outline" onClick={() => save('')}>
+                  {t('status.clear')}
+                </Button>
+              )}
+              <Button type="submit">{t('status.save')}</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      {guardElement}
+    </>
   );
 }

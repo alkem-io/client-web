@@ -58,11 +58,26 @@ describe('SetStatusDialog', () => {
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
-  test('cancel closes without saving', async () => {
+  test('cancel with no edits closes at once, without saving', async () => {
     const { onSave, onOpenChange } = renderDialog('Lunch');
-    await userEvent.type(screen.getByRole('textbox', { name: 'status.label' }), ' later');
     await userEvent.click(screen.getByRole('button', { name: 'actions.cancel' }));
 
+    expect(onSave).not.toHaveBeenCalled();
+    expect(onOpenChange).toHaveBeenCalledExactlyOnceWith(false);
+  });
+
+  test('cancel with unsaved edits asks first: keeping stays open, discarding closes without saving', async () => {
+    const { onSave, onOpenChange } = renderDialog('Lunch');
+    await userEvent.type(screen.getByRole('textbox', { name: 'status.label' }), ' later');
+
+    await userEvent.click(screen.getByRole('button', { name: 'actions.cancel' }));
+    expect(onOpenChange).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole('button', { name: 'dialogs.discardChanges.cancel' }));
+    expect(onOpenChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('textbox', { name: 'status.label' })).toHaveValue('Lunch later');
+
+    await userEvent.click(screen.getByRole('button', { name: 'actions.cancel' }));
+    await userEvent.click(screen.getByRole('button', { name: 'dialogs.discardChanges.confirm' }));
     expect(onSave).not.toHaveBeenCalled();
     expect(onOpenChange).toHaveBeenCalledExactlyOnceWith(false);
   });

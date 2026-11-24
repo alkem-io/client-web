@@ -1,5 +1,5 @@
 import { ClientEvent, type MatrixClient, type MatrixEvent, type User } from 'matrix-js-sdk';
-import { useState, useSyncExternalStore } from 'react';
+import { useRef, useState, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import type { UserPresence } from '../models';
 import { homeserverOf } from './matrixRooms';
@@ -83,6 +83,8 @@ export const useOwnStatusMessage = () => {
   const synced = useSyncExternalStore(subscribeToPresence(client), readSnapshot, readSnapshot);
   // What the user just saved, shown until the homeserver has taken it.
   const [pending, setPending] = useState<string | null>(null);
+  // Counts saves, so one that a newer save overtook neither sends nor clears.
+  const latestSave = useRef(0);
 
   // Rejects when there is no client or the homeserver refuses the update.
   const setStatusMessage = async (text: string) => {
@@ -90,6 +92,8 @@ export const useOwnStatusMessage = () => {
       throw new Error('Chat is not connected');
     }
     const update = { presence: 'online' as const, status_msg: text.trim().slice(0, 100) };
+    latestSave.current += 1;
+    const save = latestSave.current;
     setPending(update.status_msg);
     try {
       await client.setPresence(update).catch(async error => {
@@ -98,10 +102,15 @@ export const useOwnStatusMessage = () => {
           throw error;
         }
         await new Promise(resolve => setTimeout(resolve, wait));
-        await client.setPresence(update);
+        // A newer save now owns the value; sending this one late would undo it.
+        if (save === latestSave.current) {
+          await client.setPresence(update);
+        }
       });
     } finally {
-      setPending(null);
+      if (save === latestSave.current) {
+        setPending(null);
+      }
     }
   };
 

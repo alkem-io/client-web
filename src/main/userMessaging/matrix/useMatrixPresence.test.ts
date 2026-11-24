@@ -185,6 +185,29 @@ describe('useOwnStatusMessage', () => {
     expect(client.setPresence).toHaveBeenLastCalledWith({ presence: 'online', status_msg: '' });
   });
 
+  it('a save overtaken while it waits on the rate limit neither sends late nor hides the newer text', async () => {
+    const client = makeClient({ '@me:hs': reported('online', 'Lunch') });
+    client.setPresence.mockRejectedValueOnce({ errcode: 'M_LIMIT_EXCEEDED', data: { retry_after_ms: 30 } });
+    harness.client = client;
+    const { result } = renderHook(() => useOwnStatusMessage());
+
+    let first: Promise<void> = Promise.resolve();
+    let second: Promise<void> = Promise.resolve();
+    act(() => {
+      first = result.current.setStatusMessage('Old');
+    });
+    act(() => {
+      second = result.current.setStatusMessage('New');
+    });
+    await act(() => second);
+    expect(result.current.statusMessage).toBe('Lunch');
+    await act(() => first);
+
+    // The rate-limited 'Old' and the accepted 'New': 'Old' is never retried.
+    expect(client.setPresence).toHaveBeenCalledTimes(2);
+    expect(client.setPresence).toHaveBeenLastCalledWith({ presence: 'online', status_msg: 'New' });
+  });
+
   it('rejects when the homeserver refuses, and without a client', async () => {
     const client = makeClient({});
     client.setPresence.mockRejectedValueOnce(new Error('M_FORBIDDEN'));
