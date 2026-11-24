@@ -517,29 +517,27 @@ export const UnifiedChatPanelConnector = ({
         closeLabel={t('launcher.close')}
         onBack={view === 'thread' ? handleBack : undefined}
         backLabel={t('thread.back')}
-        // The gear is about chat in general, so it lives in the list header only; a
-        // conversation's own options are in its header menu.
-        settingsMenu={
-          view === 'list' ? (
-            <ChatSettingsMenu
-              label={t('panel.settings')}
-              statusLabel={ownStatus.statusMessage ? t('status.change') : t('status.set')}
-              onEditStatus={() => setStatusDialogOpen(true)}
-              notificationSettingsLabel={t('panel.settings')}
-              onOpenNotificationSettings={() => {
-                // Close first: the panel lives outside <Routes> and the messaging context has
-                // no route listener, so navigating alone leaves it mounted. On a small screen
-                // it is `fixed inset-0`, which would cover the settings page it just opened.
-                setIsOpen(false);
-                navigate(buildUserNotificationSettingsUrl());
-              }}
-            />
-          ) : undefined
-        }
-        // The sound is on or off for the whole chat, never per conversation, so like the gear
-        // the toggle lives in the list header only.
+        // The gear is about chat in general; a conversation's own options are in its header menu.
+        // In a thread the panel hands the gear its expand and sound toggles.
+        settingsMenu={toggles => (
+          <ChatSettingsMenu
+            {...toggles}
+            label={t('panel.settings')}
+            statusLabel={ownStatus.statusMessage ? t('status.change') : t('status.set')}
+            onEditStatus={() => setStatusDialogOpen(true)}
+            notificationSettingsLabel={t('panel.settings')}
+            onOpenNotificationSettings={() => {
+              // Close first: the panel lives outside <Routes> and the messaging context has
+              // no route listener, so navigating alone leaves it mounted. On a small screen
+              // it is `fixed inset-0`, which would cover the settings page it just opened.
+              setIsOpen(false);
+              navigate(buildUserNotificationSettingsUrl());
+            }}
+          />
+        )}
+        // The sound is on or off for the whole chat, never per conversation.
         onToggleSound={
-          view === 'list' && chatSound.setEnabled
+          chatSound.setEnabled
             ? () => {
                 // A failed save is reported by the global error handler; the toggle stays as it was.
                 chatSound.setEnabled?.(!chatSound.enabled).catch(() => undefined);

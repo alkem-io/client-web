@@ -8,6 +8,7 @@ import {
   chatHeaderIconClass,
   chatHeaderLargeIconClass,
 } from '@/crd/components/chat/CallControls';
+import type { ChatSettingsMenuToggles } from '@/crd/components/chat/ChatSettingsMenu';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { useVisibleViewportArea } from '@/crd/hooks/useVisibleViewportArea';
 import { claimEscape } from '@/crd/lib/claimEscape';
@@ -23,8 +24,9 @@ type ChatPanelProps = {
   /** Required: these buttons are icon-only, so an empty aria-label would leave them
    * with no accessible name (WCAG 2.1 AA 4.1.2). Mandatory labels make that unrepresentable. */
   backLabel: string;
-  /** The settings control (e.g. a gear menu), shown in the header between the sound toggle and close. */
-  settingsMenu?: ReactNode;
+  /** Renders the settings control (e.g. a gear menu), shown in the header just before close. In a thread at the
+   * collapsed width it is given the expand and sound toggles, which then have no header icon of their own. */
+  settingsMenu?: (toggles: ChatSettingsMenuToggles) => ReactNode;
   /** When provided, a mute / unmute toggle for the chat sound is shown in the header. */
   onToggleSound?: () => void;
   /** Whether the chat sound is currently off. */
@@ -102,6 +104,9 @@ export function ChatPanel({
   // Full screen on a phone: follow the visible area so the composer at the
   // bottom of the panel stays above the on-screen keyboard.
   const visibleArea = useVisibleViewportArea(open && isSmallScreen);
+  // A thread header at the collapsed width is short of room for the name, so its
+  // expand and sound toggles move into the settings menu.
+  const togglesInMenu = Boolean(onBack && settingsMenu) && !isExpanded;
 
   useEffect(() => {
     if (!coversPage) {
@@ -142,15 +147,13 @@ export function ChatPanel({
   const titleContent = (
     <>
       {titleAvatar && <span className="shrink-0">{titleAvatar}</span>}
-      {subtitle ? (
-        // Tighter line heights keep the two lines close to the height of a single-line header.
-        <span className="flex min-w-0 flex-1 flex-col px-1">
-          <span className="text-subsection-title truncate leading-6">{title}</span>
-          <span className="flex min-w-0 text-caption leading-4 text-muted-foreground">{subtitle}</span>
-        </span>
-      ) : (
-        <span className="text-subsection-title min-w-0 flex-1 truncate px-1">{title}</span>
-      )}
+      {/* The name keeps about ten characters before the header actions crowd it: w-0 keeps the
+          full name out of the header's minimum size, so min-w-[10ch] (in the title font) is that minimum. */}
+      <span className="text-subsection-title flex w-0 min-w-[10ch] flex-1 flex-col px-1">
+        {/* With a subtitle, tighter line heights keep the two lines close to the height of a single-line header. */}
+        <span className={cn('truncate', subtitle && 'leading-6')}>{title}</span>
+        {subtitle && <span className="flex min-w-0 text-caption leading-4 text-muted-foreground">{subtitle}</span>}
+      </span>
     </>
   );
 
@@ -190,7 +193,7 @@ export function ChatPanel({
                 <button
                   type="button"
                   onClick={onTitleClick}
-                  className="flex min-w-8 flex-1 items-center gap-1 rounded-md text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex flex-1 items-center gap-1 rounded-md text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {titleContent}
                   {titleActionLabel && <span className="sr-only">, {titleActionLabel}</span>}
@@ -199,7 +202,7 @@ export function ChatPanel({
                 titleContent
               )}
               {headerActions}
-              {!isSmallScreen && (
+              {!isSmallScreen && !togglesInMenu && (
                 <button
                   type="button"
                   onClick={() => setExpanded(!expanded)}
@@ -214,7 +217,7 @@ export function ChatPanel({
                   )}
                 </button>
               )}
-              {onToggleSound && (
+              {onToggleSound && !togglesInMenu && (
                 <button
                   type="button"
                   onClick={onToggleSound}
@@ -228,7 +231,18 @@ export function ChatPanel({
                   )}
                 </button>
               )}
-              {settingsMenu}
+              {settingsMenu?.(
+                togglesInMenu
+                  ? {
+                      expand: isSmallScreen ? undefined : { label: expandLabel, onSelect: () => setExpanded(true) },
+                      sound: onToggleSound && {
+                        label: soundMuted ? unmuteSoundLabel : muteSoundLabel,
+                        muted: soundMuted,
+                        onSelect: onToggleSound,
+                      },
+                    }
+                  : {}
+              )}
               <button type="button" onClick={onClose} aria-label={closeLabel} className={chatHeaderIconButtonClass}>
                 <X aria-hidden="true" className={chatHeaderLargeIconClass} />
               </button>

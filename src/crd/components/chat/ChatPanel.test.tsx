@@ -30,6 +30,22 @@ const baseProps: ComponentProps<typeof ChatPanel> = {
 const renderPanel = (props: Partial<ComponentProps<typeof ChatPanel>> = {}) =>
   render(<ChatPanel {...baseProps} {...props} />);
 
+const settingsMenu: ComponentProps<typeof ChatPanel>['settingsMenu'] = toggles => (
+  <ChatSettingsMenu
+    {...toggles}
+    label="Notification settings"
+    statusLabel="Set status"
+    onEditStatus={vi.fn()}
+    notificationSettingsLabel="Notification settings"
+    onOpenNotificationSettings={vi.fn()}
+  />
+);
+
+const headerControlNames = () =>
+  within(screen.getByRole('banner'))
+    .getAllByRole('button')
+    .map(button => button.getAttribute('aria-label') ?? button.textContent);
+
 const back = () => {
   let consumed = false;
   act(() => {
@@ -83,15 +99,7 @@ describe('ChatPanel', () => {
     test('every header control is enlarged on phones and keeps its compact size from the sm breakpoint', () => {
       renderPanel({
         onBack: vi.fn(),
-        settingsMenu: (
-          <ChatSettingsMenu
-            label="Notification settings"
-            statusLabel="Set status"
-            onEditStatus={vi.fn()}
-            notificationSettingsLabel="Notification settings"
-            onOpenNotificationSettings={vi.fn()}
-          />
-        ),
+        settingsMenu,
         headerActions: (
           <TooltipProvider>
             <CallControls
@@ -116,7 +124,6 @@ describe('ChatPanel', () => {
         'Start audio call': 'sm:size-4',
         'Start video call': 'sm:size-4',
         'Chat options': 'sm:size-5',
-        'Expand chat': 'sm:size-4',
         'Notification settings': 'sm:size-5',
         'Close chat': 'sm:size-5',
       };
@@ -137,7 +144,7 @@ describe('ChatPanel', () => {
     test('shows the settings control only when the consumer passes one, just before close', () => {
       const { rerender } = renderPanel();
       expect(screen.queryByRole('button', { name: 'Settings' })).not.toBeInTheDocument();
-      rerender(<ChatPanel {...baseProps} settingsMenu={<button type="button">Settings</button>} />);
+      rerender(<ChatPanel {...baseProps} settingsMenu={() => <button type="button">Settings</button>} />);
       const buttons = within(screen.getByRole('banner')).getAllByRole('button');
       expect(buttons.slice(-2).map(button => button.textContent || button.getAttribute('aria-label'))).toEqual([
         'Settings',
@@ -163,6 +170,18 @@ describe('ChatPanel', () => {
       expect(banner.nextElementSibling).toBe(screen.getByTestId('notice'));
     });
 
+    test('the name keeps about ten characters of room, with or without a line under it', () => {
+      const { rerender } = renderPanel({ onTitleClick: vi.fn() });
+      // Layout is not computed here: this pins the classes that give the name its minimum width.
+      const nameBlock = () => screen.getByText('Design team').parentElement;
+      expect(nameBlock()).toHaveClass('w-0', 'min-w-[10ch]', 'text-subsection-title');
+      expect(screen.getByRole('button', { name: /Design team/ })).not.toHaveClass('min-w-8');
+
+      rerender(<ChatPanel {...baseProps} onTitleClick={vi.fn()} subtitle="In a workshop" />);
+      expect(nameBlock()).toHaveClass('w-0', 'min-w-[10ch]');
+      expect(nameBlock()).toHaveTextContent('In a workshop');
+    });
+
     test('the title is plain text when there is no title action', () => {
       renderPanel({ titleAvatar: <span data-testid="title-avatar" /> });
       expect(screen.queryByRole('button', { name: /Design team/ })).not.toBeInTheDocument();
@@ -181,6 +200,79 @@ describe('ChatPanel', () => {
 
       await userEvent.setup().click(screen.getByTestId('title-avatar'));
       expect(onTitleClick).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('thread header at the collapsed width', () => {
+    test('expand and sound move into the settings menu, and the expand item expands the panel', async () => {
+      const user = userEvent.setup({ pointerEventsCheck: 0 });
+      const onToggleSound = vi.fn();
+      renderPanel({ onBack: vi.fn(), onToggleSound, settingsMenu });
+      expect(headerControlNames()).toEqual(['Back to conversations', 'Notification settings', 'Close chat']);
+
+      await user.click(screen.getByRole('button', { name: 'Notification settings' }));
+      expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual([
+        'Expand chat',
+        'Mute chat sound',
+        'Set status',
+        'Notification settings',
+      ]);
+      await user.click(screen.getByRole('menuitem', { name: 'Expand chat' }));
+
+      expect(screen.getByRole('dialog', { name: 'Design team' })).toHaveAttribute('data-expanded', 'true');
+      expect(headerControlNames()).toEqual([
+        'Back to conversations',
+        'Collapse chat',
+        'Mute chat sound',
+        'Notification settings',
+        'Close chat',
+      ]);
+    });
+
+    test('the sound item is named after what a press does and calls the handler', async () => {
+      const user = userEvent.setup({ pointerEventsCheck: 0 });
+      const onToggleSound = vi.fn();
+      renderPanel({ onBack: vi.fn(), onToggleSound, soundMuted: true, settingsMenu });
+
+      await user.click(screen.getByRole('button', { name: 'Notification settings' }));
+      await user.click(screen.getByRole('menuitem', { name: 'Unmute chat sound' }));
+      expect(onToggleSound).toHaveBeenCalledOnce();
+    });
+
+    test('on a small screen the menu gets the sound item but no expand item', async () => {
+      screenSize.isSmallScreen = true;
+      renderPanel({ onBack: vi.fn(), onToggleSound: vi.fn(), settingsMenu });
+
+      await userEvent
+        .setup({ pointerEventsCheck: 0 })
+        .click(screen.getByRole('button', { name: 'Notification settings' }));
+      expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual([
+        'Mute chat sound',
+        'Set status',
+        'Notification settings',
+      ]);
+    });
+
+    test('the conversation list keeps its own expand and sound icons', async () => {
+      renderPanel({ onToggleSound: vi.fn(), settingsMenu });
+      expect(headerControlNames()).toEqual(['Expand chat', 'Mute chat sound', 'Notification settings', 'Close chat']);
+      expect(screen.getByRole('button', { name: 'Expand chat' }).querySelector('svg')).toHaveClass(
+        'size-6',
+        'sm:size-4'
+      );
+
+      await userEvent
+        .setup({ pointerEventsCheck: 0 })
+        .click(screen.getByRole('button', { name: 'Notification settings' }));
+      expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual([
+        'Set status',
+        'Notification settings',
+      ]);
+    });
+
+    test('without a settings menu, a thread keeps its expand and sound icons', () => {
+      renderPanel({ onBack: vi.fn(), onToggleSound: vi.fn() });
+      expect(headerControlNames()).toEqual(['Back to conversations', 'Expand chat', 'Mute chat sound', 'Close chat']);
     });
   });
 
