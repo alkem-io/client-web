@@ -76,7 +76,10 @@ export function useMarkdownEditorState({ value, onChange, editorOptions }: UseMa
       if (newHtml !== currentHtml) {
         // The editor now holds an outside value, so its last emission no
         // longer describes it and a later reset to that markdown must apply.
+        // An edit still being converted describes the replaced document, so
+        // drop it too: emitting it would put stale markdown back in the parent.
         lastEmittedRef.current = null;
+        updateVersionRef.current++;
         editor.commands.setContent(newHtml, { emitUpdate: false });
       }
     });

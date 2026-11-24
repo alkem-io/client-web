@@ -1,9 +1,15 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { Editor } from '@tiptap/react';
 import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MarkdownEditor } from './MarkdownEditor';
+import { htmlToMarkdown } from './markdownConverter';
+
+vi.mock('./markdownConverter', async importOriginal => {
+  const actual = await importOriginal<typeof import('./markdownConverter')>();
+  return { ...actual, htmlToMarkdown: vi.fn(actual.htmlToMarkdown) };
+});
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -110,16 +116,16 @@ const findEditor = () =>
 const textAroundCursor = (editor: Editor) => editor.state.selection.$from.parent.textContent;
 
 describe('MarkdownEditor — toolbar keeps the cursor in place', () => {
-  // Clicking a toolbar button blurs the editor; the command re-focuses it on the
-  // next animation frame. In a browser the parent's echo of the new markdown can
-  // land before that frame, so hold the re-focus back to reproduce that ordering.
+  // jsdom has no layout, so give the editor's scroll-into-view empty rects.
+  const { getClientRects, getBoundingClientRect } = Range.prototype;
   beforeEach(() => {
-    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(cb => window.setTimeout(() => cb(0), 300));
     Range.prototype.getClientRects = () => [] as unknown as DOMRectList;
     Range.prototype.getBoundingClientRect = () => new DOMRect();
   });
   afterEach(() => {
     vi.restoreAllMocks();
+    Range.prototype.getClientRects = getClientRects;
+    Range.prototype.getBoundingClientRect = getBoundingClientRect;
   });
 
   test.each([
@@ -136,8 +142,15 @@ describe('MarkdownEditor — toolbar keeps the cursor in place', () => {
       // Cursor inside the second paragraph, near the top of a long document.
       editor.chain().focus().setTextSelection(45).run();
     });
+    await waitFor(() => expect(editor.isFocused).toBe(true));
     expect(textAroundCursor(editor)).toBe('Paragraph number 2 about topic 2.');
     const cursorOffset = editor.state.selection.$from.parentOffset;
+
+    // Clicking a toolbar button blurs the editor; the command re-focuses it on
+    // the next animation frame. In a browser the parent's echo of the new
+    // markdown can land before that frame, so hold the re-focus back from here
+    // on to reproduce that ordering.
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(cb => window.setTimeout(() => cb(0), 300));
 
     await userEvent.click(screen.getByRole('button', { name: buttonLabel }));
 
@@ -155,5 +168,51 @@ describe('MarkdownEditor — toolbar keeps the cursor in place', () => {
     await waitFor(() => expect(document.querySelector('.ProseMirror')?.textContent).toBe('first'));
     rerender(<MarkdownEditor value="second value" onChange={vi.fn()} />);
     await waitFor(() => expect(document.querySelector('.ProseMirror')?.textContent).toBe('second value'));
+  });
+
+  test('an edit still being converted does not overwrite a value set from outside', async () => {
+    const onChange = vi.fn();
+    function Host() {
+      const [value, setValue] = useState('first');
+      return (
+        <>
+          <MarkdownEditor
+            value={value}
+            onChange={md => {
+              setValue(md);
+              onChange(md);
+            }}
+          />
+          <button type="button" onClick={() => setValue('second value')}>
+            load
+          </button>
+        </>
+      );
+    }
+    render(<Host />);
+    const editor = await waitFor(() => {
+      const mounted = (document.querySelector('.ProseMirror') as EditorDom | null)?.editor;
+      expect(mounted?.getText()).toBe('first');
+      return mounted as Editor;
+    });
+
+    // Hold the conversion of the next edit open, as the first one is while the
+    // converter is still loading.
+    const { htmlToMarkdown: convert } =
+      await vi.importActual<typeof import('./markdownConverter')>('./markdownConverter');
+    vi.mocked(htmlToMarkdown).mockImplementationOnce(async html => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      return convert(html);
+    });
+
+    act(() => {
+      editor.commands.insertContentAt(1, 'edited ');
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'load' }));
+    await waitFor(() => expect(editor.getText()).toBe('second value'));
+
+    await new Promise(resolve => setTimeout(resolve, 200));
+    expect(onChange).not.toHaveBeenCalled();
+    expect(editor.getText()).toBe('second value');
   });
 });
