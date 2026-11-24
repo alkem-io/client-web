@@ -514,6 +514,16 @@ describe('UnifiedChatPanelConnector calls', () => {
     expect(calls.dismissCall).not.toHaveBeenCalled();
   });
 
+  it('offers no Answer where this device is already in the call, though its ring still reads as ringing', () => {
+    ringing();
+    calls.session = { ...calls.session, isJoinedOnThisDevice: true };
+    render(<UnifiedChatPanelConnector />);
+
+    expect(screen.queryByTestId('call-banner-ringing')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'call.banner.answer' })).not.toBeInTheDocument();
+    expect(screen.getByTestId('call-banner')).toHaveTextContent('call.joinedOnThisDevice');
+  });
+
   it('answers a ringing audio call without the camera', async () => {
     ringing('voice');
     const user = userEvent.setup({ pointerEventsCheck: 0 });

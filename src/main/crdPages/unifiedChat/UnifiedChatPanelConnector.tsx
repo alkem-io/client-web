@@ -193,11 +193,13 @@ export const UnifiedChatPanelConnector = ({
     }
     const intent = callIntentFor({ isGroup: conversation.isGroup, action, media });
     setDroppedCallIn(null);
-    setQueuedCall({ conversationId: conversation.id, matrixRoomId, intent, swapDone: false });
+    const request = { conversationId: conversation.id, matrixRoomId, intent, swapDone: false };
+    setQueuedCall(request);
     // A due chat credential is replaced first: a call open across the swap would end.
     void rotateActiveSessionIfDue().then(rotated => {
       if (rotated) {
-        setQueuedCall(queued => (queued ? { ...queued, swapDone: true } : null));
+        // Only this request: one dropped meanwhile leaves a later call waiting for its own swap.
+        setQueuedCall(queued => (queued === request ? { ...queued, swapDone: true } : queued));
       } else {
         setQueuedCall(null);
         openCall({ matrixRoomId, intent });
@@ -452,7 +454,8 @@ export const UnifiedChatPanelConnector = ({
       const { roomId, members, ringing } = selectedConversation;
       const call = liveCalls.get(roomId);
       const firstName = (displayName: string) => displayName.split(' ')[0];
-      if (call && ringing && matrixRoomId && matrixClient) {
+      // Not where this device is already in the call (another tab): the running banner says so.
+      if (call && ringing && matrixRoomId && matrixClient && !callSession.isJoinedOnThisDevice) {
         // Rings for as long as the other person's ring does, answered with the media the caller chose.
         // Declining tells the caller, every device and every tab.
         callBanner = (
@@ -489,7 +492,7 @@ export const UnifiedChatPanelConnector = ({
     }
     if (isGroup) {
       headerActions = (
-        <div className="flex min-w-0 items-center gap-1">
+        <div className="flex items-center gap-1">
           {callActions}
           <ChatOptionsMenu
             label={t('thread.options')}
@@ -501,7 +504,7 @@ export const UnifiedChatPanelConnector = ({
         </div>
       );
     } else if (callActions) {
-      headerActions = <div className="flex min-w-0 items-center gap-1">{callActions}</div>;
+      headerActions = <div className="flex items-center gap-1">{callActions}</div>;
     }
   }
   const isGroupThread = view === 'thread' && Boolean(selectedConversation?.isGroup);

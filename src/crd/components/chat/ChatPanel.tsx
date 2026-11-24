@@ -147,9 +147,9 @@ export function ChatPanel({
   const titleContent = (
     <>
       {titleAvatar && <span className="shrink-0">{titleAvatar}</span>}
-      {/* The name keeps about ten characters before the header actions crowd it: w-0 keeps the
-          full name out of the header's minimum size, so min-w-[10ch] (in the title font) is that minimum. */}
-      <span className="text-subsection-title flex w-0 min-w-[10ch] flex-1 flex-col px-1">
+      {/* The name takes the room the header's controls leave and is what gives way on a narrow screen:
+          w-0 keeps the full name out of the header's minimum size, and the controls never shrink. */}
+      <span className="text-subsection-title flex w-0 min-w-8 flex-1 flex-col px-1">
         {/* With a subtitle, tighter line heights keep the two lines close to the height of a single-line header. */}
         <span className={cn('truncate', subtitle && 'leading-6')}>{title}</span>
         {subtitle && <span className="flex min-w-0 text-caption leading-4 text-muted-foreground">{subtitle}</span>}
@@ -201,7 +201,11 @@ export function ChatPanel({
               ) : (
                 titleContent
               )}
-              {headerActions}
+              {headerActions && (
+                <div className="flex shrink-0 items-center gap-1" data-slot="chat-header-actions">
+                  {headerActions}
+                </div>
+              )}
               {!isSmallScreen && !togglesInMenu && (
                 <button
                   type="button"

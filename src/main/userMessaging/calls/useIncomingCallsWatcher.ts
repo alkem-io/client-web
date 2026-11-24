@@ -26,7 +26,7 @@ const isDealtWith = (call: LiveCall, roomId: string, isSeen: boolean, dismissals
  * too, for calls the user has not dealt with yet, and publishes them for the
  * unread signals. A call is dealt with, in every tab, once the user joins it on
  * any device, leaves it, or declines it; also once the user opens its
- * conversation while it runs and no ring rings there.
+ * conversation while it runs and, in a 1:1, its ring has stopped.
  * It also tells the conversation summaries in which conversations a ring is an entry.
  * The sound for a call starting comes from its notification event (useSyncChatSound).
  */
@@ -80,16 +80,23 @@ export const useIncomingCallsWatcher = () => {
 
   const dismissals = useCallDismissals();
   const isDocumentActive = useIsDocumentActive();
-  // The conversation open here hides its call in this tab, a 1:1 one once no ring rings there; it counts
+  // The conversation open here hides its call in this tab, a 1:1 one once its ring has stopped; it counts
   // as seen, for every tab, only while the user is in this tab: one left open in a background tab sees nothing.
   const openConversation = conversations.find(conversation => conversation.roomId === selectedRoomId);
   const openDirectSummary = useConversationSummaries(
     openConversation && !openConversation.isGroup ? [openConversation.roomId] : []
   )?.get(openConversation?.roomId ?? '');
+  // The call's members reach this hook before its ring reaches the summary. Until the summary holds a ring
+  // sent since the call started, "no ring rings there" only means the ring has not arrived yet.
+  const openDirectCall = openConversation && !openConversation.isGroup ? liveCalls.get(openConversation.roomId) : null;
+  const openDirectRingOver =
+    openDirectCall &&
+    openDirectSummary &&
+    !openDirectSummary.ringing &&
+    openDirectSummary.ringAt !== undefined &&
+    openDirectSummary.ringAt >= openDirectCall.startedTs;
   const openSeenRoomId =
-    openConversation && (openConversation.isGroup || (openDirectSummary && !openDirectSummary.ringing))
-      ? openConversation.roomId
-      : null;
+    openConversation && (openConversation.isGroup || openDirectRingOver) ? openConversation.roomId : null;
   const incoming = [...liveCalls].flatMap(([roomId, call]) =>
     isDealtWith(call, roomId, roomId === openSeenRoomId, dismissals) ? [] : [roomId]
   );

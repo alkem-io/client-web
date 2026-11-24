@@ -172,6 +172,10 @@ type RingingRing = {
 };
 
 /** The newest ring among `events` (oldest first) from someone other than `ownUserId` that still rings, if any. */
+/** When the newest ring from someone else was sent, if one is loaded. */
+const newestRingAt = (events: readonly RawEvent[], ownUserId: string): number | undefined =>
+  events.findLast(event => isRing(event) && event.sender !== ownUserId)?.timestamp;
+
 const ringingRingOf = (events: readonly RawEvent[], ownUserId: string, now: number): RingingRing | undefined => {
   for (let index = events.length - 1; index >= 0; index--) {
     const event = events[index];
@@ -328,6 +332,7 @@ export {
   lastMessageOf,
   newestEntryId,
   projectMessages,
+  newestRingAt,
   ringingRingOf,
   ringingUntil,
   serverNameOf,

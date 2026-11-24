@@ -170,15 +170,15 @@ describe('ChatPanel', () => {
       expect(banner.nextElementSibling).toBe(screen.getByTestId('notice'));
     });
 
-    test('the name keeps about ten characters of room, with or without a line under it', () => {
-      const { rerender } = renderPanel({ onTitleClick: vi.fn() });
-      // Layout is not computed here: this pins the classes that give the name its minimum width.
+    test('the name gives way before any header control does, with or without a line under it', () => {
+      const { rerender } = renderPanel({ onTitleClick: vi.fn(), headerActions: <button type="button">Call</button> });
+      // Layout is not computed here: this pins the classes that let the name shrink and keep the controls whole.
       const nameBlock = () => screen.getByText('Design team').parentElement;
-      expect(nameBlock()).toHaveClass('w-0', 'min-w-[10ch]', 'text-subsection-title');
-      expect(screen.getByRole('button', { name: /Design team/ })).not.toHaveClass('min-w-8');
+      expect(nameBlock()).toHaveClass('w-0', 'min-w-8', 'flex-1', 'text-subsection-title');
+      expect(screen.getByRole('button', { name: 'Call' }).parentElement).toHaveClass('shrink-0');
 
       rerender(<ChatPanel {...baseProps} onTitleClick={vi.fn()} subtitle="In a workshop" />);
-      expect(nameBlock()).toHaveClass('w-0', 'min-w-[10ch]');
+      expect(nameBlock()).toHaveClass('w-0', 'min-w-8');
       expect(nameBlock()).toHaveTextContent('In a workshop');
     });
 

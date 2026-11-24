@@ -1,5 +1,5 @@
 import type { MatrixClient } from 'matrix-js-sdk';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, onTestFinished, vi } from 'vitest';
 import { ConversationSummaryStore } from './conversationSummaryStore';
 
 const HS = 'hs.test';
@@ -351,12 +351,17 @@ describe('ConversationSummaryStore', () => {
   });
 
   it('makes a ring the preview and a missed call only once it stops ringing, though no further event arrives', async () => {
+    // A controlled clock: the ring cannot stop ringing while the first summary is still being computed.
+    vi.useFakeTimers();
+    onTestFinished(() => {
+      vi.useRealTimers();
+    });
     const ring = {
       eventId: '$ring',
       type: 'org.matrix.msc4075.rtc.notification',
       sender: `@other:${HS}`,
       ts: Date.now(),
-      content: { notification_type: 'ring', lifetime: 100 },
+      content: { notification_type: 'ring', lifetime: 60_000 },
     };
     const room: FakeRoom = { roomId: '!alk-1', events: [text('$1', 'hello'), ring], marker: '$1', notifications: 0 };
     const { client } = makeClient([room]);
@@ -371,6 +376,7 @@ describe('ConversationSummaryStore', () => {
       ringing: { eventId: '$ring', media: 'video' },
     });
 
+    await vi.advanceTimersByTimeAsync(60_000);
     await vi.waitFor(() =>
       expect(store.getSnapshot().get('alk-1')).toMatchObject({
         lastMessage: { eventId: '$ring', call: { outcome: 'unanswered' } },

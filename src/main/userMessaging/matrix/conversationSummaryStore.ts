@@ -3,6 +3,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import {
   lastMessageOf,
+  newestRingAt,
   type ParsedMessage,
   type RawEvent,
   type RingingRing,
@@ -37,6 +38,8 @@ type RoomSummary = {
   readonly pinned: boolean;
   /** The ring from someone else still ringing there; only where a ring is an entry. */
   readonly ringing?: RingingRing;
+  /** When the newest ring from someone else was sent, ringing or not; only where a ring is an entry. */
+  readonly ringAt?: number;
 };
 
 type Summaries = ReadonlyMap<string, RoomSummary>;
@@ -144,7 +147,8 @@ class ConversationSummaryStore {
   setRingRooms(ringRooms: ReadonlySet<string>): void {
     const previous = this.ringRooms;
     this.ringRooms = ringRooms;
-    for (const alkemioRoomId of this.summaries.keys()) {
+    // Also a room whose first summary is still being computed: it read the previous set.
+    for (const alkemioRoomId of new Set([...this.summaries.keys(), ...this.inFlight])) {
       if (previous.has(alkemioRoomId) !== ringRooms.has(alkemioRoomId)) {
         this.invalidate(alkemioRoomId);
       }
@@ -309,6 +313,8 @@ class ConversationSummaryStore {
       const fetchBatch = fetchBackward(this.client, matrixRoomId);
       const loaded = liveEvents(room);
       const withCalls = this.ringRooms.has(alkemioRoomId);
+      // Read before the history is fetched: a ring that stops ringing meanwhile still gets its timer below.
+      const now = Date.now();
       const [lastMessage, unreadCount] = await Promise.all([
         this.findLastMessage(loaded, fetchBatch, homeserver, withCalls),
         computeUnreadCount({
@@ -322,9 +328,9 @@ class ConversationSummaryStore {
       ]);
       // An existing pin is kept: tags changes and the user's own toggle own it.
       const pinned = this.summaries.get(alkemioRoomId)?.pinned ?? isFavourite(room);
-      const now = Date.now();
       const ringing = withCalls ? ringingRingOf(loaded, ownUserId(this.client), now) : undefined;
-      this.publish(alkemioRoomId, { lastMessage, unreadCount, pinned, ringing });
+      const ringAt = withCalls ? newestRingAt(loaded, ownUserId(this.client)) : undefined;
+      this.publish(alkemioRoomId, { lastMessage, unreadCount, pinned, ringing, ringAt });
       // A ring is no preview or unread while it rings, and no event arrives when it stops.
       clearTimeout(this.ringEnds.get(alkemioRoomId));
       const until = withCalls ? ringingUntil(loaded, now) : undefined;
@@ -333,7 +339,7 @@ class ConversationSummaryStore {
       } else {
         this.ringEnds.set(
           alkemioRoomId,
-          setTimeout(() => this.invalidate(alkemioRoomId), until - now)
+          setTimeout(() => this.invalidate(alkemioRoomId), Math.max(0, until - Date.now()))
         );
       }
     } catch {

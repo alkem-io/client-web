@@ -10,7 +10,7 @@ const harness = vi.hoisted(() => ({
   querySkip: undefined as boolean | undefined,
   selectedRoomId: null as string | null,
   setRingRooms: vi.fn(),
-  summaries: new Map<string, { ringing?: { eventId: string; media: 'voice' | 'video' } }>(),
+  summaries: new Map<string, { ringing?: { eventId: string; media: 'voice' | 'video' }; ringAt?: number }>(),
 }));
 
 const vc = { id: 'vc', type: 'VIRTUAL_CONTRIBUTOR' };
@@ -187,7 +187,7 @@ describe('useIncomingCallsWatcher', () => {
     expect([...getIncomingCallRooms()]).toEqual([['direct', { name: 'Ana', isGroup: false }]]);
   });
 
-  it('counts an open 1:1 call as seen once no ring rings there, and not before its summary is known', () => {
+  it('counts an open 1:1 call as seen once its ring has stopped, and not before that ring is known', () => {
     // Later than the calls dealt with above, so a new call.
     const newCall = { ...othersCall, startedTs: 1_000_000, latestTs: 1_000_000 };
     harness.active = new Map([['direct', newCall]]);
@@ -198,7 +198,23 @@ describe('useIncomingCallsWatcher', () => {
     });
     expect([...getIncomingCallRooms()]).toEqual([['direct', { name: 'Ana', isGroup: false }]]);
 
+    // The summary is known but holds no ring yet, or only an earlier call's: this call's ring has not arrived.
     harness.summaries = new Map([['direct', {}]]);
+    rerender();
+    expect([...getIncomingCallRooms()]).toEqual([['direct', { name: 'Ana', isGroup: false }]]);
+    harness.summaries = new Map([['direct', { ringAt: 999_999 }]]);
+    rerender();
+    expect([...getIncomingCallRooms()]).toEqual([['direct', { name: 'Ana', isGroup: false }]]);
+
+    // Its ring is ringing.
+    harness.summaries = new Map([
+      ['direct', { ringing: { eventId: '$ring', media: 'video' as const }, ringAt: 1_000_050 }],
+    ]);
+    rerender();
+    expect([...getIncomingCallRooms()]).toEqual([['direct', { name: 'Ana', isGroup: false }]]);
+
+    // Its ring has stopped.
+    harness.summaries = new Map([['direct', { ringAt: 1_000_050 }]]);
     rerender();
     expect([...getIncomingCallRooms()]).toEqual([]);
   });

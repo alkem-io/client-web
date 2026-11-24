@@ -40,7 +40,9 @@ describe('CallBanner', () => {
         vi.advanceTimersByTime(2000);
       });
       expect(banner).toHaveTextContent('Ana, Marc and 1 more · 04:14');
-      expect(screen.getByText(/04:14/)).toHaveAttribute('aria-hidden', 'true');
+      // Not announced on every tick, yet still there for a screen reader to read.
+      expect(screen.getByText(/04:14/)).toHaveAttribute('aria-live', 'off');
+      expect(screen.getByText(/04:14/)).not.toHaveAttribute('aria-hidden');
     });
 
     test('names one or two people in full and leaves out an unknown start time', () => {

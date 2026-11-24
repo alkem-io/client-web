@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, onTestFinished, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({ client: null as unknown, establishing: false, callsShown: false }));
 
@@ -174,13 +174,18 @@ describe('useConversationTimeline', () => {
   });
 
   it('shows a ring once it stops ringing, though no further event arrives', async () => {
+    // A controlled clock: the ring cannot stop ringing while the thread is still loading.
+    vi.useFakeTimers();
+    onTestFinished(() => {
+      vi.useRealTimers();
+    });
     const rungAt = Date.now();
     const ring = {
       getId: () => '$ring',
       getType: () => 'org.matrix.msc4075.rtc.notification',
       getSender: () => `@a:${HS}`,
       getTs: () => rungAt,
-      getOriginalContent: () => ({ notification_type: 'ring', lifetime: 100 }),
+      getOriginalContent: () => ({ notification_type: 'ring', lifetime: 60_000 }),
     };
     const { client } = makeClient(0, 0);
     harness.client = {
@@ -190,11 +195,13 @@ describe('useConversationTimeline', () => {
     harness.callsShown = true;
 
     const { result } = renderHook(() => useConversationTimeline('alk-room', false));
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    await act(() => vi.advanceTimersByTimeAsync(1000));
+    expect(result.current.isLoading).toBe(false);
     expect(result.current.messages).toEqual([]);
     expect(result.current.readUpToEventId).toBeNull();
 
-    await waitFor(() => expect(result.current.messages.map(message => message.call?.outcome)).toEqual(['unanswered']));
+    await act(() => vi.advanceTimersByTimeAsync(60_000));
+    expect(result.current.messages.map(message => message.call?.outcome)).toEqual(['unanswered']);
     expect(result.current.readUpToEventId).toBe('$ring');
     harness.callsShown = false;
   });

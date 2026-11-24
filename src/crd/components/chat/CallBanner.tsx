@@ -90,8 +90,8 @@ export function CallBanner(props: CallBannerProps) {
         {(who || elapsed) && (
           <span className="truncate text-muted-foreground">
             {who}
-            {/* Out of the live region: a status re-read every second would never stop announcing. */}
-            {elapsed && <span aria-hidden="true">{who ? ` · ${elapsed}` : elapsed}</span>}
+            {/* Readable, but not announced: a status re-read every second would never stop announcing. */}
+            {elapsed && <span aria-live="off">{who ? ` · ${elapsed}` : elapsed}</span>}
           </span>
         )}
       </span>
