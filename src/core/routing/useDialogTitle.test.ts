@@ -135,21 +135,21 @@ describe('useDialogTitle', () => {
     expect(document.title).toBe(PAGE_TITLE);
   });
 
-  it('keeps a renamed board beneath the task open on top of it', () => {
+  it('keeps a renamed dialog beneath the one open on top of it', () => {
     const { rerender, unmount } = renderHook(
-      ({ boardTitle, taskOpen }) => {
-        useDialogTitle(boardTitle, true);
-        useDialogTitle('Fix login', taskOpen);
+      ({ lowerTitle, upperOpen }) => {
+        useDialogTitle(lowerTitle, true);
+        useDialogTitle('Upper', upperOpen);
       },
-      { initialProps: { boardTitle: 'Sprint 1', taskOpen: true } }
+      { initialProps: { lowerTitle: 'Lower 1', upperOpen: true } }
     );
-    expect(document.title).toBe('Fix login | Building the A-team | Alkemio');
+    expect(document.title).toBe('Upper | Building the A-team | Alkemio');
 
-    rerender({ boardTitle: 'Sprint 2', taskOpen: true });
-    expect(document.title).toBe('Fix login | Building the A-team | Alkemio');
+    rerender({ lowerTitle: 'Lower 2', upperOpen: true });
+    expect(document.title).toBe('Upper | Building the A-team | Alkemio');
 
-    rerender({ boardTitle: 'Sprint 2', taskOpen: false });
-    expect(document.title).toBe('Sprint 2 | Building the A-team | Alkemio');
+    rerender({ lowerTitle: 'Lower 2', upperOpen: false });
+    expect(document.title).toBe('Lower 2 | Building the A-team | Alkemio');
     unmount();
   });
 

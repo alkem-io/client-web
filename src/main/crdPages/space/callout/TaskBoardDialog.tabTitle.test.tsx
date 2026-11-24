@@ -28,7 +28,7 @@ vi.mock('./TaskBoardManageColumnsButton', () => ({ TaskBoardManageColumnsButton:
 
 const PAGE_TITLE = 'Building the A-team | Alkemio';
 
-/** Stands in for the task's detail dialog, which claims the same title on top of the board. */
+/** Stands in for the board callout's dialog a task opens in, which claims the board's name, not the task's. */
 function TaskDialog({ open }: { open: boolean }) {
   useDialogTitle('Sprint board', open);
   return null;

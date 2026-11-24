@@ -8,8 +8,9 @@ import { claimDialogTitle, type DialogTitleClaim, type DialogTitleComposer } fro
  * Names are shown in full; the browser cuts the tab label and shows the whole title on hover.
  * When `enabled` turns false or the caller unmounts, the page title comes back.
  *
- * Dialogs may stack (a task's dialog over its board): the newest open one is
- * shown, and closing it shows the one beneath.
+ * Dialogs may stack: the newest open one is shown, and closing it shows the one
+ * beneath. A task opens in its board's callout dialog, so the tab keeps the
+ * board's name while a task is open; the task's own name is never shown.
  */
 export const useDialogTitle = (title: string | undefined, enabled: boolean): void => {
   const { t } = useTranslation();
