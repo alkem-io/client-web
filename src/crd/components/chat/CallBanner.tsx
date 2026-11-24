@@ -81,14 +81,19 @@ export function CallBanner(props: CallBannerProps) {
     const minutesAndSeconds = `${String(Math.floor((total % 3600) / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
     elapsed = hours > 0 ? `${hours}:${minutesAndSeconds}` : minutesAndSeconds;
   }
-  const details = [who, elapsed].filter(Boolean).join(' · ');
 
   return (
     <output className={stripClass} data-testid="call-banner">
       <Phone aria-hidden="true" className="size-4 shrink-0 text-success" />
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="truncate font-semibold">{t('call.banner.inProgress')}</span>
-        {details && <span className="truncate text-muted-foreground">{details}</span>}
+        {(who || elapsed) && (
+          <span className="truncate text-muted-foreground">
+            {who}
+            {/* Out of the live region: a status re-read every second would never stop announcing. */}
+            {elapsed && <span aria-hidden="true">{who ? ` · ${elapsed}` : elapsed}</span>}
+          </span>
+        )}
       </span>
       {!onJoin && <span className="max-w-[50%] text-right text-muted-foreground">{t('call.joinedOnThisDevice')}</span>}
       {onJoin && (

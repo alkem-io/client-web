@@ -40,6 +40,7 @@ describe('CallBanner', () => {
         vi.advanceTimersByTime(2000);
       });
       expect(banner).toHaveTextContent('Ana, Marc and 1 more · 04:14');
+      expect(screen.getByText(/04:14/)).toHaveAttribute('aria-hidden', 'true');
     });
 
     test('names one or two people in full and leaves out an unknown start time', () => {
