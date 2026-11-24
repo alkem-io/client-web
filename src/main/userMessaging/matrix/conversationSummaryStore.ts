@@ -1,7 +1,6 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
-import { useCallsShown } from '../calls/useCallEligibility';
 import { lastMessageOf, type ParsedMessage, type RawEvent } from './matrixEvents';
 import {
   CLIENT_ROOM,
@@ -56,8 +55,8 @@ class ConversationSummaryStore {
   private readonly stale = new Set<string>();
   // Rooms with a pin write in flight, and whether their tags changed meanwhile.
   private readonly pinWrites = new Map<string, boolean>();
-  // Whether calls count as entries: the latest one, and a missed one as unread.
-  private withCalls = false;
+  // The rooms where a ring counts as an entry (the latest one, and a missed one as unread).
+  private ringRooms: ReadonlySet<string> = new Set();
 
   constructor(private readonly client: MatrixClient) {
     client.on(
@@ -127,17 +126,16 @@ class ConversationSummaryStore {
     );
   }
 
-  /** Shows or hides calls; every summary computed the other way is computed again. */
-  setWithCalls(withCalls: boolean): void {
-    if (withCalls === this.withCalls) {
-      return;
-    }
-    this.withCalls = withCalls;
+  /**
+   * Sets the conversations where a ring counts as an entry: the user's 1:1 conversations while calls
+   * show, none otherwise. Every summary computed the other way is computed again.
+   */
+  setRingRooms(ringRooms: ReadonlySet<string>): void {
+    const previous = this.ringRooms;
+    this.ringRooms = ringRooms;
     for (const alkemioRoomId of this.summaries.keys()) {
-      if (this.watchers.has(alkemioRoomId)) {
-        this.schedule(alkemioRoomId);
-      } else {
-        this.stale.add(alkemioRoomId);
+      if (previous.has(alkemioRoomId) !== ringRooms.has(alkemioRoomId)) {
+        this.invalidate(alkemioRoomId);
       }
     }
   }
@@ -246,9 +244,12 @@ class ConversationSummaryStore {
 
   private touchMatrixRoom(matrixRoomId: string): void {
     const alkemioRoomId = this.alkemioByMatrixId.get(matrixRoomId);
-    if (!alkemioRoomId) {
-      return;
+    if (alkemioRoomId) {
+      this.invalidate(alkemioRoomId);
     }
+  }
+
+  private invalidate(alkemioRoomId: string): void {
     if (this.watchers.has(alkemioRoomId)) {
       this.schedule(alkemioRoomId);
     } else {
@@ -296,15 +297,16 @@ class ConversationSummaryStore {
       const homeserver = homeserverOf(this.client);
       const fetchBatch = fetchBackward(this.client, matrixRoomId);
       const loaded = liveEvents(room);
+      const withCalls = this.ringRooms.has(alkemioRoomId);
       const [lastMessage, unreadCount] = await Promise.all([
-        this.findLastMessage(loaded, fetchBatch, homeserver),
+        this.findLastMessage(loaded, fetchBatch, homeserver, withCalls),
         computeUnreadCount({
           markerEventId: fullyReadEventId(room),
           ownUserId: ownUserId(this.client),
           loadedNewestFirst: [...loaded].reverse(),
           fetchBatch,
           notificationCount: () => notificationCount(room),
-          withCalls: this.withCalls,
+          withCalls,
         }),
       ]);
       // An existing pin is kept: tags changes and the user's own toggle own it.
@@ -318,9 +320,10 @@ class ConversationSummaryStore {
   private async findLastMessage(
     live: RawEvent[],
     fetchBatch: ReturnType<typeof fetchBackward>,
-    homeserver: string
+    homeserver: string,
+    withCalls: boolean
   ): Promise<ParsedMessage | undefined> {
-    const options = { withCalls: this.withCalls };
+    const options = { withCalls };
     const local = lastMessageOf(live, homeserver, options);
     if (local) {
       return local;
@@ -365,12 +368,7 @@ const noSubscription = () => () => {};
 const useConversationSummaries = (alkemioRoomIds: readonly string[]): Summaries | undefined => {
   const client = useMatrixClient();
   const store = client ? storeFor(client) : null;
-  const withCalls = useCallsShown();
   const watchKey = [...alkemioRoomIds].sort().join(',');
-
-  useEffect(() => {
-    store?.setWithCalls(withCalls);
-  }, [store, withCalls]);
 
   useEffect(() => {
     if (!store || watchKey === '') {

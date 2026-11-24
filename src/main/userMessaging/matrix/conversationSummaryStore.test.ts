@@ -325,7 +325,7 @@ describe('ConversationSummaryStore', () => {
     expect(setRoomTag).not.toHaveBeenCalled();
   });
 
-  it('makes a missed call the preview and counts it unread only once calls show', async () => {
+  it('makes a missed call the preview and counts it unread only in a room where a ring is an entry', async () => {
     const ring = {
       eventId: '$ring',
       type: 'org.matrix.msc4075.rtc.notification',
@@ -341,7 +341,7 @@ describe('ConversationSummaryStore', () => {
     await vi.waitFor(() => expect(store.getSnapshot().get('alk-1')).toBeDefined());
     expect(store.getSnapshot().get('alk-1')).toMatchObject({ lastMessage: { body: 'hello' }, unreadCount: 0 });
 
-    store.setWithCalls(true);
+    store.setRingRooms(new Set(['alk-1']));
     await vi.waitFor(() =>
       expect(store.getSnapshot().get('alk-1')).toMatchObject({
         lastMessage: { eventId: '$ring', call: { outcome: 'unanswered' } },

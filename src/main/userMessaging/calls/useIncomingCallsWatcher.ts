@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { RoomType } from '@/core/apollo/generated/graphql-schema';
+import { useMatrixClient } from '@/core/matrix/activeClient';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { isGuidanceConversation } from '@/main/crdPages/unifiedChat/dataMapper';
 import { useGuidanceVcId } from '@/main/guidance/chatWidget/useGuidanceVcId';
+import { storeFor } from '../matrix/conversationSummaryStore';
 import { useUserMessagingContext } from '../UserMessagingContext';
 import { useIsDocumentActive } from '../useIsDocumentActive';
 import { isCallsConfigured } from './callConfig';
 import { type CallDismissals, dismissCall, isCallDismissed, useCallDismissals } from './callDismissalStore';
 import { type IncomingCall, type IncomingCallRooms, setIncomingCallRooms } from './incomingCallStore';
 import { type LiveCall, useLiveCalls } from './useActiveCallRooms';
-import { type CallableConversation, isBetaTester } from './useCallEligibility';
+import { type CallableConversation, isBetaTester, isCallableConversation } from './useCallEligibility';
 
 // Kept off the startup path, like the unread count.
 const DELAY_MS = 2000;
@@ -25,6 +27,7 @@ const isDealtWith = (call: LiveCall, roomId: string, isSeen: boolean, dismissals
  * unread signals. A call is dealt with, in every tab, once the user joins it on
  * any device, leaves it, or declines it; a group call also once the user opens
  * its conversation while it runs. A 1:1 call rings in its open conversation instead.
+ * It also tells the conversation summaries in which conversations a ring is an entry.
  * The sound for a call starting comes from its notification event (useSyncChatSound).
  */
 export const useIncomingCallsWatcher = () => {
@@ -58,6 +61,23 @@ export const useIncomingCallsWatcher = () => {
   );
 
   const liveCalls = useLiveCalls(enabled ? conversations : []);
+
+  // A ring is a timeline entry only in a 1:1 conversation with another person: in a group any member
+  // could send one, unattributed. None while calls are hidden.
+  const client = useMatrixClient();
+  const ringRoomsKey = enabled
+    ? conversations
+        .filter(conversation => !conversation.isGroup && isCallableConversation(conversation))
+        .map(conversation => conversation.roomId)
+        .sort()
+        .join('\n')
+    : '';
+  useEffect(() => {
+    if (client) {
+      storeFor(client).setRingRooms(new Set(ringRoomsKey === '' ? [] : ringRoomsKey.split('\n')));
+    }
+  }, [client, ringRoomsKey]);
+
   const dismissals = useCallDismissals();
   const isDocumentActive = useIsDocumentActive();
   // The group conversation open here hides its call in this tab; it counts as seen, for every tab, only

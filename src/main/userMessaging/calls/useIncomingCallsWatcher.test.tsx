@@ -9,6 +9,7 @@ const harness = vi.hoisted(() => ({
   guidanceVcId: null as string | null,
   querySkip: undefined as boolean | undefined,
   selectedRoomId: null as string | null,
+  setRingRooms: vi.fn(),
 }));
 
 const vc = { id: 'vc', type: 'VIRTUAL_CONTRIBUTOR' };
@@ -44,6 +45,10 @@ vi.mock('../UserMessagingContext', () => ({
   useUserMessagingContext: () => ({ isEnabled: true, selectedRoomId: harness.selectedRoomId }),
 }));
 vi.mock('./callConfig', () => ({ isCallsConfigured: () => true }));
+vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => ({}) }));
+vi.mock('../matrix/conversationSummaryStore', () => ({
+  storeFor: () => ({ setRingRooms: harness.setRingRooms }),
+}));
 vi.mock('./useActiveCallRooms', () => ({
   useLiveCalls: (conversations: unknown[]) => {
     harness.conversations = conversations;
@@ -113,6 +118,15 @@ describe('useIncomingCallsWatcher', () => {
     });
     expect(harness.querySkip).toBe(true);
     expect(harness.conversations).toEqual([]);
+    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Set());
+  });
+
+  it('makes a ring an entry in the 1:1 conversations with another person only, never in a group', () => {
+    renderHook(() => useIncomingCallsWatcher());
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Set(['direct']));
   });
 
   // From here on: a call dealt with stays dealt with for the rest of the file.

@@ -41,6 +41,7 @@ vi.mock('@/main/userMessaging/matrix/matrixRooms', () => ({
 vi.mock('@/main/userMessaging/matrix/conversationSummaryStore', () => ({
   useConversationSummaries: () => null,
   displayedUnreadCount: () => 0,
+  storeFor: () => ({ setRingRooms: () => {} }),
 }));
 vi.mock('@/main/inAppNotifications/useUnreadNotificationsCount', () => ({ useUnreadNotificationsCount: () => 0 }));
 vi.mock('@/main/tabBadge/faviconBadge', () => ({ setFaviconBadge: vi.fn(), clearFaviconBadge: vi.fn() }));

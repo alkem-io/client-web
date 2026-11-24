@@ -45,13 +45,14 @@ const backfill = async (client: MatrixClient, room: Room, isCancelled: () => boo
 /**
  * The open conversation's messages, read from sync: the room is paged back
  * to today's history depth when opened, then follows the live timeline,
- * including reactions and removals.
+ * including reactions and removals. A ring is an entry only in a 1:1
+ * conversation: in a group any member could send one, unattributed.
  */
-const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineState, 'roomKey'> => {
+const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean): Omit<TimelineState, 'roomKey'> => {
   const client = useMatrixClient();
   const establishing = useMatrixSessionEstablishing();
   const roomKey = client && alkemioRoomId ? alkemioRoomId : null;
-  const withCalls = useCallsShown();
+  const withCalls = useCallsShown() && !isGroup;
   const [state, setState] = useState<TimelineState>({
     roomKey: null,
     messages: [],
