@@ -10,7 +10,6 @@ import {
   usePlatformAdminSpacesListQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
-import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AdminSearchableTable, type AdminTableColumn } from '@/crd/components/admin/AdminSearchableTable';
 import { AccountOwnerCell } from '@/crd/components/admin/columns/AccountOwnerCell';
@@ -35,7 +34,6 @@ const CrdAdminSpacesPage = () => {
   const { t } = useTranslation('crd-admin');
   const { t: tApp } = useTranslation();
   const notify = useNotification();
-  const guard = usePermissionDeniedNotifier();
   const promoteRows = usePendingRows();
   const canManageLicensePlans = useCanManageLicensePlans();
   // `errorPolicy: 'all'` so one space with a corrupt server-side authorization
@@ -98,25 +96,20 @@ const CrdAdminSpacesPage = () => {
     const nameIdChanged = nextNameId !== settingsSpace.nameId;
     const visibilityChanged = draftVisibility !== settingsSpace.visibility;
 
-    // Each call goes through `guard` so a permission-denied rejection gets its
-    // toast; the dialog closes only when every sent mutation succeeded.
+    // The dialog closes only when every sent mutation succeeded.
     void (async () => {
       if (visibilityChanged) {
-        await guard(() =>
-          updateSpaceVisibility({
-            variables: {
-              spaceId: settingsSpace.id,
-              visibility: draftVisibility as SpaceVisibility,
-            },
-          })
-        );
+        await updateSpaceVisibility({
+          variables: {
+            spaceId: settingsSpace.id,
+            visibility: draftVisibility as SpaceVisibility,
+          },
+        });
       }
       if (nameIdChanged) {
-        await guard(() =>
-          updateSpaceNameId({
-            variables: { spaceId: settingsSpace.id, nameId: nextNameId },
-          })
-        );
+        await updateSpaceNameId({
+          variables: { spaceId: settingsSpace.id, nameId: nextNameId },
+        });
       }
       setSettingsSpaceId(null);
     })().catch(() => {});
@@ -158,7 +151,7 @@ const CrdAdminSpacesPage = () => {
             saving={promoteRows.isPending(row.id)}
             onCheckedChange={next => {
               void promoteRows
-                .run(row.id, () => guard(() => updatePromote({ variables: { spaceId: row.id, promote: next } })))
+                .run(row.id, () => updatePromote({ variables: { spaceId: row.id, promote: next } }))
                 .catch(() => {});
             }}
           />

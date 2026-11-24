@@ -9,7 +9,7 @@ import {
 import { useSettingsTabData } from './useSettingsTabData';
 
 const updateSpaceSettings = vi.fn();
-const host = vi.hoisted(() => ({ type: 'organization' as string }));
+const host = vi.hoisted(() => ({ type: 'organization' as string, mutationOptions: undefined as unknown }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useSpaceSettingsQuery: () => ({
@@ -46,7 +46,10 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
       },
     },
   }),
-  useUpdateSpaceSettingsMutation: () => [updateSpaceSettings],
+  useUpdateSpaceSettingsMutation: (options: unknown) => {
+    host.mutationOptions = options;
+    return [updateSpaceSettings];
+  },
 }));
 
 describe('useSettingsTabData — buffered through the unsaved-changes bar (spec 045 FR-023)', () => {
@@ -127,6 +130,11 @@ describe('useSettingsTabData — buffered through the unsaved-changes bar (spec 
     expect(result.current.unsaved.error).toBe('Forbidden');
     expect(result.current.unsaved.count).toBe(1);
     expect(result.current.privacy).toBe('private');
+  });
+
+  it('shows its own save failure, so the settings mutation opts out of the global error handler', () => {
+    renderHook(() => useSettingsTabData('space-1'));
+    expect(host.mutationOptions).toEqual({ context: { skipGlobalErrorHandler: true } });
   });
 
   it('reset puts every control back to the server value', () => {

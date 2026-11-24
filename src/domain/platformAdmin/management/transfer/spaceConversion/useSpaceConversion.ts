@@ -14,6 +14,7 @@ import {
   useSpaceMoveTargetL1SubspacesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlResolverResultState } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import toFullUrl from '../toFullUrl';
 
@@ -93,10 +94,10 @@ const useSpaceConversion = () => {
   const [demoteL1ToL2, { loading: demoteL1Loading }] = useConvertSpaceL1ToL2Mutation();
   const [promoteL2ToL1, { loading: promoteL2Loading }] = useConvertSpaceL2ToL1Mutation();
 
-  // Move mutations
-  const [moveL1ToL0Mut, { loading: moveL1ToL0Loading }] = useMoveSpaceL1ToL0Mutation();
-  const [moveL1ToL2Mut, { loading: moveL1ToL2Loading }] = useMoveSpaceL1ToL2Mutation();
-  const [moveL2ToL1Mut, { loading: moveL2ToL1Loading }] = useMoveSpaceL2ToL1Mutation();
+  // Move mutations: a failed move rejects, and the panel shows why beside the move controls.
+  const [moveL1ToL0Mut, { loading: moveL1ToL0Loading }] = useMoveSpaceL1ToL0Mutation({ context: OWN_ERROR_HANDLING });
+  const [moveL1ToL2Mut, { loading: moveL1ToL2Loading }] = useMoveSpaceL1ToL2Mutation({ context: OWN_ERROR_HANDLING });
+  const [moveL2ToL1Mut, { loading: moveL2ToL1Loading }] = useMoveSpaceL2ToL1Mutation({ context: OWN_ERROR_HANDLING });
 
   const mutationLoading =
     promoteL1Loading ||
@@ -146,9 +147,8 @@ const useSpaceConversion = () => {
       await promoteL1ToL0({ variables: { spaceL1ID: resolvedSpaceId } });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
       setMutationCompleted(true);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
-      notify(message, 'error');
+    } catch {
+      // Reported by the global error handler, with the server's reason.
     }
   };
 
@@ -158,9 +158,8 @@ const useSpaceConversion = () => {
       await demoteL1ToL2({ variables: { spaceL1ID: resolvedSpaceId, parentSpaceL1ID } });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
       setMutationCompleted(true);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
-      notify(message, 'error');
+    } catch {
+      // Reported by the global error handler, with the server's reason.
     }
   };
 
@@ -170,63 +169,44 @@ const useSpaceConversion = () => {
       await promoteL2ToL1({ variables: { spaceL2ID: resolvedSpaceId } });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
       setMutationCompleted(true);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
-      notify(message, 'error');
+    } catch {
+      // Reported by the global error handler, with the server's reason.
     }
   };
 
-  // Move handlers
-
+  // Move handlers. A failure is reported by the global error handler, with the server's reason, and
+  // rejects, so the caller knows the move did not happen.
   const moveL1ToL0 = async (targetSpaceL0ID: string, autoInvite?: boolean, invitationMessage?: string) => {
     if (!resolvedSpaceId) return;
-    try {
-      const result = await moveL1ToL0Mut({
-        variables: { spaceL1ID: resolvedSpaceId, targetSpaceL0ID, autoInvite, invitationMessage },
-      });
-      const url = result.data?.moveSpaceL1ToSpaceL0?.about?.profile?.url;
-      setMovedSpaceUrl(url);
-      notify(t(`${T_PREFIX}.successMessage`), 'success');
-      setMutationCompleted(true);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : t(`${T_PREFIX}.errorMessage`);
-      notify(message, 'error');
-      throw err;
-    }
+    const result = await moveL1ToL0Mut({
+      variables: { spaceL1ID: resolvedSpaceId, targetSpaceL0ID, autoInvite, invitationMessage },
+    });
+    const url = result.data?.moveSpaceL1ToSpaceL0?.about?.profile?.url;
+    setMovedSpaceUrl(url);
+    notify(t(`${T_PREFIX}.successMessage`), 'success');
+    setMutationCompleted(true);
   };
 
   const moveL1ToL2 = async (targetSpaceL1ID: string, autoInvite?: boolean, invitationMessage?: string) => {
     if (!resolvedSpaceId) return;
-    try {
-      const result = await moveL1ToL2Mut({
-        variables: { spaceL1ID: resolvedSpaceId, targetSpaceL1ID, autoInvite, invitationMessage },
-      });
-      const url = result.data?.moveSpaceL1ToSpaceL2?.about?.profile?.url;
-      setMovedSpaceUrl(url);
-      notify(t(`${T_PREFIX}.successMessage`), 'success');
-      setMutationCompleted(true);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : t(`${T_PREFIX}.errorMessage`);
-      notify(message, 'error');
-      throw err;
-    }
+    const result = await moveL1ToL2Mut({
+      variables: { spaceL1ID: resolvedSpaceId, targetSpaceL1ID, autoInvite, invitationMessage },
+    });
+    const url = result.data?.moveSpaceL1ToSpaceL2?.about?.profile?.url;
+    setMovedSpaceUrl(url);
+    notify(t(`${T_PREFIX}.successMessage`), 'success');
+    setMutationCompleted(true);
   };
 
   const moveL2ToL1 = async (targetSpaceL1ID: string, autoInvite?: boolean, invitationMessage?: string) => {
     if (!resolvedSpaceId) return;
-    try {
-      const result = await moveL2ToL1Mut({
-        variables: { spaceL2ID: resolvedSpaceId, targetSpaceL1ID, autoInvite, invitationMessage },
-      });
-      const url = result.data?.moveSpaceL2ToSpaceL1?.about?.profile?.url;
-      setMovedSpaceUrl(url);
-      notify(t(`${T_PREFIX}.successMessage`), 'success');
-      setMutationCompleted(true);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : t(`${T_PREFIX}.errorMessage`);
-      notify(message, 'error');
-      throw err;
-    }
+    const result = await moveL2ToL1Mut({
+      variables: { spaceL2ID: resolvedSpaceId, targetSpaceL1ID, autoInvite, invitationMessage },
+    });
+    const url = result.data?.moveSpaceL2ToSpaceL1?.about?.profile?.url;
+    setMovedSpaceUrl(url);
+    notify(t(`${T_PREFIX}.successMessage`), 'success');
+    setMutationCompleted(true);
   };
 
   return {

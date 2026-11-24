@@ -61,8 +61,7 @@
     },
     "chooseCommunity": {
       "intro": "Voeg je Virtual Contributor toe aan een community, of sla dit voorlopig over.",
-      "skip": "Voorlopig overslaan",
-      "errorMessage": "Kon niet aan de community worden toegevoegd — probeer het opnieuw."
+      "skip": "Voorlopig overslaan"
     },
     "tryVc": {
       "title": "{{name}} is klaar!",
@@ -71,8 +70,7 @@
       "done": "Klaar"
     },
     "createdVirtualContributor": {
-      "successMessage": "Virtual Contributor '{{name}}' succesvol gemaakt",
-      "errorMessage": "Kon de Virtual Contributor niet aanmaken — probeer het opnieuw."
+      "successMessage": "Virtual Contributor '{{name}}' succesvol gemaakt"
     }
   },
   "breadcrumbs": {
@@ -225,8 +223,7 @@
         "dialogTitle": "Dit lidmaatschap verlaten?",
         "dialogDescription": "Je staat op het punt om \"{{spaceName}}\" te verlaten. Je verliest toegang tot inhoud voor leden en moet opnieuw aanmelden om terug te komen.",
         "dialogConfirm": "Verlaten",
-        "success": "Lidmaatschap verlaten",
-        "error": "Verlaten mislukt — probeer opnieuw"
+        "success": "Lidmaatschap verlaten"
       },
       "pendingApplications": {
         "title": "Openstaande aanvragen",
@@ -329,8 +326,7 @@
           "cancel": "Annuleren",
           "confirm": "Sleutel intrekken",
           "revoking": "Bezig met intrekken…",
-          "success": "\"{{name}}\" is ingetrokken.",
-          "error": "De sleutel kon niet worden ingetrokken — probeer het opnieuw."
+          "success": "\"{{name}}\" is ingetrokken."
         },
         "errors": {
           "notFound": "Die API-sleutel kon niet worden gevonden.",
@@ -491,8 +487,7 @@
         "allowMessagesLabel": "Andere gebruikers mogen mij directe berichten sturen",
         "allowMessagesDescription": "Wanneer uitgeschakeld, kunnen andere gebruikers geen direct-bericht-gesprek met je starten.",
         "allowEmailContactLabel": "Sta anderen toe mij via e-mail te contacteren",
-        "allowEmailContactDescription": "Wanneer ingeschakeld, kunnen mensen die je niet via chat kunnen bereiken je een e-mail sturen op je accountadres. Je adres wordt nooit aan hen getoond.",
-        "error": "Voorkeur niet opgeslagen — probeer opnieuw"
+        "allowEmailContactDescription": "Wanneer ingeschakeld, kunnen mensen die je niet via chat kunnen bereiken je een e-mail sturen op je accountadres. Je adres wordt nooit aan hen getoond."
       },
       "designSystem": {
         "title": "Design System",
@@ -503,15 +498,13 @@
       "language": {
         "title": "Taal",
         "label": "Interfacetaal",
-        "description": "De taal die in heel Alkemio wordt gebruikt. Wijzigingen gelden voor al je apparaten.",
-        "error": "Taalvoorkeur kon niet worden opgeslagen — probeer het opnieuw."
+        "description": "De taal die in heel Alkemio wordt gebruikt. Wijzigingen gelden voor al je apparaten."
       }
     },
     "notifications": {
       "pageTitle": "Meldingen",
       "helpBanner": "Bewerk je meldingsvoorkeuren. Wijzigingen worden automatisch opgeslagen.",
       "toggleAria": "Schakel {{channel}}-melding voor: {{label}}",
-      "toggleError": "Voorkeur niet opgeslagen — probeer opnieuw",
       "inAppLockedChat": "Chatberichten verschijnen al direct in het chatpaneel, dus voor deze rij worden geen in-app-meldingen verzonden",
       "columns": {
         "activity": "Activiteit",
@@ -647,8 +640,7 @@
         "dialogTitle": "Ontkoppelen van deze organisatie?",
         "dialogDescription": "Je staat op het punt om \"{{name}}\" te verlaten. Je verliest je rol als betrokkene en alle bijbehorende rechten.",
         "dialogConfirm": "Ontkoppelen",
-        "success": "Succesvol ontkoppeld",
-        "error": "Ontkoppelen mislukt — probeer opnieuw"
+        "success": "Succesvol ontkoppeld"
       }
     },
     "account": {
@@ -860,7 +852,7 @@
         "dialogConfirm": "Verlaten",
         "success": "Lidmaatschap verlaten",
         "error": "Verlaten mislukt — probeer opnieuw",
-        "forbidden": "Alleen beheerders en eigenaren van deze organisatie kunnen een space verlaten"
+        "forbidden": "Verlaten is niet gelukt. De space bestaat mogelijk niet meer, of alleen beheerders en eigenaren van deze organisatie kunnen hem verlaten."
       },
       "ledBy": "Geleid door:",
       "ledByAria": "{{count}} community-Leads",
@@ -883,7 +875,6 @@
         "contributionRolesLabel": "Toon bijdragerollen openbaar",
         "contributionRolesCaption": "Wanneer ingeschakeld, zijn de roltoewijzingen van de organisatie (Beheerder, Eigenaar, Betrokkene) zichtbaar op het openbare profiel."
       },
-      "errorToast": "Voorkeur opslaan mislukt — probeer opnieuw",
       "security": {
         "requireSecondFactorCaption": "Eigenaren, beheerders en medewerkers van deze organisatie moeten een tweede factor gebruiken bij het inloggen. Ze krijgen 14 dagen om er een in te stellen.",
         "requireSecondFactorLabel": "Verificatie in twee stappen verplichten voor leden",
@@ -910,8 +901,7 @@
       "acceptConfirmAction": "Uitnodiging accepteren",
       "declineConfirmTitle": "Deze uitnodiging afwijzen?",
       "declineConfirmBody": "{{spaceName}} krijgt te horen dat je organisatie de uitnodiging heeft afgewezen. Dit kan niet ongedaan worden gemaakt — een Space-beheerder moet dan een nieuwe uitnodiging sturen.",
-      "declineConfirmAction": "Uitnodiging afwijzen",
-      "errorToast": "De uitnodiging kon niet worden bijgewerkt — probeer het opnieuw"
+      "declineConfirmAction": "Uitnodiging afwijzen"
     },
     "associates": {
       "title": "Betrokkenen",
@@ -1126,9 +1116,6 @@
       "apiKeyHelper": "Bestaande sleutels worden nooit teruggegeven. Laat leeg om de huidige sleutel te behouden.",
       "assistantIdLabel": "Assistant-ID",
       "modelLabel": "Model"
-    },
-    "settings": {
-      "commitErrorToast": "Voorkeur opslaan mislukt — probeer opnieuw"
     }
   },
   "shared": {
@@ -1178,7 +1165,6 @@
         "heading": "Nieuwe startpagina aanmaken"
       },
       "deleteSuccess": "Resource verwijderd",
-      "deleteError": "Verwijderen mislukt — probeer opnieuw",
       "noEntitlement": {
         "title": "Capaciteit bereikt",
         "description": {

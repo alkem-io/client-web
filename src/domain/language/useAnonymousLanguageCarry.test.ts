@@ -15,14 +15,16 @@ import { SIGNUP_INITIATED_MARKER } from './useAnonymousLanguageCarry';
 
 // ── mocks ─────────────────────────────────────────────────────────────────────
 const mockUpdateUserSettings = vi.fn();
+const mockUseUpdateUserSettingsMutation = vi.fn((_options?: unknown) => [mockUpdateUserSettings]);
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUpdateUserSettingsMutation: () => [mockUpdateUserSettings],
+  useUpdateUserSettingsMutation: (options?: unknown) => mockUseUpdateUserSettingsMutation(options),
 }));
 
 beforeEach(() => {
   mockUpdateUserSettings.mockClear();
   mockUpdateUserSettings.mockResolvedValue({ data: {} });
+  mockUseUpdateUserSettingsMutation.mockClear();
   try {
     sessionStorage.clear();
   } catch {
@@ -30,7 +32,7 @@ beforeEach(() => {
   }
   vi.resetModules();
   vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-    useUpdateUserSettingsMutation: () => [mockUpdateUserSettings],
+    useUpdateUserSettingsMutation: (options?: unknown) => mockUseUpdateUserSettingsMutation(options),
   }));
 });
 
@@ -77,6 +79,25 @@ describe('useAnonymousLanguageCarry — carry path (signup marker present)', () 
     expect(sessionStorage.getItem(SIGNUP_INITIATED_MARKER)).toBeNull();
     // carryComplete must be true once the write settles
     expect(result.current.carryComplete).toBe(true);
+  });
+
+  it('carries the choice unasked on landing, so the write opts out of the global error handler', async () => {
+    sessionStorage.setItem(SIGNUP_INITIATED_MARKER, '1');
+
+    const { useAnonymousLanguageCarry } = await import('./useAnonymousLanguageCarry');
+    renderHook(() =>
+      useAnonymousLanguageCarry({
+        ...baseOpts,
+        anonymousChoice: { language: 'nl', answered: true },
+        discardAnonymousChoice: vi.fn(),
+      })
+    );
+
+    await act(async () => {});
+
+    expect(mockUseUpdateUserSettingsMutation).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
   });
 
   it('decline carry: updateUserSettings({languageOfferAnswered: true}) is called, discardAnonymousChoice fires, carryComplete becomes true', async () => {

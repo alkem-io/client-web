@@ -10,6 +10,8 @@ import {
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, type UpdateAiPersonaInput } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { SAVED_FLASH_MS } from '@/crd/components/common/FieldFooter';
 import type {
   VcPromptGraphCardProps,
@@ -62,18 +64,11 @@ type UseVcSettingsTabDataResult = {
  * of server state. Only NEW values are sent in the mutation payload (matches
  * MUI semantics in `ExternalConfig.tsx`).
  */
-/**
- * Hook arguments. `onCommitError` is invoked when an immediate-commit
- * mutation (Visibility radio, listed-in-store, BoK privacy) fails — the
- * page wires this to a toast so failures aren't silent (FR-181, parity
- * with FR-064 / FR-133).
- */
 export type UseVcSettingsTabDataArgs = {
   vcId: string | undefined;
-  onCommitError?: () => void;
 };
 
-export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDataArgs): UseVcSettingsTabDataResult => {
+export const useVcSettingsTabData = ({ vcId }: UseVcSettingsTabDataArgs): UseVcSettingsTabDataResult => {
   const {
     data: vcData,
     loading: vcLoading,
@@ -96,9 +91,13 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
     skip: !vcId,
   });
 
+  // A failed immediate commit (visibility, listed-in-store, BoK privacy, graph editing) is reported
+  // by the global error handler, with the server's reason. A failed section save shows in that
+  // section's own error state instead.
+  const serverErrorMessage = useServerErrorMessage();
   const [updateVc] = useUpdateVirtualContributorMutation();
   const [updateVcSettings] = useUpdateVirtualContributorSettingsMutation();
-  const [updateAiPersona] = useUpdateAiPersonaMutation();
+  const [updateAiPersona] = useUpdateAiPersonaMutation({ context: OWN_ERROR_HANDLING });
   const [refreshBok] = useRefreshBodyOfKnowledgeMutation();
 
   const vc = vcData?.lookup.virtualContributor;
@@ -138,7 +137,6 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
       setOverrideSearchVisibility(null);
     } catch {
       setOverrideSearchVisibility(null); // revert
-      onCommitError?.();
     } finally {
       setSearchVisibilitySaving(false);
     }
@@ -156,7 +154,6 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
       setOverrideListedInStore(null);
     } catch {
       setOverrideListedInStore(null); // revert
-      onCommitError?.();
     } finally {
       setListedInStoreSaving(false);
     }
@@ -205,7 +202,6 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
       setOverrideContentVisible(null);
     } catch {
       setOverrideContentVisible(null);
-      onCommitError?.();
     } finally {
       setContentVisibleSaving(false);
     }
@@ -259,7 +255,10 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
       setPromptDraft(null);
       flashPromptSaved();
     } catch (err) {
-      setPromptStatus({ kind: 'error', message: err instanceof Error ? err.message : 'Save failed' });
+      setPromptStatus({
+        kind: 'error',
+        message: serverErrorMessage(err, err instanceof Error ? err.message : 'Save failed'),
+      });
     }
   };
 
@@ -315,7 +314,10 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
       setModelDraft(null);
       flashExternalSaved();
     } catch (err) {
-      setExternalStatus({ kind: 'error', message: err instanceof Error ? err.message : 'Save failed' });
+      setExternalStatus({
+        kind: 'error',
+        message: serverErrorMessage(err, err instanceof Error ? err.message : 'Save failed'),
+      });
     }
   };
 
@@ -380,7 +382,10 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
       setGraphDraft(null);
       flashGraphSaved();
     } catch (err) {
-      setGraphStatus({ kind: 'error', message: err instanceof Error ? err.message : 'Save failed' });
+      setGraphStatus({
+        kind: 'error',
+        message: serverErrorMessage(err, err instanceof Error ? err.message : 'Save failed'),
+      });
     }
   };
 
@@ -395,7 +400,10 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
       setGraphDraft(null);
       flashGraphSaved();
     } catch (err) {
-      setGraphStatus({ kind: 'error', message: err instanceof Error ? err.message : 'Reset failed' });
+      setGraphStatus({
+        kind: 'error',
+        message: serverErrorMessage(err, err instanceof Error ? err.message : 'Reset failed'),
+      });
     }
   };
 
@@ -406,7 +414,7 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
         variables: { settingsData: { virtualContributorID: vcId, settings: { promptGraphEditingEnabled: next } } },
       });
     } catch {
-      onCommitError?.();
+      // Reported by the global error handler.
     }
   };
 

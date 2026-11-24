@@ -311,9 +311,6 @@
     "postUnsavedCloseConfirm": "Discard changes",
     "postUnsavedCloseCancel": "Keep editing",
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
-    "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
-    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
-    "updateFailed": "Could not save changes to the $t(common.callout). Please try again.",
     "contributors": "Contributors",
     "subspaces": "Subspaces",
     "spacesHidden": "Some spaces in this overview are not shown because you don't have access to them.",
@@ -474,8 +471,7 @@
     "moveUp": "Move Up",
     "moveDown": "Move Down",
     "moveToBottom": "Move to Bottom",
-    "delete": "Delete",
-    "moveFailed": "Could not reorder. Please try again."
+    "delete": "Delete"
   },
   "visibilityChange": {
     "publishTitle": "Publish this $t(common.callout)?",
@@ -484,16 +480,14 @@
     "unpublishTitle": "Move this $t(common.callout) to draft?",
     "unpublishDescription": "The $t(common.callout) will no longer be visible to space members.",
     "unpublishConfirm": "Move to draft",
-    "notifyMembers": "Notify space members",
-    "saveFailed": "Could not change the visibility. Please try again."
+    "notifyMembers": "Notify space members"
   },
   "sortContributions": {
     "title": "Sort contributions",
     "description": "Drag to reorder. The new order applies on save.",
     "empty": "This $t(common.callout) has no contributions to sort yet.",
     "confirm": "Save order",
-    "dragHandle": "Drag to reorder",
-    "saveFailed": "Could not save the new order. Please try again."
+    "dragHandle": "Drag to reorder"
   },
   "deleteCallout": {
     "title": "Delete this $t(common.callout)?",
@@ -524,7 +518,6 @@
     "comments_one": "{{count}} comment will be deleted",
     "comments_other": "{{count}} comments will be deleted",
     "success": "$t(common.Callout) “{{title}}” was deleted.",
-    "saveFailed": "Could not delete the $t(common.callout). Please try again.",
     "headerRichForm_one": "The form and its {{count}} response will be deleted",
     "headerRichForm_other": "The form and its {{count}} responses will be deleted",
     "headerRichFormContributions_one": "The form, its responses and {{count}} contribution will be deleted",
@@ -536,8 +529,7 @@
   "deleteContribution": {
     "title": "Delete this contribution?",
     "description": "“{{title}}” will be deleted permanently. This cannot be undone.",
-    "confirm": "Delete",
-    "saveFailed": "Could not delete the contribution. Please try again."
+    "confirm": "Delete"
   },
   "saveAsTemplate": {
     "saveFailed": "Could not save the template. Please try again."
@@ -980,8 +972,7 @@
   "postLocation": {
     "label": "Post location",
     "warning": "Be careful changing the response location. Moving the response to another Post will make it disappear from the current Post. This might make it difficult for people, including the person who created this response, to retrieve it. Note that you can only move responses within the same Space or Subspace.",
-    "moved": "Response moved successfully.",
-    "moveFailed": "Could not move the response. Please try again."
+    "moved": "Response moved successfully."
   },
   "whiteboardPreview": {
     "label": "Selected whiteboard preview",
@@ -1084,9 +1075,6 @@
     "customOption": {
       "placeholder": "Add your own option..."
     },
-    "error": {
-      "voteFailed": "Failed to submit your vote. Please try again."
-    },
     "subscription": {
       "voteRevoked": "Your vote was removed."
     }
@@ -1109,8 +1097,7 @@
     },
     "statusChange": {
       "closeSuccess": "The poll is now closed.",
-      "reopenSuccess": "The poll is now open for votes.",
-      "failed": "The poll status could not be changed. Please try again."
+      "reopenSuccess": "The poll is now open for votes."
     },
     "closePollConfirm": {
       "title": "Close this poll?",
@@ -1338,7 +1325,6 @@
     "noAnswer": "No answer given",
     "success": "Your response was submitted.",
     "withdrawn": "Your response was withdrawn.",
-    "withdrawFailed": "Your response could not be withdrawn. Please try again.",
     "visibilityChanged": "Who can see responses changed — please review and submit again.",
     "errors": {
       "generic": "Your response could not be submitted. Please try again.",
@@ -1393,7 +1379,6 @@
       "confirm": "Delete"
     },
     "singleTitle": "Response from {{name}}",
-    "deleteFailed": "The response could not be deleted. Please try again.",
     "loadFailed": "The responses could not be loaded.",
     "exportCsv": "Export CSV",
     "exporting": "Exporting…",

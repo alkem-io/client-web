@@ -11,6 +11,7 @@ const contributionQueryState = vi.hoisted(() => ({
   contributionId: 'contribution-1',
   memoId: 'contribution-memo-1',
   query: vi.fn(),
+  deleteContributionOptions: vi.fn(),
 }));
 
 vi.mock('react-i18next', () => ({
@@ -38,7 +39,10 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
       error: contributionQueryState.error,
     };
   },
-  useDeleteContributionMutation: () => [vi.fn()],
+  useDeleteContributionMutation: (options: unknown) => {
+    contributionQueryState.deleteContributionOptions(options);
+    return [vi.fn()];
+  },
   useMemoMarkdownLazyQuery: () => [vi.fn()],
 }));
 
@@ -191,6 +195,22 @@ vi.mock('@/crd/components/contribution/ContributionLinkList', () => ({ Contribut
 vi.mock('@/crd/components/dialogs/ConfirmationDialog', () => ({ ConfirmationDialog: () => null }));
 
 describe('CalloutDetailDialogConnector framing signed copies', () => {
+  it("leaves a refused contribution delete to the global error handler, which shows the server's reason", () => {
+    const callout = {
+      id: 'callout-1',
+      draft: false,
+      contributions: [],
+      framing: { type: CalloutFramingType.Memo, profile: { displayName: 'Decision' }, memo: { id: 'memo-1' } },
+      settings: {
+        framing: { commentsEnabled: true },
+        contribution: { allowedTypes: [CalloutContributionType.Memo], enabled: false, commentsEnabled: false },
+      },
+    };
+    render(<CalloutDetailDialogConnector open={true} onOpenChange={vi.fn()} callout={callout as never} />);
+
+    expect(contributionQueryState.deleteContributionOptions).toHaveBeenCalledWith(undefined);
+  });
+
   it('opens one sibling history dialog for the framing memo and leaves the memo editor closed', async () => {
     const user = userEvent.setup();
     const callout = {

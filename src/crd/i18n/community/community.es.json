@@ -50,7 +50,6 @@
         "defaultWelcomeMessage": "Nos gustaría invitarte a contribuir a {{space}}.",
         "addedNotice": "Colaborador virtual añadido.",
         "invitedNotice": "Invitación enviada.",
-        "error": "Algo salió mal. Inténtalo de nuevo.",
         "previewAriaLabel": "Vista previa de {{name}}",
         "searchAriaLabel": "Buscar contribuidores virtuales por nombre",
         "noResultsLabel": "No hay contribuidores virtuales coincidentes",

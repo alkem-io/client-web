@@ -9,8 +9,7 @@
   },
   "settings": {
     "languageLabel": "Idioma de la interfaz",
-    "languageDescription": "El idioma utilizado en Alkemio. Los cambios se aplican en todos tus dispositivos.",
-    "languageSaveError": "No se pudo guardar la preferencia de idioma — inténtalo de nuevo."
+    "languageDescription": "El idioma utilizado en Alkemio. Los cambios se aplican en todos tus dispositivos."
   },
   "invite": {
     "suggestedLanguageLabel": "Idioma esperado",

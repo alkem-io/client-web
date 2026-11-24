@@ -30,21 +30,24 @@ beforeEach(() => {
 });
 
 describe('CrdOrgSettingsTab — a failed save', () => {
-  test('raises exactly one toast: its own, with the global error handler skipped', async () => {
+  test("is left to the global error handler, so the server's reason is the one message", async () => {
     const user = userEvent.setup();
-    updateOrgSettings.mockRejectedValue(new Error('SECOND_FACTOR_REQUIRED'));
+    updateOrgSettings.mockRejectedValue(new Error('refused'));
     render(<CrdOrgSettingsTab />);
 
-    await user.click(screen.getByRole('switch', { name: 'org.settings.security.requireSecondFactorLabel' }));
+    const toggle = screen.getByRole('switch', { name: 'org.settings.security.requireSecondFactorLabel' });
+    await user.click(toggle);
 
-    await waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('org.settings.errorToast', 'error'));
+    await waitFor(() => expect(updateOrgSettings).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(toggle).toHaveAttribute('aria-checked', 'false'));
     expect(updateOrgSettings).toHaveBeenCalledWith(
       expect.objectContaining({
         variables: {
           settingsData: { organizationID: 'org-1', settings: { security: { secondFactorRequired: true } } },
         },
-        context: { skipGlobalErrorHandler: true },
       })
     );
+    expect(updateOrgSettings.mock.calls[0][0]).not.toHaveProperty('context');
+    expect(notify).not.toHaveBeenCalled();
   });
 });

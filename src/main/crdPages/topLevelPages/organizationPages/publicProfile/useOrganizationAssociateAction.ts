@@ -6,6 +6,8 @@ import {
   OrganizationAssociateEligibilityReason,
   type OrgPendingInvitationDataFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { AssociateActionKind } from '@/crd/components/organization/OrganizationAssociateAction';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -83,6 +85,7 @@ export const useOrganizationAssociateAction = ({
 }: Params): UseOrganizationAssociateActionResult => {
   const { t } = useTranslation('crd-profilePages');
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const { userModel } = useCurrentUserContext();
 
   const action = mapEligibilityToAction(eligibilityReason, membershipStatus);
@@ -105,14 +108,14 @@ export const useOrganizationAssociateAction = ({
     if (!roleSetId) return;
     try {
       // The failure is reported right below; the global error link must not add a second toast.
-      await runJoin({ variables: { roleSetId }, context: { skipGlobalErrorHandler: true } });
+      await runJoin({ variables: { roleSetId }, context: OWN_ERROR_HANDLING });
       onJoined();
     } catch (error) {
       const code = graphQLErrorCode(error);
       notify(
         code === AlkemioGraphqlErrorCode.ROLESET_JOIN_NOT_ELIGIBLE
           ? t('orgProfile.associate.joinNotEligible')
-          : t('orgProfile.associate.joinError'),
+          : serverErrorMessage(error, t('orgProfile.associate.joinError')),
         'error'
       );
     }

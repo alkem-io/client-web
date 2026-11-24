@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useOrgInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import useInvitationActions from '@/domain/community/invitations/useInvitationActions';
 import { mapOrgInvitations } from './orgInvitationsMapper';
 
@@ -19,16 +17,11 @@ type PendingAction = {
  * refetches — pending count, pending list — the personal dialog relies on)
  * and additionally refetches this tab's own query on every state change.
  *
- * Both mutations are awaited and their rejection handled here. The global
- * Apollo error link cannot be relied on for this surface: FORBIDDEN and
- * FORBIDDEN_POLICY are in EXCLUDE_FROM_GLOBAL_HANDLER_ERRORS, and those are
- * exactly what an invitation revoked (or an admin demoted) between render and
- * click returns — leaving the row untouched and the user with no feedback at
- * all.
+ * A failed accept or decline, including one for an invitation revoked (or an
+ * admin demoted) between render and click, is reported by the global error
+ * handler with the server's reason; the tab adds no message of its own.
  */
 export const useOrgInvitationsTabData = (organizationId: string | undefined) => {
-  const { t } = useTranslation('crd-contributorSettings');
-  const notify = useNotification();
   const { data, loading, refetch } = useOrgInvitationsQuery({
     // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { organizationId: organizationId! },
@@ -71,7 +64,7 @@ export const useOrgInvitationsTabData = (organizationId: string | undefined) => 
       // Organization invitations never navigate on accept — they resolve in place.
       await acceptInvitation(pending.invitationId, '');
     } catch {
-      notify(t('org.invitations.errorToast'), 'error');
+      // Reported by the global error handler.
     }
   };
 
@@ -90,7 +83,7 @@ export const useOrgInvitationsTabData = (organizationId: string | undefined) => 
     try {
       await rejectInvitation(pending.invitationId);
     } catch {
-      notify(t('org.invitations.errorToast'), 'error');
+      // Reported by the global error handler.
     }
   };
 

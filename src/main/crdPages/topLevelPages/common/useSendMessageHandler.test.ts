@@ -14,14 +14,21 @@ vi.mock('@/main/crdPages/unifiedChat/useStartDirectChat', () => ({
 
 const sendMessageToUsersMock = vi.fn();
 const sendMessageToOrganizationMock = vi.fn();
+const mutationOptionsMock = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useSendMessageToUsersMutation: () => [sendMessageToUsersMock, { loading: false }],
-  useSendMessageToOrganizationMutation: () => [sendMessageToOrganizationMock, { loading: false }],
+  useSendMessageToUsersMutation: (options: unknown) => {
+    mutationOptionsMock('sendMessageToUsers', options);
+    return [sendMessageToUsersMock, { loading: false }];
+  },
+  useSendMessageToOrganizationMutation: (options: unknown) => {
+    mutationOptionsMock('sendMessageToOrganization', options);
+    return [sendMessageToOrganizationMock, { loading: false }];
+  },
 }));
 
 vi.mock('react-i18next', async importOriginal => ({
   ...(await importOriginal<typeof import('react-i18next')>()),
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({ t: (key: string) => key, i18n: i18next }),
 }));
 
 const toastErrorMock = vi.fn();
@@ -34,6 +41,7 @@ import commonNL from '@/crd/i18n/common/common.nl.json';
 import {
   useMessageContributor,
   useOpenDirectChatHandler,
+  useSendEmailToUserHandler,
   useSendMessageToOrganizationHandler,
 } from './useSendMessageHandler';
 
@@ -158,14 +166,41 @@ describe('useSendMessageToOrganizationHandler — hourly message allowance used 
     );
   });
 
-  test('any other failure is passed on unchanged', async () => {
-    const otherError = new ApolloError({
-      graphQLErrors: [new GraphQLError('Something failed', { extensions: { code: 'UNSPECIFIED' } })],
-    });
-    sendMessageToOrganizationMock.mockRejectedValue(otherError);
+  test("any other refusal rejects with the server's reason", async () => {
+    sendMessageToOrganizationMock.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [
+          new GraphQLError('Organization does not accept messages', {
+            extensions: { code: 'OPERATION_NOT_ALLOWED', userMessage: 'userMessages.operations.operationNotAllowed' },
+          }),
+        ],
+      })
+    );
 
     const { result } = renderHook(() => useSendMessageToOrganizationHandler({ recipientOrganizationId: 'org-1' }));
 
-    await expect(result.current.onSendMessage('hello')).rejects.toBe(otherError);
+    await expect(result.current.onSendMessage('hello')).rejects.toThrow(
+      'apollo.errors.userMessages.operations.operationNotAllowed Organization does not accept messages'
+    );
+  });
+
+  test('a failure with no server reply rejects with the generic send failure', async () => {
+    sendMessageToOrganizationMock.mockRejectedValue(new ApolloError({ networkError: new Error('Failed to fetch') }));
+
+    const { result } = renderHook(() => useSendMessageToOrganizationHandler({ recipientOrganizationId: 'org-1' }));
+
+    await expect(result.current.onSendMessage('hello')).rejects.toThrow('common.messagePopover.errorTitle');
+  });
+});
+
+describe('useSendEmailToUserHandler', () => {
+  afterEach(() => vi.clearAllMocks());
+
+  test('leaves a refused send to the compose surface, which shows it inline', () => {
+    renderHook(() => useSendEmailToUserHandler({ recipientUserId: 'user-1' }));
+
+    expect(mutationOptionsMock).toHaveBeenCalledWith('sendMessageToUsers', {
+      context: { skipGlobalErrorHandler: true },
+    });
   });
 });

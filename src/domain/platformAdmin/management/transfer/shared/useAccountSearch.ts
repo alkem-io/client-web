@@ -4,19 +4,13 @@ import {
   useAccountSearchUsersLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { isNotAvailableError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import type { FormikSelectValue } from '@/core/ui/forms/FormikAutocomplete.model';
-import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 
 type AccountSearchResult = FormikSelectValue & {
   accountId: string;
   type: 'User' | 'Organization';
 };
-
-// client-1: the codes that mean "you may not search accounts" rather than a
-// generic failure — mirrors `isExclusivelyAuthorizationError` in
-// `@/core/apollo/hooks/usePermissionDeniedNotifier` (the L4 twin — keep this
-// list aligned with that one if it changes).
-const DENIED_ERROR_CODES: string[] = [AlkemioGraphqlErrorCode.FORBIDDEN, AlkemioGraphqlErrorCode.FORBIDDEN_POLICY];
 
 const useAccountSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,10 +26,10 @@ const useAccountSearch = () => {
   // authorization code — a genuinely mixed/other failure is not "denied",
   // it's a normal search failure the global error handler already covers.
   const denied = useMemo(() => {
-    const codes = [usersError, orgsError]
+    const graphQLErrors = [usersError, orgsError]
       .filter(error => error !== undefined)
-      .flatMap(error => error.graphQLErrors.map(graphQLError => graphQLError.extensions?.code as string));
-    return codes.length > 0 && codes.every(code => DENIED_ERROR_CODES.includes(code));
+      .flatMap(error => error.graphQLErrors);
+    return graphQLErrors.length > 0 && graphQLErrors.every(isNotAvailableError);
   }, [usersError, orgsError]);
 
   const handleSearch = (term: string) => {

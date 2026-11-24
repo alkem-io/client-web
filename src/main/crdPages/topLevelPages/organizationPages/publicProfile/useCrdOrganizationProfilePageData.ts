@@ -4,6 +4,7 @@ import {
   OrganizationInfoDocument,
   useOrganizationHostedResourcesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import useOrganizationProvider from '@/domain/community/organization/useOrganization/useOrganization';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -31,7 +32,7 @@ export const useCrdOrganizationProfilePageData = () => {
   const { data, loading: loadingHosted } = useOrganizationHostedResourcesQuery({
     variables: { organizationId: organization?.id ?? '' },
     skip: !organization?.id || !isAuthenticated,
-    context: { skipGlobalErrorHandler: true },
+    context: OWN_ERROR_HANDLING,
   });
   const accountResources = data?.lookup.organization?.hostedResources ?? undefined;
 

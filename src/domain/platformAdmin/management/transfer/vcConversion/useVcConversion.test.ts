@@ -19,10 +19,9 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-const mockHandleApolloError = vi.fn();
-
 vi.mock('@/core/apollo/hooks/useApolloErrorHandler', () => ({
-  useApolloErrorHandler: () => mockHandleApolloError,
+  useServerErrorMessage: () => (error: unknown, fallback: string) =>
+    error instanceof ApolloError ? `server: ${error.graphQLErrors[0]?.message}` : fallback,
 }));
 
 const mockConvertMutation = vi.fn().mockResolvedValue({ data: {} });
@@ -199,7 +198,6 @@ describe('useVcConversion', () => {
     };
     mockSpaceData = undefined;
     mockNotify.mockClear();
-    mockHandleApolloError.mockClear();
     mockConvertMutation.mockRejectedValueOnce(
       new ApolloError({
         graphQLErrors: [
@@ -218,6 +216,20 @@ describe('useVcConversion', () => {
     );
     expect(mockNotify).toHaveBeenCalledTimes(1);
     expect(mockNotify).toHaveBeenCalledWith('pages.admin.vcConversion.formNotAllowed', 'error');
-    expect(mockHandleApolloError).not.toHaveBeenCalled();
+  });
+
+  test("any other rejected conversion shows the server's reason, once", async () => {
+    mockNotify.mockClear();
+    mockConvertMutation.mockRejectedValueOnce(
+      new ApolloError({
+        graphQLErrors: [new GraphQLError('Knowledge base is busy', { extensions: { code: 'OPERATION_NOT_ALLOWED' } })],
+      })
+    );
+    const { result } = renderHook(() => useVcConversion());
+
+    await act(() => result.current.handleConvert());
+
+    expect(mockNotify).toHaveBeenCalledTimes(1);
+    expect(mockNotify).toHaveBeenCalledWith('server: Knowledge base is busy', 'error');
   });
 });

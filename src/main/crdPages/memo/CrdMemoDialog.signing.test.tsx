@@ -246,11 +246,20 @@ describe('CrdMemoDialog signing connector', () => {
 
     await waitFor(() => expect(screen.getByTestId('signing-dialog')).toHaveAttribute('data-stage', 'preview'));
     expect(mocks.requestDurability).toHaveBeenCalledOnce();
-    expect(mocks.prepareMutation).toHaveBeenCalledWith({ variables: { memoID: 'memo-1' } });
+    // The signing dialog renders a failure as its own error stage.
+    expect(mocks.prepareMutation).toHaveBeenCalledWith({
+      variables: { memoID: 'memo-1' },
+      context: { skipGlobalErrorHandler: true },
+    });
 
     await user.click(screen.getByRole('button', { name: 'continue signing' }));
 
-    await waitFor(() => expect(mocks.continueMutation).toHaveBeenCalledWith({ variables: { attemptID: 'attempt-1' } }));
+    await waitFor(() =>
+      expect(mocks.continueMutation).toHaveBeenCalledWith({
+        variables: { attemptID: 'attempt-1' },
+        context: { skipGlobalErrorHandler: true },
+      })
+    );
     expect(mocks.assign).toHaveBeenCalledWith('https://cleverbase.example/authorize');
   });
 

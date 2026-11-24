@@ -134,8 +134,6 @@
         "admin": "Admin",
         "owner": "Eigentümer"
       },
-      "acceptError": "Annahme fehlgeschlagen – bitte erneut versuchen",
-      "declineError": "Ablehnen fehlgeschlagen – bitte erneut versuchen",
       "offeredRole": {
         "associate": "Assoziiert",
         "associateAdmin": "Assoziiert + Admin",
@@ -232,8 +230,7 @@
       "placeholder": "Beschreibe, was dieser Virtual Contributor weiß…",
       "save": "Speichern",
       "cancel": "Abbrechen",
-      "saving": "Speichern…",
-      "saveError": "Die Beschreibung konnte nicht gespeichert werden — bitte erneut versuchen."
+      "saving": "Speichern…"
     },
     "empty": {
       "title": "Noch kein Wissen",

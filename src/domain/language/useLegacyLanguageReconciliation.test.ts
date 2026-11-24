@@ -11,9 +11,10 @@ import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockUpdateUserSettings = vi.fn().mockResolvedValue({ data: {} });
+const mockUseUpdateUserSettingsMutation = vi.fn((_options?: unknown) => [mockUpdateUserSettings]);
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUpdateUserSettingsMutation: () => [mockUpdateUserSettings],
+  useUpdateUserSettingsMutation: (options?: unknown) => mockUseUpdateUserSettingsMutation(options),
 }));
 
 vi.mock('@/core/i18n/config', () => ({
@@ -45,9 +46,10 @@ const renderWithOpts = async (opts: TestOpts) => {
 beforeEach(() => {
   window.localStorage.clear();
   mockUpdateUserSettings.mockClear();
+  mockUseUpdateUserSettingsMutation.mockClear();
   vi.resetModules();
   vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-    useUpdateUserSettingsMutation: () => [mockUpdateUserSettings],
+    useUpdateUserSettingsMutation: (options?: unknown) => mockUseUpdateUserSettingsMutation(options),
   }));
   vi.mock('@/core/i18n/config', () => ({
     default: { changeLanguage: vi.fn().mockResolvedValue(undefined), language: 'en' },
@@ -79,6 +81,21 @@ describe('useLegacyLanguageReconciliation', () => {
           }),
         }),
       })
+    );
+  });
+
+  it('adopts the legacy language unasked, so the write opts out of the global error handler', async () => {
+    window.localStorage.setItem('i18nextLng', 'es');
+    await renderWithOpts({
+      userId: 'user-1',
+      accountLanguage: null,
+      languageOfferAnswered: false,
+      platformDefault: 'en',
+      isAuthenticated: true,
+    });
+
+    expect(mockUseUpdateUserSettingsMutation).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
     );
   });
 

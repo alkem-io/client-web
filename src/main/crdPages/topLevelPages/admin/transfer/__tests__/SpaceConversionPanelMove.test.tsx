@@ -1,13 +1,26 @@
+import { ApolloError } from '@apollo/client';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { GraphQLError } from 'graphql';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { SpaceConversionPanel } from '../SpaceConversionPanel';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, opts?: Record<string, unknown>) => (opts ? `${key}:${JSON.stringify(opts)}` : key),
+    i18n: { exists: (key: string) => key === 'apollo.errors.userMessages.operations.operationNotAllowed' },
   }),
 }));
+
+/** A move refused by the server, as the move mutation rejects with it. */
+const refusedMove = (message: string) =>
+  new ApolloError({
+    graphQLErrors: [
+      new GraphQLError(message, {
+        extensions: { code: 'OPERATION_NOT_ALLOWED', userMessage: 'userMessages.operations.operationNotAllowed' },
+      }),
+    ],
+  });
 
 const moveL1ToL0 = vi.fn().mockResolvedValue(undefined);
 const moveL1ToL2 = vi.fn().mockResolvedValue(undefined);
@@ -270,7 +283,7 @@ describe('SpaceConversionPanel — Move section', () => {
 
     test('error from server rejection (US2-AS3 same-L0) is shown in panel', async () => {
       resolvedL2();
-      const serverError = new Error('Same-L0 lateral not supported');
+      const serverError = refusedMove('Same-L0 lateral not supported');
       moveL2ToL1.mockRejectedValueOnce(serverError);
 
       const user = userEvent.setup();
@@ -295,7 +308,7 @@ describe('SpaceConversionPanel — Move section', () => {
       await user.click(within(dialog).getByText('transfer.spaceMove.move'));
 
       // Step 5: the rejected error message must be surfaced in the panel
-      expect(await screen.findByText('Same-L0 lateral not supported')).toBeInTheDocument();
+      expect(await screen.findByText(/Same-L0 lateral not supported$/)).toBeInTheDocument();
     });
   });
 
@@ -310,7 +323,7 @@ describe('SpaceConversionPanel — Move section', () => {
 
     test('server rejection (max nesting depth) rendered as error state', async () => {
       resolvedL1();
-      const serverError = new Error('Cannot exceed maximum nesting depth');
+      const serverError = refusedMove('Cannot exceed maximum nesting depth');
       moveL1ToL2.mockRejectedValueOnce(serverError);
 
       const user = userEvent.setup();
@@ -340,7 +353,7 @@ describe('SpaceConversionPanel — Move section', () => {
       await user.click(within(dialog).getByText('transfer.spaceMove.move'));
 
       // Step 5: the rejected error message must be surfaced in the panel
-      expect(await screen.findByText('Cannot exceed maximum nesting depth')).toBeInTheDocument();
+      expect(await screen.findByText(/Cannot exceed maximum nesting depth$/)).toBeInTheDocument();
     });
   });
 

@@ -89,9 +89,8 @@ export const useHubSpacesTabData = (
               ? t('settings.spaces.toast.removed')
               : t('settings.spaces.toast.reordered');
         toast.success(successMessage);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        toast.error(`${t('settings.spaces.toast.error')} ${message}`);
+      } catch {
+        // The global error handler reports the failure, with the server's reason.
       }
     },
     [hub, updateInnovationHub, refetch, t]
