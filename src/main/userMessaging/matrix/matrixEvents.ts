@@ -69,6 +69,12 @@ type ParsedMessage = {
 };
 
 /**
+ * A call the user turned down in some tab, where nothing is sent: the latest
+ * membership creation time it had then, and the user's own Matrix id.
+ */
+type DeclinedCall = { readonly upTo: number; readonly by: string };
+
+/**
  * Calls are a beta: where call controls do not show (`withCalls` off), a ring
  * is no entry either, so a call the user never heard ring is never missed.
  */
@@ -76,6 +82,7 @@ type EntryOptions = {
   readonly withCalls?: boolean;
   /** The time a ring's outcome is judged at. */
   readonly now?: number;
+  readonly declined?: DeclinedCall;
 };
 
 const isMessageLike = (type: string): boolean => type === EVENT_MESSAGE || type === EVENT_STICKER;
@@ -107,13 +114,22 @@ const isDeclineOf = (event: RawEvent, ring: RawEvent): boolean =>
   event.sender !== ring.sender &&
   (event.content['m.relates_to'] as Record<string, unknown> | undefined)?.event_id === ring.eventId;
 
+// The ring of the call the user declined: sent by someone else once that call's latest member had
+// joined, and within a ring's lifetime of it, so a later call rings anew.
+const isDeclinedHere = (ring: RawEvent, declined: DeclinedCall | undefined): boolean =>
+  declined !== undefined &&
+  ring.sender !== declined.by &&
+  ring.timestamp >= declined.upTo &&
+  ring.timestamp < declined.upTo + DEFAULT_RING_LIFETIME_MS;
+
 /**
  * What became of `ring`, judged by the events after it (oldest first): answered
  * once someone else joins while it rings, lasting until either of the two
- * leaves; declined when the person rung turns it down; unanswered once the
- * ringer has left or the ring's lifetime has passed; ringing until then.
+ * leaves; declined when the person rung turns it down, here or on their own
+ * client; unanswered once the ringer has left or the ring's lifetime has
+ * passed; ringing until then.
  */
-const callOf = (ring: RawEvent, newer: readonly RawEvent[], now: number): ParsedCall => {
+const callOf = (ring: RawEvent, newer: readonly RawEvent[], now: number, declinedHere?: DeclinedCall): ParsedCall => {
   const end = ringEndOf(ring);
   let answer: RawEvent | undefined;
   let declined = false;
@@ -141,15 +157,20 @@ const callOf = (ring: RawEvent, newer: readonly RawEvent[], now: number): Parsed
   if (answer) {
     return { outcome: 'answered' };
   }
-  if (declined) {
+  if (declined || isDeclinedHere(ring, declinedHere)) {
     return { outcome: 'declined' };
   }
   return { outcome: ringerLeft || now >= end ? 'unanswered' : 'ringing' };
 };
 
 /** A ring still ringing is no entry yet: what becomes of it is not known until it stops. */
-const parseRing = (ring: RawEvent, newer: readonly RawEvent[], now: number): ParsedMessage | undefined => {
-  const call = callOf(ring, newer, now);
+const parseRing = (
+  ring: RawEvent,
+  newer: readonly RawEvent[],
+  now: number,
+  declined: DeclinedCall | undefined
+): ParsedMessage | undefined => {
+  const call = callOf(ring, newer, now, declined);
   if (call.outcome === 'ringing') {
     return undefined;
   }
@@ -208,14 +229,14 @@ const extractMedia = (event: RawEvent, homeserver: string): MediaRef | undefined
 const projectMessages = (
   events: RawEvent[],
   homeserver: string,
-  { withCalls = false, now = Date.now() }: EntryOptions = {}
+  { withCalls = false, now = Date.now(), declined }: EntryOptions = {}
 ): ParsedMessage[] => {
   const messages: ParsedMessage[] = [];
   const byId = new Map<string, ParsedMessage>();
 
   for (const [index, event] of events.entries()) {
     if (withCalls && isRing(event)) {
-      const call = parseRing(event, events.slice(index + 1), now);
+      const call = parseRing(event, events.slice(index + 1), now, declined);
       if (call) {
         messages.push(call);
       }
@@ -265,12 +286,12 @@ const parseMessage = (event: RawEvent, homeserver: string): ParsedMessage | unde
 const lastMessageOf = (
   events: RawEvent[],
   homeserver: string,
-  { withCalls = false, now = Date.now() }: EntryOptions = {}
+  { withCalls = false, now = Date.now(), declined }: EntryOptions = {}
 ): ParsedMessage | undefined => {
   for (let index = events.length - 1; index >= 0; index--) {
     const event = events[index];
     if (withCalls && isRing(event)) {
-      const call = parseRing(event, events.slice(index + 1), now);
+      const call = parseRing(event, events.slice(index + 1), now, declined);
       if (call) {
         return call;
       }
@@ -290,13 +311,13 @@ const lastMessageOf = (
  */
 const newestEntryId = (
   events: RawEvent[],
-  { withCalls = false, now = Date.now() }: EntryOptions = {}
+  { withCalls = false, now = Date.now(), declined }: EntryOptions = {}
 ): string | null => {
   for (let index = events.length - 1; index >= 0; index--) {
     const event = events[index];
     if (
       isMessageLike(event.type) ||
-      (withCalls && isRing(event) && callOf(event, events.slice(index + 1), now).outcome !== 'ringing')
+      (withCalls && isRing(event) && callOf(event, events.slice(index + 1), now, declined).outcome !== 'ringing')
     ) {
       return event.eventId;
     }
@@ -319,4 +340,4 @@ export {
   EVENT_REACTION,
   EVENT_STICKER,
 };
-export type { MediaRef, ParsedCall, ParsedMessage, ParsedReaction, RawEvent };
+export type { DeclinedCall, EntryOptions, MediaRef, ParsedCall, ParsedMessage, ParsedReaction, RawEvent };

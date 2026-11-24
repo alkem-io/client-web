@@ -214,6 +214,18 @@ describe('calls', () => {
     expect(judged([call, decline, callMember(4_000, ALICE, false)])).toEqual({ outcome: 'declined' });
   });
 
+  it('is declined when the user turned it down here, where nothing is sent, until a later call rings', () => {
+    // The ringer joined at 900 and rang at 1_000; the user declined that call.
+    const declined = { upTo: 900, by: BOB };
+    expect(callOf(ring(1_000), [], 31_000, declined)).toEqual({ outcome: 'declined' });
+    expect(callOf(ring(1_000), [], 20_000, declined)).toEqual({ outcome: 'declined' });
+    expect(callOf(ring(1_000), [callMember(5_000, BOB, true)], 31_000, declined)).toEqual({ outcome: 'answered' });
+    expect(callOf(ring(60_000), [], 100_000, declined)).toEqual({ outcome: 'unanswered' });
+    expect(callOf(ring(500), [], 31_000, declined)).toEqual({ outcome: 'unanswered' });
+    // The user's own ring is never one they declined.
+    expect(callOf(ring(1_000), [], 31_000, { upTo: 900, by: ALICE })).toEqual({ outcome: 'unanswered' });
+  });
+
   it('is not declined by a decline of another ring', () => {
     const decline = at(3_000, 'org.matrix.msc4310.rtc.decline', { 'm.relates_to': { event_id: '$other' } }, BOB);
     expect(judged([ring(1_000), decline], 20_000)).toEqual({ outcome: 'ringing' });

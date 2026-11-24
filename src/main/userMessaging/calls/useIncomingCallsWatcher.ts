@@ -10,7 +10,13 @@ import { DEFAULT_RING_LIFETIME_MS } from '../matrix/matrixEvents';
 import { useUserMessagingContext } from '../UserMessagingContext';
 import { useIsDocumentActive } from '../useIsDocumentActive';
 import { isCallsConfigured } from './callConfig';
-import { type CallDismissals, dismissCall, isCallDismissed, useCallDismissals } from './callDismissalStore';
+import {
+  type CallDismissals,
+  declinedUpTo,
+  dismissCall,
+  isCallDismissed,
+  useCallDismissals,
+} from './callDismissalStore';
 import { type IncomingCall, type IncomingCallRooms, setIncomingCallRooms } from './incomingCallStore';
 import { type LiveCall, useLiveCalls } from './useActiveCallRooms';
 import { type CallableConversation, isBetaTester, isCallableConversation } from './useCallEligibility';
@@ -64,23 +70,24 @@ export const useIncomingCallsWatcher = () => {
 
   const liveCalls = useLiveCalls(enabled ? conversations : []);
 
+  const dismissals = useCallDismissals();
+
   // A ring is a timeline entry only in a 1:1 conversation with another person: in a group any member
-  // could send one, unattributed. None while calls are hidden.
+  // could send one, unattributed. None while calls are hidden. Each with the call declined there.
   const client = useMatrixClient();
-  const ringRoomsKey = enabled
-    ? conversations
-        .filter(conversation => !conversation.isGroup && isCallableConversation(conversation))
-        .map(conversation => conversation.roomId)
-        .sort()
-        .join('\n')
-    : '';
+  const ringRooms = new Map(
+    enabled
+      ? conversations
+          .filter(conversation => !conversation.isGroup && isCallableConversation(conversation))
+          .map(conversation => [conversation.roomId, declinedUpTo(dismissals, conversation.roomId)] as const)
+      : []
+  );
   useEffect(() => {
     if (client) {
-      storeFor(client).setRingRooms(new Set(ringRoomsKey === '' ? [] : ringRoomsKey.split('\n')));
+      storeFor(client).setRingRooms(ringRooms);
     }
-  }, [client, ringRoomsKey]);
+  }, [client, ringRooms]);
 
-  const dismissals = useCallDismissals();
   const isDocumentActive = useIsDocumentActive();
   // The group conversation open here hides its call in this tab; it counts as seen, for every tab, only
   // while the user is in this tab: a conversation left open in a background tab sees nothing.

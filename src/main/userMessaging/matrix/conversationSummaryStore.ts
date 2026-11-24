@@ -1,7 +1,7 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
-import { lastMessageOf, type ParsedMessage, type RawEvent, ringingUntil } from './matrixEvents';
+import { type EntryOptions, lastMessageOf, type ParsedMessage, type RawEvent, ringingUntil } from './matrixEvents';
 import {
   CLIENT_ROOM,
   CLIENT_SYNC,
@@ -55,8 +55,9 @@ class ConversationSummaryStore {
   private readonly stale = new Set<string>();
   // Rooms with a pin write in flight, and whether their tags changed meanwhile.
   private readonly pinWrites = new Map<string, boolean>();
-  // The rooms where a ring counts as an entry (the latest one, and a missed one as unread).
-  private ringRooms: ReadonlySet<string> = new Set();
+  // The rooms where a ring counts as an entry (the latest one, and a missed one as unread), each with
+  // the latest membership creation time of the call the user declined there, if any.
+  private ringRooms: ReadonlyMap<string, number | undefined> = new Map();
   // Rooms with a ring still ringing, computed again once it stops.
   private readonly ringEnds = new Map<string, ReturnType<typeof setTimeout>>();
 
@@ -130,13 +131,17 @@ class ConversationSummaryStore {
 
   /**
    * Sets the conversations where a ring counts as an entry: the user's 1:1 conversations while calls
-   * show, none otherwise. Every summary computed the other way is computed again.
+   * show, none otherwise; each with the call the user declined there, if any. Every summary computed
+   * otherwise is computed again.
    */
-  setRingRooms(ringRooms: ReadonlySet<string>): void {
+  setRingRooms(ringRooms: ReadonlyMap<string, number | undefined>): void {
     const previous = this.ringRooms;
     this.ringRooms = ringRooms;
     for (const alkemioRoomId of this.summaries.keys()) {
-      if (previous.has(alkemioRoomId) !== ringRooms.has(alkemioRoomId)) {
+      if (
+        previous.has(alkemioRoomId) !== ringRooms.has(alkemioRoomId) ||
+        previous.get(alkemioRoomId) !== ringRooms.get(alkemioRoomId)
+      ) {
         this.invalidate(alkemioRoomId);
       }
     }
@@ -300,8 +305,10 @@ class ConversationSummaryStore {
       const fetchBatch = fetchBackward(this.client, matrixRoomId);
       const loaded = liveEvents(room);
       const withCalls = this.ringRooms.has(alkemioRoomId);
+      const declinedUpTo = this.ringRooms.get(alkemioRoomId);
+      const declined = declinedUpTo === undefined ? undefined : { upTo: declinedUpTo, by: ownUserId(this.client) };
       const [lastMessage, unreadCount] = await Promise.all([
-        this.findLastMessage(loaded, fetchBatch, homeserver, withCalls),
+        this.findLastMessage(loaded, fetchBatch, homeserver, { withCalls, declined }),
         computeUnreadCount({
           markerEventId: fullyReadEventId(room),
           ownUserId: ownUserId(this.client),
@@ -309,6 +316,7 @@ class ConversationSummaryStore {
           fetchBatch,
           notificationCount: () => notificationCount(room),
           withCalls,
+          declined,
         }),
       ]);
       // An existing pin is kept: tags changes and the user's own toggle own it.
@@ -335,9 +343,8 @@ class ConversationSummaryStore {
     live: RawEvent[],
     fetchBatch: ReturnType<typeof fetchBackward>,
     homeserver: string,
-    withCalls: boolean
+    options: EntryOptions
   ): Promise<ParsedMessage | undefined> {
-    const options = { withCalls };
     const local = lastMessageOf(live, homeserver, options);
     if (local) {
       return local;

@@ -10,6 +10,7 @@ vi.mock('@/core/matrix/activeClient', () => ({
 
 vi.mock('../calls/useCallEligibility', () => ({ useCallsShown: () => harness.callsShown }));
 
+import { dismissCall } from '../calls/callDismissalStore';
 import { computeUnreadCount } from './unreadCount';
 import { useConversationTimeline } from './useConversationTimeline';
 
@@ -196,6 +197,31 @@ describe('useConversationTimeline', () => {
 
     await waitFor(() => expect(result.current.messages.map(message => message.call?.outcome)).toEqual(['unanswered']));
     expect(result.current.readUpToEventId).toBe('$ring');
+    harness.callsShown = false;
+  });
+
+  it('reads a ring the user declined in some tab as declined, and so as soon as they decline it', async () => {
+    const rungAt = Date.now();
+    const ring = {
+      getId: () => '$ring',
+      getType: () => 'org.matrix.msc4075.rtc.notification',
+      getSender: () => `@a:${HS}`,
+      getTs: () => rungAt,
+      getOriginalContent: () => ({ notification_type: 'ring', lifetime: 30_000 }),
+    };
+    const { client } = makeClient(0, 0);
+    harness.client = {
+      ...client,
+      getRoom: () => ({ roomId: '!r', getLiveTimeline: () => ({ getEvents: () => [ring] }) }),
+    };
+    harness.callsShown = true;
+
+    const { result } = renderHook(() => useConversationTimeline('declined-room', false));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.messages).toEqual([]);
+
+    act(() => dismissCall('declined-room', rungAt - 100, true));
+    await waitFor(() => expect(result.current.messages.map(message => message.call?.outcome)).toEqual(['declined']));
     harness.callsShown = false;
   });
 

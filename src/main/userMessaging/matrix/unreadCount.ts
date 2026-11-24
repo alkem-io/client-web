@@ -1,4 +1,4 @@
-import { callOf, isMessageLike, isRing, type RawEvent } from './matrixEvents';
+import { callOf, type DeclinedCall, isMessageLike, isRing, type RawEvent } from './matrixEvents';
 
 /**
  * The per-room unread count exactly as matrix-adapter computes it: walk
@@ -6,7 +6,8 @@ import { callOf, isMessageLike, isRing, type RawEvent } from './matrixEvents';
  * other people's message-like events, over progressive batches (~285 events at
  * most); when there is no marker, or it is not reached within that window, use
  * the homeserver's own notification count instead. Where calls show, a ring
- * from someone else that went unanswered (a missed call) counts as well.
+ * from someone else that went unanswered (a missed call) counts as well, unless
+ * the user declined it.
  */
 
 type ScannedEvent = RawEvent;
@@ -25,6 +26,7 @@ const walk = (
   markerEventId: string,
   ownUserId: string,
   withCalls: boolean,
+  declined: DeclinedCall | undefined,
   count = 0,
   newer: ScannedEvent[] = []
 ): { count: number; found: boolean } => {
@@ -35,7 +37,9 @@ const walk = (
     if (
       event.sender !== ownUserId &&
       (isMessageLike(event.type) ||
-        (withCalls && isRing(event) && callOf(event, [...newer].reverse(), Date.now()).outcome === 'unanswered'))
+        (withCalls &&
+          isRing(event) &&
+          callOf(event, [...newer].reverse(), Date.now(), declined).outcome === 'unanswered'))
     ) {
       count++;
     }
@@ -48,7 +52,8 @@ const countUnreadMessages = async (
   fetchBatch: FetchBatch,
   markerEventId: string,
   ownUserId: string,
-  withCalls = false
+  withCalls = false,
+  declined?: DeclinedCall
 ): Promise<{ count: number; found: boolean }> => {
   let from: string | undefined;
   let count = 0;
@@ -56,7 +61,7 @@ const countUnreadMessages = async (
 
   for (const batchSize of BATCH_SIZES) {
     const { events, end } = await fetchBatch(from, batchSize);
-    const step = walk(events, markerEventId, ownUserId, withCalls, count, newer);
+    const step = walk(events, markerEventId, ownUserId, withCalls, declined, count, newer);
     if (step.found || !end || events.length < batchSize) {
       return { count: step.count, found: true };
     }
@@ -77,6 +82,7 @@ type UnreadInputs = {
   readonly notificationCount: () => number;
   /** Whether a missed call counts; off where calls do not show. */
   readonly withCalls?: boolean;
+  readonly declined?: DeclinedCall;
 };
 
 const computeUnreadCount = async ({
@@ -86,18 +92,19 @@ const computeUnreadCount = async ({
   fetchBatch,
   notificationCount,
   withCalls = false,
+  declined,
 }: UnreadInputs): Promise<number> => {
   if (!markerEventId) {
     return notificationCount();
   }
   // The events already in memory answer most recomputes without a fetch; the
   // window matches the walk's own, so the result is the same either way.
-  const loaded = walk(loadedNewestFirst.slice(0, WINDOW), markerEventId, ownUserId, withCalls);
+  const loaded = walk(loadedNewestFirst.slice(0, WINDOW), markerEventId, ownUserId, withCalls, declined);
   if (loaded.found) {
     return loaded.count;
   }
   try {
-    const { count, found } = await countUnreadMessages(fetchBatch, markerEventId, ownUserId, withCalls);
+    const { count, found } = await countUnreadMessages(fetchBatch, markerEventId, ownUserId, withCalls, declined);
     return found ? count : notificationCount();
   } catch {
     return notificationCount();

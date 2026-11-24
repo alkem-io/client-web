@@ -455,13 +455,14 @@ export const UnifiedChatPanelConnector = ({
       const call = liveCalls.get(roomId);
       const firstName = (displayName: string) => displayName.split(' ')[0];
       if (!isGroup && call && incomingCallRooms.has(roomId)) {
-        // A 1:1 call not dealt with yet rings until it is answered or declined (in every tab).
+        // A 1:1 call not dealt with yet rings until it is answered or declined (in every tab), or its
+        // ring has run out: the watcher then counts it as seen, and the running banner shows.
         callBanner = (
           <CallBanner
             variant="ringing"
             callerName={firstName(counterpart?.displayName ?? '')}
             onAnswer={() => openSelectedCall('join', 'video')}
-            onDecline={() => dismissCall(roomId, call.latestTs)}
+            onDecline={() => dismissCall(roomId, call.latestTs, true)}
           />
         );
       } else {

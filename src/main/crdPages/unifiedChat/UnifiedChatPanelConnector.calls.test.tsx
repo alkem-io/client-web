@@ -490,14 +490,14 @@ describe('UnifiedChatPanelConnector calls', () => {
     expect(calls.dismissCall).not.toHaveBeenCalled();
   });
 
-  it('declines a ringing 1:1 call by dismissing it locally, without joining', async () => {
+  it('declines a ringing 1:1 call by dismissing it locally as declined, without joining', async () => {
     directCallRunning();
     calls.incoming = new Map([['r-direct', { name: 'Ann', isGroup: false }]]);
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     render(<UnifiedChatPanelConnector />);
 
     await user.click(screen.getByRole('button', { name: 'call.banner.decline' }));
-    expect(calls.dismissCall).toHaveBeenCalledExactlyOnceWith('r-direct', 7);
+    expect(calls.dismissCall).toHaveBeenCalledExactlyOnceWith('r-direct', 7, true);
     expect(calls.openCall).not.toHaveBeenCalled();
     expect(calls.rotate).not.toHaveBeenCalled();
   });

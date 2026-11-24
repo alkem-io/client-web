@@ -66,6 +66,7 @@ const othersCall: LiveCall = {
 };
 const running = (...roomIds: string[]) => new Map(roomIds.map(roomId => [roomId, othersCall]));
 
+import { dismissCall } from './callDismissalStore';
 import { getIncomingCallRooms } from './incomingCallStore';
 import { useIncomingCallsWatcher } from './useIncomingCallsWatcher';
 
@@ -118,7 +119,7 @@ describe('useIncomingCallsWatcher', () => {
     });
     expect(harness.querySkip).toBe(true);
     expect(harness.conversations).toEqual([]);
-    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Set());
+    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Map());
   });
 
   it('makes a ring an entry in the 1:1 conversations with another person only, never in a group', () => {
@@ -126,7 +127,7 @@ describe('useIncomingCallsWatcher', () => {
     act(() => {
       vi.advanceTimersByTime(2000);
     });
-    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Set(['direct']));
+    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Map([['direct', undefined]]));
   });
 
   // From here on: a call dealt with stays dealt with for the rest of the file.
@@ -212,5 +213,18 @@ describe('useIncomingCallsWatcher', () => {
       vi.advanceTimersByTime(28_000);
     });
     expect([...getIncomingCallRooms()]).toEqual([]);
+  });
+
+  it('tells the summaries which call the user declined in a 1:1 conversation, and not one only seen', () => {
+    // Later than every call above.
+    const latestTs = Date.now() + 120_000;
+    renderHook(() => useIncomingCallsWatcher());
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    act(() => dismissCall('direct', latestTs));
+    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Map([['direct', undefined]]));
+    act(() => dismissCall('direct', latestTs + 1, true));
+    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Map([['direct', latestTs + 1]]));
   });
 });

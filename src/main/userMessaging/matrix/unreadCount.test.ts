@@ -144,7 +144,14 @@ describe('computeUnreadCount with calls', () => {
     timestamp,
     content: { member: { id: 'm', membership: 'join' } },
   });
-  const count = (newestFirst: ScannedEvent[], { loaded = false, withCalls = true } = {}) => {
+  const count = (
+    newestFirst: ScannedEvent[],
+    {
+      loaded = false,
+      withCalls = true,
+      declinedUpTo,
+    }: { loaded?: boolean; withCalls?: boolean; declinedUpTo?: number } = {}
+  ) => {
     const fetchBatch = roomOf(newestFirst);
     return {
       fetchBatch,
@@ -155,6 +162,7 @@ describe('computeUnreadCount with calls', () => {
         fetchBatch,
         notificationCount: () => 99,
         withCalls,
+        declined: declinedUpTo === undefined ? undefined : { upTo: declinedUpTo, by: ME },
       }),
     };
   };
@@ -176,6 +184,11 @@ describe('computeUnreadCount with calls', () => {
   it('does not count the user’s own ring, nor any ring where calls are not shown', async () => {
     expect(await count([ring('$ring', 1_000, ME), message(1)]).result).toBe(0);
     expect(await count([ring('$ring', 1_000), message(1)], { withCalls: false }).result).toBe(0);
+  });
+
+  it('does not count a ring the user declined here, but does count a later call’s ring', async () => {
+    expect(await count([ring('$ring', 1_000), message(1)], { declinedUpTo: 900 }).result).toBe(0);
+    expect(await count([ring('$ring', 60_000), message(1)], { declinedUpTo: 900 }).result).toBe(1);
   });
 
   it('answers from memory when the marker is loaded', async () => {

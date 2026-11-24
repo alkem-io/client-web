@@ -20,6 +20,8 @@ type CallDismissal = {
   readonly upTo: number;
   /** When this tab last wrote the entry, in ms (local clock); only for pruning. */
   readonly at: number;
+  /** The user turned the call down (Decline on its ring), rather than seeing, joining or leaving it. */
+  readonly declined?: boolean;
 };
 
 type CallDismissals = Readonly<Record<string, CallDismissal>>;
@@ -87,7 +89,7 @@ const isCallDismissed = (dismissals: CallDismissals, roomId: string, startedTs: 
 };
 
 /** Records the room's call as dealt with up to `latestTs`; writes nothing when that is already known. */
-const dismissCall = (roomId: string, latestTs: number): void => {
+const dismissCall = (roomId: string, latestTs: number, declined = false): void => {
   const known = getCallDismissals();
   if ((known[roomId]?.upTo ?? Number.NEGATIVE_INFINITY) >= latestTs) {
     return;
@@ -95,7 +97,7 @@ const dismissCall = (roomId: string, latestTs: number): void => {
   const now = Date.now();
   const next = merge(known, readStored());
   current = Object.fromEntries(
-    Object.entries({ ...next, [roomId]: { upTo: latestTs, at: now } }).filter(
+    Object.entries({ ...next, [roomId]: { upTo: latestTs, at: now, declined } }).filter(
       ([, entry]) => now - entry.at < MAX_AGE_MS
     )
   );
@@ -105,6 +107,12 @@ const dismissCall = (roomId: string, latestTs: number): void => {
     // Storage unavailable or full: this tab still remembers it.
   }
   notify();
+};
+
+/** The latest membership creation time of the room's call the user declined, if they declined it. */
+const declinedUpTo = (dismissals: CallDismissals, roomId: string): number | undefined => {
+  const entry = dismissals[roomId];
+  return entry?.declined ? entry.upTo : undefined;
 };
 
 const subscribeCallDismissals = (listener: Listener): (() => void) => {
@@ -126,4 +134,4 @@ const useCallDismissals = (): CallDismissals =>
   useSyncExternalStore(subscribeCallDismissals, getCallDismissals, () => NONE);
 
 export type { CallDismissals };
-export { dismissCall, isCallDismissed, useCallDismissals };
+export { declinedUpTo, dismissCall, isCallDismissed, useCallDismissals };
