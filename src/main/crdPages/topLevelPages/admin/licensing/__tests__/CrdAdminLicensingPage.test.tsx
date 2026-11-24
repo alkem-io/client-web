@@ -262,7 +262,7 @@ describe('CrdAdminLicensingPage', () => {
       expect(updatePromoteMock).toHaveBeenCalledWith({ variables: { spaceId: 's1', promote: false } });
     });
 
-    test('a permission refusal notifies exactly once', async () => {
+    test('a permission refusal raises no message of its own', async () => {
       withPromote([true, false]);
       updatePromoteMock.mockRejectedValueOnce({
         graphQLErrors: [{ message: 'nope', extensions: { code: 'FORBIDDEN_POLICY' } }],
@@ -270,8 +270,9 @@ describe('CrdAdminLicensingPage', () => {
       render(<CrdAdminLicensingPage />);
       const box = screen.getByRole('checkbox', { name: promoteLabel('Demo Space') });
       await userEvent.click(box);
-      await waitFor(() => expect(notify).toHaveBeenCalledWith('permissions.errorDenied', 'error'));
-      expect(notify).toHaveBeenCalledTimes(1);
+      await waitFor(() => expect(box).not.toHaveAttribute('aria-busy', 'true'));
+      expect(updatePromoteMock).toHaveBeenCalled();
+      expect(notify).not.toHaveBeenCalled();
       expect(box).not.toBeChecked();
     });
   });

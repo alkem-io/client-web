@@ -6,6 +6,7 @@ import {
   injectGuidanceIntro,
   isGuidanceConversation,
   mapConversationToListItem,
+  mapMembersToGroupMembers,
   mapMessageToChatMessage,
   mapReactionsToCommentReactions,
   sortUnifiedConversations,
@@ -179,6 +180,26 @@ describe('mapConversationToListItem presence', () => {
   ])('%s row carries no presence', (_name, overrides) => {
     const conversation = makeConversation({ ...overrides, members: [member(ME, 'online'), member('ann', 'online')] });
     expect(mapConversationToListItem(conversation, options).presence).toBeUndefined();
+  });
+});
+
+describe('mapMembersToGroupMembers', () => {
+  it("carries each member's presence and status message, the current user's included", () => {
+    const members = [
+      { id: ME, type: ActorType.User, displayName: 'Me', presence: 'online' as const, statusMessage: 'Focusing' },
+      { id: 'ann', type: ActorType.User, displayName: 'Ann', presence: 'busy' as const },
+    ];
+    expect(mapMembersToGroupMembers(members, ME)).toEqual([
+      { id: ME, name: 'Me', avatarUrl: undefined, isCurrentUser: true, presence: 'online', statusMessage: 'Focusing' },
+      {
+        id: 'ann',
+        name: 'Ann',
+        avatarUrl: undefined,
+        isCurrentUser: false,
+        presence: 'busy',
+        statusMessage: undefined,
+      },
+    ]);
   });
 });
 

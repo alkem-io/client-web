@@ -9,7 +9,6 @@
     "settings": "Configuración de notificaciones",
     "muteSound": "Silenciar el sonido del chat",
     "unmuteSound": "Activar el sonido del chat",
-    "soundToggleError": "No pudimos guardar el ajuste del sonido del chat. Inténtalo de nuevo.",
     "expand": "Ampliar chat",
     "collapse": "Reducir chat",
     "reconnecting": "Reconectando… Los mensajes nuevos pueden retrasarse."
@@ -144,7 +143,8 @@
   "presence": {
     "online": "En línea",
     "away": "Ausente",
-    "offline": "Desconectado"
+    "offline": "Desconectado",
+    "busy": "En una llamada"
   },
   "status": {
     "set": "Establecer estado",

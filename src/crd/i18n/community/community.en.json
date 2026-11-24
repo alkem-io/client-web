@@ -50,7 +50,6 @@
         "defaultWelcomeMessage": "We'd like to invite you to contribute to {{space}}.",
         "addedNotice": "Virtual Contributor added.",
         "invitedNotice": "Invitation sent.",
-        "error": "Something went wrong. Please try again.",
         "previewAriaLabel": "Preview {{name}}",
         "searchAriaLabel": "Search for virtual contributors by name",
         "noResultsLabel": "No matching virtual contributors",

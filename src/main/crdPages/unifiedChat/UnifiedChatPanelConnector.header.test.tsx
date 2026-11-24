@@ -229,7 +229,7 @@ describe('UnifiedChatPanelConnector header', () => {
     expect(panelProps.onToggleSound).toBeUndefined();
   });
 
-  it('unmutes when the sound is off, and reports a failed save once', async () => {
+  it('unmutes when the sound is off, adding no message of its own when the save fails', async () => {
     chatSound.enabled = false;
     chatSound.setEnabled = vi.fn().mockRejectedValue(new Error('network'));
     render(<UnifiedChatPanelConnector />);
@@ -238,7 +238,8 @@ describe('UnifiedChatPanelConnector header', () => {
     panelProps.onToggleSound?.();
 
     expect(chatSound.setEnabled).toHaveBeenCalledExactlyOnceWith(true);
-    await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('panel.soundToggleError', 'error'));
+    await Promise.resolve();
+    expect(notify).not.toHaveBeenCalled();
   });
 
   it('has no sound toggle when the sound cannot be changed', () => {
@@ -296,10 +297,10 @@ describe('UnifiedChatPanelConnector header', () => {
     ['a 1:1 chat', 'direct'],
     ['a group chat', 'group'],
   ])('%s header shows neither your status nor the gear menu', (_name, conversationId) => {
-    ownStatus.statusMessage = 'In a workshop';
+    ownStatus.statusMessage = 'Out for lunch';
     state.selectedConversationId = conversationId;
     render(<UnifiedChatPanelConnector />);
-    expect(panelProps.subtitle).toBeUndefined();
+    expect(screen.queryByText('Out for lunch')).not.toBeInTheDocument();
     expect(panelProps.settingsMenu).toBeUndefined();
     expect(screen.queryByRole('button', { name: 'status.edit' })).not.toBeInTheDocument();
   });

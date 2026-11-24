@@ -9,7 +9,6 @@
     "settings": "Paramètres de notification",
     "muteSound": "Couper le son du chat",
     "unmuteSound": "Réactiver le son du chat",
-    "soundToggleError": "Impossible d'enregistrer le réglage du son du chat. Veuillez réessayer.",
     "expand": "Agrandir le chat",
     "collapse": "Réduire le chat",
     "reconnecting": "Reconnexion… Les nouveaux messages peuvent être retardés."
@@ -144,7 +143,8 @@
   "presence": {
     "online": "En ligne",
     "away": "Absent",
-    "offline": "Hors ligne"
+    "offline": "Hors ligne",
+    "busy": "En appel"
   },
   "status": {
     "set": "Définir un statut",

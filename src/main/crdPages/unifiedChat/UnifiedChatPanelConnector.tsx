@@ -18,6 +18,7 @@ import { GroupAvatar } from '@/crd/components/chat/GroupAvatar';
 import { GroupSettingsDialog } from '@/crd/components/chat/GroupSettingsDialog';
 import { GuidanceInfoDialog } from '@/crd/components/chat/GuidanceInfoDialog';
 import { NewChatDialog } from '@/crd/components/chat/NewChatDialog';
+import { PresenceIndicator } from '@/crd/components/chat/PresenceIndicator';
 import { SetStatusDialog } from '@/crd/components/chat/SetStatusDialog';
 import type { ChatThreadHeader } from '@/crd/components/chat/types';
 import { UserPresencePopover } from '@/crd/components/chat/UserPresencePopover';
@@ -30,7 +31,7 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { buildUserNotificationSettingsUrl } from '@/main/routing/urlBuilders';
 import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsContext';
 import { openCall } from '@/main/userMessaging/calls/callOverlayStore';
-import { useActiveCallRooms } from '@/main/userMessaging/calls/useActiveCallRooms';
+import { useLiveCalls } from '@/main/userMessaging/calls/useActiveCallRooms';
 import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibility';
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
 import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
@@ -102,7 +103,28 @@ export const UnifiedChatPanelConnector = ({
     setSelectedRoomId(roomId);
   });
 
-  const { conversations, isLoading } = useUnifiedConversations();
+  const { conversations: listed, isLoading } = useUnifiedConversations();
+  // Calls are watched only for those who see the call controls; for everyone else none is live.
+  const liveCalls = useLiveCalls(listed);
+  // A call membership outlives a device that vanished without leaving, until it expires.
+  // That device is offline within seconds, so only someone the chat server still sees
+  // counts as in a call.
+  const present = new Set(
+    listed
+      .flatMap(conversation => conversation.members)
+      .filter(member => member.presence === 'online' || member.presence === 'away')
+      .map(member => member.id)
+  );
+  const inCall = new Set(
+    [...liveCalls.values()].flatMap(call => call.participants).filter(actorId => present.has(actorId))
+  );
+  // Someone in a live call shows as busy wherever their dot appears, over their chat presence.
+  const conversations = listed.map(conversation => ({
+    ...conversation,
+    members: conversation.members.map(member =>
+      inCall.has(member.id) ? { ...member, presence: 'busy' as const } : member
+    ),
+  }));
   // `?chat={conversationID}` deep link (contract C-6 / US1) — selects the
   // conversation once this list resolves, then strips the param regardless
   // of match (unknown/inaccessible id degrades to the default list, no error UI).
@@ -158,7 +180,6 @@ export const UnifiedChatPanelConnector = ({
     const timer = setTimeout(() => setDroppedCallIn(null), DROPPED_CALL_NOTICE_MS);
     return () => clearTimeout(timer);
   }, [droppedCallIn]);
-  const activeCallRooms = useActiveCallRooms(conversations);
 
   // Realtime conversation events are subscribed globally by
   // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
@@ -223,7 +244,14 @@ export const UnifiedChatPanelConnector = ({
   const listItems = withActiveCallsFirst(
     conversations.map(conversation => {
       const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
-      const item = activeCallRooms.has(conversation.roomId) ? { ...mapped, hasActiveCall: true } : mapped;
+      // A group shows as busy while someone is really in its call. A 1:1 keeps the
+      // counterpart's own dot, which is busy once they have joined: while you ring
+      // them they are not in a call.
+      const call = liveCalls.get(conversation.roomId);
+      const groupBusy = conversation.isGroup && call?.participants.some(actorId => inCall.has(actorId));
+      const item = call
+        ? { ...mapped, hasActiveCall: true, presence: groupBusy ? ('busy' as const) : mapped.presence }
+        : mapped;
       const draft = drafts[conversation.id];
       // A draft replaces the last-message preview but leaves the ordering and the
       // timestamp alone — the conversation does not jump the list for it.
@@ -248,7 +276,7 @@ export const UnifiedChatPanelConnector = ({
       memberAvatars={selectedListItem.memberAvatars}
     />
   );
-  // A 1:1 header avatar is the counterpart's: it carries their availability and opens their card.
+  // A 1:1 header avatar is the counterpart's: it opens their card. Its dot is the list row's.
   const counterpart =
     selectedConversation && !selectedConversation.isGroup && !selectedConversation.isGuidance
       ? selectedConversation.members.find(member => member.id !== currentUserId)
@@ -259,12 +287,15 @@ export const UnifiedChatPanelConnector = ({
       <UserPresencePopover
         displayName={counterpart.displayName}
         statusMessage={counterpart.statusMessage}
-        presence={counterpart.presence}
+        presence={selectedListItem.presence}
       >
         {conversationAvatar}
       </UserPresencePopover>
     ) : (
-      conversationAvatar
+      <span className="relative flex shrink-0">
+        {conversationAvatar}
+        <PresenceIndicator presence={selectedListItem.presence} />
+      </span>
     );
   }
 
@@ -510,7 +541,8 @@ export const UnifiedChatPanelConnector = ({
         onToggleSound={
           view === 'list' && chatSound.setEnabled
             ? () => {
-                chatSound.setEnabled?.(!chatSound.enabled).catch(() => notify(t('panel.soundToggleError'), 'error'));
+                // A failed save is reported by the global error handler; the toggle stays as it was.
+                chatSound.setEnabled?.(!chatSound.enabled).catch(() => undefined);
               }
             : undefined
         }
@@ -523,7 +555,12 @@ export const UnifiedChatPanelConnector = ({
         onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
         titleActionLabel={isGroupThread ? t('group.settings') : undefined}
         subtitle={
-          view === 'list' && ownStatus.statusMessage ? (
+          // In a 1:1 thread: the counterpart's status message, never their availability label.
+          view === 'thread' && counterpart?.statusMessage ? (
+            <span className="min-w-0 truncate" title={counterpart.statusMessage}>
+              {counterpart.statusMessage}
+            </span>
+          ) : view === 'list' && ownStatus.statusMessage ? (
             <button
               type="button"
               onClick={() => setStatusDialogOpen(true)}

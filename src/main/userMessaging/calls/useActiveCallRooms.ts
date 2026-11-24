@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { actorIdOf } from '@/main/userMessaging/matrix/matrixEvents';
 import { resolveMatrixRoomId } from '@/main/userMessaging/matrix/matrixRooms';
 import { isCallsConfigured } from './callConfig';
 import { type MembershipLike, watchLiveMemberships } from './matrixRtc';
@@ -14,6 +15,8 @@ type LiveCall = {
   readonly latestTs: number;
   /** Whether the current user is in it, on any device. */
   readonly withMe: boolean;
+  /** The Alkemio actor ids of the people in it, sorted, each once. */
+  readonly participants: readonly string[];
 };
 
 type LiveCalls = ReadonlyMap<string, LiveCall>;
@@ -28,7 +31,8 @@ const sameCalls = (a: LiveCalls, b: LiveCalls): boolean =>
       other !== undefined &&
       other.startedTs === call.startedTs &&
       other.latestTs === call.latestTs &&
-      other.withMe === call.withMe
+      other.withMe === call.withMe &&
+      other.participants.join('\n') === call.participants.join('\n')
     );
   });
 
@@ -38,6 +42,9 @@ const describeCall = (memberships: readonly MembershipLike[], myUserId: string |
     startedTs: Math.min(...created),
     latestTs: Math.max(...created),
     withMe: memberships.some(membership => membership.sender === myUserId),
+    participants: [
+      ...new Set(memberships.flatMap(membership => (membership.sender ? [actorIdOf(membership.sender)] : []))),
+    ].sort(),
   };
 };
 
@@ -106,9 +113,5 @@ const useLiveCalls = (conversations: readonly CallableConversation[]): LiveCalls
   return active;
 };
 
-/** The Alkemio room ids of the callable conversations with a call running, for the conversation list's call badge. */
-const useActiveCallRooms = (conversations: readonly CallableConversation[]): ReadonlySet<string> =>
-  new Set(useLiveCalls(conversations).keys());
-
-export { useActiveCallRooms, useLiveCalls };
+export { useLiveCalls };
 export type { LiveCall, LiveCalls };

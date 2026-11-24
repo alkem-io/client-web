@@ -252,7 +252,8 @@ describe('CollaboraFramingReplaceConnector', () => {
     await screen.findByLabelText(enJson.callout.documentReplaceTitleFieldLabel);
     fireEvent.click(screen.getByRole('button', { name: enJson.callout.documentReplaceConfirm }));
 
-    expect(await screen.findByText(lockMessage)).toBeInTheDocument();
+    // The server's reason is carried in the message, after its translated code.
+    expect(await screen.findByText(lockMessage, { exact: false })).toBeInTheDocument();
   });
 
   it('names PDF as the current document type and narrows the picker + hint to .pdf only', () => {

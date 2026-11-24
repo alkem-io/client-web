@@ -1,8 +1,6 @@
 import { type MouseEvent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useDeleteSpaceMutation, useSpaceAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import type {
   AccountHost,
   AccountPlan,
@@ -49,18 +47,15 @@ export function useAccountTabData(spaceId: string): UseAccountTabDataResult {
   const privileges = space?.authorization?.myPrivileges ?? [];
   const canDeleteSpace = privileges.includes(AuthorizationPrivilege.Delete);
 
-  const { t } = useTranslation('crd-spaceSettings');
-  const notify = useNotification();
   // Spec 045 FR-024a: the deleted space's pages no longer exist, and a hard navigation also drops its
   // cached data. No success toast — notifications are in memory and would not survive the reload.
   const [pendingDeleteSpace, setPendingDeleteSpace] = useState(false);
   // The dialog stays open with a busy Confirm until the reload, so the delete cannot be sent twice.
+  // A failure is reported by the global error handler, with the server's reason (e.g. the Space
+  // still has subspaces).
   const [deleteSpace, { loading: deletingSpace }] = useDeleteSpaceMutation({
     onCompleted: () => window.location.replace(ROUTE_HOME),
-    onError: () => {
-      setPendingDeleteSpace(false);
-      notify(t('account.dangerZone.deleteError'), 'error');
-    },
+    onError: () => setPendingDeleteSpace(false),
   });
 
   const onDeleteSpace = () => {

@@ -4,6 +4,7 @@ import {
   useUnsubscribeFromPushNotificationsMutation,
   useVapidPublicKeyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { isAppMode } from '@/core/appMode/isAppMode';
 import { PUSH_SUBSCRIPTION_ID_KEY, PUSH_USER_DISABLED_KEY } from '@/main/pushNotifications/constants';
 import { urlBase64ToUint8Array } from '@/main/pushNotifications/urlBase64ToUint8Array';
@@ -36,8 +37,12 @@ export function usePushNotifications(): PushNotificationState {
   const vapidPublicKey = vapidData?.vapidPublicKey ?? null;
   const isServerEnabled = vapidPublicKey !== null;
 
-  const [subscribeMutation] = useSubscribeToPushNotificationsMutation();
-  const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
+  // subscribe() also runs unasked on mount, which must stay silent; when the settings toggle calls
+  // them, the toggle reports the failure.
+  const [subscribeMutation] = useSubscribeToPushNotificationsMutation({ context: OWN_ERROR_HANDLING });
+  const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation({
+    context: OWN_ERROR_HANDLING,
+  });
 
   const [permissionState, setPermissionState] = useState<NotificationPermission>(
     isSupported ? Notification.permission : 'default'

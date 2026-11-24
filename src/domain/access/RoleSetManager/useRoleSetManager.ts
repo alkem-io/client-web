@@ -1,3 +1,4 @@
+import type { DefaultContext } from '@apollo/client';
 import { useRoleSetAuthorizationQuery, useRoleSetRoleAssignmentQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   ActorType,
@@ -221,6 +222,8 @@ type useRoleSetManagerParams = {
   fetchRoleDefinitions?: boolean;
   onChange?: () => void;
   skip?: boolean;
+  /** Apollo link context attached to every role assignment mutation this hook runs. */
+  mutationContext?: DefaultContext;
 };
 
 const useRoleSetManager = ({
@@ -231,6 +234,7 @@ const useRoleSetManager = ({
   contributorTypes = [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
   onChange,
   skip,
+  mutationContext,
 }: useRoleSetManagerParams): useRoleSetManagerProvided => {
   // The authorization (myPrivileges) query only needs the roleSetId — it must
   // NOT wait on `relevantRoles`, because a caller filtering the offered role
@@ -403,7 +407,7 @@ const useRoleSetManager = ({
     assignRoleToVirtualContributor,
     removeRoleFromVirtualContributor,
     loading: updatingRoleSet,
-  } = useRoleSetManagerRolesAssignment({ roleSetId, refetchRoleSetOnMutation: true });
+  } = useRoleSetManagerRolesAssignment({ roleSetId, refetchRoleSetOnMutation: true, context: mutationContext });
 
   return {
     myPrivileges,

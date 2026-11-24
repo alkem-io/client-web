@@ -13,7 +13,7 @@ import {
   CalloutFramingType,
 } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
-import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useDialogTitle } from '@/core/routing/useDialogTitle';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import { CalloutPostPreview } from '@/crd/components/callout/CalloutPostPreview';
 import { CalloutWhiteboardContributionPreview } from '@/crd/components/callout/CalloutWhiteboardContributionPreview';
@@ -375,6 +375,9 @@ function CalloutDetailDialogLayer({
   onMemoSigningRestoreConsumed,
 }: CalloutDetailDialogLayerProps) {
   const { t, i18n } = useTranslation('crd-space');
+  // Every opener (feed card, callout URL, Post Index) renders this connector,
+  // so the browser tab follows the open callout here.
+  useDialogTitle(callout.framing.profile.displayName, open);
   // Over the fullscreen board (z-[100]) the detail dialog sits at z-[110], and
   // any dialog it spawns (edit, delete, share) at z-[120] so it clears both.
   const elevatedDialog = elevated ? { overlayClassName: 'z-[110]', contentClassName: 'z-[110]' } : {};
@@ -437,7 +440,7 @@ function CalloutDetailDialogLayer({
     { id: string; title: string; kind: 'post' | 'whiteboard' | 'document' } | undefined
   >(undefined);
   const [deletingContribution, setDeletingContribution] = useState(false);
-  const notify = useNotification();
+  // A failed delete is reported by the global error handler, with the server's reason.
   const [deleteContribution] = useDeleteContributionMutation();
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -805,7 +808,6 @@ function CalloutDetailDialogLayer({
       setConfirmDeleteContribution(undefined);
     } catch (err) {
       logError(new Error('Contribution delete failed', { cause: err as Error }));
-      notify(t('deleteContribution.saveFailed'), 'error');
     } finally {
       setDeletingContribution(false);
     }

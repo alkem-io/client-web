@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { UnifiedChatPanelConnector } from './UnifiedChatPanelConnector';
 
-type Member = { id: string; displayName: string; avatarUri?: string };
+type Member = { id: string; displayName: string; avatarUri?: string; presence?: string };
 type Conversation = { id: string; roomId: string; members: Member[]; isGuidance: boolean; isGroup: boolean };
 
 const state: { selectedConversationId: string | null; conversations: Conversation[] } = {
@@ -15,7 +15,7 @@ const openGroupSettings = vi.fn();
 const calls = vi.hoisted(() => ({
   eligibility: { eligible: false, matrixRoomId: null as string | null },
   session: { participants: [] as string[], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false },
-  activeRooms: new Set<string>(),
+  live: new Map<string, { participants: string[] }>(),
   openCall: vi.fn(),
   rotate: vi.fn(),
   eligibilityInput: [] as unknown[],
@@ -31,7 +31,7 @@ vi.mock('@/main/userMessaging/calls/useCallEligibility', () => ({
   },
 }));
 vi.mock('@/main/userMessaging/calls/useRoomCallSession', () => ({ useRoomCallSession: () => calls.session }));
-vi.mock('@/main/userMessaging/calls/useActiveCallRooms', () => ({ useActiveCallRooms: () => calls.activeRooms }));
+vi.mock('@/main/userMessaging/calls/useActiveCallRooms', () => ({ useLiveCalls: () => calls.live }));
 vi.mock('@/main/userMessaging/calls/callOverlayStore', () => ({ openCall: calls.openCall }));
 const leaveGroup = vi.fn();
 
@@ -164,7 +164,7 @@ const groupChat: Conversation = {
   members: [
     { id: 'me', displayName: 'Me' },
     { id: 'u1', displayName: 'Ann' },
-    { id: 'u2', displayName: 'Bob' },
+    { id: 'u2', displayName: 'Bob', presence: 'online' },
   ],
 };
 
@@ -176,7 +176,7 @@ describe('UnifiedChatPanelConnector calls', () => {
   beforeEach(() => {
     calls.eligibility = { eligible: false, matrixRoomId: null };
     calls.session = { participants: [], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false };
-    calls.activeRooms = new Set();
+    calls.live = new Map();
     calls.openCall.mockClear();
     calls.rotate.mockReset();
     calls.rotate.mockResolvedValue(false);
@@ -192,7 +192,7 @@ describe('UnifiedChatPanelConnector calls', () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     render(<UnifiedChatPanelConnector />);
 
-    expect(calls.eligibilityInput[calls.eligibilityInput.length - 1]).toBe(groupChat);
+    expect(calls.eligibilityInput[calls.eligibilityInput.length - 1]).toEqual(groupChat);
     await user.click(screen.getByRole('button', { name: 'call.startVideo' }));
     expect(calls.openCall).toHaveBeenLastCalledWith({
       matrixRoomId: '!group:hs',
@@ -410,7 +410,7 @@ describe('UnifiedChatPanelConnector calls', () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     render(<UnifiedChatPanelConnector />);
 
-    expect(calls.eligibilityInput[calls.eligibilityInput.length - 1]).toBe(directChat);
+    expect(calls.eligibilityInput[calls.eligibilityInput.length - 1]).toEqual(directChat);
     await user.click(screen.getByRole('button', { name: 'call.startVideo' }));
     expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!direct:hs', intent: 'start_call_dm' });
     await user.click(screen.getByRole('button', { name: 'call.startAudio' }));
@@ -445,10 +445,13 @@ describe('UnifiedChatPanelConnector calls', () => {
     expect(screen.queryByTestId('call-active-indicator')).not.toBeInTheDocument();
   });
 
-  it('marks list rows of conversations with a running call and moves them to the top', () => {
+  it('marks list rows of conversations with a running call, busy, and moves them to the top', () => {
     state.selectedConversationId = null;
-    calls.activeRooms = new Set(['r-group']);
+    calls.live = new Map([['r-group', { participants: ['u2'] }]]);
     render(<UnifiedChatPanelConnector />);
-    expect(listProps?.conversations).toEqual([{ id: 'group', hasActiveCall: true }, { id: 'direct' }]);
+    expect(listProps?.conversations).toEqual([
+      { id: 'group', hasActiveCall: true, presence: 'busy' },
+      { id: 'direct' },
+    ]);
   });
 });

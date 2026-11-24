@@ -6,16 +6,30 @@ const createColumnMock = vi.fn();
 const renameColumnMock = vi.fn();
 const deleteColumnMock = vi.fn();
 const reorderColumnsMock = vi.fn();
+const mutationHookOptions = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useTaskBoardDataQuery: (options: unknown) => useTaskBoardDataQuery(options),
-  useCreateTaskColumnOnCalloutMutation: () => [createColumnMock, {}] as const,
-  useUpdateTaskColumnOnCalloutMutation: () => [renameColumnMock, {}] as const,
-  useDeleteTaskColumnOnCalloutMutation: () => [deleteColumnMock, {}] as const,
-  useUpdateTaskColumnsSortOrderOnCalloutMutation: () => [reorderColumnsMock, {}] as const,
+  useCreateTaskColumnOnCalloutMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [createColumnMock, {}] as const;
+  },
+  useUpdateTaskColumnOnCalloutMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [renameColumnMock, {}] as const;
+  },
+  useDeleteTaskColumnOnCalloutMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [deleteColumnMock, {}] as const;
+  },
+  useUpdateTaskColumnsSortOrderOnCalloutMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [reorderColumnsMock, {}] as const;
+  },
 }));
 
-vi.mock('sonner', () => ({ toast: { error: vi.fn() } }));
+const toastError = vi.fn();
+vi.mock('sonner', () => ({ toast: { error: (...args: unknown[]) => toastError(...args) } }));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
@@ -87,5 +101,21 @@ describe('TaskBoardColumnsConnector', () => {
     render(<TaskBoardColumnsConnector calloutId="callout-1" open={false} onOpenChange={onOpenChange} />);
     expect(capturedColumnsProps?.open).toBe(false);
     expect(capturedColumnsProps?.onOpenChange).toBe(onOpenChange);
+  });
+
+  it('leaves a refused column change to the global error handler and rejects, so the dialog stays open', async () => {
+    useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
+    const refusal = new Error('refused');
+    createColumnMock.mockRejectedValueOnce(refusal);
+    render(<TaskBoardColumnsConnector calloutId="callout-1" open={true} onOpenChange={() => {}} />);
+
+    expect(mutationHookOptions).toHaveBeenCalled();
+    for (const [options] of mutationHookOptions.mock.calls) {
+      expect(options).toBeUndefined();
+    }
+    await expect((capturedColumnsProps?.onAddColumn as (name: string) => Promise<void>)('Review')).rejects.toBe(
+      refusal
+    );
+    expect(toastError).not.toHaveBeenCalled();
   });
 });

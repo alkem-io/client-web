@@ -2,7 +2,6 @@ import {
   useAdminUpdateVirtualContributorPromoteMutation,
   usePlatformAdminVirtualContributorsListQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { StoreEntityList } from '../_shared/StoreEntityList';
 import { type AdminStoreEntityRow, toSearchVisibility } from '../_shared/storeEntityRow';
 import { usePendingRows } from '../_shared/usePendingRows';
@@ -13,7 +12,6 @@ import { usePendingRows } from '../_shared/usePendingRows';
  */
 const CrdAdminVirtualContributorsPage = () => {
   const { data, loading } = usePlatformAdminVirtualContributorsListQuery();
-  const guard = usePermissionDeniedNotifier();
   const promoteRows = usePendingRows();
   // No refetch: the mutation selects `{ id promote }`, so Apollo updates the
   // cached row in place.
@@ -35,7 +33,7 @@ const CrdAdminVirtualContributorsPage = () => {
       loading={loading}
       onPromoteChange={(row, next) => {
         void promoteRows
-          .run(row.id, () => guard(() => updatePromote({ variables: { virtualContributorId: row.id, promote: next } })))
+          .run(row.id, () => updatePromote({ variables: { virtualContributorId: row.id, promote: next } }))
           .catch(() => {});
       }}
       isPromoteSaving={row => promoteRows.isPending(row.id)}

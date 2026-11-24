@@ -311,9 +311,6 @@
     "postUnsavedCloseConfirm": "Descartar cambios",
     "postUnsavedCloseCancel": "Seguir editando",
     "uploadAfterCreateFailed": "La publicación se creó, pero la carga de la imagen de vista previa falló. Puedes reintentarlo desde el diálogo de edición de la publicación.",
-    "pollOptionsSaveFailed": "No se pudieron guardar uno o varios cambios de las opciones de la encuesta. Puedes reintentarlo desde este diálogo.",
-    "referencesSaveFailed": "No se pudieron guardar una o varias referencias nuevas. Los demás cambios no se aplicaron. Por favor, inténtalo de nuevo.",
-    "updateFailed": "No se pudieron guardar los cambios en la publicación. Por favor, inténtalo de nuevo.",
     "contributors": "Colaboradores",
     "subspaces": "Subespacios",
     "spacesHidden": "Algunos espacios de esta vista no se muestran porque no tienes acceso a ellos.",
@@ -474,8 +471,7 @@
     "moveUp": "Mover arriba",
     "moveDown": "Mover abajo",
     "moveToBottom": "Mover al final",
-    "delete": "Eliminar",
-    "moveFailed": "No se pudo reordenar. Vuelve a intentarlo."
+    "delete": "Eliminar"
   },
   "visibilityChange": {
     "publishTitle": "¿Hacer visible esta publicación?",
@@ -484,16 +480,14 @@
     "unpublishTitle": "¿Mover esta publicación a borrador?",
     "unpublishDescription": "La publicación dejará de ser visible para los miembros del espacio.",
     "unpublishConfirm": "Mover a borrador",
-    "notifyMembers": "Notificar a los miembros del espacio",
-    "saveFailed": "No se pudo cambiar la visibilidad. Vuelve a intentarlo."
+    "notifyMembers": "Notificar a los miembros del espacio"
   },
   "sortContributions": {
     "title": "Ordenar contribuciones",
     "description": "Arrastra para reordenar. El nuevo orden se aplica al guardar.",
     "empty": "Esta publicación aún no tiene contribuciones para ordenar.",
     "confirm": "Guardar orden",
-    "dragHandle": "Arrastra para reordenar",
-    "saveFailed": "No se pudo guardar el nuevo orden. Vuelve a intentarlo."
+    "dragHandle": "Arrastra para reordenar"
   },
   "deleteCallout": {
     "title": "¿Eliminar esta publicación?",
@@ -524,7 +518,6 @@
     "comments_one": "Se eliminará {{count}} comentario",
     "comments_other": "Se eliminarán {{count}} comentarios",
     "success": "La publicación “{{title}}” se ha eliminado.",
-    "saveFailed": "No se pudo eliminar la publicación. Vuelve a intentarlo.",
     "headerRichForm_one": "Se eliminarán el formulario y su {{count}} respuesta",
     "headerRichForm_other": "Se eliminarán el formulario y sus {{count}} respuestas",
     "headerRichFormContributions_one": "Se eliminarán el formulario, sus respuestas y {{count}} contribución",
@@ -536,8 +529,7 @@
   "deleteContribution": {
     "title": "¿Eliminar esta contribución?",
     "description": "“{{title}}” se eliminará de forma permanente. Esta acción no se puede deshacer.",
-    "confirm": "Eliminar",
-    "saveFailed": "No se pudo eliminar la contribución. Vuelve a intentarlo."
+    "confirm": "Eliminar"
   },
   "saveAsTemplate": {
     "saveFailed": "No se pudo guardar la plantilla. Vuelve a intentarlo."
@@ -980,8 +972,7 @@
   "postLocation": {
     "label": "Ubicación de la publicación",
     "warning": "Ten cuidado al cambiar la ubicación de la respuesta. Al moverla a otra publicación, desaparecerá de la actual. Esto puede dificultar que las personas, incluida quien creó la respuesta, la recuperen. Solo puedes mover respuestas dentro del mismo Espacio o Subespacio.",
-    "moved": "Respuesta movida correctamente.",
-    "moveFailed": "No se pudo mover la respuesta. Por favor, inténtalo de nuevo."
+    "moved": "Respuesta movida correctamente."
   },
   "whiteboardPreview": {
     "label": "Vista previa del whiteboard seleccionado",
@@ -1084,9 +1075,6 @@
     "customOption": {
       "placeholder": "Añade tu propia opción..."
     },
-    "error": {
-      "voteFailed": "No se pudo enviar tu voto. Inténtalo de nuevo."
-    },
     "subscription": {
       "voteRevoked": "Tu voto fue eliminado."
     }
@@ -1109,8 +1097,7 @@
     },
     "statusChange": {
       "closeSuccess": "La encuesta ahora está cerrada.",
-      "reopenSuccess": "La encuesta ahora está abierta a votos.",
-      "failed": "No se pudo cambiar el estado de la encuesta. Inténtalo de nuevo."
+      "reopenSuccess": "La encuesta ahora está abierta a votos."
     },
     "closePollConfirm": {
       "title": "¿Cerrar esta encuesta?",
@@ -1338,7 +1325,6 @@
     "noAnswer": "Sin respuesta",
     "success": "Tu respuesta se ha enviado.",
     "withdrawn": "Tu respuesta se ha retirado.",
-    "withdrawFailed": "No se pudo retirar tu respuesta. Inténtalo de nuevo.",
     "visibilityChanged": "Ha cambiado quién puede ver las respuestas: revisa y vuelve a enviar.",
     "errors": {
       "generic": "No se pudo enviar tu respuesta. Inténtalo de nuevo.",
@@ -1393,7 +1379,6 @@
       "confirm": "Eliminar"
     },
     "singleTitle": "Respuesta de {{name}}",
-    "deleteFailed": "No se pudo eliminar la respuesta. Inténtalo de nuevo.",
     "loadFailed": "No se pudieron cargar las respuestas.",
     "exportCsv": "Exportar CSV",
     "exporting": "Exportando…",

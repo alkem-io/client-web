@@ -18,6 +18,7 @@ import {
   type AuthorizationPrivilege,
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import type { ApplicationModel } from '../model/ApplicationModel';
 import type { InvitationModel } from '../model/InvitationModel';
@@ -36,7 +37,7 @@ type useRoleSetApplicationsAndInvitationsParams = {
   includeApplications?: boolean;
   /**
    * Apollo link context attached to every mutation this hook runs — e.g.
-   * `{ skipGlobalErrorHandler: true }` for a caller that renders every failure itself.
+   * `OWN_ERROR_HANDLING` for a caller that shows its own message for every failure.
    */
   mutationContext?: DefaultContext;
 };
@@ -238,7 +239,8 @@ const useRoleSetApplicationsAndInvitations = ({
       variables: {
         invitationId,
       },
-      context: { ...mutationContext, skipGlobalErrorHandler: true },
+      // Every caller shows the outcome through useResendPlatformInvitationAction.
+      context: { ...mutationContext, ...OWN_ERROR_HANDLING },
     });
 
   const [inviteForEntryRoleOnRoleSet] = useInviteForEntryRoleOnRoleSetMutation();

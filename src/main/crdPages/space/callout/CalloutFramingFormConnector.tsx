@@ -12,6 +12,8 @@ import {
   CalloutFormResponseVisibility,
   CalloutFormState,
 } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutFormBox } from '@/crd/components/callout/CalloutFormBox';
@@ -69,6 +71,7 @@ function CalloutFramingFormConnectorInner({
 }) {
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const client = useApolloClient();
   const { space } = useSpace();
   const { subspace } = useSubSpace();
@@ -178,7 +181,7 @@ function CalloutFramingFormConnectorInner({
             })),
           },
         },
-        context: { skipGlobalErrorHandler: true },
+        context: OWN_ERROR_HANDLING,
       });
     } catch (err) {
       const rejection = getCalloutFormError(err);
@@ -188,7 +191,9 @@ function CalloutFramingFormConnectorInner({
       // because the fill-in keeps its own state across these refetches.
       await Promise.allSettled([refreshDefinition(), refreshResponses()]);
       notify(
-        translateFormSubmitError(rejection?.code, t),
+        rejection
+          ? translateFormSubmitError(rejection.code, t)
+          : serverErrorMessage(err, t('formFillIn.errors.generic')),
         rejection?.code === CalloutFormErrorCode.FORM_VISIBILITY_CHANGED ? 'warning' : 'error'
       );
       if (rejection?.questionIDs.length) {
@@ -208,15 +213,12 @@ function CalloutFramingFormConnectorInner({
 
   const handleDelete = async (responseId: string, ownership: 'own' | 'moderated') => {
     try {
-      await deleteResponse({
-        variables: { deleteData: { responseID: responseId } },
-        context: { skipGlobalErrorHandler: true },
-      });
+      // A failed delete is reported by the global error handler, with the server's reason.
+      await deleteResponse({ variables: { deleteData: { responseID: responseId } } });
       if (ownership === 'own') notify(t('formFillIn.withdrawn'), 'success');
       await refreshResponses();
     } catch (err) {
       logError(new Error('Form response deletion failed', { cause: err as Error }));
-      notify(ownership === 'own' ? t('formFillIn.withdrawFailed') : t('formResponses.deleteFailed'), 'error');
     }
   };
 

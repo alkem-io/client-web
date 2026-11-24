@@ -1,3 +1,4 @@
+import type { DefaultContext } from '@apollo/client';
 import {
   useAddPollOptionMutation,
   useRemovePollOptionMutation,
@@ -7,13 +8,15 @@ import {
 
 type UsePollOptionManagementParams = {
   pollId: string;
+  /** Apollo context for every option mutation — a caller that reports failures itself passes `OWN_ERROR_HANDLING`. */
+  context?: DefaultContext;
 };
 
-export const usePollOptionManagement = ({ pollId }: UsePollOptionManagementParams) => {
-  const [addPollOptionMutation, { loading: addLoading }] = useAddPollOptionMutation();
-  const [updatePollOptionMutation, { loading: updateLoading }] = useUpdatePollOptionMutation();
-  const [removePollOptionMutation, { loading: removeLoading }] = useRemovePollOptionMutation();
-  const [reorderPollOptionsMutation, { loading: reorderLoading }] = useReorderPollOptionsMutation();
+export const usePollOptionManagement = ({ pollId, context }: UsePollOptionManagementParams) => {
+  const [addPollOptionMutation, { loading: addLoading }] = useAddPollOptionMutation({ context });
+  const [updatePollOptionMutation, { loading: updateLoading }] = useUpdatePollOptionMutation({ context });
+  const [removePollOptionMutation, { loading: removeLoading }] = useRemovePollOptionMutation({ context });
+  const [reorderPollOptionsMutation, { loading: reorderLoading }] = useReorderPollOptionsMutation({ context });
 
   const addOption = (text: string) =>
     addPollOptionMutation({
