@@ -64,16 +64,21 @@ type ParsedMessage = {
   readonly sender: string;
   readonly media?: MediaRef;
   readonly reactions: ParsedReaction[];
-  /** Set only on the entry a 1:1 ring makes in the timeline, once it has stopped ringing. */
+  /** Set only on the entry a call makes in the timeline: a 1:1 ring once it has stopped ringing, a group call from its start. */
   readonly call?: ParsedCall;
 };
 
 /**
- * Calls are a beta: where call controls do not show (`withCalls` off), a ring
+ * Calls are a beta: where call controls do not show (`withCalls` off), a call
  * is no entry either, so a call the user never heard ring is never missed.
  */
 type EntryOptions = {
   readonly withCalls?: boolean;
+  /**
+   * A group conversation: the entry is the call its start announced, with its length once it is over.
+   * Never a ring, which any member could send there to fake a missed call.
+   */
+  readonly inGroup?: boolean;
   /** The time a ring's outcome is judged at. */
   readonly now?: number;
 };
@@ -83,6 +88,11 @@ const isMessageLike = (type: string): boolean => type === EVENT_MESSAGE || type 
 const isRing = (event: RawEvent): boolean =>
   (event.type === EVENT_RTC_NOTIFICATION && event.content.notification_type === 'ring') ||
   (event.type === EVENT_CALL_NOTIFY && event.content.notify_type === 'ring');
+
+// Sent once by whoever joins an empty group call.
+const isGroupCallStart = (event: RawEvent): boolean =>
+  (event.type === EVENT_RTC_NOTIFICATION && event.content.notification_type === 'notification') ||
+  (event.type === EVENT_CALL_NOTIFY && event.content.notify_type === 'notify');
 
 const callMembershipOf = (event: RawEvent): 'join' | 'leave' | undefined => {
   if (event.type === EVENT_CALL_MEMBER) {
@@ -142,13 +152,42 @@ const callOf = (ring: RawEvent, newer: readonly RawEvent[], now: number): Parsed
   return { outcome: ringerLeft || now >= end ? 'unanswered' : 'ringing' };
 };
 
-/** A ring still ringing is no entry yet: what becomes of it is not known until it stops. */
-const parseRing = (ring: RawEvent, newer: readonly RawEvent[], now: number): ParsedMessage | undefined => {
-  const call = callOf(ring, newer, now);
+/**
+ * The group call `start` announced, judged by the events after it (oldest first): it ran until the
+ * last person in it left. Its length is left out while it runs, or when that leave is not loaded.
+ */
+const groupCallOf = (start: RawEvent, newer: readonly RawEvent[]): ParsedCall => {
+  // Whoever announces the call joined it just before.
+  const inCall = new Set([start.sender]);
+  for (const event of newer) {
+    const membership = callMembershipOf(event);
+    if (membership === 'join') {
+      inCall.add(event.sender);
+    } else if (membership === 'leave' && inCall.delete(event.sender) && inCall.size === 0) {
+      return { outcome: 'answered', durationMs: event.timestamp - start.timestamp };
+    }
+  }
+  return { outcome: 'answered' };
+};
+
+/**
+ * The entry a call event makes, if it makes one: in a 1:1 conversation a ring, once it has stopped
+ * ringing (what becomes of it is not known until then); in a group the start of a call.
+ */
+const callEntryOf = (
+  event: RawEvent,
+  newer: readonly RawEvent[],
+  now: number,
+  inGroup: boolean
+): ParsedMessage | undefined => {
+  if (inGroup ? !isGroupCallStart(event) : !isRing(event)) {
+    return undefined;
+  }
+  const call = inGroup ? groupCallOf(event, newer) : callOf(event, newer, now);
   if (call.outcome === 'ringing') {
     return undefined;
   }
-  return { eventId: ring.eventId, body: '', timestamp: ring.timestamp, sender: ring.sender, reactions: [], call };
+  return { eventId: event.eventId, body: '', timestamp: event.timestamp, sender: event.sender, reactions: [], call };
 };
 
 /**
@@ -223,22 +262,20 @@ const extractMedia = (event: RawEvent, homeserver: string): MediaRef | undefined
 /**
  * Message-like events become messages carrying their body verbatim; blank ones
  * (no body, no attachment — e.g. redacted) are skipped, and reactions attach to
- * the message they annotate. A 1:1 ring becomes a call entry at its time.
+ * the message they annotate. A call becomes an entry at its time.
  */
 const projectMessages = (
   events: RawEvent[],
   homeserver: string,
-  { withCalls = false, now = Date.now() }: EntryOptions = {}
+  { withCalls = false, inGroup = false, now = Date.now() }: EntryOptions = {}
 ): ParsedMessage[] => {
   const messages: ParsedMessage[] = [];
   const byId = new Map<string, ParsedMessage>();
 
   for (const [index, event] of events.entries()) {
-    if (withCalls && isRing(event)) {
-      const call = parseRing(event, events.slice(index + 1), now);
-      if (call) {
-        messages.push(call);
-      }
+    const call = withCalls ? callEntryOf(event, events.slice(index + 1), now, inGroup) : undefined;
+    if (call) {
+      messages.push(call);
       continue;
     }
     if (!isMessageLike(event.type)) {
@@ -285,16 +322,15 @@ const parseMessage = (event: RawEvent, homeserver: string): ParsedMessage | unde
 const lastMessageOf = (
   events: RawEvent[],
   homeserver: string,
-  { withCalls = false, now = Date.now() }: EntryOptions = {}
+  { withCalls = false, inGroup = false, now = Date.now() }: EntryOptions = {}
 ): ParsedMessage | undefined => {
   for (let index = events.length - 1; index >= 0; index--) {
     const event = events[index];
-    if (withCalls && isRing(event)) {
-      const call = parseRing(event, events.slice(index + 1), now);
-      if (call) {
-        return call;
-      }
-    } else if (isMessageLike(event.type)) {
+    const call = withCalls ? callEntryOf(event, events.slice(index + 1), now, inGroup) : undefined;
+    if (call) {
+      return call;
+    }
+    if (isMessageLike(event.type)) {
       const message = parseMessage(event, homeserver);
       if (message) {
         return message;
@@ -310,14 +346,11 @@ const lastMessageOf = (
  */
 const newestEntryId = (
   events: RawEvent[],
-  { withCalls = false, now = Date.now() }: EntryOptions = {}
+  { withCalls = false, inGroup = false, now = Date.now() }: EntryOptions = {}
 ): string | null => {
   for (let index = events.length - 1; index >= 0; index--) {
     const event = events[index];
-    if (
-      isMessageLike(event.type) ||
-      (withCalls && isRing(event) && callOf(event, events.slice(index + 1), now).outcome !== 'ringing')
-    ) {
+    if (isMessageLike(event.type) || (withCalls && callEntryOf(event, events.slice(index + 1), now, inGroup))) {
       return event.eventId;
     }
   }

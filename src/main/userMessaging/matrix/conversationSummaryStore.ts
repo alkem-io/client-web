@@ -69,6 +69,7 @@ class ConversationSummaryStore {
   private readonly pinWrites = new Map<string, boolean>();
   // The rooms where a ring counts as an entry (the latest one, and a missed one as unread).
   private ringRooms: ReadonlySet<string> = new Set();
+  private groupCallRooms: ReadonlySet<string> = new Set();
   // Rooms with a ring still ringing, computed again once it stops.
   private readonly ringEnds = new Map<string, ReturnType<typeof setTimeout>>();
 
@@ -141,15 +142,17 @@ class ConversationSummaryStore {
   }
 
   /**
-   * Sets the conversations where a ring counts as an entry: the user's 1:1 conversations while calls
-   * show, none otherwise. Every summary computed the other way is computed again.
+   * Sets the conversations where a call counts as an entry while calls show: the user's 1:1
+   * conversations, where the entry is a ring, and their groups, where it is a call that took place.
+   * None otherwise. Every summary computed the other way is computed again.
    */
-  setRingRooms(ringRooms: ReadonlySet<string>): void {
-    const previous = this.ringRooms;
+  setRingRooms(ringRooms: ReadonlySet<string>, groupCallRooms: ReadonlySet<string> = new Set()): void {
+    const previous = new Set([...this.ringRooms, ...this.groupCallRooms]);
     this.ringRooms = ringRooms;
+    this.groupCallRooms = groupCallRooms;
     // Also a room whose first summary is still being computed: it read the previous set.
     for (const alkemioRoomId of new Set([...this.summaries.keys(), ...this.inFlight])) {
-      if (previous.has(alkemioRoomId) !== ringRooms.has(alkemioRoomId)) {
+      if (previous.has(alkemioRoomId) !== (ringRooms.has(alkemioRoomId) || groupCallRooms.has(alkemioRoomId))) {
         this.invalidate(alkemioRoomId);
       }
     }
@@ -312,28 +315,30 @@ class ConversationSummaryStore {
       const homeserver = homeserverOf(this.client);
       const fetchBatch = fetchBackward(this.client, matrixRoomId);
       const loaded = liveEvents(room);
-      const withCalls = this.ringRooms.has(alkemioRoomId);
+      // A ring rings, is missed and counts as unread only in a 1:1; a group call is just an entry.
+      const withRings = this.ringRooms.has(alkemioRoomId);
+      const inGroup = this.groupCallRooms.has(alkemioRoomId);
       // Read before the history is fetched: a ring that stops ringing meanwhile still gets its timer below.
       const now = Date.now();
       const [lastMessage, unreadCount] = await Promise.all([
-        this.findLastMessage(loaded, fetchBatch, homeserver, withCalls),
+        this.findLastMessage(loaded, fetchBatch, homeserver, { withCalls: withRings || inGroup, inGroup }),
         computeUnreadCount({
           markerEventId: fullyReadEventId(room),
           ownUserId: ownUserId(this.client),
           loadedNewestFirst: [...loaded].reverse(),
           fetchBatch,
           notificationCount: () => notificationCount(room),
-          withCalls,
+          withCalls: withRings,
         }),
       ]);
       // An existing pin is kept: tags changes and the user's own toggle own it.
       const pinned = this.summaries.get(alkemioRoomId)?.pinned ?? isFavourite(room);
-      const ringing = withCalls ? ringingRingOf(loaded, ownUserId(this.client), now) : undefined;
-      const ringAt = withCalls ? newestRingAt(loaded, ownUserId(this.client)) : undefined;
+      const ringing = withRings ? ringingRingOf(loaded, ownUserId(this.client), now) : undefined;
+      const ringAt = withRings ? newestRingAt(loaded, ownUserId(this.client)) : undefined;
       this.publish(alkemioRoomId, { lastMessage, unreadCount, pinned, ringing, ringAt });
       // A ring is no preview or unread while it rings, and no event arrives when it stops.
       clearTimeout(this.ringEnds.get(alkemioRoomId));
-      const until = withCalls ? ringingUntil(loaded, now) : undefined;
+      const until = withRings ? ringingUntil(loaded, now) : undefined;
       if (until === undefined) {
         this.ringEnds.delete(alkemioRoomId);
       } else {
@@ -351,9 +356,8 @@ class ConversationSummaryStore {
     live: RawEvent[],
     fetchBatch: ReturnType<typeof fetchBackward>,
     homeserver: string,
-    withCalls: boolean
+    options: { withCalls: boolean; inGroup: boolean }
   ): Promise<ParsedMessage | undefined> {
-    const options = { withCalls };
     const local = lastMessageOf(live, homeserver, options);
     if (local) {
       return local;

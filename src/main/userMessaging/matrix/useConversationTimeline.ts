@@ -52,7 +52,7 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
   const client = useMatrixClient();
   const establishing = useMatrixSessionEstablishing();
   const roomKey = client && alkemioRoomId ? alkemioRoomId : null;
-  const withCalls = useCallsShown() && !isGroup;
+  const withCalls = useCallsShown();
   const [state, setState] = useState<TimelineState>({
     roomKey: null,
     messages: [],
@@ -62,6 +62,7 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
   // Read by the subscription's refresh, so showing calls or not re-projects the loaded events in place:
   // loading them again would blank the thread and lose its scroll position.
   const withCallsRef = useRef(withCalls);
+  const isGroupRef = useRef(isGroup);
   const refreshRef = useRef<() => void>(undefined);
 
   useEffect(() => {
@@ -77,17 +78,19 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
     const refresh = () => {
       if (!cancelled && room) {
         const withCalls = withCallsRef.current;
+        const inGroup = isGroupRef.current;
         const events = liveEvents(room);
         const now = Date.now();
         setState({
           roomKey,
-          messages: projectMessages(events, homeserver, { withCalls, now }),
-          readUpToEventId: newestEntryId(events, { withCalls, now }),
+          messages: projectMessages(events, homeserver, { withCalls, inGroup, now }),
+          readUpToEventId: newestEntryId(events, { withCalls, inGroup, now }),
           isLoading: loading,
         });
         // A ring still ringing shows once it stops, with no further event to say so.
         clearTimeout(ringEnd);
-        const until = withCalls ? ringingUntil(events, now) : undefined;
+        // Only a 1:1 ring waits to become an entry.
+        const until = withCalls && !inGroup ? ringingUntil(events, now) : undefined;
         ringEnd = until === undefined ? undefined : setTimeout(refresh, until - now);
       }
     };
@@ -181,8 +184,9 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
 
   useEffect(() => {
     withCallsRef.current = withCalls;
+    isGroupRef.current = isGroup;
     refreshRef.current?.();
-  }, [withCalls]);
+  }, [withCalls, isGroup]);
 
   if (!client) {
     // Without a client the thread waits only while the session is being established

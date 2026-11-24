@@ -121,15 +121,15 @@ describe('useIncomingCallsWatcher', () => {
     });
     expect(harness.querySkip).toBe(true);
     expect(harness.conversations).toEqual([]);
-    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Set());
+    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Set(), new Set());
   });
 
-  it('makes a ring an entry in the 1:1 conversations with another person only, never in a group', () => {
+  it('makes a ring an entry in the 1:1 conversations with another person only; a group gets its calls instead', () => {
     renderHook(() => useIncomingCallsWatcher());
     act(() => {
       vi.advanceTimersByTime(2000);
     });
-    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Set(['direct']));
+    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Set(['direct']), new Set(['group']));
   });
 
   // From here on: a call dealt with stays dealt with for the rest of the file.

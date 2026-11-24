@@ -316,3 +316,48 @@ describe('calls', () => {
     expect(newestEntryId(events)).toBe(hello.eventId);
   });
 });
+
+describe('group calls', () => {
+  const at = (timestamp: number, type: string, content: Record<string, unknown>, sender = ALICE): RawEvent =>
+    event(type, content, { timestamp, sender });
+  // Sent once by whoever joins an empty group call.
+  const started = (timestamp: number, sender = ALICE) =>
+    at(timestamp, 'org.matrix.msc4075.rtc.notification', { notification_type: 'notification' }, sender);
+  const member = (timestamp: number, sender: string, joined: boolean) =>
+    at(timestamp, 'org.matrix.msc3401.call.member', joined ? { application: 'm.call', device_id: 'D' } : {}, sender);
+  const text = (timestamp: number, body: string) => at(timestamp, 'm.room.message', { msgtype: 'm.text', body });
+  const group = { withCalls: true, inGroup: true, now: 10_000_000 };
+
+  it('is an entry from its start, with its length once the last person in it has left', () => {
+    const call = started(1_000);
+    const running = [text(500, 'before'), call, member(5_000, BOB, true), member(300_000, ALICE, false)];
+    // Bob is still in it: the call runs on, so it has no length yet.
+    expect(projectMessages(running, HS, group)[1]).toMatchObject({
+      eventId: call.eventId,
+      timestamp: 1_000,
+      call: { outcome: 'answered' },
+    });
+    expect(projectMessages(running, HS, group)[1].call?.durationMs).toBeUndefined();
+
+    const over = [...running, member(721_000, BOB, false)];
+    expect(projectMessages(over, HS, group)[1].call).toEqual({ outcome: 'answered', durationMs: 720_000 });
+    expect(lastMessageOf(over, HS, group)?.eventId).toBe(call.eventId);
+    expect(newestEntryId(over, group)).toBe(call.eventId);
+  });
+
+  it('ends when its starter leaves a call nobody else joined', () => {
+    const events = [started(1_000), member(61_000, ALICE, false)];
+    expect(projectMessages(events, HS, group)[0].call).toEqual({ outcome: 'answered', durationMs: 60_000 });
+  });
+
+  it('never makes a ring an entry in a group, nor a group call an entry in a 1:1', () => {
+    const ring = at(1_000, 'org.matrix.msc4075.rtc.notification', { notification_type: 'ring', lifetime: 30_000 });
+    expect(projectMessages([ring], HS, group)).toEqual([]);
+    expect(newestEntryId([ring], group)).toBeNull();
+    expect(projectMessages([started(1_000)], HS, { withCalls: true, now: 10_000_000 })).toEqual([]);
+  });
+
+  it('is no entry where calls do not show', () => {
+    expect(projectMessages([started(1_000)], HS, { inGroup: true })).toEqual([]);
+  });
+});

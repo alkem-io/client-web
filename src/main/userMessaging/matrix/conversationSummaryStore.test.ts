@@ -350,6 +350,41 @@ describe('ConversationSummaryStore', () => {
     );
   });
 
+  it('makes a group call the preview with its length, never an unread or a ring', async () => {
+    const started = {
+      eventId: '$call',
+      type: 'org.matrix.msc4075.rtc.notification',
+      sender: `@other:${HS}`,
+      ts: 1_000,
+      content: { notification_type: 'notification' },
+    };
+    const left = {
+      eventId: '$left',
+      type: 'org.matrix.msc3401.call.member',
+      sender: `@other:${HS}`,
+      ts: 121_000,
+      content: {},
+    };
+    const room: FakeRoom = {
+      roomId: '!alk-1',
+      events: [text('$1', 'hello'), started, left],
+      marker: '$1',
+      notifications: 0,
+    };
+    const { client } = makeClient([room]);
+    const store = new ConversationSummaryStore(client);
+    store.setRingRooms(new Set(), new Set(['alk-1']));
+
+    store.watch(['alk-1']);
+    await vi.waitFor(() =>
+      expect(store.getSnapshot().get('alk-1')).toMatchObject({
+        lastMessage: { eventId: '$call', call: { outcome: 'answered', durationMs: 120_000 } },
+        unreadCount: 0,
+      })
+    );
+    expect(store.getSnapshot().get('alk-1')?.ringing).toBeUndefined();
+  });
+
   it('makes a ring the preview and a missed call only once it stops ringing, though no further event arrives', async () => {
     // A controlled clock: the ring cannot stop ringing while the first summary is still being computed.
     vi.useFakeTimers();

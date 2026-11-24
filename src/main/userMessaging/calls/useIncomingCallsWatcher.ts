@@ -27,7 +27,7 @@ const isDealtWith = (call: LiveCall, roomId: string, isSeen: boolean, dismissals
  * unread signals. A call is dealt with, in every tab, once the user joins it on
  * any device, leaves it, or declines it; also once the user opens its
  * conversation while it runs and, in a 1:1, its ring has stopped.
- * It also tells the conversation summaries in which conversations a ring is an entry.
+ * It also tells the conversation summaries in which conversations a ring, or a group call, is an entry.
  * The sound for a call starting comes from its notification event (useSyncChatSound).
  */
 export const useIncomingCallsWatcher = () => {
@@ -63,20 +63,24 @@ export const useIncomingCallsWatcher = () => {
   const liveCalls = useLiveCalls(enabled ? conversations : []);
 
   // A ring is a timeline entry only in a 1:1 conversation with another person: in a group any member
-  // could send one, unattributed. None while calls are hidden.
+  // could send one, unattributed. A group's entry is a call that took place. None while calls are hidden.
   const client = useMatrixClient();
-  const ringRoomsKey = enabled
-    ? conversations
-        .filter(conversation => !conversation.isGroup && isCallableConversation(conversation))
-        .map(conversation => conversation.roomId)
-        .sort()
-        .join('\n')
-    : '';
+  const roomsKey = (inGroup: boolean) =>
+    enabled
+      ? conversations
+          .filter(conversation => conversation.isGroup === inGroup && isCallableConversation(conversation))
+          .map(conversation => conversation.roomId)
+          .sort()
+          .join('\n')
+      : '';
+  const ringRoomsKey = roomsKey(false);
+  const groupCallRoomsKey = roomsKey(true);
   useEffect(() => {
     if (client) {
-      storeFor(client).setRingRooms(new Set(ringRoomsKey === '' ? [] : ringRoomsKey.split('\n')));
+      const rooms = (key: string) => new Set(key === '' ? [] : key.split('\n'));
+      storeFor(client).setRingRooms(rooms(ringRoomsKey), rooms(groupCallRoomsKey));
     }
-  }, [client, ringRoomsKey]);
+  }, [client, ringRoomsKey, groupCallRoomsKey]);
 
   const dismissals = useCallDismissals();
   const isDocumentActive = useIsDocumentActive();
