@@ -62,6 +62,7 @@
           "licenseEntitlementNotAvailable": "License entitlement not available.",
           "licenseEntitlementNotSupported": "License entitlement not supported.",
           "messagingNotEnabled": "Messaging not enabled.",
+          "messageSendLimitReached": "Puedes enviar hasta 20 mensajes por hora. Podrás enviar más mensajes más tarde.",
           "noAgentForUser": "No agent for user.",
           "notEnabled": "Feature not enabled.",
           "operationNotAllowed": "Operation not allowed.",
