@@ -11,7 +11,7 @@ type Conversation = {
   members: Member[];
   isGuidance: boolean;
   isGroup: boolean;
-  ringingEventId?: string;
+  ringing?: { eventId: string; media: 'voice' | 'video' };
 };
 
 const state: { selectedConversationId: string | null; conversations: Conversation[] } = {
@@ -491,9 +491,9 @@ describe('UnifiedChatPanelConnector calls', () => {
     expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!direct:hs', intent: 'join_existing_dm_voice' });
   });
 
-  const ringing = () => {
+  const ringing = (media: 'voice' | 'video' = 'video') => {
     directCallRunning();
-    state.conversations = [{ ...directChat, ringingEventId: '$ring' }, groupChat];
+    state.conversations = [{ ...directChat, ringing: { eventId: '$ring', media } }, groupChat];
     calls.client = {
       getUserId: () => null,
       on: vi.fn(),
@@ -512,6 +512,15 @@ describe('UnifiedChatPanelConnector calls', () => {
     await user.click(screen.getByRole('button', { name: 'call.banner.answer' }));
     expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!direct:hs', intent: 'join_existing_dm' });
     expect(calls.dismissCall).not.toHaveBeenCalled();
+  });
+
+  it('answers a ringing audio call without the camera', async () => {
+    ringing('voice');
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    render(<UnifiedChatPanelConnector />);
+
+    await user.click(screen.getByRole('button', { name: 'call.banner.answer' }));
+    expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!direct:hs', intent: 'join_existing_dm_voice' });
   });
 
   it('declines a ringing call by sending the decline of its ring, then dismissing it in every tab, without joining', async () => {

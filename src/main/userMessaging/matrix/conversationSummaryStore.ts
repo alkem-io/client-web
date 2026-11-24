@@ -1,7 +1,14 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
-import { lastMessageOf, type ParsedMessage, type RawEvent, ringingRingId, ringingUntil } from './matrixEvents';
+import {
+  lastMessageOf,
+  type ParsedMessage,
+  type RawEvent,
+  type RingingRing,
+  ringingRingOf,
+  ringingUntil,
+} from './matrixEvents';
 import {
   CLIENT_ROOM,
   CLIENT_SYNC,
@@ -28,8 +35,8 @@ type RoomSummary = {
   readonly unreadCount: number;
   /** The user has pinned the conversation (its room carries their favourite tag). */
   readonly pinned: boolean;
-  /** The ring from someone else still ringing there, by event id; only where a ring is an entry. */
-  readonly ringingEventId?: string;
+  /** The ring from someone else still ringing there; only where a ring is an entry. */
+  readonly ringing?: RingingRing;
 };
 
 type Summaries = ReadonlyMap<string, RoomSummary>;
@@ -316,8 +323,8 @@ class ConversationSummaryStore {
       // An existing pin is kept: tags changes and the user's own toggle own it.
       const pinned = this.summaries.get(alkemioRoomId)?.pinned ?? isFavourite(room);
       const now = Date.now();
-      const ringingEventId = withCalls ? ringingRingId(loaded, ownUserId(this.client), now) : undefined;
-      this.publish(alkemioRoomId, { lastMessage, unreadCount, pinned, ringingEventId });
+      const ringing = withCalls ? ringingRingOf(loaded, ownUserId(this.client), now) : undefined;
+      this.publish(alkemioRoomId, { lastMessage, unreadCount, pinned, ringing });
       // A ring is no preview or unread while it rings, and no event arrives when it stops.
       clearTimeout(this.ringEnds.get(alkemioRoomId));
       const until = withCalls ? ringingUntil(loaded, now) : undefined;

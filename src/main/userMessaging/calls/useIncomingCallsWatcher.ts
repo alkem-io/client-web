@@ -87,7 +87,7 @@ export const useIncomingCallsWatcher = () => {
     openConversation && !openConversation.isGroup ? [openConversation.roomId] : []
   )?.get(openConversation?.roomId ?? '');
   const openSeenRoomId =
-    openConversation && (openConversation.isGroup || (openDirectSummary && !openDirectSummary.ringingEventId))
+    openConversation && (openConversation.isGroup || (openDirectSummary && !openDirectSummary.ringing))
       ? openConversation.roomId
       : null;
   const incoming = [...liveCalls].flatMap(([roomId, call]) =>

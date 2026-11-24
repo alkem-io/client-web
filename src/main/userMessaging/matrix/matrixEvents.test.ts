@@ -5,7 +5,7 @@ import {
   newestEntryId,
   projectMessages,
   type RawEvent,
-  ringingRingId,
+  ringingRingOf,
   ringingUntil,
 } from './matrixEvents';
 
@@ -297,10 +297,15 @@ describe('calls', () => {
 
   it('names the ring from someone else still ringing, never the user’s own', () => {
     const call = ring(2_000);
-    expect(ringingRingId([text(1_000, 'hello'), call], BOB, 20_000)).toBe(call.eventId);
-    expect(ringingRingId([call], ALICE, 20_000)).toBeUndefined();
-    expect(ringingRingId([call], BOB, 32_000)).toBeUndefined();
-    expect(ringingRingId([call, rtcMember(5_000, BOB, 'join')], BOB, 20_000)).toBeUndefined();
+    expect(ringingRingOf([text(1_000, 'hello'), call], BOB, 20_000)).toEqual({ eventId: call.eventId, media: 'video' });
+    expect(ringingRingOf([call], ALICE, 20_000)).toBeUndefined();
+    expect(ringingRingOf([call], BOB, 32_000)).toBeUndefined();
+    expect(ringingRingOf([call, rtcMember(5_000, BOB, 'join')], BOB, 20_000)).toBeUndefined();
+  });
+
+  it('says a ring is for a voice call only when its caller started an audio call', () => {
+    expect(ringingRingOf([ring(2_000, { 'm.call.intent': 'audio' })], BOB, 20_000)?.media).toBe('voice');
+    expect(ringingRingOf([ring(2_000, { 'm.call.intent': 'video' })], BOB, 20_000)?.media).toBe('video');
   });
 
   it('makes no entry, preview or read marker from a ring where calls are not shown', () => {

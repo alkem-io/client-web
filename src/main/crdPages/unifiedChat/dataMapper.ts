@@ -1,6 +1,7 @@
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { ChatCall, ChatListItem, ChatMessage, GroupMember } from '@/crd/components/chat/types';
 import type { CommentAuthor, CommentReaction } from '@/crd/components/comment/types';
+import type { RingingRing } from '@/main/userMessaging/matrix/matrixEvents';
 import type {
   ConversationMember,
   ConversationMessage,
@@ -15,8 +16,8 @@ export type UnifiedConversation = UserConversation & {
   pinned: boolean;
   /** Pinned by the user, from their Matrix favourite tag on the room. */
   userPinned: boolean;
-  /** The ring from the other person still ringing in a 1:1, by Matrix event id. */
-  ringingEventId?: string;
+  /** The ring from the other person still ringing in a 1:1. */
+  ringing?: RingingRing;
 };
 
 /**

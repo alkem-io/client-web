@@ -368,7 +368,7 @@ describe('ConversationSummaryStore', () => {
     expect(store.getSnapshot().get('alk-1')).toMatchObject({
       lastMessage: { body: 'hello' },
       unreadCount: 0,
-      ringingEventId: '$ring',
+      ringing: { eventId: '$ring', media: 'video' },
     });
 
     await vi.waitFor(() =>
@@ -377,6 +377,6 @@ describe('ConversationSummaryStore', () => {
         unreadCount: 1,
       })
     );
-    expect(store.getSnapshot().get('alk-1')?.ringingEventId).toBeUndefined();
+    expect(store.getSnapshot().get('alk-1')?.ringing).toBeUndefined();
   });
 });

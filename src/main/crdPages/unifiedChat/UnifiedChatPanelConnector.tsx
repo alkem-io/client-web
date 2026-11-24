@@ -449,20 +449,20 @@ export const UnifiedChatPanelConnector = ({
     }
     // A running call gets the banner under the header, unless this tab is in it: the call is open here.
     if (callEligibility.eligible && callSession.participantCount > 0 && !callSession.isJoinedHere) {
-      const { roomId, members, ringingEventId } = selectedConversation;
+      const { roomId, members, ringing } = selectedConversation;
       const call = liveCalls.get(roomId);
       const firstName = (displayName: string) => displayName.split(' ')[0];
-      if (call && ringingEventId && matrixRoomId && matrixClient) {
-        // Rings for as long as the other person's ring does. Declining tells the caller, every device
-        // and every tab.
+      if (call && ringing && matrixRoomId && matrixClient) {
+        // Rings for as long as the other person's ring does, answered with the media the caller chose.
+        // Declining tells the caller, every device and every tab.
         callBanner = (
           <CallBanner
             variant="ringing"
             callerName={firstName(counterpart?.displayName ?? '')}
-            onAnswer={() => openSelectedCall('join', 'video')}
+            onAnswer={() => openSelectedCall('join', ringing.media)}
             onDecline={() =>
               matrixClient
-                .sendRtcDecline(matrixRoomId, ringingEventId)
+                .sendRtcDecline(matrixRoomId, ringing.eventId)
                 .then(() => dismissCall(roomId, call.latestTs), notifyMatrixFailed)
             }
           />

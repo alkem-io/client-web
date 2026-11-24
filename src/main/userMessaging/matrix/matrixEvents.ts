@@ -165,8 +165,14 @@ const ringingUntil = (events: readonly RawEvent[], now: number): number | undefi
   return until;
 };
 
+/** A ring still ringing, and whether its caller started a voice or a video call. */
+type RingingRing = {
+  readonly eventId: string;
+  readonly media: 'voice' | 'video';
+};
+
 /** The newest ring among `events` (oldest first) from someone other than `ownUserId` that still rings, if any. */
-const ringingRingId = (events: readonly RawEvent[], ownUserId: string, now: number): string | undefined => {
+const ringingRingOf = (events: readonly RawEvent[], ownUserId: string, now: number): RingingRing | undefined => {
   for (let index = events.length - 1; index >= 0; index--) {
     const event = events[index];
     if (
@@ -174,7 +180,7 @@ const ringingRingId = (events: readonly RawEvent[], ownUserId: string, now: numb
       event.sender !== ownUserId &&
       callOf(event, events.slice(index + 1), now).outcome === 'ringing'
     ) {
-      return event.eventId;
+      return { eventId: event.eventId, media: event.content['m.call.intent'] === 'audio' ? 'voice' : 'video' };
     }
   }
   return undefined;
@@ -322,11 +328,11 @@ export {
   lastMessageOf,
   newestEntryId,
   projectMessages,
-  ringingRingId,
+  ringingRingOf,
   ringingUntil,
   serverNameOf,
   EVENT_MESSAGE,
   EVENT_REACTION,
   EVENT_STICKER,
 };
-export type { MediaRef, ParsedCall, ParsedMessage, ParsedReaction, RawEvent };
+export type { MediaRef, ParsedCall, ParsedMessage, ParsedReaction, RawEvent, RingingRing };

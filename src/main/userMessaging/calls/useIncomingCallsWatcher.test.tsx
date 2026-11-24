@@ -10,7 +10,7 @@ const harness = vi.hoisted(() => ({
   querySkip: undefined as boolean | undefined,
   selectedRoomId: null as string | null,
   setRingRooms: vi.fn(),
-  summaries: new Map<string, { ringingEventId?: string }>(),
+  summaries: new Map<string, { ringing?: { eventId: string; media: 'voice' | 'video' } }>(),
 }));
 
 const vc = { id: 'vc', type: 'VIRTUAL_CONTRIBUTOR' };
@@ -172,7 +172,7 @@ describe('useIncomingCallsWatcher', () => {
       ['group', othersCall],
     ]);
     harness.selectedRoomId = 'direct';
-    harness.summaries = new Map([['direct', { ringingEventId: '$ring' }]]);
+    harness.summaries = new Map([['direct', { ringing: { eventId: '$ring', media: 'video' as const } }]]);
     const { rerender } = renderHook(() => useIncomingCallsWatcher());
     act(() => {
       vi.advanceTimersByTime(2000);
