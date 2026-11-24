@@ -113,7 +113,7 @@ describe('useSyncChatSound', () => {
     expect(harness.playSound).toHaveBeenCalledOnce();
   });
 
-  it('plays when someone else starts a call, 1:1 or group, for a beta tester where calls are configured', () => {
+  it('plays the call sound when someone else starts a call, 1:1 or group, for a beta tester where calls are configured', () => {
     const client = makeClient(true);
     harness.client = client;
     harness.platformRoles = ['FEATURE_BETA_TESTER'];
@@ -127,7 +127,8 @@ describe('useSyncChatSound', () => {
     expect(harness.playSound).not.toHaveBeenCalled();
 
     client.emit('Room.timeline', callStarted(), { roomId: '!conv' }, false, false, live);
-    expect(harness.playSound).toHaveBeenCalledWith('chat');
+    // Its own sound, not the message ping.
+    expect(harness.playSound).toHaveBeenCalledExactlyOnceWith('call');
   });
 
   it('stays silent for a call starting for anyone the call controls are hidden from', () => {

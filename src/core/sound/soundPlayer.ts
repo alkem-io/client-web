@@ -1,5 +1,5 @@
 /**
- * Autoplay-safe, self-debouncing player for the two notification cues.
+ * Autoplay-safe, self-debouncing player for the notification cues.
  *
  * - One lazily-constructed, preloaded `HTMLAudioElement` per key, reused across
  *   plays (`currentTime = 0; play()`).
@@ -13,11 +13,13 @@
  * be swapped without a rebuild.
  */
 
-export type SoundKey = 'chat' | 'notification';
+export type SoundKey = 'chat' | 'notification' | 'call';
 
 const SOUND_SOURCES: Record<SoundKey, string> = {
   chat: '/sounds/chat.mp3',
   notification: '/sounds/notification.mp3',
+  // The chat ping's tone and key as a three-note rise, played three times (2.5 s); once, not looped.
+  call: '/sounds/call.wav',
 };
 
 const DEBOUNCE_MS = 5000;

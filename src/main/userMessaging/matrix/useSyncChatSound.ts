@@ -20,7 +20,8 @@ const CALL_STARTED_EVENT_TYPES = new Set(['org.matrix.msc4075.rtc.notification',
  * user's conversations, with the same rules as before: not for own messages,
  * not for the conversation being viewed in a focused tab, and only when the
  * user's chat-sound setting is on. The initial sync backlog never sounds.
- * A call starting sounds the same way, for those who see the call controls.
+ * A call starting follows the same rules with its own, longer sound, for those who
+ * see the call controls.
  */
 export const useSyncChatSound = () => {
   const client = useMatrixClient();
@@ -75,7 +76,7 @@ export const useSyncChatSound = () => {
           enabled: chatSoundEnabledRef.current,
         })
       ) {
-        playSound('chat');
+        playSound(isCallStarted ? 'call' : 'chat');
       }
     };
 
