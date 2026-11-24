@@ -1,6 +1,12 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
+import bg from '../../i18n/chat/chat.bg.json';
+import de from '../../i18n/chat/chat.de.json';
+import en from '../../i18n/chat/chat.en.json';
+import es from '../../i18n/chat/chat.es.json';
+import fr from '../../i18n/chat/chat.fr.json';
+import nl from '../../i18n/chat/chat.nl.json';
 import { ChatConversationList } from './ChatConversationList';
 import type { ChatListItem } from './types';
 
@@ -109,6 +115,12 @@ describe('ChatConversationList running call', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'call.listJoin' }));
     expect(onJoinCall).toHaveBeenCalledOnce();
+  });
+
+  test.each(
+    Object.entries({ en, nl, es, bg, de, fr })
+  )('the Join chip name contains its visible label, so voice control finds it (%s)', (_language, chat) => {
+    expect(chat.call.listJoin.toLowerCase()).toContain(chat.call.join.toLowerCase());
   });
 
   test('a running call with nothing to join shows no Join chip', () => {
