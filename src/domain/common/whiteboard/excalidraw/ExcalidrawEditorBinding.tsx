@@ -1,7 +1,7 @@
 import type { AssetAdapter, ExcalidrawImperativeAPI, ExcalidrawProps } from '@excalidraw-yjs/excalidraw/types';
 import { debounce, merge } from 'lodash-es';
 import type React from 'react';
-import { type PropsWithChildren, Suspense, useEffect, useMemo, useState } from 'react';
+import { type PropsWithChildren, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -56,14 +56,15 @@ export const ExcalidrawEditorBinding = ({
   const defaults = useWhiteboardDefaults();
   const { t } = useTranslation();
   const notify = useNotification();
-  const refresh = useMemo(() => debounce(() => api?.refresh(), 100), [api]);
   useEffect(() => {
+    // The debounced handler is owned by this effect: created with the listener, cancelled with it.
+    const refresh = debounce(() => api?.refresh(), 100);
     window.addEventListener('scroll', refresh, true);
     return () => {
       refresh.cancel();
       window.removeEventListener('scroll', refresh, true);
     };
-  }, [refresh]);
+  }, [api]);
 
   const { UIOptions, viewModeEnabled, ...rest } = options;
   const mergedUIOptions = merge({ canvasActions: { loadScene: true, export: { saveFileToDisk: true } } }, UIOptions);

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import {
   useAccountSearchOrganizationsLazyQuery,
   useAccountSearchUsersLazyQuery,
@@ -31,12 +31,10 @@ const useAccountSearch = () => {
   // client-1: denied only when EVERY error the two queries reported is an
   // authorization code — a genuinely mixed/other failure is not "denied",
   // it's a normal search failure the global error handler already covers.
-  const denied = useMemo(() => {
-    const codes = [usersError, orgsError]
-      .filter(error => error !== undefined)
-      .flatMap(error => error.graphQLErrors.map(graphQLError => graphQLError.extensions?.code as string));
-    return codes.length > 0 && codes.every(code => DENIED_ERROR_CODES.includes(code));
-  }, [usersError, orgsError]);
+  const deniedCodes = [usersError, orgsError]
+    .filter(error => error !== undefined)
+    .flatMap(error => error.graphQLErrors.map(graphQLError => graphQLError.extensions?.code as string));
+  const denied = deniedCodes.length > 0 && deniedCodes.every(code => DENIED_ERROR_CODES.includes(code));
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -46,37 +44,36 @@ const useAccountSearch = () => {
     searchOrgs({ variables: { first: 20, filter: { displayName: term } } });
   };
 
-  const results: AccountSearchResult[] = useMemo(() => {
-    const userResults: AccountSearchResult[] =
-      usersData?.platformAdmin?.users?.users
-        ?.filter(
-          u =>
-            u.account?.id &&
-            u.account.authorization?.myPrivileges?.includes(AuthorizationPrivilege.TransferResourceAccept)
-        )
-        .map(u => ({
-          id: u.account!.id,
-          accountId: u.account!.id,
-          name: `${u.profile?.displayName} (User)`,
-          type: 'User' as const,
-        })) ?? [];
+  // Derived each render — the React Compiler memoizes this automatically.
+  const userResults: AccountSearchResult[] =
+    usersData?.platformAdmin?.users?.users
+      ?.filter(
+        u =>
+          u.account?.id &&
+          u.account.authorization?.myPrivileges?.includes(AuthorizationPrivilege.TransferResourceAccept)
+      )
+      .map(u => ({
+        id: u.account!.id,
+        accountId: u.account!.id,
+        name: `${u.profile?.displayName} (User)`,
+        type: 'User' as const,
+      })) ?? [];
 
-    const orgResults: AccountSearchResult[] =
-      orgsData?.platformAdmin?.organizations?.organization
-        ?.filter(
-          o =>
-            o.account?.id &&
-            o.account.authorization?.myPrivileges?.includes(AuthorizationPrivilege.TransferResourceAccept)
-        )
-        .map(o => ({
-          id: o.account!.id,
-          accountId: o.account!.id,
-          name: `${o.profile?.displayName} (Organization)`,
-          type: 'Organization' as const,
-        })) ?? [];
+  const orgResults: AccountSearchResult[] =
+    orgsData?.platformAdmin?.organizations?.organization
+      ?.filter(
+        o =>
+          o.account?.id &&
+          o.account.authorization?.myPrivileges?.includes(AuthorizationPrivilege.TransferResourceAccept)
+      )
+      .map(o => ({
+        id: o.account!.id,
+        accountId: o.account!.id,
+        name: `${o.profile?.displayName} (Organization)`,
+        type: 'Organization' as const,
+      })) ?? [];
 
-    return [...userResults, ...orgResults];
-  }, [usersData, orgsData]);
+  const results: AccountSearchResult[] = [...userResults, ...orgResults];
 
   const hasSearched = usersCalled || orgsCalled;
 
