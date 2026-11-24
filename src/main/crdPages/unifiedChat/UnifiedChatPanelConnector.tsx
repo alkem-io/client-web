@@ -106,7 +106,18 @@ export const UnifiedChatPanelConnector = ({
   const { conversations: listed, isLoading } = useUnifiedConversations();
   // Calls are watched only for those who see the call controls; for everyone else none is live.
   const liveCalls = useLiveCalls(listed);
-  const inCall = new Set([...liveCalls.values()].flatMap(call => call.participants));
+  // A call membership outlives a device that vanished without leaving, until it expires.
+  // That device is offline within seconds, so only someone the chat server still sees
+  // counts as in a call.
+  const present = new Set(
+    listed
+      .flatMap(conversation => conversation.members)
+      .filter(member => member.presence === 'online' || member.presence === 'away')
+      .map(member => member.id)
+  );
+  const inCall = new Set(
+    [...liveCalls.values()].flatMap(call => call.participants).filter(actorId => present.has(actorId))
+  );
   // Someone in a live call shows as busy wherever their dot appears, over their chat presence.
   const conversations = listed.map(conversation => ({
     ...conversation,
@@ -233,10 +244,13 @@ export const UnifiedChatPanelConnector = ({
   const listItems = withActiveCallsFirst(
     conversations.map(conversation => {
       const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
-      // A group with a call running shows as busy. A 1:1 keeps the counterpart's own
-      // dot, which is busy once they have joined: while you ring them they are not in a call.
-      const item = liveCalls.has(conversation.roomId)
-        ? { ...mapped, hasActiveCall: true, presence: conversation.isGroup ? ('busy' as const) : mapped.presence }
+      // A group shows as busy while someone is really in its call. A 1:1 keeps the
+      // counterpart's own dot, which is busy once they have joined: while you ring
+      // them they are not in a call.
+      const call = liveCalls.get(conversation.roomId);
+      const groupBusy = conversation.isGroup && call?.participants.some(actorId => inCall.has(actorId));
+      const item = call
+        ? { ...mapped, hasActiveCall: true, presence: groupBusy ? ('busy' as const) : mapped.presence }
         : mapped;
       const draft = drafts[conversation.id];
       // A draft replaces the last-message preview but leaves the ordering and the

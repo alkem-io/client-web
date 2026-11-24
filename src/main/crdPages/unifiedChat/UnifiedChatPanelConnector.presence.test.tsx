@@ -218,6 +218,16 @@ describe('UnifiedChatPanelConnector presence', () => {
       expect(within(titleAvatar()).getByRole('img', { name: 'presence.busy' })).toBeInTheDocument();
     });
 
+    it('ignores a call membership left behind by someone the chat server no longer sees', () => {
+      const ghost = member('ann', 'Ann', 'offline');
+      state.conversations = [directChat(ghost), { ...groupChat, members: [me, ghost] }];
+      state.live = new Map([['r-group', { participants: ['ann'] }]]);
+      render(<UnifiedChatPanelConnector />);
+
+      expect(within(rowOf('Ann')).getByRole('img', { name: 'presence.offline' })).toBeInTheDocument();
+      expect(within(rowOf('Team')).queryByRole('img', { name: 'presence.busy' })).not.toBeInTheDocument();
+    });
+
     it('a group without a live call has no dot on its header avatar', () => {
       state.selectedConversationId = 'group';
       render(<UnifiedChatPanelConnector />);

@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { UnifiedChatPanelConnector } from './UnifiedChatPanelConnector';
 
-type Member = { id: string; displayName: string; avatarUri?: string };
+type Member = { id: string; displayName: string; avatarUri?: string; presence?: string };
 type Conversation = { id: string; roomId: string; members: Member[]; isGuidance: boolean; isGroup: boolean };
 
 const state: { selectedConversationId: string | null; conversations: Conversation[] } = {
@@ -164,7 +164,7 @@ const groupChat: Conversation = {
   members: [
     { id: 'me', displayName: 'Me' },
     { id: 'u1', displayName: 'Ann' },
-    { id: 'u2', displayName: 'Bob' },
+    { id: 'u2', displayName: 'Bob', presence: 'online' },
   ],
 };
 

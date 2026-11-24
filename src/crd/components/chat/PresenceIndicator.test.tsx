@@ -24,11 +24,9 @@ describe('PresenceIndicator', () => {
     expect(screen.getByRole('img').children).toHaveLength(0);
   });
 
-  test('busy (in a call) is crossed by a bar, so it differs from online by shape as well as colour', () => {
+  test('busy (in a call) is a plain red dot: a bar would read as do not disturb', () => {
     render(<PresenceIndicator presence="busy" />);
-    const dot = screen.getByRole('img', { name: 'presence.busy' });
-    expect(dot.children).toHaveLength(1);
-    expect(dot.firstElementChild).toHaveClass('inset-x-0.5', 'h-0.5');
+    expect(screen.getByRole('img', { name: 'presence.busy' }).children).toHaveLength(0);
   });
 
   test.each([['unknown' as const], [undefined]])('renders nothing for %s presence, never a fake offline', presence => {
