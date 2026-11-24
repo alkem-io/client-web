@@ -8,5 +8,6 @@
     "joinTheWelcomeSpace": "Dem Welcome Space beitreten"
   },
   "versionNumber": "Versionsnummer: <b>v{{version}}</b>",
-  "serverVersionNumber": "Server-Versionsnummer: <b>v{{version}}</b>"
+  "serverVersionNumber": "Server-Versionsnummer: <b>v{{version}}</b>",
+  "appVersionNumber": "App-Versionsnummer: <b>v{{version}}</b>"
 }
