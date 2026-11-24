@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { FileUploadRejection, type RowFileUpload } from '@/crd/lib/fileSelection';
 import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
@@ -36,11 +37,6 @@ type UseReferenceFileUploadOptions = {
    * to `file_backup_outbox` (issue #10126).
    */
   temporaryLocation?: boolean;
-  /**
-   * When `false`, a failed (non-silent) upload resolves to `null` without this hook's own error
-   * notification, leaving the global error handler's toast as the only one.
-   */
-  ownFailureToast?: boolean;
 };
 
 /**
@@ -52,7 +48,7 @@ type UseReferenceFileUploadOptions = {
  */
 export function useReferenceFileUpload(
   storageConfig: StorageConfig | undefined,
-  { temporaryLocation, ownFailureToast = true }: UseReferenceFileUploadOptions = {}
+  { temporaryLocation }: UseReferenceFileUploadOptions = {}
 ): UseReferenceFileUploadResult {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -100,12 +96,12 @@ export function useReferenceFileUpload(
                   temporaryLocation: isTemporaryLocation,
                 },
               },
-              ...(silent ? { context: { skipGlobalErrorHandler: true } } : {}),
+              ...(silent ? { context: OWN_ERROR_HANDLING } : {}),
             });
             url = data?.uploadFileOnStorageBucket.url;
           } catch {
             if (silent) throw new FileUploadRejection({ kind: 'failed' });
-            if (ownFailureToast) notify(t('components.file-upload.file-upload-error'), 'error');
+            // The global error handler reports the failure, with the server's reason.
             return null;
           } finally {
             setUnsettled(count => count - 1);

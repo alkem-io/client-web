@@ -22,6 +22,12 @@ import type { CommentAuthor, ComposerAttachment, CrdMentionSearch, CrdMentionSug
 type CommentInputProps = {
   currentUser?: CommentAuthor;
   onSubmit: (content: string) => void;
+  /**
+   * A send is in flight (or the composer is otherwise busy). The textarea is
+   * not natively disabled — that would blur it and, on a phone, drop the
+   * on-screen keyboard mid-conversation. It keeps focus, is marked
+   * `aria-disabled`, and ignores input until the composer is free again.
+   */
   disabled?: boolean;
   maxLength?: number;
   /**
@@ -47,10 +53,9 @@ type CommentInputProps = {
    */
   autoFocus?: boolean;
   /**
-   * Chat-composer behaviour: return focus to the textarea after a submit, once
-   * the input is enabled again. Submitting drops focus either way — Enter
-   * blurs the textarea when `disabled` kicks in for the in-flight send, and
-   * clicking Send parks focus on a button that then disables itself.
+   * Chat-composer behaviour: return focus to the textarea on submit. Clicking
+   * Send (or attaching a file first) parks focus on a button, which would
+   * close the on-screen keyboard between messages.
    */
   refocusAfterSubmit?: boolean;
   /**
@@ -84,6 +89,13 @@ const MAX_ROWS = 5;
 const STAGED_LIST_CLASS = 'mb-1.5 flex flex-wrap gap-1.5';
 
 const carriesFiles = (transfer: DataTransfer) => Array.from(transfer.types).includes('Files');
+
+// The small-screen mention list stops short of the site/dialog header (h-16).
+const MOBILE_LIST_TOP_GUTTER = 72;
+// With less room than this above the input, the list opens below it instead of
+// shrinking until a suggestion can no longer be tapped.
+const MOBILE_LIST_MIN_HEIGHT = 144;
+const MOBILE_LIST_INPUT_GAP = 4;
 
 // react-mentions renders an overlay + textarea stack. These inline styles
 // neutralize its defaults so the textarea blends with the surrounding Tailwind
@@ -123,6 +135,14 @@ const mentionsInputStyle = {
   },
 };
 
+// react-mentions' suggestions wrapper is only zIndex 1, so the `relative z-10`
+// links in a post and its comments would paint over the small-screen list and
+// take its taps. Stays below the site header (z-50).
+const smallScreenMentionsInputStyle = {
+  ...mentionsInputStyle,
+  suggestions: { ...mentionsInputStyle.suggestions, zIndex: 30 },
+};
+
 // `react-mentions` paints the styled mention chip in an overlay layer on top
 // of the underlying textarea, and BOTH layers paint their text (it relies on
 // pixel-perfect alignment to look like one). Any property that changes glyph
@@ -160,13 +180,15 @@ export function CommentInput({
   const { isSmallScreen } = useScreenSize();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [pendingRefocus, setPendingRefocus] = useState(false);
   const [uncontrolledContent, setUncontrolledContent] = useState('');
   const [isDraggingFiles, setIsDraggingFiles] = useState(false);
 
   const controlled = value !== undefined;
   const content = controlled ? value : uncontrolledContent;
   const setContent = (next: string) => {
+    // Text typed during a send would be lost: the consumer clears the draft
+    // when the send is confirmed and restores the sent text when it fails.
+    if (disabled) return;
     if (controlled) {
       onValueChange?.(next);
     } else {
@@ -266,22 +288,15 @@ export function CommentInput({
     textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [autoFocus]);
 
-  // A disabled textarea can't take focus, so the refocus waits out the
-  // in-flight send (`disabled`) and fires on the re-enable render.
-  // `preventScroll` because the composer was in view when the user submitted —
-  // if they scrolled away during a slow send, focus shouldn't yank them back.
-  useEffect(() => {
-    if (!pendingRefocus || disabled) return;
-
-    setPendingRefocus(false);
-    textareaRef.current?.focus({ preventScroll: true });
-  }, [pendingRefocus, disabled]);
-
   const handleSubmit = () => {
     if (!canSend) return;
 
+    // Synchronously, inside the user's gesture: iOS raises the keyboard and
+    // reveals the field only for a focus that comes from a gesture, and a
+    // focus that scrolls. A deferred or `preventScroll` focus leaves the
+    // keyboard on top of the field.
     if (refocusAfterSubmit) {
-      setPendingRefocus(true);
+      textareaRef.current?.focus();
     }
     onSubmit(trimmedContent);
     // Controlled: the consumer clears its draft on submit and restores it if the send is not confirmed.
@@ -427,7 +442,12 @@ export function CommentInput({
               textarea inherits its font from this wrapper (and its overlay must
               match it), so the size is set here rather than on the textarea. */}
           {mentionsEnabled ? (
-            <div className="min-h-6 min-w-0 flex-1 text-body ios:text-base [&_textarea]:placeholder:text-muted-foreground">
+            <div
+              className={cn(
+                'min-h-6 min-w-0 flex-1 text-body ios:text-base [&_textarea]:placeholder:text-muted-foreground',
+                disabled && 'opacity-50'
+              )}
+            >
               <MentionsInput
                 value={content}
                 onChange={(_event, newValue) => {
@@ -435,33 +455,52 @@ export function CommentInput({
                   setContent(newValue);
                 }}
                 onKeyDown={handleKeyDown}
-                disabled={disabled}
+                aria-disabled={disabled || undefined}
                 maxLength={maxLength}
                 placeholder={t('comments.addComment')}
                 aria-label={t('comments.addComment')}
                 allowSpaceInQuery={true}
                 forceSuggestionsAboveCursor={true}
-                style={mentionsInputStyle}
+                style={isSmallScreen ? smallScreenMentionsInputStyle : mentionsInputStyle}
                 inputRef={(input: HTMLTextAreaElement | null) => {
                   textareaRef.current = input;
                 }}
                 customSuggestionsContainer={children => {
                   // On phones react-mentions' cursor-anchored popover often
                   // spills past the viewport edge. Position the dropdown as a
-                  // fixed overlay anchored just above the input's top so it
-                  // stays near the text the user is typing while still being
-                  // fully tappable.
+                  // fixed overlay just above the input, or just below it when
+                  // there is too little room above, so it stays near the text
+                  // the user is typing while still being fully tappable.
                   let mobileStyle: CSSProperties | undefined;
                   if (isSmallScreen) {
-                    const rect = textareaRef.current?.getBoundingClientRect();
-                    const inputTop = rect?.top ?? 0;
+                    const input = textareaRef.current;
+                    const inputRect = input?.getBoundingClientRect();
+                    // A transformed dialog is the containing block of its fixed
+                    // descendants, so `top` is relative to it, not the viewport.
+                    // It also clips them.
+                    const block = input?.closest('[data-slot="dialog-content"]')?.getBoundingClientRect();
+                    const blockTop = block?.top ?? 0;
+                    // The visual viewport is what the on-screen keyboard and
+                    // iOS panning leave visible of the layout viewport.
+                    const viewport = window.visualViewport;
+                    const viewportBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+                    const listBottom = (inputRect?.top ?? 0) - blockTop - MOBILE_LIST_INPUT_GAP;
+                    const listTop = (inputRect?.bottom ?? 0) - blockTop + MOBILE_LIST_INPUT_GAP;
+                    const roomAbove =
+                      listBottom - Math.max(MOBILE_LIST_TOP_GUTTER, (viewport?.offsetTop ?? 0) - blockTop);
+                    const roomBelow =
+                      Math.min(viewportBottom, block?.bottom ?? viewportBottom) -
+                      blockTop -
+                      listTop -
+                      MOBILE_LIST_INPUT_GAP;
+                    const opensAbove = roomAbove >= MOBILE_LIST_MIN_HEIGHT || roomAbove >= roomBelow;
                     mobileStyle = {
                       position: 'fixed',
                       left: '0.5rem',
                       right: '0.5rem',
-                      bottom: `calc(100vh - ${Math.max(inputTop, 80) - 4}px)`,
-                      maxHeight: '14rem',
-                      zIndex: 50,
+                      top: `${opensAbove ? listBottom : listTop}px`,
+                      transform: opensAbove ? 'translateY(-100%)' : undefined,
+                      maxHeight: `min(14rem, ${opensAbove ? roomAbove : roomBelow}px)`,
                     };
                   }
 
@@ -495,12 +534,15 @@ export function CommentInput({
             <textarea
               ref={textareaRef}
               value={content}
-              disabled={disabled}
+              aria-disabled={disabled || undefined}
               maxLength={maxLength}
               onChange={event => setContent(event.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={t('comments.addComment')}
-              className="min-h-6 min-w-0 flex-1 resize-none bg-transparent px-1 py-1 text-body ios:text-base outline-hidden placeholder:text-muted-foreground"
+              className={cn(
+                'min-h-6 min-w-0 flex-1 resize-none bg-transparent px-1 py-1 text-body ios:text-base outline-hidden placeholder:text-muted-foreground',
+                disabled && 'opacity-50'
+              )}
               rows={1}
               aria-label={t('comments.addComment')}
             />

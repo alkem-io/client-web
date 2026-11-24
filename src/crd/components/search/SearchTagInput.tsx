@@ -1,6 +1,7 @@
-import { ChevronDown, Globe, Search, X } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Globe, Search, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { cn } from '@/crd/lib/utils';
 import {
   DropdownMenu,
@@ -40,6 +41,7 @@ export function SearchTagInput({
   onClose,
 }: SearchTagInputProps) {
   const { t } = useTranslation('crd-search');
+  const { isSmallScreen } = useScreenSize();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -58,10 +60,28 @@ export function SearchTagInput({
   };
 
   return (
-    <div className="shrink-0 flex flex-col gap-3 px-5 py-4 md:px-6 border-b border-border">
+    <div
+      className={cn(
+        'shrink-0 flex flex-col gap-3 py-4 border-b border-border',
+        isSmallScreen ? 'px-3' : 'px-5 md:px-6'
+      )}
+    >
       {/* Row 1: Input row */}
-      <div className="flex items-center gap-3">
-        <Search aria-hidden="true" className="size-5 text-muted-foreground shrink-0" />
+      {/* On a small screen the scope chip wraps to its own line rather than squeezing the input. */}
+      <div className={cn('flex items-center gap-3', isSmallScreen && 'flex-wrap')}>
+        {/* Full screen on a small screen: the back arrow leads the row and stands in for the close button. */}
+        {isSmallScreen ? (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t('search.a11y.closeSearch')}
+            className="shrink-0 p-1.5 rounded-full hover:bg-accent text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            <ChevronLeft aria-hidden="true" className="size-5" />
+          </button>
+        ) : (
+          <Search aria-hidden="true" className="size-5 text-muted-foreground shrink-0" />
+        )}
         <input
           ref={inputRef}
           type="text"
@@ -70,7 +90,10 @@ export function SearchTagInput({
           onKeyDown={handleKeyDown}
           placeholder={t('search.placeholder')}
           aria-label={t('search.a11y.searchInput')}
-          className="flex-1 bg-transparent outline-none text-subheader md:text-body text-foreground placeholder:text-muted-foreground"
+          className={cn(
+            'flex-1 bg-transparent outline-none text-subheader md:text-body text-foreground placeholder:text-muted-foreground',
+            isSmallScreen && 'min-w-40'
+          )}
         />
 
         {/* Scope dropdown */}
@@ -85,16 +108,17 @@ export function SearchTagInput({
                 className={cn(
                   'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-control whitespace-nowrap shrink-0 border border-primary',
                   'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  'bg-primary text-primary-foreground'
+                  'bg-primary text-primary-foreground',
+                  isSmallScreen && 'max-w-full'
                 )}
               >
-                <Globe aria-hidden="true" className="size-3.5" />
-                <span>
+                <Globe aria-hidden="true" className="size-3.5 shrink-0" />
+                <span className="truncate">
                   {t('search.scopeTriggerLabel', {
                     option: scope.activeScope === 'all' ? t('search.scopeAll') : scope.currentSpaceName,
                   })}
                 </span>
-                <ChevronDown aria-hidden="true" className="size-3.5" />
+                <ChevronDown aria-hidden="true" className="size-3.5 shrink-0" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -119,14 +143,16 @@ export function SearchTagInput({
         )}
 
         {/* Close button */}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={t('search.a11y.closeSearch')}
-          className="shrink-0 p-1.5 rounded-full hover:bg-accent text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-        >
-          <X aria-hidden="true" className="size-[18px]" />
-        </button>
+        {!isSmallScreen && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t('search.a11y.closeSearch')}
+            className="shrink-0 p-1.5 rounded-full hover:bg-accent text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            <X aria-hidden="true" className="size-[18px]" />
+          </button>
+        )}
       </div>
 
       {/* Row 2: Active tags */}

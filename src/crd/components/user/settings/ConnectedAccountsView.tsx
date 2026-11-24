@@ -1,4 +1,4 @@
-import { AlertCircle, Info, KeyRound, Link2, ShieldCheck } from 'lucide-react';
+import { AlertCircle, Fingerprint, Info, Link2, ShieldCheck } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -322,10 +322,13 @@ function ProviderRow({
 
 function CredentialRow({ row }: { row: ConnectedAccountsCredentialRow }) {
   const { t } = useTranslation(NS);
-  const Icon = row.kind === 'password' ? ShieldCheck : KeyRound;
+  // The passkey sign-in row gets its own icon: KeyRound is the second step's security keys.
+  const Icon = row.kind === 'password' ? ShieldCheck : Fingerprint;
   const label = t(`user.security.connectedAccounts.credentials.${row.kind}.label`);
   const stateLabel = t(`user.security.connectedAccounts.credentials.${row.kind}.${row.present ? 'set' : 'notSet'}`);
   const manageLabel = t(`user.security.connectedAccounts.credentials.${row.kind}.manage`);
+  const explanation =
+    row.kind === 'passkey' ? t('user.security.connectedAccounts.credentials.passkey.explanation') : undefined;
 
   return (
     <li className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
@@ -334,6 +337,7 @@ function CredentialRow({ row }: { row: ConnectedAccountsCredentialRow }) {
         <div>
           <p className="text-body-emphasis">{label}</p>
           <p className="text-caption text-muted-foreground">{stateLabel}</p>
+          {explanation && <p className="text-caption text-muted-foreground">{explanation}</p>}
         </div>
       </div>
       <a href={row.manageHref} className="text-body-emphasis shrink-0 underline">

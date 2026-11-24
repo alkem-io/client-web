@@ -8,5 +8,6 @@
     "joinTheWelcomeSpace": "Unirse al Welcome Space"
   },
   "versionNumber": "Número de versión: <b>v{{version}}</b>",
-  "serverVersionNumber": "Número de versión del servidor: <b>v{{version}}</b>"
+  "serverVersionNumber": "Número de versión del servidor: <b>v{{version}}</b>",
+  "appVersionNumber": "Número de versión de la aplicación: <b>v{{version}}</b>"
 }

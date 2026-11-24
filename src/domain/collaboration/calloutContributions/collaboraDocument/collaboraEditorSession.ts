@@ -1,12 +1,7 @@
 import type { ApolloClient, ApolloQueryResult } from '@apollo/client';
 import { CollaboraEditorUrlDocument } from '@/core/apollo/generated/apollo-hooks';
 import type { CollaboraEditorUrlQuery, CollaboraEditorUrlQueryVariables } from '@/core/apollo/generated/graphql-schema';
-
-/**
- * Apollo context that opts a query out of the app's global error toast — for silent background
- * Collabora queries whose failures are reported through the editor's own UI, not a toast.
- */
-export const SILENT_QUERY_CONTEXT = { skipGlobalErrorHandler: true } as const;
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 
 /** Extract the Alkemio error code (`extensions.code`) from an Apollo/GraphQL error, if present. */
 export function graphQLErrorCode(error: unknown): string | undefined {
@@ -17,8 +12,8 @@ export function graphQLErrorCode(error: unknown): string | undefined {
 
 /**
  * Fetch a freshly-issued editor URL + token TTL for a document. Always `network-only` (each call
- * must mint a new token) and silent (see {@link SILENT_QUERY_CONTEXT}). Shared by the initial
- * editor mount and the in-place token refresh.
+ * must mint a new token) and silent: its failures are reported through the editor's own UI, not a
+ * toast. Shared by the initial editor mount and the in-place token refresh.
  */
 export function fetchCollaboraEditorUrl(
   client: ApolloClient<object>,
@@ -28,6 +23,6 @@ export function fetchCollaboraEditorUrl(
     query: CollaboraEditorUrlDocument,
     variables: { collaboraDocumentId },
     fetchPolicy: 'network-only',
-    context: SILENT_QUERY_CONTEXT,
+    context: OWN_ERROR_HANDLING,
   });
 }

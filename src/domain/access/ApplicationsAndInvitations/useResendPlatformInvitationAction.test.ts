@@ -6,7 +6,10 @@ import { useResendPlatformInvitationAction } from './useResendPlatformInvitation
 const notify = vi.fn();
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string) => key,
+    i18n: { exists: (key: string) => key.startsWith('apollo.errors.userMessages.') },
+  }),
 }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 
@@ -60,6 +63,29 @@ describe('useResendPlatformInvitationAction', () => {
     });
 
     await waitFor(() => expect(notify).toHaveBeenCalledWith('community.pendingMemberships.resendError', 'error'));
+  });
+
+  test("a refusal other than the cool-down shows the server's reason", async () => {
+    const resend = vi.fn().mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [
+          {
+            message: 'Not available',
+            extensions: { code: 'FORBIDDEN_POLICY', userMessage: 'userMessages.authorization.forbiddenPolicy' },
+          } as never,
+        ],
+      })
+    );
+    const { result } = renderHook(() => useResendPlatformInvitationAction(resend));
+
+    await act(async () => {
+      result.current.onResend('pi-1');
+    });
+
+    await waitFor(() =>
+      expect(notify).toHaveBeenCalledWith('apollo.errors.userMessages.authorization.forbiddenPolicy', 'error')
+    );
+    expect(notify).toHaveBeenCalledTimes(1);
   });
 
   test('rows resend independently while another row is in flight, and a row is not resent twice', async () => {

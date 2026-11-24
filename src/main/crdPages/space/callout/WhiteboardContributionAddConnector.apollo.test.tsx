@@ -7,14 +7,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { useCalloutContributionsQuery, useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
 
-const state = vi.hoisted(() => ({
-  handleApolloError: vi.fn(),
-}));
-
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
-vi.mock('@/core/apollo/hooks/useApolloErrorHandler', () => ({
-  useApolloErrorHandler: () => state.handleApolloError,
-}));
 
 function ActiveCalloutDetails() {
   const details = useCalloutDetailsQuery({ variables: { calloutId: 'callout-1' }, fetchPolicy: 'no-cache' });
@@ -118,7 +111,6 @@ describe('WhiteboardContributionAddConnector Apollo boundary', () => {
     const unhandledRejection = vi.fn();
     const client = createClient(counts);
     window.addEventListener('unhandledrejection', unhandledRejection);
-    state.handleApolloError.mockReset();
 
     try {
       render(
@@ -133,7 +125,6 @@ describe('WhiteboardContributionAddConnector Apollo boundary', () => {
       await waitFor(() => expect(screen.getByTestId('create-succeeded')).toBeInTheDocument());
       expect(onCreated).toHaveBeenCalledOnce();
       expect(counts.CreateWhiteboardOnCallout).toBe(1);
-      expect(state.handleApolloError).not.toHaveBeenCalled();
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
       await waitFor(() => expect(counts.CalloutDetails).toBe(2));

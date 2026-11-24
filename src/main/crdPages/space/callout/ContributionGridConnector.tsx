@@ -29,7 +29,7 @@ export function ContributionGridConnector({
   if (contributions.length === 0 && !trailingSlot) return null;
 
   return (
-    <ContributionGrid totalCount={contributions.length + (trailingSlot ? 1 : 0)}>
+    <ContributionGrid contributionCount={contributions.length} columns={3}>
       {contributions.map(contribution => {
         switch (contribution.type) {
           case 'whiteboard':

@@ -1,10 +1,10 @@
+import type { DefaultContext } from '@apollo/client';
 import {
-  refetchLatestContributionsSpacesFlatQuery,
   refetchPendingInvitationsCountQuery,
   refetchPendingInvitationsQuery,
-  refetchSpaceAboutBaseQuery,
   useInvitationStateEventMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { dropCachedQueries } from '@/core/apollo/utils/dropCachedQueries';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { InvitationEvent } from './InvitationApplicationConstants';
 
@@ -12,16 +12,17 @@ interface UseInvitationActionsParams {
   onUpdate?: () => void;
   onAccept?: (spaceUrl: string) => void;
   onReject?: () => void;
-  spaceId?: string;
+  /** Apollo link context for accept and reject, e.g. for a caller that shows its own failure message. */
+  mutationContext?: DefaultContext;
 }
 
 type UseInvitationActionsReturn = {
   updating: boolean;
   // Both return the underlying promise, which REJECTS when the mutation
-  // fails. Callers that need to surface the failure (FORBIDDEN /
-  // FORBIDDEN_POLICY are excluded from the global Apollo error handler, so
-  // nothing else will) must await and catch it; callers that don't care may
-  // keep ignoring the result.
+  // fails. A caller that surfaces the failure itself must await and catch it,
+  // and pass `mutationContext: OWN_ERROR_HANDLING` so the global
+  // handler does not report it a second time; callers that don't care may keep
+  // ignoring the result.
   acceptInvitation: (invitationId: string, spaceUrl: string) => Promise<void>;
   accepting: boolean;
   rejectInvitation: (invitationId: string) => Promise<void>;
@@ -32,9 +33,9 @@ const useInvitationActions = ({
   onUpdate,
   onAccept,
   onReject,
-  spaceId,
+  mutationContext,
 }: UseInvitationActionsParams): UseInvitationActionsReturn => {
-  const [invitationStateEventMutation] = useInvitationStateEventMutation();
+  const [invitationStateEventMutation] = useInvitationStateEventMutation({ context: mutationContext });
 
   const [updateInvitationState, isUpdatingInvitationState] = useLoadingState(
     async (...args: Parameters<typeof invitationStateEventMutation>) => {
@@ -52,13 +53,12 @@ const useInvitationActions = ({
       onCompleted: () => {
         onAccept?.(spaceUrl);
       },
-      refetchQueries: [
-        refetchLatestContributionsSpacesFlatQuery(),
-        refetchPendingInvitationsQuery(),
-        refetchPendingInvitationsCountQuery(),
-        // Refetch space privileges so the user's new permissions are reflected immediately
-        ...(spaceId ? [refetchSpaceAboutBaseQuery({ spaceId })] : []),
-      ],
+      // Membership changes privileges across many queries (comments, callouts,
+      // admin options). Drop every cached query so nothing stale is served
+      // later, and refetch the ones on screen. Not awaited: a failed refetch
+      // never turns a successful accept into an error.
+      update: dropCachedQueries,
+      refetchQueries: 'active',
     })
   );
 

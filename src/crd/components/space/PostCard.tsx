@@ -268,7 +268,9 @@ export function PostCard({
   return (
     <Card
       className={cn(
-        'group hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 border-border/60',
+        // Lift from sm only: a translated card would be the containing block of
+        // CommentInput's fixed mobile mention list.
+        'group hover:shadow-md transition-all duration-200 sm:hover:-translate-y-0.5 border-border/60',
         post.isDraft && 'border-l-4 border-l-amber-400',
         // Without the footer the last section would sit on the card's bottom border.
         !showFooter && 'pb-6',

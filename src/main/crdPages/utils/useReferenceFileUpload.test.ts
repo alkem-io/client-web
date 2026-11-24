@@ -1,3 +1,4 @@
+import { ApolloError } from '@apollo/client';
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { FileUploadRejection } from '@/crd/lib/fileSelection';
@@ -5,6 +6,7 @@ import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageCon
 import { useReferenceFileUpload } from './useReferenceFileUpload';
 
 const uploadFileMock = vi.fn();
+const notifyMock = vi.fn();
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -14,7 +16,6 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useUploadFileMutation: () => [uploadFileMock, { loading: false }],
 }));
 
-const notifyMock = vi.fn();
 vi.mock('@/core/ui/notifications/useNotification', () => ({
   useNotification: () => notifyMock,
 }));
@@ -56,6 +57,19 @@ describe('useReferenceFileUpload accept derivation', () => {
     const { result } = renderHook(() => useReferenceFileUpload(storageConfig));
 
     expect(result.current.accept?.split(',')).not.toContain('.ics');
+  });
+});
+
+describe('useReferenceFileUpload failure reporting', () => {
+  test("leaves a refused upload to the global error handler, which shows the server's reason", async () => {
+    uploadFileMock.mockRejectedValueOnce(new ApolloError({ graphQLErrors: [{ message: 'File type not allowed' }] }));
+    notifyMock.mockClear();
+    const { result } = renderHook(() => useReferenceFileUpload(baseConfig));
+    const url = await result.current.onFileUpload?.(new File(['x'], 'ref.pdf', { type: 'application/pdf' }));
+
+    expect(url).toBeNull();
+    expect(uploadFileMock.mock.calls[0][0]).not.toHaveProperty('context');
+    expect(notifyMock).not.toHaveBeenCalled();
   });
 });
 
@@ -148,30 +162,7 @@ describe('useReferenceFileUpload silent mode', () => {
 
     uploadFileMock.mockRejectedValueOnce(new Error('network'));
     await expect(result.current.onFileUpload?.(file)).resolves.toBeNull();
-    expect(notifyMock).toHaveBeenLastCalledWith('components.file-upload.file-upload-error', 'error');
-  });
-});
-
-describe('useReferenceFileUpload ownFailureToast: false', () => {
-  const file = new File(['x'], 'ref.pdf', { type: 'application/pdf' });
-  const oversized = new File(['x'.repeat(2048)], 'big.pdf', { type: 'application/pdf' });
-
-  test('a failed upload resolves to null without its own error notification', async () => {
-    uploadFileMock.mockRejectedValueOnce(new Error('network'));
-    const { result } = renderHook(() => useReferenceFileUpload(baseConfig, { ownFailureToast: false }));
-
-    await expect(result.current.onFileUpload?.(file)).resolves.toBeNull();
-    expect(notifyMock).not.toHaveBeenCalled();
-  });
-
-  test('size and success notifications are unchanged', async () => {
-    const { result } = renderHook(() => useReferenceFileUpload(baseConfig, { ownFailureToast: false }));
-
-    await expect(result.current.onFileUpload?.(oversized)).resolves.toBeNull();
-    expect(notifyMock).toHaveBeenLastCalledWith('components.file-upload.file-size-error', 'error');
-
-    await expect(result.current.onFileUpload?.(file)).resolves.toBe('https://cdn/file');
-    expect(notifyMock).toHaveBeenLastCalledWith('components.file-upload.file-upload-success', 'success');
+    expect(notifyMock).not.toHaveBeenCalledWith('components.file-upload.file-upload-error', 'error');
   });
 });
 

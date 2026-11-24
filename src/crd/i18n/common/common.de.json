@@ -30,12 +30,13 @@
           "bearerToken": "Bearer token error.",
           "forbidden": "Access denied.",
           "forbiddenLicensePolicy": "License restriction.",
-          "forbiddenPolicy": "You don't have the correct rights.",
+          "forbiddenPolicy": "Dies ist nicht verfügbar. Es existiert möglicherweise nicht, oder du hast keinen Zugriff darauf.",
           "invalidPolicy": "Invalid authorization policy.",
           "invalidToken": "Invalid token.",
           "loginFlow": "Login flow error.",
           "loginFlowInit": "Unable to initialize login flow.",
           "platformSupportSelfTarget": "Das kannst du nicht für dein eigenes Konto tun. Bitte eine andere Person aus dem Platform Support oder einen Organisationsadmin.",
+          "secondFactorRequired": "Für Ihr Konto ist die Bestätigung in zwei Schritten erforderlich.",
           "sessionExpired": "Session expired.",
           "sessionExtend": "Unable to extend session.",
           "subscriptionNotAuthenticated": "Subscription requires authentication.",
@@ -61,6 +62,7 @@
           "licenseEntitlementNotAvailable": "License entitlement not available.",
           "licenseEntitlementNotSupported": "License entitlement not supported.",
           "messagingNotEnabled": "Messaging not enabled.",
+          "messageSendLimitReached": "Sie können bis zu 20 Nachrichten pro Stunde senden. Später können Sie wieder Nachrichten senden.",
           "noAgentForUser": "No agent for user.",
           "notEnabled": "Feature not enabled.",
           "operationNotAllowed": "Operation not allowed.",
@@ -1180,8 +1182,7 @@
       },
       "innovation-packs": {
         "notifications": {
-          "pack-created": "$t(common.innovationPack) created successfully.",
-          "pack-error": "An error occurred while creating the $t(common.innovationPack)."
+          "pack-created": "$t(common.innovationPack) created successfully."
         }
       },
       "innovationHub": {
@@ -1222,7 +1223,6 @@
           "noTargets": "No other subspaces exist in this space to serve as a parent.",
           "targetLabel": "Move under subspace"
         },
-        "errorMessage": "Failed to convert space.",
         "move": "Move",
         "moveError": "Failed to move space.",
         "moveL1ToL0": {
@@ -1283,7 +1283,6 @@
         "confirmTitle": "Transfer $t(common.customHomepage)?",
         "confirmWarning": "This will transfer the $t(common.customHomepage) to the selected account. Ensure the target account has the necessary privileges.",
         "currentAccount": "Current Account",
-        "errorMessage": "Failed to transfer $t(common.customHomepage).",
         "hubName": "Name",
         "sectionDescription": "Move a $t(common.customHomepage) to a different account. Only the ownership changes — content remains unchanged.",
         "sectionTitle": "Transfer $t(common.customHomepage)",
@@ -1300,7 +1299,6 @@
         "confirmTitle": "Transfer $t(common.innovationPack)?",
         "confirmWarning": "This will transfer the $t(common.innovationPack) to the selected account. Ensure the target account has the necessary privileges.",
         "currentAccount": "Current Account",
-        "errorMessage": "Failed to transfer $t(common.innovationPack).",
         "packName": "Name",
         "sectionDescription": "Move a $t(common.innovationPack) to a different account. Only the ownership changes — templates remain unchanged.",
         "sectionTitle": "Transfer $t(common.innovationPack)",
@@ -1327,7 +1325,6 @@
         "confirmTitle": "Transfer Virtual Contributor?",
         "confirmWarning": "This will transfer the virtual contributor to the selected account. Ensure the target account has the necessary privileges.",
         "currentAccount": "Current Account",
-        "errorMessage": "Failed to transfer virtual contributor.",
         "sectionDescription": "Move a virtual contributor to a different account. Only the ownership changes — configuration remains unchanged.",
         "sectionTitle": "Transfer Virtual Contributor",
         "successMessage": "Virtual contributor transferred successfully.",
@@ -1502,7 +1499,6 @@
   "permissions": {
     "checking": "Berechtigungen werden geprüft…",
     "denied": "Du hast keine Berechtigung, die Mitglieder dieser Rolle zu ändern.",
-    "errorDenied": "Du hast keine Berechtigung für diese Änderung. Die Änderung wurde nicht gespeichert.",
     "unverifiable": "Berechtigungen konnten nicht überprüft werden."
   },
   "pinned": "Angeheftet",
@@ -1652,5 +1648,15 @@
     },
     "dismiss": "Schließen",
     "saveBlocked": "Warten Sie, bis die Dateien hochgeladen sind"
+  },
+  "appDownload": {
+    "failed": "Die Datei konnte nicht heruntergeladen werden."
+  },
+  "emojiPicker": {
+    "more": "Weitere Emojis"
+  },
+  "contributorMap": {
+    "pinGroup": "{{count}} Mitwirkende hier: {{names}}",
+    "pinGroupList": "{{count}} Mitwirkende hier"
   }
 }

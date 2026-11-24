@@ -1,13 +1,15 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 
 const mockSendMessage = vi.fn();
 const mockReply = vi.fn();
 const mockFetch = vi.fn();
 const mockBucketQuery = vi.fn();
+const mockContactability = vi.fn();
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -19,6 +21,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useSendMessageToRoomMutation: () => [mockSendMessage, { loading: false }],
   useReplyToMessageMutation: () => [mockReply, { loading: false }],
   useCommentRoomStorageBucketQuery: (options: unknown) => mockBucketQuery(options),
+  useUsersContactabilityQuery: (options: unknown) => mockContactability(options) ?? { data: undefined },
 }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
 vi.mock('@/domain/collaboration/callout/useSubscribeOnRoomEvents', () => ({ default: () => true }));
@@ -73,8 +76,14 @@ const withComment = room({
   ],
 });
 
-function Harness({ value }: { value: Room }) {
-  const { thread, commentInput } = useCrdRoomComments({ roomId: 'room-1', room: value });
+function Harness({
+  value,
+  onMessageContributor,
+}: {
+  value: Room;
+  onMessageContributor?: (contributor: { id: string }) => void;
+}) {
+  const { thread, commentInput } = useCrdRoomComments({ roomId: 'room-1', room: value, onMessageContributor });
   return (
     <>
       {thread}
@@ -226,7 +235,9 @@ describe('useCrdRoomComments composers', () => {
     expect(topLevel().getByText('comments.attachments.uploadFailed')).toBeInTheDocument();
   });
 
-  test('the field and the image button are disabled while a send is in flight', async () => {
+  // The field is only marked busy: natively disabling it would blur it and drop
+  // the on-screen keyboard on a phone.
+  test('the field is marked busy without being natively disabled, and the image button is disabled, while a send is in flight', async () => {
     mockBucketQuery.mockReturnValue(readableBucket);
     const upload = deferred<ReturnType<typeof uploadOk>>();
     mockFetch.mockReturnValue(upload.promise);
@@ -236,13 +247,14 @@ describe('useCrdRoomComments composers', () => {
     await act(async () => {
       fireEvent.click(topLevel().getByRole('button', { name: 'comments.send' }));
     });
-    expect(topLevel().getByRole('textbox')).toBeDisabled();
+    expect(topLevel().getByRole('textbox')).not.toHaveAttribute('disabled');
+    expect(topLevel().getByRole('textbox')).toHaveAttribute('aria-disabled', 'true');
     expect(topLevel().getByRole('button', { name: 'comments.attachments.addImage' })).toBeDisabled();
     await act(async () => {
       upload.resolve(uploadOk('media-1'));
       await upload.promise;
     });
-    expect(topLevel().getByRole('textbox')).not.toBeDisabled();
+    expect(topLevel().getByRole('textbox')).not.toHaveAttribute('aria-disabled');
   });
 
   test('opening a reply keys a separate draft: files staged in the reply are not in the top-level list, and the reply posts with its threadId', async () => {
@@ -415,6 +427,67 @@ describe('useCrdRoomComments composers', () => {
     fireEvent.click(screen.getByRole('button', { name: 'collapse' }));
     fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
     expect(within(replyBox()).queryByText('reply.png')).toBeNull();
+  });
+
+  test('the Message button on a comment author hover card reaches onMessageContributor', async () => {
+    mockBucketQuery.mockReturnValue(noBucket);
+    mockContactability.mockReturnValue({ data: { users: [{ id: 'u2', isContactable: true }] } });
+    const onMessageContributor = vi.fn();
+    render(
+      <Harness
+        value={room({
+          messages: [
+            {
+              id: 'c1',
+              message: 'first comment',
+              timestamp: Date.now(),
+              reactions: [],
+              sender: {
+                type: ActorType.User,
+                id: 'u2',
+                profile: { id: 'p2', displayName: 'Other', url: '/u/other' },
+              },
+            },
+          ],
+        })}
+        onMessageContributor={onMessageContributor}
+      />
+    );
+    await userEvent.hover(screen.getAllByRole('link', { name: 'Other' })[0]);
+    await userEvent.click(await screen.findByRole('button', { name: 'contributors.card.message' }));
+    expect(onMessageContributor).toHaveBeenCalledOnce();
+    expect(onMessageContributor).toHaveBeenCalledWith(expect.objectContaining({ id: 'u2' }));
+  });
+
+  const otherAuthorRoom = room({
+    messages: [
+      {
+        id: 'c1',
+        message: 'first comment',
+        timestamp: Date.now(),
+        reactions: [],
+        sender: { type: ActorType.User, id: 'u2', profile: { id: 'p2', displayName: 'Other', url: '/u/other' } },
+      },
+    ],
+  });
+
+  test('an author who turned messaging off gets a card without the Message button', async () => {
+    mockBucketQuery.mockReturnValue(noBucket);
+    mockContactability.mockReturnValue({ data: { users: [{ id: 'u2', isContactable: false }] } });
+    render(<Harness value={otherAuthorRoom} onMessageContributor={vi.fn()} />);
+    await userEvent.hover(screen.getAllByRole('link', { name: 'Other' })[0]);
+    await screen.findByRole('link', { name: 'Other', hidden: false });
+    await new Promise(resolve => setTimeout(resolve, 400));
+    expect(document.querySelector('[data-slot="hover-card-content"]')).not.toBeNull();
+    expect(screen.queryByRole('button', { name: 'contributors.card.message' })).not.toBeInTheDocument();
+    expect(mockContactability).toHaveBeenCalledWith({ variables: { ids: ['u2'] }, skip: false });
+  });
+
+  test('a host without the Message action never asks who can be contacted', () => {
+    mockBucketQuery.mockReturnValue(noBucket);
+    mockContactability.mockReset().mockReturnValue({ data: undefined });
+    render(<Harness value={otherAuthorRoom} />);
+    expect(mockContactability).not.toHaveBeenCalledWith(expect.objectContaining({ skip: false }));
   });
 
   test('the bucket policy is not queried when the viewer cannot comment', () => {

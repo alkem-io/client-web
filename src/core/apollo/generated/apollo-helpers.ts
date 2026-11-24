@@ -542,6 +542,17 @@ export type ActorRolesFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AdminResetUserSecondFactorResultKeySpecifier = (
+  | 'passwordInvalidated'
+  | 'removedCredentialTypes'
+  | 'sessionsRevoked'
+  | AdminResetUserSecondFactorResultKeySpecifier
+)[];
+export type AdminResetUserSecondFactorResultFieldPolicy = {
+  passwordInvalidated?: FieldPolicy<any> | FieldReadFunction<any>;
+  removedCredentialTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  sessionsRevoked?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AdminTemplateFileRepairIssueKeySpecifier = (
   | 'entityID'
   | 'location'
@@ -2718,6 +2729,7 @@ export type InnovationPackKeySpecifier = (
   | 'listedInStore'
   | 'nameID'
   | 'profile'
+  | 'promote'
   | 'provider'
   | 'searchVisibility'
   | 'templatesSet'
@@ -2731,6 +2743,7 @@ export type InnovationPackFieldPolicy = {
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  promote?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3199,6 +3212,17 @@ export type LookupQueryResultsFieldPolicy = {
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MatrixSessionCredentialsKeySpecifier = (
+  | 'accessToken'
+  | 'deviceId'
+  | 'userId'
+  | MatrixSessionCredentialsKeySpecifier
+)[];
+export type MatrixSessionCredentialsFieldPolicy = {
+  accessToken?: FieldPolicy<any> | FieldReadFunction<any>;
+  deviceId?: FieldPolicy<any> | FieldReadFunction<any>;
+  userId?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type McpApiKeyKeySpecifier = (
   | 'createdDate'
   | 'expiresAt'
@@ -3260,6 +3284,7 @@ export type MeQueryResultsKeySpecifier = (
   | 'organizationApplications'
   | 'organizationInvitations'
   | 'organizationInvitationsCount'
+  | 'secondFactorRequirement'
   | 'spaceMembershipsFlat'
   | 'spaceMembershipsHierarchical'
   | 'user'
@@ -3279,9 +3304,23 @@ export type MeQueryResultsFieldPolicy = {
   organizationApplications?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationInvitationsCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  secondFactorRequirement?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsFlat?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsHierarchical?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MeSecondFactorRequirementKeySpecifier = (
+  | 'covered'
+  | 'deadline'
+  | 'satisfied'
+  | 'secondWayNeeded'
+  | MeSecondFactorRequirementKeySpecifier
+)[];
+export type MeSecondFactorRequirementFieldPolicy = {
+  covered?: FieldPolicy<any> | FieldReadFunction<any>;
+  deadline?: FieldPolicy<any> | FieldReadFunction<any>;
+  satisfied?: FieldPolicy<any> | FieldReadFunction<any>;
+  secondWayNeeded?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MediaGalleryKeySpecifier = (
   | 'authorization'
@@ -3478,11 +3517,15 @@ export type MutationKeySpecifier = (
   | 'adminLicensePolicyDeleteCredentialRule'
   | 'adminLicensePolicyUpdateCredentialRule'
   | 'adminRepairTemplateFiles'
+  | 'adminResetUserSecondFactor'
   | 'adminRevokeMcpApiKey'
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
+  | 'adminUpdateInnovationPackPromote'
+  | 'adminUpdateSpacePromote'
   | 'adminUpdateSpaceVisibility'
+  | 'adminUpdateVirtualContributorPromote'
   | 'adminUserAccountDelete'
   | 'adminUserEmailChange'
   | 'adminUserEmailChangeDriftResolve'
@@ -3586,6 +3629,7 @@ export type MutationKeySpecifier = (
   | 'markNotificationsAsUnread'
   | 'migrateLegacyMemoContent'
   | 'migrateLegacyWhiteboardContent'
+  | 'mintMatrixSession'
   | 'mintMcpApiKey'
   | 'moveContributionToCallout'
   | 'moveSpaceL1ToSpaceL0'
@@ -3619,6 +3663,7 @@ export type MutationKeySpecifier = (
   | 'resendPlatformInvitation'
   | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
+  | 'resetPushBadgeCount'
   | 'revokeCredentialFromActor'
   | 'revokeLicensePlanFromAccount'
   | 'revokeLicensePlanFromSpace'
@@ -3726,11 +3771,15 @@ export type MutationFieldPolicy = {
   adminLicensePolicyDeleteCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminLicensePolicyUpdateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminRepairTemplateFiles?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminResetUserSecondFactor?: FieldPolicy<any> | FieldReadFunction<any>;
   adminRevokeMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUpdateInnovationPackPromote?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUpdateSpacePromote?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateSpaceVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUpdateVirtualContributorPromote?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserAccountDelete?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserEmailChange?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserEmailChangeDriftResolve?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3834,6 +3883,7 @@ export type MutationFieldPolicy = {
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
   migrateLegacyMemoContent?: FieldPolicy<any> | FieldReadFunction<any>;
   migrateLegacyWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  mintMatrixSession?: FieldPolicy<any> | FieldReadFunction<any>;
   mintMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3867,6 +3917,7 @@ export type MutationFieldPolicy = {
   resendPlatformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
+  resetPushBadgeCount?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromActor?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4062,10 +4113,16 @@ export type OrganizationInvitationResultFieldPolicy = {
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type OrganizationSettingsKeySpecifier = ('membership' | 'privacy' | OrganizationSettingsKeySpecifier)[];
+export type OrganizationSettingsKeySpecifier = (
+  | 'membership'
+  | 'privacy'
+  | 'security'
+  | OrganizationSettingsKeySpecifier
+)[];
 export type OrganizationSettingsFieldPolicy = {
   membership?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
+  security?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationSettingsMembershipKeySpecifier = (
   | 'allowApplications'
@@ -4084,6 +4141,13 @@ export type OrganizationSettingsPrivacyKeySpecifier = (
 )[];
 export type OrganizationSettingsPrivacyFieldPolicy = {
   contributionRolesPubliclyVisible?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type OrganizationSettingsSecurityKeySpecifier = (
+  | 'secondFactorRequired'
+  | OrganizationSettingsSecurityKeySpecifier
+)[];
+export type OrganizationSettingsSecurityFieldPolicy = {
+  secondFactorRequired?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationVerificationKeySpecifier = (
   | 'authorization'
@@ -4412,9 +4476,19 @@ export type PlatformRolesAccessKeySpecifier = ('roles' | PlatformRolesAccessKeyS
 export type PlatformRolesAccessFieldPolicy = {
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformSettingsKeySpecifier = ('integration' | PlatformSettingsKeySpecifier)[];
+export type PlatformSettingsKeySpecifier = ('integration' | 'security' | PlatformSettingsKeySpecifier)[];
 export type PlatformSettingsFieldPolicy = {
   integration?: FieldPolicy<any> | FieldReadFunction<any>;
+  security?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformSettingsSecurityKeySpecifier = (
+  | 'secondFactorRequiredForPlatformRoles'
+  | 'secondFactorRequiredForPlatformRolesSince'
+  | PlatformSettingsSecurityKeySpecifier
+)[];
+export type PlatformSettingsSecurityFieldPolicy = {
+  secondFactorRequiredForPlatformRoles?: FieldPolicy<any> | FieldReadFunction<any>;
+  secondFactorRequiredForPlatformRolesSince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformWellKnownVirtualContributorMappingKeySpecifier = (
   | 'virtualContributorID'
@@ -4878,6 +4952,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'pinned'
   | 'platformAccess'
   | 'profile'
+  | 'promote'
   | 'settings'
   | 'sortMode'
   | 'sortOrder'
@@ -4913,6 +4988,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   pinned?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  promote?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortMode?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5370,6 +5446,7 @@ export type SpaceKeySpecifier = (
   | 'pinned'
   | 'platformAccess'
   | 'profile'
+  | 'promote'
   | 'settings'
   | 'sortMode'
   | 'sortOrder'
@@ -5405,6 +5482,7 @@ export type SpaceFieldPolicy = {
   pinned?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  promote?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortMode?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6455,6 +6533,7 @@ export type VirtualContributorKeySpecifier = (
   | 'nameID'
   | 'platformSettings'
   | 'profile'
+  | 'promote'
   | 'promptGraphDefinition'
   | 'provider'
   | 'searchVisibility'
@@ -6487,6 +6566,7 @@ export type VirtualContributorFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   platformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  promote?: FieldPolicy<any> | FieldReadFunction<any>;
   promptGraphDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6822,6 +6902,13 @@ export type StrictTypedTypePolicies = {
   ActorRoles?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActorRolesKeySpecifier | (() => undefined | ActorRolesKeySpecifier);
     fields?: ActorRolesFieldPolicy;
+  };
+  AdminResetUserSecondFactorResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AdminResetUserSecondFactorResultKeySpecifier
+      | (() => undefined | AdminResetUserSecondFactorResultKeySpecifier);
+    fields?: AdminResetUserSecondFactorResultFieldPolicy;
   };
   AdminTemplateFileRepairIssue?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -7806,6 +7893,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | LookupQueryResultsKeySpecifier | (() => undefined | LookupQueryResultsKeySpecifier);
     fields?: LookupQueryResultsFieldPolicy;
   };
+  MatrixSessionCredentials?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MatrixSessionCredentialsKeySpecifier | (() => undefined | MatrixSessionCredentialsKeySpecifier);
+    fields?: MatrixSessionCredentialsFieldPolicy;
+  };
   McpApiKey?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | McpApiKeyKeySpecifier | (() => undefined | McpApiKeyKeySpecifier);
     fields?: McpApiKeyFieldPolicy;
@@ -7825,6 +7916,13 @@ export type StrictTypedTypePolicies = {
   MeQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);
     fields?: MeQueryResultsFieldPolicy;
+  };
+  MeSecondFactorRequirement?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | MeSecondFactorRequirementKeySpecifier
+      | (() => undefined | MeSecondFactorRequirementKeySpecifier);
+    fields?: MeSecondFactorRequirementFieldPolicy;
   };
   MediaGallery?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MediaGalleryKeySpecifier | (() => undefined | MediaGalleryKeySpecifier);
@@ -7957,6 +8055,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | OrganizationSettingsPrivacyKeySpecifier);
     fields?: OrganizationSettingsPrivacyFieldPolicy;
   };
+  OrganizationSettingsSecurity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | OrganizationSettingsSecurityKeySpecifier
+      | (() => undefined | OrganizationSettingsSecurityKeySpecifier);
+    fields?: OrganizationSettingsSecurityFieldPolicy;
+  };
   OrganizationVerification?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationVerificationKeySpecifier | (() => undefined | OrganizationVerificationKeySpecifier);
     fields?: OrganizationVerificationFieldPolicy;
@@ -8075,6 +8180,10 @@ export type StrictTypedTypePolicies = {
   PlatformSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformSettingsKeySpecifier | (() => undefined | PlatformSettingsKeySpecifier);
     fields?: PlatformSettingsFieldPolicy;
+  };
+  PlatformSettingsSecurity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PlatformSettingsSecurityKeySpecifier | (() => undefined | PlatformSettingsSecurityKeySpecifier);
+    fields?: PlatformSettingsSecurityFieldPolicy;
   };
   PlatformWellKnownVirtualContributorMapping?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

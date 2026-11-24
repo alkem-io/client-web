@@ -719,6 +719,23 @@ export type AdminCommunicationReconcileForumHierarchyInput = {
   repairRoomParentPointers?: Scalars['Boolean']['input'];
 };
 
+export type AdminResetUserSecondFactorInput = {
+  /** True whenever anyone else may hold the member's password: the password is then replaced with a secret nobody holds. Other first factors (a passkey, a linked social sign-in) and the identity's addresses are not touched and must be checked separately. No default. */
+  invalidatePassword: Scalars['Boolean']['input'];
+  /** The user whose second factor is reset. */
+  userID: Scalars['UUID']['input'];
+};
+
+export type AdminResetUserSecondFactorResult = {
+  __typename?: 'AdminResetUserSecondFactorResult';
+  /** False when it was not asked, or the identity holds no password. */
+  passwordInvalidated: Scalars['Boolean']['output'];
+  /** The second-factor credential types that were removed (totp, webauthn, lookup_secret). */
+  removedCredentialTypes: Array<Scalars['String']['output']>;
+  /** How many application sessions of the user were ended. */
+  sessionsRevoked: Scalars['Int']['output'];
+};
+
 export type AdminRevokeMcpApiKeyInput = {
   keyID: Scalars['UUID']['input'];
   /** Owner of the key. Required — it scopes the revoke and the audit subject. */
@@ -780,11 +797,32 @@ export type AdminTemplateMissingFileReference = {
   templateName: Scalars['String']['output'];
 };
 
+export type AdminUpdateInnovationPackPromoteInput = {
+  /** The InnovationPack whose promote flag is to be set. */
+  innovationPackID: Scalars['UUID']['input'];
+  /** True to list this InnovationPack first in the Innovation Library. */
+  promote: Scalars['Boolean']['input'];
+};
+
+export type AdminUpdateSpacePromoteInput = {
+  /** True to list this Space first on Explore Spaces. */
+  promote: Scalars['Boolean']['input'];
+  /** The Space (any level) whose promote flag is to be set. */
+  spaceID: Scalars['UUID']['input'];
+};
+
 export type AdminUpdateSpaceVisibilityInput = {
   /** The Space whose visibility is to be updated. */
   spaceID: Scalars['UUID']['input'];
   /** Visibility of the Space, only on L0 spaces. */
   visibility: SpaceVisibility;
+};
+
+export type AdminUpdateVirtualContributorPromoteInput = {
+  /** True to list this VirtualContributor first on the platform-wide listings. */
+  promote: Scalars['Boolean']['input'];
+  /** The VirtualContributor whose promote flag is to be set. */
+  virtualContributorID: Scalars['UUID']['input'];
 };
 
 export type AdminUserEmailChangeDriftResolveInput = {
@@ -991,6 +1029,7 @@ export type AuthenticationProviderConfig = {
 export type AuthenticationProviderConfigUnion = OryConfig;
 
 export enum AuthenticationType {
+  Apple = 'APPLE',
   Cleverbase = 'CLEVERBASE',
   Email = 'EMAIL',
   Github = 'GITHUB',
@@ -1174,8 +1213,10 @@ export enum AuthorizationPrivilege {
   PlatformForumManage = 'PLATFORM_FORUM_MANAGE',
   PlatformLicensingListsRead = 'PLATFORM_LICENSING_LISTS_READ',
   PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
+  PlatformPromoteManage = 'PLATFORM_PROMOTE_MANAGE',
   PlatformRolesAssign = 'PLATFORM_ROLES_ASSIGN',
   PlatformRoleHoldersRead = 'PLATFORM_ROLE_HOLDERS_READ',
+  PlatformSecondFactorReset = 'PLATFORM_SECOND_FACTOR_RESET',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   PlatformSupportListsRead = 'PLATFORM_SUPPORT_LISTS_READ',
   PlatformSupportOrgMembership = 'PLATFORM_SUPPORT_ORG_MEMBERSHIP',
@@ -3927,7 +3968,7 @@ export type ISearchCategoryResult = {
   cursor?: Maybe<Scalars['SearchCursor']['output']>;
   /** The ranked search results for this category, sorted by relevance */
   results: Array<SearchResult>;
-  /** The total number of search results. Not implemented yet. */
+  /** The total number of results the requester may see in this category. Only computed for spaceResults when the SPACES filter sets `countTotal` and the search is not scoped to a Space; -1 otherwise, or when the count failed. Only the 1000 best ranked Space / Subspace matches are counted (and reachable by the cursor), so the total never exceeds 1000. */
   total: Scalars['Float']['output'];
 };
 
@@ -4370,6 +4411,8 @@ export type InnovationPack = {
   nameID: Scalars['NameID']['output'];
   /** The Profile for this InnovationPack. */
   profile: Profile;
+  /** Whether this InnovationPack is platform-promoted (listed first). Null unless the caller may manage promotion (Platform Content Full Access or Platform License Manager). */
+  promote?: Maybe<Scalars['Boolean']['output']>;
   /** The InnovationPack provider. */
   provider: Actor;
   /** Visibility of the InnovationPack in searches. */
@@ -5284,6 +5327,17 @@ export type LookupQueryResultsWhiteboardArgs = {
   ID: Scalars['UUID']['input'];
 };
 
+/** Credentials for one Matrix chat session belonging to the current user's own actor. */
+export type MatrixSessionCredentials = {
+  __typename?: 'MatrixSessionCredentials';
+  /** A LIVE Matrix access token for this session, returned once per mint. It is not stored by the platform and cannot be re-read. */
+  accessToken: Scalars['String']['output'];
+  /** The Matrix device id Synapse generated for this session. A fresh device per mint. */
+  deviceId: Scalars['String']['output'];
+  /** The actor's Matrix user id (MXID), e.g. `@uuid:matrix.host`. */
+  userId: Scalars['String']['output'];
+};
+
 /** Metadata for one MCP API key. The key value itself is never exposed here. */
 export type McpApiKey = {
   __typename?: 'McpApiKey';
@@ -5375,6 +5429,8 @@ export type MeQueryResults = {
   organizationInvitations: Array<OrganizationInvitationResult>;
   /** The number of the current authenticated user's own pending organization invitations. */
   organizationInvitationsCount: Scalars['Float']['output'];
+  /** Whether a second-factor rule covers the current user, its deadline, whether this session meets it, and whether the account needs a second way to pass the second step. */
+  secondFactorRequirement: MeSecondFactorRequirement;
   /** The Spaces the current user is a member of as a flat list. */
   spaceMembershipsFlat: Array<CommunityMembershipResult>;
   /** The hierarchy of the Spaces the current user is a member. */
@@ -5421,6 +5477,18 @@ export type MeQueryResultsOrganizationInvitationsCountArgs = {
 
 export type MeQueryResultsSpaceMembershipsHierarchicalArgs = {
   limit?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type MeSecondFactorRequirement = {
+  __typename?: 'MeSecondFactorRequirement';
+  /** False for any caller whose credential is not a person's sign-in (API key, delegation token, non-interactive token, service account), whatever its roles. A cookie session and a Hydra bearer read their real coverage. */
+  covered: Scalars['Boolean']['output'];
+  /** When a covering rule starts refusing a sign-in that does not meet it; the earliest of the rules that cover the user. */
+  deadline?: Maybe<Scalars['DateTime']['output']>;
+  /** Whether this session's sign-in meets a second-factor rule: it completed a second factor, and the account held at least two ways to pass the second step when they were counted at sign-in. */
+  satisfied: Scalars['Boolean']['output'];
+  /** True when a covering rule applies and this session signed in with a second factor, but the account held fewer than two ways to pass the second step at sign-in. An authenticator app, each security key and recovery codes count one each; a passkey does not count. Signing in again after adding a way updates it. */
+  secondWayNeeded: Scalars['Boolean']['output'];
 };
 
 export type MediaGallery = {
@@ -5763,6 +5831,8 @@ export type Mutation = {
   adminLicensePolicyUpdateCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
   /** Lists, and on request copies, the files templates reference but do not store. A file is copied only when the template's owner can read it. A dry run by default. */
   adminRepairTemplateFiles: AdminTemplateFileRepairResult;
+  /** Platform Support or Platform Users Admin: remove a user's second factor (authenticator app, security keys, recovery codes) and end their identity-provider sessions and their platform sign-in sessions. A bearer token issued to an application outside the platform's own sign-in is not ended and stays valid until it expires. Audited fail-closed. Refuses self-targeting. */
+  adminResetUserSecondFactor: AdminResetUserSecondFactorResult;
   /** Platform Users Admin: revoke a named user's MCP API key. Idempotent. */
   adminRevokeMcpApiKey: McpApiKey;
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
@@ -5771,8 +5841,14 @@ export type Mutation = {
   adminUpdateContributorAvatars: Profile;
   /** Updates the GeoLocation data where required on the platform. */
   adminUpdateGeoLocationData: Scalars['Boolean']['output'];
+  /** Sets the platform-promote flag of an InnovationPack. Platform Content Full Access or Platform License Manager only. */
+  adminUpdateInnovationPackPromote: InnovationPack;
+  /** Sets the platform-promote flag of a Space (any level). Platform Content Full Access or Platform License Manager only. */
+  adminUpdateSpacePromote: Space;
   /** Update the visibility of the specified Space. */
   adminUpdateSpaceVisibility: Space;
+  /** Sets the platform-promote flag of a VirtualContributor. Platform Content Full Access or Platform License Manager only. */
+  adminUpdateVirtualContributorPromote: VirtualContributor;
   /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
   adminUserAccountDelete: User;
   /** Change a user's login email synchronously, acting as a platform administrator. The admin is responsible for verifying the subject user's identity out-of-band — the platform does NOT send a confirmation message to the new mailbox and does NOT require the new mailbox to prove ownership. Validates uniqueness, commits Kratos → Alkemio with bounded retry, invalidates the subject's existing sessions, and sends a security-signal notification to the old address. Requires PLATFORM_USERS_ADMIN. */
@@ -5979,6 +6055,8 @@ export type Mutation = {
   migrateLegacyMemoContent: CollaborationMigrationResult;
   /** Migrates pending legacy Whiteboard documents and independently normalizes every legacy Whiteboard contribution default, including defaults stored by Callout templates. Idempotent: repeated calls process only unmigrated documents and non-canonical defaults. */
   migrateLegacyWhiteboardContent: CollaborationMigrationResult;
+  /** Mint a Matrix access token for the current user's own chat session. Takes no subject: the actor is the authenticated caller. */
+  mintMatrixSession: MatrixSessionCredentials;
   /** Mint a new MCP API key for the current user. Returns the plaintext exactly once. */
   mintMcpApiKey: McpApiKeyMintResult;
   /** Moves the specified Contribution to another Callout. */
@@ -6045,6 +6123,8 @@ export type Mutation = {
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
   resetLicenseOnAccounts: Scalars['Boolean']['output'];
+  /** Reset the current user’s app icon badge counter to zero. Called by the iOS app when it is opened. */
+  resetPushBadgeCount: Scalars['Boolean']['output'];
   /** Revoke a credential from an Actor. */
   revokeCredentialFromActor: Scalars['Boolean']['output'];
   /** Revokes the specified LicensePlan on an Account. */
@@ -6283,6 +6363,10 @@ export type MutationAdminRepairTemplateFilesArgs = {
   repairData: AdminTemplateFileRepairInput;
 };
 
+export type MutationAdminResetUserSecondFactorArgs = {
+  resetData: AdminResetUserSecondFactorInput;
+};
+
 export type MutationAdminRevokeMcpApiKeyArgs = {
   revokeData: AdminRevokeMcpApiKeyInput;
 };
@@ -6291,8 +6375,20 @@ export type MutationAdminUpdateContributorAvatarsArgs = {
   profileID: Scalars['UUID']['input'];
 };
 
+export type MutationAdminUpdateInnovationPackPromoteArgs = {
+  promoteData: AdminUpdateInnovationPackPromoteInput;
+};
+
+export type MutationAdminUpdateSpacePromoteArgs = {
+  promoteData: AdminUpdateSpacePromoteInput;
+};
+
 export type MutationAdminUpdateSpaceVisibilityArgs = {
   updateData: AdminUpdateSpaceVisibilityInput;
+};
+
+export type MutationAdminUpdateVirtualContributorPromoteArgs = {
+  promoteData: AdminUpdateVirtualContributorPromoteInput;
 };
 
 export type MutationAdminUserAccountDeleteArgs = {
@@ -7234,6 +7330,7 @@ export enum NotificationEvent {
   UserOrganizationAssociateApplicationDeclined = 'USER_ORGANIZATION_ASSOCIATE_APPLICATION_DECLINED',
   UserOrganizationAssociateInvitation = 'USER_ORGANIZATION_ASSOCIATE_INVITATION',
   UserPasswordChangeSecuritySignal = 'USER_PASSWORD_CHANGE_SECURITY_SIGNAL',
+  UserSecondFactorChangeSecuritySignal = 'USER_SECOND_FACTOR_CHANGE_SECURITY_SIGNAL',
   UserSignUpWelcome = 'USER_SIGN_UP_WELCOME',
   UserSpaceCommunityApplicationDeclined = 'USER_SPACE_COMMUNITY_APPLICATION_DECLINED',
   UserSpaceCommunityInvitation = 'USER_SPACE_COMMUNITY_INVITATION',
@@ -7466,6 +7563,8 @@ export type OrganizationSettings = {
   membership: OrganizationSettingsMembership;
   /** The privacy settings for this Organization */
   privacy: OrganizationSettingsPrivacy;
+  /** The security settings for this Organization. */
+  security: OrganizationSettingsSecurity;
 };
 
 export type OrganizationSettingsMembership = {
@@ -7482,6 +7581,12 @@ export type OrganizationSettingsPrivacy = {
   __typename?: 'OrganizationSettingsPrivacy';
   /** Allow contribution roles (membership, lead etc) in Spaces to be visible. */
   contributionRolesPubliclyVisible: Scalars['Boolean']['output'];
+};
+
+export type OrganizationSettingsSecurity = {
+  __typename?: 'OrganizationSettingsSecurity';
+  /** Holders of an organization role (owner, admin, associate) must use a second factor. */
+  secondFactorRequired: Scalars['Boolean']['output'];
 };
 
 export type OrganizationVerification = {
@@ -7870,6 +7975,16 @@ export type PlatformSettings = {
   __typename?: 'PlatformSettings';
   /** The integration settings for this Platform */
   integration: PlatformIntegrationSettings;
+  /** The second-factor rule for platform roles. Null unless the reader holds the platform-settings privilege. */
+  security?: Maybe<PlatformSettingsSecurity>;
+};
+
+export type PlatformSettingsSecurity = {
+  __typename?: 'PlatformSettingsSecurity';
+  /** Holders of a Platform … role must use a second factor. */
+  secondFactorRequiredForPlatformRoles: Scalars['Boolean']['output'];
+  /** When the rule was last switched on; null while it has never been on. */
+  secondFactorRequiredForPlatformRolesSince?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type PlatformWellKnownVirtualContributorMapping = {
@@ -8595,6 +8710,8 @@ export type RelayPaginatedSpace = ActorFull & {
   platformAccess: PlatformRolesAccess;
   /** The profile for this Actor. */
   profile?: Maybe<Profile>;
+  /** Whether this Space is platform-promoted (listed first). Null unless the caller may manage promotion (Platform Content Full Access or Platform License Manager). */
+  promote?: Maybe<Scalars['Boolean']['output']>;
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The sort mode for subspaces of this Space: Alphabetical or Custom. Accessible without READ privilege. */
@@ -9204,6 +9321,8 @@ export enum SearchCategory {
 export type SearchFilterInput = {
   /** Include this category in the search results. */
   category: SearchCategory;
+  /** Count the Space and Subspace results the requester may see among the 1000 best ranked matches, and paginate over them exactly (see `total`); lower ranked matches are neither counted nor reachable. Only honoured for the SPACES category in a search that is not scoped to a Space. Costs a scan of up to 1000 matches, so only ask for it when the total is shown. */
+  countTotal?: InputMaybe<Scalars['Boolean']['input']>;
   /** The cursor after which we want results (offset) - pass this from your previous search to request additional results. Useful for paginating results. */
   cursor?: InputMaybe<Scalars['SearchCursor']['input']>;
   /** How many results per category to return. Useful for paginating results. */
@@ -9232,7 +9351,7 @@ export type SearchResult = {
   id: Scalars['UUID']['output'];
   /** The score for this search result; more matches means a higher score. */
   score: Scalars['Float']['output'];
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9248,7 +9367,7 @@ export type SearchResultCallout = SearchResult & {
   score: Scalars['Float']['output'];
   /** The parent Space of the Callout. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9268,7 +9387,7 @@ export type SearchResultCollaboraDocument = SearchResult & {
   score: Scalars['Float']['output'];
   /** The Space of the Collabora document. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9288,7 +9407,7 @@ export type SearchResultMemo = SearchResult & {
   score: Scalars['Float']['output'];
   /** The Space of the Memo. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9302,7 +9421,7 @@ export type SearchResultOrganization = SearchResult & {
   organization: Organization;
   /** The score for this search result; more matches means a higher score. */
   score: Scalars['Float']['output'];
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9320,7 +9439,7 @@ export type SearchResultPost = SearchResult & {
   score: Scalars['Float']['output'];
   /** The Space of the Post. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9336,7 +9455,7 @@ export type SearchResultSpace = SearchResult & {
   score: Scalars['Float']['output'];
   /** The Space that was found. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9361,7 +9480,7 @@ export type SearchResultUser = SearchResult & {
   id: Scalars['UUID']['output'];
   /** The score for this search result; more matches means a higher score. */
   score: Scalars['Float']['output'];
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9381,7 +9500,7 @@ export type SearchResultWhiteboard = SearchResult & {
   score: Scalars['Float']['output'];
   /** The Space of the Whiteboard. */
   space: Space;
-  /** The terms that were matched for this result */
+  /** The terms that were matched for this result. Empty when they could not be determined, e.g. when highlighting the matches failed. */
   terms: Array<Scalars['String']['output']>;
   /** The type of returned result for this search. */
   type: SearchResultType;
@@ -9506,6 +9625,8 @@ export type Space = ActorFull & {
   platformAccess: PlatformRolesAccess;
   /** The profile for this Actor. */
   profile?: Maybe<Profile>;
+  /** Whether this Space is platform-promoted (listed first). Null unless the caller may manage promotion (Platform Content Full Access or Platform License Manager). */
+  promote?: Maybe<Scalars['Boolean']['output']>;
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The sort mode for subspaces of this Space: Alphabetical or Custom. Accessible without READ privilege. */
@@ -10710,6 +10831,8 @@ export type UpdateOrganizationInput = {
 export type UpdateOrganizationSettingsEntityInput = {
   membership?: InputMaybe<UpdateOrganizationSettingsMembershipInput>;
   privacy?: InputMaybe<UpdateOrganizationSettingsPrivacyInput>;
+  /** The second-factor rule for the members of this Organization. */
+  security?: InputMaybe<UpdateOrganizationSettingsSecurityInput>;
 };
 
 export type UpdateOrganizationSettingsInput = {
@@ -10733,8 +10856,15 @@ export type UpdateOrganizationSettingsPrivacyInput = {
   contributionRolesPubliclyVisible: Scalars['Boolean']['input'];
 };
 
+export type UpdateOrganizationSettingsSecurityInput = {
+  /** Require holders of an organization role (owner, admin, associate) to use a second factor. Switching it on starts a fourteen-day grace. */
+  secondFactorRequired?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type UpdatePlatformSettingsInput = {
   integration?: InputMaybe<UpdatePlatformSettingsIntegrationInput>;
+  /** The second-factor rule for platform roles. */
+  security?: InputMaybe<UpdatePlatformSettingsSecurityInput>;
 };
 
 export type UpdatePlatformSettingsIntegrationInput = {
@@ -10742,6 +10872,11 @@ export type UpdatePlatformSettingsIntegrationInput = {
   iframeAllowedUrls: Array<Scalars['String']['input']>;
   /** Update the list of email addresses blocked from receiving notifications. */
   notificationEmailBlacklist?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type UpdatePlatformSettingsSecurityInput = {
+  /** Require holders of a Platform … role to use a second factor. Switching it on starts a fourteen-day grace. */
+  secondFactorRequiredForPlatformRoles?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdatePollInput = {
@@ -11412,7 +11547,7 @@ export type UserAuthenticationResult = {
   authenticatedAt?: Maybe<Scalars['DateTime']['output']>;
   /** When the Kratos Account for the user was created */
   createdAt?: Maybe<Scalars['DateTime']['output']>;
-  /** The Authentication Methods used for this User. One of email, linkedin, microsoft, github or unknown */
+  /** The Authentication Methods used for this User. One of apple, cleverbase, email, github, linkedin, microsoft, passkey or unknown */
   methods: Array<AuthenticationType>;
 };
 
@@ -11834,6 +11969,8 @@ export type VirtualContributor = ActorFull & {
   platformSettings: VirtualContributorPlatformSettings;
   /** The profile for this Actor. */
   profile?: Maybe<Profile>;
+  /** Whether this VirtualContributor is platform-promoted (listed first). Null unless the caller may manage promotion (Platform Content Full Access or Platform License Manager). */
+  promote?: Maybe<Scalars['Boolean']['output']>;
   /** Prompt graph definition for this Virtual Contributor. */
   promptGraphDefinition?: Maybe<PromptGraphDefinition>;
   /** The Virtual Contributor provider. */
@@ -16830,6 +16967,7 @@ export type UpdateCalloutContentMutation = {
                         id: string;
                         displayName: string;
                         url: string;
+                        tagline?: string | undefined;
                         description?: string | undefined;
                         avatar?:
                           | {
@@ -17363,6 +17501,7 @@ export type UpdateCalloutVisibilityMutation = {
                         id: string;
                         displayName: string;
                         url: string;
+                        tagline?: string | undefined;
                         description?: string | undefined;
                         avatar?:
                           | {
@@ -17994,6 +18133,7 @@ export type CalloutContributionCommentsQuery = {
                                 id: string;
                                 displayName: string;
                                 url: string;
+                                tagline?: string | undefined;
                                 description?: string | undefined;
                                 avatar?:
                                   | {
@@ -19314,6 +19454,7 @@ export type CreateCalloutMutation = {
                         id: string;
                         displayName: string;
                         url: string;
+                        tagline?: string | undefined;
                         description?: string | undefined;
                         avatar?:
                           | {
@@ -20021,6 +20162,7 @@ export type CalloutDetailsQuery = {
                               id: string;
                               displayName: string;
                               url: string;
+                              tagline?: string | undefined;
                               description?: string | undefined;
                               avatar?:
                                 | {
@@ -20586,6 +20728,7 @@ export type CalloutDetailsFragment = {
                       id: string;
                       displayName: string;
                       url: string;
+                      tagline?: string | undefined;
                       description?: string | undefined;
                       avatar?:
                         | {
@@ -22885,6 +23028,7 @@ export type CreateDiscussionMutation = {
                     id: string;
                     displayName: string;
                     url: string;
+                    tagline?: string | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -22979,6 +23123,7 @@ export type UpdateDiscussionMutation = {
                     id: string;
                     displayName: string;
                     url: string;
+                    tagline?: string | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -23076,6 +23221,7 @@ export type DiscussionDetailsFragment = {
                   id: string;
                   displayName: string;
                   url: string;
+                  tagline?: string | undefined;
                   description?: string | undefined;
                   avatar?:
                     | {
@@ -23271,6 +23417,7 @@ export type PlatformDiscussionQuery = {
                             id: string;
                             displayName: string;
                             url: string;
+                            tagline?: string | undefined;
                             description?: string | undefined;
                             avatar?:
                               | {
@@ -23431,6 +23578,7 @@ export type MessageDetailsFragment = {
               id: string;
               displayName: string;
               url: string;
+              tagline?: string | undefined;
               description?: string | undefined;
               avatar?:
                 | {
@@ -23531,6 +23679,7 @@ export type CommentsWithMessagesFragment = {
                 id: string;
                 displayName: string;
                 url: string;
+                tagline?: string | undefined;
                 description?: string | undefined;
                 avatar?:
                   | {
@@ -24127,6 +24276,7 @@ export type RoomEventsSubscription = {
                         id: string;
                         displayName: string;
                         url: string;
+                        tagline?: string | undefined;
                         description?: string | undefined;
                         avatar?:
                           | {
@@ -24243,6 +24393,7 @@ export type CommunityUpdatesQuery = {
                             id: string;
                             displayName: string;
                             url: string;
+                            tagline?: string | undefined;
                             description?: string | undefined;
                             avatar?:
                               | {
@@ -24608,6 +24759,7 @@ export type ContributorDetailsFragment = {
         id: string;
         displayName: string;
         url: string;
+        tagline?: string | undefined;
         description?: string | undefined;
         avatar?:
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
@@ -25611,6 +25763,7 @@ export type OrganizationSettingsQuery = {
               allowApplications: boolean;
             };
             privacy: { __typename?: 'OrganizationSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+            security: { __typename?: 'OrganizationSettingsSecurity'; secondFactorRequired: boolean };
           };
         }
       | undefined;
@@ -25697,6 +25850,7 @@ export type UpdateOrganizationSettingsMutation = {
         allowSpaceInvitations: boolean;
         allowApplications: boolean;
       };
+      security: { __typename?: 'OrganizationSettingsSecurity'; secondFactorRequired: boolean };
     };
   };
 };
@@ -29647,6 +29801,7 @@ export type PlatformAdminInnovationPacksQuery = {
       id: string;
       listedInStore: boolean;
       searchVisibility: SearchVisibility;
+      promote?: boolean | undefined;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
@@ -29658,6 +29813,16 @@ export type PlatformAdminInnovationPacksQuery = {
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
   };
+};
+
+export type AdminUpdateInnovationPackPromoteMutationVariables = Exact<{
+  innovationPackId: Scalars['UUID']['input'];
+  promote: Scalars['Boolean']['input'];
+}>;
+
+export type AdminUpdateInnovationPackPromoteMutation = {
+  __typename?: 'Mutation';
+  adminUpdateInnovationPackPromote: { __typename?: 'InnovationPack'; id: string; promote?: boolean | undefined };
 };
 
 export type LicensingAdminOrganizationsQueryVariables = Exact<{
@@ -29708,6 +29873,7 @@ export type LicensingAdminSpacesQuery = {
       __typename?: 'Space';
       id: string;
       visibility: SpaceVisibility;
+      promote?: boolean | undefined;
       subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
       about: {
         __typename?: 'SpaceAbout';
@@ -29866,6 +30032,16 @@ export type AdminUpdateSpaceNameIdMutation = {
   updateSpace: { __typename?: 'Space'; id: string; nameID: string };
 };
 
+export type AdminUpdateSpacePromoteMutationVariables = Exact<{
+  spaceId: Scalars['UUID']['input'];
+  promote: Scalars['Boolean']['input'];
+}>;
+
+export type AdminUpdateSpacePromoteMutation = {
+  __typename?: 'Mutation';
+  adminUpdateSpacePromote: { __typename?: 'Space'; id: string; promote?: boolean | undefined };
+};
+
 export type AdminUpdateSpaceVisibilityMutationVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
   visibility: SpaceVisibility;
@@ -29915,6 +30091,7 @@ export type PlatformAdminSpacesListQuery = {
       id: string;
       nameID: string;
       visibility: SpaceVisibility;
+      promote?: boolean | undefined;
       about: {
         __typename?: 'SpaceAbout';
         id: string;
@@ -30101,6 +30278,20 @@ export type PlatformAdminUsersListQuery = {
   };
 };
 
+export type AdminUpdateVirtualContributorPromoteMutationVariables = Exact<{
+  virtualContributorId: Scalars['UUID']['input'];
+  promote: Scalars['Boolean']['input'];
+}>;
+
+export type AdminUpdateVirtualContributorPromoteMutation = {
+  __typename?: 'Mutation';
+  adminUpdateVirtualContributorPromote: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    promote?: boolean | undefined;
+  };
+};
+
 export type PlatformAdminVirtualContributorsListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type PlatformAdminVirtualContributorsListQuery = {
@@ -30112,6 +30303,7 @@ export type PlatformAdminVirtualContributorsListQuery = {
       id: string;
       listedInStore: boolean;
       searchVisibility: SearchVisibility;
+      promote?: boolean | undefined;
       account?:
         | {
             __typename?: 'Account';
@@ -31063,6 +31255,7 @@ export type SpaceAboutDetailsQuery = {
                       id: string;
                       url: string;
                       displayName: string;
+                      tagline?: string | undefined;
                       avatar?:
                         | {
                             __typename?: 'Visual';
@@ -31080,6 +31273,7 @@ export type SpaceAboutDetailsQuery = {
                             country?: string | undefined;
                           }
                         | undefined;
+                      keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     }
                   | undefined;
               }>;
@@ -31092,6 +31286,7 @@ export type SpaceAboutDetailsQuery = {
                       id: string;
                       url: string;
                       displayName: string;
+                      tagline?: string | undefined;
                       avatar?:
                         | {
                             __typename?: 'Visual';
@@ -31109,6 +31304,7 @@ export type SpaceAboutDetailsQuery = {
                             country?: string | undefined;
                           }
                         | undefined;
+                      keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     }
                   | undefined;
               }>;
@@ -31317,6 +31513,7 @@ export type SpaceAboutDetailsFragment = {
             id: string;
             url: string;
             displayName: string;
+            tagline?: string | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -31329,6 +31526,7 @@ export type SpaceAboutDetailsFragment = {
             location?:
               | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
               | undefined;
+            keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           }
         | undefined;
     }>;
@@ -31341,6 +31539,7 @@ export type SpaceAboutDetailsFragment = {
             id: string;
             url: string;
             displayName: string;
+            tagline?: string | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -31353,6 +31552,7 @@ export type SpaceAboutDetailsFragment = {
             location?:
               | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
               | undefined;
+            keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           }
         | undefined;
     }>;
@@ -32565,6 +32765,7 @@ export type UpdateSpaceMutation = {
                 id: string;
                 url: string;
                 displayName: string;
+                tagline?: string | undefined;
                 avatar?:
                   | {
                       __typename?: 'Visual';
@@ -32577,6 +32778,7 @@ export type UpdateSpaceMutation = {
                 location?:
                   | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                   | undefined;
+                keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               }
             | undefined;
         }>;
@@ -32589,6 +32791,7 @@ export type UpdateSpaceMutation = {
                 id: string;
                 url: string;
                 displayName: string;
+                tagline?: string | undefined;
                 avatar?:
                   | {
                       __typename?: 'Visual';
@@ -32601,6 +32804,7 @@ export type UpdateSpaceMutation = {
                 location?:
                   | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                   | undefined;
+                keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               }
             | undefined;
         }>;
@@ -32742,6 +32946,7 @@ export type SpaceInfoFragment = {
               id: string;
               url: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -32754,6 +32959,7 @@ export type SpaceInfoFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
+              keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             }
           | undefined;
       }>;
@@ -32766,6 +32972,7 @@ export type SpaceInfoFragment = {
               id: string;
               url: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -32778,6 +32985,7 @@ export type SpaceInfoFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
+              keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             }
           | undefined;
       }>;
@@ -33394,6 +33602,7 @@ export type SpacePageQuery = {
                       id: string;
                       url: string;
                       displayName: string;
+                      tagline?: string | undefined;
                       avatar?:
                         | {
                             __typename?: 'Visual';
@@ -33411,6 +33620,7 @@ export type SpacePageQuery = {
                             country?: string | undefined;
                           }
                         | undefined;
+                      keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     }
                   | undefined;
               }>;
@@ -33423,6 +33633,7 @@ export type SpacePageQuery = {
                       id: string;
                       url: string;
                       displayName: string;
+                      tagline?: string | undefined;
                       avatar?:
                         | {
                             __typename?: 'Visual';
@@ -33440,6 +33651,7 @@ export type SpacePageQuery = {
                             country?: string | undefined;
                           }
                         | undefined;
+                      keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     }
                   | undefined;
               }>;
@@ -33540,6 +33752,7 @@ export type SpacePageQuery = {
                         url: string;
                         displayName: string;
                         type?: ProfileType | undefined;
+                        tagline?: string | undefined;
                         description?: string | undefined;
                         avatar?:
                           | {
@@ -33659,6 +33872,7 @@ export type SpacePageFragment = {
               id: string;
               url: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -33671,6 +33885,7 @@ export type SpacePageFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
+              keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             }
           | undefined;
       }>;
@@ -33683,6 +33898,7 @@ export type SpacePageFragment = {
               id: string;
               url: string;
               displayName: string;
+              tagline?: string | undefined;
               avatar?:
                 | {
                     __typename?: 'Visual';
@@ -33695,6 +33911,7 @@ export type SpacePageFragment = {
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
+              keywords?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             }
           | undefined;
       }>;
@@ -33789,6 +34006,7 @@ export type SpacePageFragment = {
                 url: string;
                 displayName: string;
                 type?: ProfileType | undefined;
+                tagline?: string | undefined;
                 description?: string | undefined;
                 avatar?:
                   | {
@@ -39198,6 +39416,7 @@ export type CalendarEventDetailsQuery = {
                           id: string;
                           displayName: string;
                           url: string;
+                          tagline?: string | undefined;
                           description?: string | undefined;
                           avatar?:
                             | {
@@ -39362,6 +39581,7 @@ export type CalendarEventDetailsFragment = {
                   id: string;
                   displayName: string;
                   url: string;
+                  tagline?: string | undefined;
                   description?: string | undefined;
                   avatar?:
                     | {
@@ -39541,6 +39761,7 @@ export type CreateCalendarEventMutation = {
                     id: string;
                     displayName: string;
                     url: string;
+                    tagline?: string | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -39699,6 +39920,7 @@ export type UpdateCalendarEventMutation = {
                     id: string;
                     displayName: string;
                     url: string;
+                    tagline?: string | undefined;
                     description?: string | undefined;
                     avatar?:
                       | {
@@ -40444,6 +40666,7 @@ export type CalloutCommentsRevalidateQuery = {
                               id: string;
                               displayName: string;
                               url: string;
+                              tagline?: string | undefined;
                               description?: string | undefined;
                               avatar?:
                                 | {
@@ -41274,6 +41497,15 @@ export type UpdateTaskColumnsSortOrderOnCalloutMutation = {
     };
     taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
   };
+};
+
+export type UsersContactabilityQueryVariables = Exact<{
+  ids: Array<Scalars['UUID']['input']> | Scalars['UUID']['input'];
+}>;
+
+export type UsersContactabilityQuery = {
+  __typename?: 'Query';
+  users: Array<{ __typename?: 'User'; id: string; isContactable: boolean }>;
 };
 
 export type FlowStateSearchQueryVariables = Exact<{
@@ -52820,6 +53052,22 @@ export type RecentSpacesQuery = {
         | { __typename?: 'ActivityLogEntryUpdateSent'; id: string; createdDate: Date }
         | undefined;
     }>;
+  };
+};
+
+export type SecondFactorRequirementQueryVariables = Exact<{ [key: string]: never }>;
+
+export type SecondFactorRequirementQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    secondFactorRequirement: {
+      __typename?: 'MeSecondFactorRequirement';
+      covered: boolean;
+      deadline?: Date | undefined;
+      satisfied: boolean;
+      secondWayNeeded: boolean;
+    };
   };
 };
 

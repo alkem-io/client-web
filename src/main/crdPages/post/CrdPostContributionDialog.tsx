@@ -1,4 +1,4 @@
-import { Loader2, Trash2 } from 'lucide-react';
+import { ChevronLeft, Loader2, Trash2 } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ValidationError } from 'yup';
@@ -21,11 +21,14 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
+import { useScreenSize } from '@/crd/hooks/useMediaQuery';
+import { useVisibleViewportArea } from '@/crd/hooks/useVisibleViewportArea';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -111,6 +114,11 @@ export function CrdPostContributionDialog({
   onUpdated,
 }: CrdPostContributionDialogProps) {
   const { t } = useTranslation('crd-space');
+  const { isSmallScreen } = useScreenSize();
+  // Full screen on a small screen: follow the visible area so the actions stay above
+  // the on-screen keyboard.
+  const visibleArea = useVisibleViewportArea(open && isSmallScreen);
+
   const translateValidation = useValidationMessageTranslation();
   const notify = useNotification();
   // Create mode: the post (and its storage bucket) doesn't exist yet, so both markdown-image and
@@ -226,6 +234,7 @@ export function CrdPostContributionDialog({
   const [createPost, { loading: creating }] = useCreatePostOnCalloutMutation();
   const [updatePost, { loading: updating }] = useUpdatePostMutation();
   const [deleteContribution] = useDeleteContributionMutation();
+  // A failed reference change or move is reported by the global error handler, with the server's reason.
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
 
@@ -299,7 +308,6 @@ export function CrdPostContributionDialog({
             }
           } catch (err) {
             logError(new Error('Post reference creation failed', { cause: err as Error }));
-            notify(t('callout.referencesSaveFailed'), 'error');
           }
         }
         onCreated?.({ id: created.id });
@@ -351,7 +359,6 @@ export function CrdPostContributionDialog({
         }
       } catch (err) {
         logError(new Error('Post reference CRUD failed', { cause: err as Error }));
-        notify(t('callout.referencesSaveFailed'), 'error');
       }
 
       await updatePost({
@@ -387,7 +394,6 @@ export function CrdPostContributionDialog({
           notify(t('postLocation.moved'), 'success');
         } catch (err) {
           logError(new Error('Post move failed', { cause: err as Error }));
-          notify(t('postLocation.moveFailed'), 'error');
         }
       }
 
@@ -444,9 +450,31 @@ export function CrdPostContributionDialog({
       >
         <DialogContent
           overlayClassName={overlayClassName}
-          className={cn('sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden', contentClassName)}
+          hideClose={isSmallScreen}
+          style={visibleArea ? { ...visibleArea, bottom: 'auto' } : undefined}
+          className={cn(
+            'flex flex-col overflow-hidden',
+            // Full screen on a small screen, like the chat panel. No duration: the height
+            // follows the on-screen keyboard and must not lag behind it.
+            isSmallScreen
+              ? 'inset-0 max-w-none translate-x-0 translate-y-0 rounded-none border-none p-4 duration-0'
+              : 'sm:max-w-3xl max-h-[90vh]',
+            contentClassName
+          )}
         >
-          <DialogHeader className="shrink-0">
+          <DialogHeader className={cn('shrink-0', isSmallScreen && 'flex-row items-center gap-1 text-left')}>
+            {isSmallScreen && (
+              <DialogClose asChild={true}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="-ml-2 shrink-0 text-muted-foreground"
+                  aria-label={t('calloutDialog.close')}
+                >
+                  <ChevronLeft aria-hidden="true" className="size-5" />
+                </Button>
+              </DialogClose>
+            )}
             <DialogTitle>{dialogTitle}</DialogTitle>
             <DialogDescription className="sr-only">{dialogTitle}</DialogDescription>
           </DialogHeader>
@@ -567,7 +595,8 @@ export function CrdPostContributionDialog({
                 </Button>
               )}
             </div>
-            <div className="flex items-center gap-2">
+            {/* Wraps on a small screen: in longer languages the notify switch would push the submit button off screen. */}
+            <div className={cn('flex items-center gap-2', isSmallScreen && 'flex-wrap justify-end')}>
               {mode === 'create' && (
                 <div className="flex items-center gap-2 mr-2">
                   <Switch

@@ -34,8 +34,8 @@ export type UseUserNotificationsTabDataResult = {
  * 3. **On success**: refetches `useUserSettingsQuery` and clears that
  *    specific override after the cache resolves.
  * 4. **On hard failure**: rolls back the override (UI snaps back to the
- *    server value) and rejects the returned promise so the integration
- *    page can surface a toast (FR-064 / Q5).
+ *    server value) and rejects the returned promise. The global error
+ *    handler reports the failure, with the server's reason.
  *
  * Push subscription state lives in `usePushNotificationContext` and is
  * wired separately by the integration page; this hook deals only with
@@ -83,7 +83,7 @@ export const useUserNotificationsTabData = ({
         // 2) Success → drop the override (server now matches what the user wanted).
         clearOverride(key);
       } catch (err) {
-        // 3) Hard failure → rollback + bubble for toast.
+        // 3) Hard failure → rollback and rethrow.
         clearOverride(key);
         throw err;
       }
@@ -111,7 +111,7 @@ export const useUserNotificationsTabData = ({
         // 2) Success → drop the override.
         clearOverride(overrideK);
       } catch (err) {
-        // 3) Hard failure → rollback + bubble for toast.
+        // 3) Hard failure → rollback and rethrow.
         clearOverride(overrideK);
         throw err;
       }

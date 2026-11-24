@@ -8,6 +8,7 @@ query PlatformAdminInnovationPacks {
       }
       listedInStore
       searchVisibility
+      promote
       provider {
         id
         profile {

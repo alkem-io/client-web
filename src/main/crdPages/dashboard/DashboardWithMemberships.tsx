@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
 import {
   refetchUserSettingsQuery,
   useDashboardExploreSpacesQuery,
@@ -12,6 +13,7 @@ import {
   useUpdateUserSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ActivityEventType, ActivityFeedRoles, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import useNavigate from '@/core/routing/useNavigate';
 import { ActivityDialog } from '@/crd/components/dashboard/ActivityDialog';
 import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
@@ -21,11 +23,16 @@ import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { MyMembershipsPanel } from '@/crd/components/dashboard/MyMemberships/MyMembershipsPanel';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
+import { UnreadSummaryRow } from '@/crd/components/dashboard/UnreadSummaryRow';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
 import { CrdCreateSpaceDialog } from '@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog';
 import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
+import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
+import { useUnreadNotificationsCount } from '@/main/inAppNotifications/useUnreadNotificationsCount';
 import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
+import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
+import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 import { LEGACY_VIEW_KEY, resolveActivityView, SEED_FLAG_KEY, shouldSeedFromLegacy } from './activityViewPreference';
 import {
   mapActivityToFeedItems,
@@ -71,6 +78,12 @@ export default function DashboardWithMemberships({
   const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
   const [createVcOpen, setCreateVcOpen] = useState(false);
 
+  // Phone-only unread rows: the same cache-first counts as the header chat badge and bell.
+  const unreadMessagesCount = useUnreadConversationsCount();
+  const unreadNotificationsCount = useUnreadNotificationsCount();
+  const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
+  const { setIsOpen: setNotificationsOpen } = useInAppNotificationsContext();
+
   // Activity view toggle — persisted per-user in UserSettings.dashboard.activityView.
   // Default: Activity view on (true) when the user has never set it (FR-024). A local
   // override gives the toggle instant feedback ahead of the mutation resolving.
@@ -81,11 +94,12 @@ export default function DashboardWithMemberships({
 
   const [updateUserSettings] = useUpdateUserSettingsMutation();
 
-  const persistActivityView = (enabled: boolean) => {
+  const persistActivityView = (enabled: boolean, context?: typeof OWN_ERROR_HANDLING) => {
     if (!userId) return;
     updateUserSettings({
       variables: { settingsData: { userID: userId, settings: { dashboard: { activityView: enabled } } } },
       refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
+      context,
     }).catch(() => {
       // Persist failed — drop the local override so the UI falls back to the
       // last-known server value rather than showing a change that didn't save.
@@ -107,7 +121,8 @@ export default function DashboardWithMemberships({
     const legacy = localStorage.getItem(LEGACY_VIEW_KEY);
     if (shouldSeedFromLegacy(legacy, settingActivityView)) {
       setActivityOverride(false);
-      persistActivityView(false);
+      // Nobody asked for this write, so a refusal must not raise a toast.
+      persistActivityView(false, OWN_ERROR_HANDLING);
     }
     localStorage.setItem(SEED_FLAG_KEY, '1');
   }, [userId, settingActivityView]);
@@ -302,6 +317,20 @@ export default function DashboardWithMemberships({
           />
         }
       >
+        <UnreadSummaryRow
+          kind="messages"
+          count={unreadMessagesCount}
+          onOpen={() => {
+            trackChatOpen('homeUnreadRow');
+            setMessagingOpen(true);
+          }}
+        />
+        <UnreadSummaryRow
+          kind="notifications"
+          count={unreadNotificationsCount}
+          onOpen={() => setNotificationsOpen(true)}
+        />
+
         {activityEnabled && (
           <RecentSpaces
             spaces={recentSpaces}

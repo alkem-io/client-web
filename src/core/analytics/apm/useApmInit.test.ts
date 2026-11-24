@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '@/main/cookies/useAlkemioCookies';
-import { useGetOrSetApmCookie } from './useApmInit';
+import { useApmInit, useGetOrSetApmCookie } from './useApmInit';
 
 // Regression test for #10123: an `accepted_cookies` consent cookie holding valid JSON that is
 // NOT an array (e.g. `true`, `42`, `{"a":1}`) used to crash the whole app into its error
@@ -18,6 +18,20 @@ const setCookie = vi.fn();
 
 vi.mock('react-cookie', () => ({
   useCookies: () => [mockCookies, setCookie],
+}));
+
+const addLabels = vi.fn();
+
+vi.mock('@elastic/apm-rum', () => ({
+  init: () => ({ setUserContext: vi.fn(), setCustomContext: vi.fn(), addLabels }),
+}));
+
+vi.mock('@/domain/platform/config/useConfig', () => ({
+  useConfig: () => ({ apm: { rumEnabled: true, endpoint: 'http://apm.test' }, locations: { environment: 'test' } }),
+}));
+
+vi.mock('@/core/analytics/geo', () => ({
+  useUserGeo: () => ({ data: undefined, loading: true, error: undefined }),
 }));
 
 beforeEach(() => {
@@ -76,5 +90,34 @@ describe('useGetOrSetApmCookie shape-guarding (#10123)', () => {
 
     expect(result.current).toBe('apm-existing');
     expect(setCookie).not.toHaveBeenCalled();
+  });
+});
+
+describe('useApmInit app-mode labels', () => {
+  beforeEach(() => {
+    vi.stubEnv('MODE', 'production');
+    addLabels.mockReset();
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    Reflect.deleteProperty(window, 'Capacitor');
+  });
+
+  it('labels browser traffic as web', () => {
+    const { result } = renderHook(() => useApmInit(undefined));
+
+    result.current();
+
+    expect(addLabels).toHaveBeenCalledWith({ app_mode: false, app_platform: 'web' });
+  });
+
+  it('labels app-shell traffic with the native platform', () => {
+    window.Capacitor = { isNativePlatform: () => true, getPlatform: () => 'ios' };
+    const { result } = renderHook(() => useApmInit(undefined));
+
+    result.current();
+
+    expect(addLabels).toHaveBeenCalledWith({ app_mode: true, app_platform: 'ios' });
   });
 });

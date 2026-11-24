@@ -86,6 +86,7 @@ export const useCrdVCProfilePageData = () => {
     vc,
     myPrivileges,
     error,
+    // A profile that is not available (FORBIDDEN_POLICY) is handled by the restricted redirect above.
     isNotFoundError: error ? isApolloNotFoundError(error) : false,
     bokSpaceProfile,
     hasSpaceProfileReadAccess,

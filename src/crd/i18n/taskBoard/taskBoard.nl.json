@@ -3,7 +3,6 @@
   "expand": "Volledig scherm",
   "collapse": "Volledig scherm sluiten",
   "emptyColumn": "Nog geen taken",
-  "moveError": "De taak kon niet worden verplaatst. Probeer het opnieuw.",
   "columns": {
     "manage": "Kolommen beheren",
     "title": "Kolommen van het taakbord",
@@ -26,8 +25,7 @@
     },
     "dragLabel": "Kolom herordenen",
     "deleteLabel": "Kolom verwijderen",
-    "saving": "Opslaan…",
-    "saveError": "De kolomwijziging kon niet worden opgeslagen. Probeer het opnieuw."
+    "saving": "Opslaan…"
   },
   "create": {
     "option": "Takenbord",

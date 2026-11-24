@@ -4,6 +4,7 @@ query platformAdminVirtualContributorsList {
       id
       listedInStore
       searchVisibility
+      promote
       account {
         id
         host {

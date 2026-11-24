@@ -4,6 +4,8 @@ import {
   useMyPushSubscriptionsLazyQuery,
   useSubscribeToPushNotificationsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { PUSH_SUBSCRIPTION_ID_KEY, PUSH_USER_DISABLED_KEY } from '@/main/pushNotifications/constants';
 import { useNativePushRegistration } from '@/main/pushNotifications/useNativePushRegistration';
@@ -30,7 +32,7 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
   const pushState = usePushNotifications();
   const navigate = useNavigate();
   const [fetchSubscriptions] = useMyPushSubscriptionsLazyQuery();
-  const [subscribeMutation] = useSubscribeToPushNotificationsMutation();
+  const [subscribeMutation] = useSubscribeToPushNotificationsMutation({ context: OWN_ERROR_HANDLING });
 
   // In app mode: capture the OS device token and bind it to this user. Mounted
   // here, and only here, because this component mounts exactly when the session
@@ -133,8 +135,10 @@ const PushNotificationProviderInner: FC<PropsWithChildren> = ({ children }) => {
 
 export const PushNotificationProvider: FC<PropsWithChildren> = ({ children }) => {
   const { isAuthenticated } = useCurrentUserContext();
+  // A refused session is on its way to /second-factor and asks the server nothing meanwhile.
+  const { secondFactorRequired } = useAuthenticationContext();
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || secondFactorRequired) {
     return <PushNotificationContext.Provider value={defaultState}>{children}</PushNotificationContext.Provider>;
   }
 

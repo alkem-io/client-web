@@ -4,19 +4,21 @@ import { useTranslation } from 'react-i18next';
 import {
   refetchPlatformAdminSpacesListQuery,
   useAdminUpdateSpaceNameIdMutation,
+  useAdminUpdateSpacePromoteMutation,
   useAdminUpdateSpaceVisibilityMutation,
   useDeleteSpaceMutation,
   usePlatformAdminSpacesListQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
-import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AdminSearchableTable, type AdminTableColumn } from '@/crd/components/admin/AdminSearchableTable';
 import { AccountOwnerCell } from '@/crd/components/admin/columns/AccountOwnerCell';
+import { PromoteCheckboxCell } from '@/crd/components/admin/columns/PromoteCheckboxCell';
 import { VisibilityChipCell, type VisibilityChipTone } from '@/crd/components/admin/columns/VisibilityChipCell';
 import { SpaceSettingsDialog } from '@/crd/components/admin/spaces/SpaceSettingsDialog';
 import { Button } from '@/crd/primitives/button';
 import useCanManageLicensePlans from '@/domain/platformAdmin/domain/licensing/useCanManageLicensePlans';
+import { usePendingRows } from '../_shared/usePendingRows';
 import { useAdminListSearch } from '../useAdminListSearch';
 import { SpaceLicensePlansDialog } from './SpaceLicensePlansDialog';
 import { type AdminSpaceRow, mapSpaceToRow } from './spaceListMapper';
@@ -32,7 +34,7 @@ const CrdAdminSpacesPage = () => {
   const { t } = useTranslation('crd-admin');
   const { t: tApp } = useTranslation();
   const notify = useNotification();
-  const guard = usePermissionDeniedNotifier();
+  const promoteRows = usePendingRows();
   const canManageLicensePlans = useCanManageLicensePlans();
   // `errorPolicy: 'all'` so one space with a corrupt server-side authorization
   // policy on its nested `about.provider` (AUTHORIZATION_INVALID_POLICY) doesn't
@@ -61,6 +63,9 @@ const CrdAdminSpacesPage = () => {
     awaitRefetchQueries: true,
   });
   const savingSettings = savingVisibility || savingNameId;
+  // No refetch: the mutation selects `{ id promote }`, so Apollo updates the
+  // cached row in place and the checkbox re-renders from it.
+  const [updatePromote] = useAdminUpdateSpacePromoteMutation();
 
   const rows = (data?.platformAdmin.spaces ?? []).map(mapSpaceToRow);
   const { searchTerm, onSearchTermChange, filteredRows } = useAdminListSearch(rows);
@@ -91,25 +96,20 @@ const CrdAdminSpacesPage = () => {
     const nameIdChanged = nextNameId !== settingsSpace.nameId;
     const visibilityChanged = draftVisibility !== settingsSpace.visibility;
 
-    // Each call goes through `guard` so a permission-denied rejection gets its
-    // toast; the dialog closes only when every sent mutation succeeded.
+    // The dialog closes only when every sent mutation succeeded.
     void (async () => {
       if (visibilityChanged) {
-        await guard(() =>
-          updateSpaceVisibility({
-            variables: {
-              spaceId: settingsSpace.id,
-              visibility: draftVisibility as SpaceVisibility,
-            },
-          })
-        );
+        await updateSpaceVisibility({
+          variables: {
+            spaceId: settingsSpace.id,
+            visibility: draftVisibility as SpaceVisibility,
+          },
+        });
       }
       if (nameIdChanged) {
-        await guard(() =>
-          updateSpaceNameId({
-            variables: { spaceId: settingsSpace.id, nameId: nextNameId },
-          })
-        );
+        await updateSpaceNameId({
+          variables: { spaceId: settingsSpace.id, nameId: nextNameId },
+        });
       }
       setSettingsSpaceId(null);
     })().catch(() => {});
@@ -138,6 +138,26 @@ const CrdAdminSpacesPage = () => {
     },
     { header: t('columns.ownerHeader'), render: row => <AccountOwnerCell owner={row.accountOwner} /> },
   ];
+  // The server returns `promote` only to viewers who may manage it, so the
+  // column follows the data rather than a client-side copy of the role rule.
+  if (rows.some(row => row.promote != null)) {
+    columns.push({
+      header: t('columns.promoteHeader'),
+      render: row =>
+        row.promote == null ? null : (
+          <PromoteCheckboxCell
+            checked={row.promote}
+            name={row.name}
+            saving={promoteRows.isPending(row.id)}
+            onCheckedChange={next => {
+              void promoteRows
+                .run(row.id, () => updatePromote({ variables: { spaceId: row.id, promote: next } }))
+                .catch(() => {});
+            }}
+          />
+        ),
+    });
+  }
 
   return (
     <>

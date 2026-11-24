@@ -99,7 +99,13 @@ export function calloutFormValuesToUpdateCalloutEntityInput(
   calloutId: string
 ): UpdateCalloutEntityInput {
   const { input } = mapFormToCalloutUpdateInput(templateSafeSelection(values), { calloutId });
-  return input;
+  // The stored `enabled` is an independent server field the template form neither shows nor reads,
+  // so the save must not re-derive it from the actor switches. The server merge keeps an omitted
+  // field, and it treats a callout as closed on `enabled: false` OR actors None.
+  const contribution = input.settings?.contribution;
+  if (!contribution) return input;
+  const { enabled: _enabled, ...contributionWithoutEnabled } = contribution;
+  return { ...input, settings: { ...input.settings, contribution: contributionWithoutEnabled } };
 }
 
 // ---------------------------------------------------------------------------
@@ -119,12 +125,12 @@ const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, FramingChip> = {
   [CalloutFramingType.Form]: 'form',
 };
 
-const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, ResponseType | 'none'> = {
+const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, Exclude<ResponseType, 'none'>> = {
   [CalloutContributionType.Link]: 'link',
   [CalloutContributionType.Post]: 'post',
   [CalloutContributionType.Memo]: 'memo',
   [CalloutContributionType.Whiteboard]: 'whiteboard',
-  [CalloutContributionType.CollaboraDocument]: 'none',
+  [CalloutContributionType.CollaboraDocument]: 'document',
 };
 
 type FramingProfile = CalloutTemplateContentFragment['framing']['profile'];

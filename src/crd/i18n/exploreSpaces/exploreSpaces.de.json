@@ -20,6 +20,8 @@
     "filterSubspacesOnly": "Nur Unterräume",
     "clearFilters": "Alle Filter zurücksetzen",
     "matchingTerms": "Räume passend zu „{{terms}}“",
+    "matchingTermsCount_one": "{{count}} Raum passend zu „{{terms}}“",
+    "matchingTermsCount_other": "{{count}} Räume passend zu „{{terms}}“",
     "of": "von",
     "spacesLabel": "Räume",
     "emptyTitle": "Keine Räume gefunden",

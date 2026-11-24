@@ -15,6 +15,7 @@ import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/us
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
+import { useMessageContributor } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { getCalloutContributionType, mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
 import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
@@ -121,11 +122,23 @@ function LazyCalloutItemContent({
   onExpandClick?: () => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  // A Tasks board opens to the board dialog (like a whiteboard/memo), not the
-  // post-detail dialog. `isBoard` is confirmed asynchronously by the board
-  // connector's query; until then a click falls back to the normal dialog.
+  // `isBoard` is confirmed asynchronously by the board connector's query. A
+  // Tasks board opens to the same detail dialog as any callout, with the board
+  // in place of the responses; the board-only dialog opens from the fullscreen
+  // control or a task click in the inline board.
   const [isBoard, setIsBoard] = useState(false);
   const [boardDialogOpen, setBoardDialogOpen] = useState(false);
+  // The task shown in its focused dialog on top of the board-only dialog.
+  const [boardTaskId, setBoardTaskId] = useState<string | undefined>();
+  // A task clicked in the inline board, waiting for the board-only dialog to
+  // mount. Mounted in the same pass, the board dialog would hide the task
+  // dialog from assistive technology.
+  const [queuedBoardTaskId, setQueuedBoardTaskId] = useState<string | undefined>();
+  useEffect(() => {
+    if (!boardDialogOpen || !queuedBoardTaskId) return;
+    setBoardTaskId(queuedBoardTaskId);
+    setQueuedBoardTaskId(undefined);
+  }, [boardDialogOpen, queuedBoardTaskId]);
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const [initialPostId, setInitialPostId] = useState<string | undefined>();
@@ -140,6 +153,7 @@ function LazyCalloutItemContent({
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { t } = useTranslation('crd-space');
+  const onMessageContributor = useMessageContributor();
   // Resolve per-phase layout from the FLOW_STATE classification tag.
   // `flowState.tags[0]` is the phase display name the callout is tagged under.
   // `useFlowStateLayout` reads from the cached SpaceTabsQuery (zero extra round-trips)
@@ -184,17 +198,6 @@ function LazyCalloutItemContent({
       setInitialPostId(undefined);
     }
     setDialogOpen(true);
-  };
-
-  // A Tasks board callout opens to the board dialog; any other callout opens its
-  // detail dialog. Detection is async, so this falls back to the dialog until
-  // the board connector confirms.
-  const handleCardOpen = () => {
-    if (isBoard) {
-      setBoardDialogOpen(true);
-    } else {
-      openDialog();
-    }
   };
 
   // The callout-header fullscreen icon opens the board dialog AND enters browser
@@ -304,7 +307,6 @@ function LazyCalloutItemContent({
   const plainContributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
       callout={callout}
-      onShowAll={() => openDialog()}
       onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
       onOpenMemoSignedCopies={setSignedCopiesMemoId}
       isTaskBoard={isBoard}
@@ -320,7 +322,7 @@ function LazyCalloutItemContent({
         // Clicking a task in the inline preview presents it on top of the board
         // dialog: open the board dialog and the task's focused dialog above it.
         setBoardDialogOpen(true);
-        openDialog(contributionId);
+        setQueuedBoardTaskId(contributionId);
       }}
     />
   ) : (
@@ -374,12 +376,13 @@ function LazyCalloutItemContent({
           calloutId={callout.id}
           roomData={callout.comments}
           skipSubscription={!commentsExpanded}
+          onMessageContributor={onMessageContributor}
         >
           {({ thread, commentInput }) => (
             <PostCard
               post={postData}
               onClick={() => {
-                handleCardOpen();
+                openDialog();
                 onClick?.();
               }}
               onOpenFraming={handleOpenFraming}
@@ -417,7 +420,7 @@ function LazyCalloutItemContent({
         <PostCard
           post={postData}
           onClick={() => {
-            handleCardOpen();
+            openDialog();
             onClick?.();
           }}
           onOpenFraming={handleOpenFraming}
@@ -456,7 +459,7 @@ function LazyCalloutItemContent({
           title={callout.framing.profile.displayName}
           open={boardDialogOpen}
           onOpenChange={setBoardDialogOpen}
-          onOpenTask={openDialog}
+          onOpenTask={setBoardTaskId}
         />
       )}
 
@@ -468,10 +471,22 @@ function LazyCalloutItemContent({
         initialContributionId={initialContributionId}
         initialMemoId={initialMemoId}
         initialPostId={initialPostId}
-        // A task's focused dialog opens on top of the board dialog, so it (and
-        // its edit/delete/share) must stack above it.
-        elevated={isBoard}
+        taskBoard={isBoard}
       />
+
+      {/* A task's focused dialog opens on top of the board dialog, so it (and
+          its edit/delete/share) must stack above it. */}
+      {isBoard && boardTaskId && (
+        <CalloutDetailDialogConnector
+          open={true}
+          onOpenChange={open => {
+            if (!open) setBoardTaskId(undefined);
+          }}
+          callout={callout}
+          initialContributionId={boardTaskId}
+          elevated={true}
+        />
+      )}
 
       {collaboraDocumentId && (
         <CollaboraFramingEditorOverlay

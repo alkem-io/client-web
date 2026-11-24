@@ -151,7 +151,7 @@ function LinkEditDialog({
   const storageConfig = useStorageConfigContext();
   // Temporary uploads, which the server relocates when the link adopts one. The client never
   // deletes an upload: an abandoned one stays stored, and the server does not expire it yet.
-  const referenceUpload = useReferenceFileUpload(storageConfig, { temporaryLocation: true, ownFailureToast: false });
+  const referenceUpload = useReferenceFileUpload(storageConfig, { temporaryLocation: true });
   const [updateLink] = useUpdateLinkMutation({
     refetchQueries: ['CalloutDetails', 'CalloutContributions'],
     awaitRefetchQueries: true,

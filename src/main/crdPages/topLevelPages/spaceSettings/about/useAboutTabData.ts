@@ -14,6 +14,8 @@ import {
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { type UpdateSpaceInput, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { ClassificationEntryData, ClassificationTemplateOptionData } from '@/crd/components/classification/types';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
@@ -150,14 +152,25 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const withUploadGate = useUploadGate();
   const notify = useNotification();
 
-  const [updateSpace] = useUpdateSpaceMutation();
   const [uploadVisual] = useUploadVisualMutation();
-  const [createReference] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
-  const [addClassificationEntryFromTemplate] = useAddClassificationEntryFromTemplateMutation();
-  const [updateClassificationEntrySelection] = useUpdateClassificationEntrySelectionMutation();
-  const [updateClassificationEntryDisplay] = useUpdateClassificationEntryDisplayMutation();
-  const [deleteClassificationEntry] = useDeleteClassificationEntryMutation();
+  // Save failures show in the unsaved-changes bar and the save-failed dialog, with the server's reason.
+  const serverErrorMessage = useServerErrorMessage();
+  const describeSaveError = (err: unknown) => serverErrorMessage(err, errorMessage(err));
+  const [updateSpace] = useUpdateSpaceMutation({ context: OWN_ERROR_HANDLING });
+  const [createReference] = useCreateReferenceOnProfileMutation({ context: OWN_ERROR_HANDLING });
+  const [deleteReference] = useDeleteReferenceMutation({ context: OWN_ERROR_HANDLING });
+  const [addClassificationEntryFromTemplate] = useAddClassificationEntryFromTemplateMutation({
+    context: OWN_ERROR_HANDLING,
+  });
+  const [updateClassificationEntrySelection] = useUpdateClassificationEntrySelectionMutation({
+    context: OWN_ERROR_HANDLING,
+  });
+  const [updateClassificationEntryDisplay] = useUpdateClassificationEntryDisplayMutation({
+    context: OWN_ERROR_HANDLING,
+  });
+  const [deleteClassificationEntry] = useDeleteClassificationEntryMutation({
+    context: OWN_ERROR_HANDLING,
+  });
 
   // The allowed ratio range is a property of the visual TYPE, so it comes from
   // the platform config rather than from this space's own visual row.
@@ -540,7 +553,9 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const saveClassifications = async (): Promise<string | null> => {
     let firstError: string | null = null;
     const fail = (err: unknown) => {
-      firstError ??= isDisplayLabelConflictError(err) ? t('classifications.picker.conflict.title') : errorMessage(err);
+      firstError ??= isDisplayLabelConflictError(err)
+        ? t('classifications.picker.conflict.title')
+        : describeSaveError(err);
     };
 
     // Removals first, so a label freed by a removal is free for an add in the same Save.
@@ -666,7 +681,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
         await updateSpace({ variables: { input: { ID: spaceId, about } } });
       } catch (err) {
         coreFailed = true;
-        firstError ??= errorMessage(err);
+        firstError ??= describeSaveError(err);
       }
     }
 
@@ -681,14 +696,14 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
         });
       } catch (err) {
         failedCreates.push(ref);
-        firstError ??= errorMessage(err);
+        firstError ??= describeSaveError(err);
       }
     }
     for (const ref of removed) {
       try {
         await deleteReference({ variables: { input: { ID: ref.id } } });
       } catch (err) {
-        firstError ??= errorMessage(err);
+        firstError ??= describeSaveError(err);
       }
     }
 

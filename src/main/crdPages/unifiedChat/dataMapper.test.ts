@@ -5,6 +5,8 @@ import {
   GUIDANCE_INTRO_ID,
   injectGuidanceIntro,
   isGuidanceConversation,
+  mapConversationToListItem,
+  mapMembersToGroupMembers,
   mapMessageToChatMessage,
   mapReactionsToCommentReactions,
   sortUnifiedConversations,
@@ -27,6 +29,7 @@ const makeConversation = (overrides: Partial<UnifiedConversation> = {}): Unified
   members: [],
   isGuidance: false,
   pinned: false,
+  userPinned: false,
   ...overrides,
 });
 
@@ -64,6 +67,37 @@ describe('sortUnifiedConversations', () => {
     const sorted = sortUnifiedConversations([older, newly, newer, guidance], 'new');
     expect(sorted.map(c => c.id)).toEqual(['g', 'new', 'newer', 'older']);
   });
+
+  it('places user-pinned conversations below guidance and above the rest, newest first within each group', () => {
+    const message = (timestamp: number) => ({
+      id: `m${timestamp}`,
+      message: 'x',
+      timestamp,
+      reactions: [],
+      attachments: [],
+    });
+    const guidance = makeConversation({ id: 'g', pinned: true, isGuidance: true, createdDate: new Date(1) });
+    const pinnedOld = makeConversation({ id: 'pinned-old', userPinned: true, lastMessage: message(100) });
+    const pinnedNew = makeConversation({ id: 'pinned-new', userPinned: true, lastMessage: message(300) });
+    const newly = makeConversation({ id: 'new', createdDate: new Date(2) });
+    const recent = makeConversation({ id: 'recent', lastMessage: message(500) });
+    const stale = makeConversation({ id: 'stale', lastMessage: message(50) });
+
+    const sorted = sortUnifiedConversations([stale, pinnedOld, recent, newly, pinnedNew, guidance], 'new');
+    expect(sorted.map(c => c.id)).toEqual(['g', 'pinned-new', 'pinned-old', 'new', 'recent', 'stale']);
+  });
+
+  it('keeps a user-pinned newly-created conversation in the pinned group by recency', () => {
+    const pinnedNewly = makeConversation({ id: 'new', userPinned: true, createdDate: new Date(10) });
+    const pinnedRecent = makeConversation({
+      id: 'pinned-recent',
+      userPinned: true,
+      lastMessage: { id: 'm', message: 'x', timestamp: 500, reactions: [], attachments: [] },
+    });
+
+    const sorted = sortUnifiedConversations([pinnedNewly, pinnedRecent], 'new');
+    expect(sorted.map(c => c.id)).toEqual(['pinned-recent', 'new']);
+  });
 });
 
 describe('mapReactionsToCommentReactions', () => {
@@ -89,7 +123,7 @@ describe('mapMessageToChatMessage', () => {
       id: 'm1',
       message: 'hello',
       timestamp: 500,
-      sender: { id: ME, displayName: 'Me', avatarUri: undefined },
+      sender: { id: ME, displayName: 'Me', avatarUri: undefined, presence: 'unknown' },
       reactions: [],
       attachments: [],
     };
@@ -103,11 +137,69 @@ describe('mapMessageToChatMessage', () => {
       id: 'm2',
       message: 'hi',
       timestamp: 1,
-      sender: { id: 'other', displayName: 'Other' },
+      sender: { id: 'other', displayName: 'Other', presence: 'unknown' },
       reactions: [],
       attachments: [],
     };
     expect(mapMessageToChatMessage(msg, { currentUserId: ME }).isOwn).toBe(false);
+  });
+
+  it('carries the sender presence and status message to the author', () => {
+    const msg: ConversationMessage = {
+      id: 'm3',
+      message: 'hi',
+      timestamp: 1,
+      sender: { id: 'other', displayName: 'Other', presence: 'away', statusMessage: 'In a workshop' },
+      reactions: [],
+      attachments: [],
+    };
+    expect(mapMessageToChatMessage(msg, { currentUserId: ME }).author).toMatchObject({
+      presence: 'away',
+      statusMessage: 'In a workshop',
+    });
+  });
+});
+
+describe('mapConversationToListItem presence', () => {
+  const member = (id: string, presence: 'online' | 'offline') => ({
+    id,
+    type: ActorType.User,
+    displayName: id,
+    presence,
+  });
+  const options = { currentUserId: ME, formatTimestamp: String };
+
+  it('a 1:1 row carries the counterpart presence', () => {
+    const conversation = makeConversation({ members: [member(ME, 'offline'), member('ann', 'online')] });
+    expect(mapConversationToListItem(conversation, options).presence).toBe('online');
+  });
+
+  it.each([
+    ['a group', { isGroup: true }],
+    ['the guidance conversation', { isGuidance: true }],
+  ])('%s row carries no presence', (_name, overrides) => {
+    const conversation = makeConversation({ ...overrides, members: [member(ME, 'online'), member('ann', 'online')] });
+    expect(mapConversationToListItem(conversation, options).presence).toBeUndefined();
+  });
+});
+
+describe('mapMembersToGroupMembers', () => {
+  it("carries each member's presence and status message, the current user's included", () => {
+    const members = [
+      { id: ME, type: ActorType.User, displayName: 'Me', presence: 'online' as const, statusMessage: 'Focusing' },
+      { id: 'ann', type: ActorType.User, displayName: 'Ann', presence: 'busy' as const },
+    ];
+    expect(mapMembersToGroupMembers(members, ME)).toEqual([
+      { id: ME, name: 'Me', avatarUrl: undefined, isCurrentUser: true, presence: 'online', statusMessage: 'Focusing' },
+      {
+        id: 'ann',
+        name: 'Ann',
+        avatarUrl: undefined,
+        isCurrentUser: false,
+        presence: 'busy',
+        statusMessage: undefined,
+      },
+    ]);
   });
 });
 
@@ -133,6 +225,7 @@ describe('mapMemberToCommentAuthor virtual contributor flag', () => {
     const author = mapMemberToCommentAuthor({
       id: GUIDANCE_VC,
       type: ActorType.VirtualContributor,
+      presence: 'unknown',
       displayName: 'Guidance',
     });
     expect(author.isVirtualContributor).toBe(true);
@@ -160,5 +253,15 @@ describe('withActiveCallsFirst', () => {
   it('keeps the newly-created conversation directly below the pinned one', () => {
     const items = [{ id: 'pinned', pinned: true }, { id: 'new' }, { id: 'call', hasActiveCall: true }];
     expect(withActiveCallsFirst(items, 'new').map(item => item.id)).toEqual(['pinned', 'new', 'call']);
+  });
+
+  it('keeps user-pinned conversations above the newly-created one and running calls', () => {
+    const items = [
+      { id: 'guidance', pinned: true },
+      { id: 'new' },
+      { id: 'call', hasActiveCall: true },
+      { id: 'user-pinned', userPinned: true },
+    ];
+    expect(withActiveCallsFirst(items, 'new').map(item => item.id)).toEqual(['guidance', 'user-pinned', 'new', 'call']);
   });
 });

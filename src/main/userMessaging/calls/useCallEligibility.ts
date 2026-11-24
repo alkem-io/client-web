@@ -1,9 +1,10 @@
 import type { MatrixClient } from 'matrix-js-sdk';
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { CLIENT_SYNC, resolveMatrixRoomId } from '@/main/userMessaging/matrix/matrixRooms';
+import { resolveMatrixRoomId } from '@/main/userMessaging/matrix/matrixRooms';
+import { useMatrixSyncState } from '@/main/userMessaging/matrix/useMatrixSyncState';
 import { isCallsConfigured } from './callConfig';
 
 type CallableConversation = {
@@ -22,20 +23,7 @@ type CallEligibility = {
 
 const SYNCED_STATES = new Set(['PREPARED', 'SYNCING']);
 
-const noop = () => {};
-
-const useIsSynced = (client: MatrixClient | null): boolean =>
-  useSyncExternalStore(
-    listener => {
-      if (!client) {
-        return noop;
-      }
-      client.on(CLIENT_SYNC as never, listener as never);
-      return () => client.removeListener(CLIENT_SYNC as never, listener as never);
-    },
-    () => (client ? SYNCED_STATES.has(client.getSyncState() ?? '') : false),
-    () => false
-  );
+const useIsSynced = (client: MatrixClient | null): boolean => SYNCED_STATES.has(useMatrixSyncState(client) ?? '');
 
 const isBetaTester = (platformRoles: readonly RoleName[] | undefined): boolean =>
   (platformRoles ?? []).includes(RoleName.FeatureBetaTester);

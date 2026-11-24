@@ -48,6 +48,12 @@ const TAB_LIST_CLASSES =
 const TAB_LIST_FADE_CLASSES =
   '[mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)]';
 
+/**
+ * Whether the mobile fixed bottom bar renders. Without a menu and with no phases to switch
+ * between it would be empty, so it is omitted; consumers use this to reserve its clearance.
+ */
+export const hasMobileFlowBar = (phaseCount: number, hasMenu: boolean) => hasMenu || phaseCount > 1;
+
 export function SubspaceFlowTabs({
   phases,
   activePhaseId,
@@ -202,55 +208,58 @@ function DesktopFlowStrip({
           </Button>
         ))}
 
-      <nav className="flex-1 min-w-0" aria-label={t('a11y.flowTabs')}>
-        <div
-          ref={dragScroll.ref}
-          onPointerDown={dragScroll.onPointerDown}
-          className={cn(
-            'overflow-x-auto scrollbar-hide [-ms-overflow-style:none] [scrollbar-width:none] cursor-grab',
-            !!action && TAB_LIST_FADE_CLASSES
-          )}
-        >
-          {/* Trailing pad wider than the 1rem fade so the last phase can be
+      {/* A single phase leaves nothing to navigate between: drop the strip, keep the actions. */}
+      {phases.length > 1 && (
+        <nav className="flex-1 min-w-0" aria-label={t('a11y.flowTabs')}>
+          <div
+            ref={dragScroll.ref}
+            onPointerDown={dragScroll.onPointerDown}
+            className={cn(
+              'overflow-x-auto scrollbar-hide [-ms-overflow-style:none] [scrollbar-width:none] cursor-grab',
+              !!action && TAB_LIST_FADE_CLASSES
+            )}
+          >
+            {/* Trailing pad wider than the 1rem fade so the last phase can be
               scrolled fully clear of the gradient instead of fading under it. */}
-          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-          <ul role="list" className={cn('flex items-center gap-3', !!action && 'pr-8')}>
-            {phases.map((phase, index) => {
-              const isActive = phase.id === activePhaseId;
-              return (
-                <li
-                  key={phase.id}
-                  ref={isActive ? activeTabRef : undefined}
-                  className="inline-flex items-start shrink-0"
-                >
-                  {index > 0 && (
-                    <span className="mr-3" aria-hidden="true">
-                      <FlowArrow />
-                    </span>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => onPhaseChange(phase.id)}
-                    aria-current={isActive ? 'page' : undefined}
-                    aria-label={t('flow.phaseTab', { name: phase.label })}
-                    className={cn(
-                      'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                      isActive
-                        ? 'border-primary text-primary font-semibold'
-                        : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted font-medium'
-                    )}
+            {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+            {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+            <ul role="list" className={cn('flex items-center gap-3', !!action && 'pr-8')}>
+              {phases.map((phase, index) => {
+                const isActive = phase.id === activePhaseId;
+                return (
+                  <li
+                    key={phase.id}
+                    ref={isActive ? activeTabRef : undefined}
+                    className="inline-flex items-start shrink-0"
                   >
-                    {phase.label}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </nav>
+                    {index > 0 && (
+                      <span className="mr-3" aria-hidden="true">
+                        <FlowArrow />
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => onPhaseChange(phase.id)}
+                      aria-current={isActive ? 'page' : undefined}
+                      aria-label={t('flow.phaseTab', { name: phase.label })}
+                      className={cn(
+                        'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                        isActive
+                          ? 'border-primary text-primary font-semibold'
+                          : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted font-medium'
+                      )}
+                    >
+                      {phase.label}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </nav>
+      )}
 
-      {action && <div className="shrink-0 flex items-center">{action}</div>}
+      {action && <div className="shrink-0 flex items-center ml-auto">{action}</div>}
     </div>
   );
 }
@@ -275,6 +284,10 @@ function MobileFlowBar({
     activeTabRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   }, [activePhaseId]);
 
+  if (!hasMobileFlowBar(phases.length, !!onMobileMenuOpenChange)) {
+    return null;
+  }
+
   return (
     <>
       {createPortal(
@@ -298,33 +311,36 @@ function MobileFlowBar({
                 <div className="w-px h-6 bg-border" aria-hidden="true" />
               </>
             )}
-            {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-            {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-            <ul role="list" className={cn(TAB_LIST_CLASSES, 'flex-1 min-w-0 px-3')}>
-              {phases.map(phase => {
-                const isActive = phase.id === activePhaseId;
-                return (
-                  <li
-                    key={phase.id}
-                    ref={isActive ? activeTabRef : undefined}
-                    className="inline-flex items-center shrink-0"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => onPhaseChange(phase.id)}
-                      aria-current={isActive ? 'page' : undefined}
-                      aria-label={t('flow.phaseTab', { name: phase.label })}
-                      className={cn(
-                        'whitespace-nowrap py-2 px-1 transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                        isActive ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
-                      )}
+            {/* A single phase leaves nothing to navigate between; the menu button stays. */}
+            {phases.length > 1 && (
+              // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+              // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
+              <ul role="list" className={cn(TAB_LIST_CLASSES, 'flex-1 min-w-0 px-3')}>
+                {phases.map(phase => {
+                  const isActive = phase.id === activePhaseId;
+                  return (
+                    <li
+                      key={phase.id}
+                      ref={isActive ? activeTabRef : undefined}
+                      className="inline-flex items-center shrink-0"
                     >
-                      {phase.label}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
+                      <button
+                        type="button"
+                        onClick={() => onPhaseChange(phase.id)}
+                        aria-current={isActive ? 'page' : undefined}
+                        aria-label={t('flow.phaseTab', { name: phase.label })}
+                        className={cn(
+                          'whitespace-nowrap py-2 px-1 transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                          isActive ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
+                        )}
+                      >
+                        {phase.label}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         </nav>,
         document.body

@@ -7,6 +7,7 @@ import {
   useImportCollaboraDocumentMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { AuthorizationPrivilege, CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { promiseAllSettledThrottled } from '@/core/utils/promiseAllSettledThrottled';
@@ -202,7 +203,7 @@ export function DocumentContributionAddConnector({
         try {
           await importDocument({
             variables: { file: item.file, uploadData: { calloutID: calloutId } },
-            context: { skipGlobalErrorHandler: true },
+            context: OWN_ERROR_HANDLING,
           });
           setBatch(prev => prev.filter(staged => staged.key !== item.key));
         } catch (err) {

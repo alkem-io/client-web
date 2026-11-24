@@ -1,3 +1,4 @@
+import { Maximize } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -12,7 +13,6 @@ import {
   CalloutFramingType,
 } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import { CalloutPostPreview } from '@/crd/components/callout/CalloutPostPreview';
 import { CalloutWhiteboardContributionPreview } from '@/crd/components/callout/CalloutWhiteboardContributionPreview';
@@ -21,6 +21,7 @@ import { ContributionLinkList } from '@/crd/components/contribution/Contribution
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatRelativeFromNow } from '@/crd/lib/dateTimeFormat';
+import { Button } from '@/crd/primitives/button';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/canRenameCollaboraDocument';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
@@ -28,6 +29,7 @@ import useCalloutContributions from '@/domain/collaboration/calloutContributions
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
+import { useMessageContributor } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import type { MemoSigningRestoreIntent } from '@/main/ui/layout/MemoSigningReturnContext';
 import {
   getCalloutContributionType,
@@ -63,6 +65,8 @@ import { PostContributionAddConnector } from './PostContributionAddConnector';
 import { PostContributionConnector } from './PostContributionConnector';
 import { SpaceCollectionConnector } from './SpaceCollectionConnector';
 import { cardVariantFromServer } from './spaceCollectionCardVariant';
+import { TaskBoardConnector } from './TaskBoardConnector';
+import { TaskBoardDialog } from './TaskBoardDialog';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
 import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
 import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
@@ -85,8 +89,24 @@ type CalloutDetailDialogConnectorProps = {
    * it and every dialog it spawns (edit, delete, share) must stack above it.
    */
   elevated?: boolean;
+  /**
+   * The callout is a Tasks board. Its detail dialog then shows the board where
+   * other callouts show their responses, under the title, description and
+   * framing content. The board-only view and a task's focused dialog are opened
+   * from here and stack on top of it; an `initialContributionId` is such a task.
+   */
+  taskBoard?: boolean;
   memoSigningRestore?: MemoSigningRestoreIntent;
   onMemoSigningRestoreConsumed?: (attemptId: string, focusTarget?: HTMLElement) => void;
+};
+
+type CalloutDetailDialogLayerProps = Omit<CalloutDetailDialogConnectorProps, 'taskBoard'> & {
+  /** Set on the callout-level dialog of a Tasks board: the board replaces the responses grid. */
+  taskBoardView?: {
+    onOpenTask: (contributionId: string) => void;
+    /** `launcher` is the control that opened it, so focus can return there on close. */
+    onOpenBoardView: (launcher: HTMLElement) => void;
+  };
 };
 
 function ContributionsSlot({
@@ -267,7 +287,80 @@ function LinkContributionListSlot({
   );
 }
 
-export function CalloutDetailDialogConnector({
+export function CalloutDetailDialogConnector({ taskBoard = false, ...props }: CalloutDetailDialogConnectorProps) {
+  const { open, callout, initialContributionId, initialPostId } = props;
+  const [boardViewOpen, setBoardViewOpen] = useState(false);
+  // The task shown in its focused dialog on top (seeded from a deep-linked
+  // contribution, then driven by clicks in the board).
+  const [focusedTaskId, setFocusedTaskId] = useState<string | undefined>();
+
+  // Seeded after mount rather than as initial state: the task dialog has to
+  // mount after the callout dialog beneath it. Mounted in the same pass, the
+  // callout dialog would hide the task dialog from assistive technology.
+  useEffect(() => {
+    if (taskBoard && initialContributionId) setFocusedTaskId(initialContributionId);
+  }, [taskBoard, initialContributionId]);
+
+  // The layers on top belong to one opening of the callout dialog: a later
+  // opening must start from the callout, not from a leftover board view or task.
+  useEffect(() => {
+    if (open) return;
+    setBoardViewOpen(false);
+    setFocusedTaskId(undefined);
+  }, [open]);
+
+  // Same as the feed card's fullscreen control: the board-only view opens in
+  // browser fullscreen, which must be requested inside the click gesture.
+  const boardViewLauncherRef = useRef<HTMLElement | null>(null);
+  const openBoardView = (launcher: HTMLElement) => {
+    boardViewLauncherRef.current = launcher;
+    const request = document.documentElement.requestFullscreen?.();
+    if (request) request.catch(() => {});
+    setBoardViewOpen(true);
+  };
+
+  return (
+    <>
+      <CalloutDetailDialogLayer
+        {...props}
+        // On a board a contribution is a task: it opens in its own focused
+        // dialog below, not as a selection inside this one.
+        initialContributionId={taskBoard ? undefined : initialContributionId}
+        initialPostId={taskBoard ? undefined : initialPostId}
+        taskBoardView={taskBoard ? { onOpenTask: setFocusedTaskId, onOpenBoardView: openBoardView } : undefined}
+      />
+      {taskBoard && open && boardViewOpen && (
+        <TaskBoardDialog
+          calloutId={callout.id}
+          title={callout.framing.profile.displayName}
+          open={true}
+          onOpenChange={setBoardViewOpen}
+          onOpenTask={setFocusedTaskId}
+          // The board-only view has no trigger, so focus would drop to the page
+          // body on close: send it back to the control that opened it.
+          onCloseAutoFocus={event => {
+            event.preventDefault();
+            boardViewLauncherRef.current?.focus();
+          }}
+        />
+      )}
+      {taskBoard && open && focusedTaskId && (
+        <CalloutDetailDialogLayer
+          open={true}
+          onOpenChange={next => {
+            if (!next) setFocusedTaskId(undefined);
+          }}
+          callout={callout}
+          initialContributionId={focusedTaskId}
+          initialPostId={focusedTaskId === initialContributionId ? initialPostId : undefined}
+          elevated={true}
+        />
+      )}
+    </>
+  );
+}
+
+function CalloutDetailDialogLayer({
   open,
   onOpenChange,
   callout,
@@ -276,20 +369,38 @@ export function CalloutDetailDialogConnector({
   initialPostId,
   moveActions,
   elevated = false,
+  taskBoardView,
   memoSigningRestore,
   onMemoSigningRestoreConsumed,
-}: CalloutDetailDialogConnectorProps) {
+}: CalloutDetailDialogLayerProps) {
   const { t, i18n } = useTranslation('crd-space');
   // Over the fullscreen board (z-[100]) the detail dialog sits at z-[110], and
   // any dialog it spawns (edit, delete, share) at z-[120] so it clears both.
   const elevatedDialog = elevated ? { overlayClassName: 'z-[110]', contentClassName: 'z-[110]' } : {};
   const elevatedNested = elevated ? { overlayClassName: 'z-[120]', contentClassName: 'z-[120]' } : {};
+  // A task's focused dialog has no trigger, so focus would drop to the page
+  // body on close: send it back to where it was when the dialog opened — the
+  // task that was clicked, or the dialog beneath when nothing was (a deep link).
+  const openerRef = useRef<HTMLElement | null>(null);
+  const restoreFocusToOpener = elevated
+    ? {
+        onOpenAutoFocus: () => {
+          openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        },
+        onCloseAutoFocus: (event: Event) => {
+          if (!openerRef.current?.isConnected) return;
+          event.preventDefault();
+          openerRef.current.focus();
+        },
+      }
+    : {};
   const contributionType = getCalloutContributionType(callout);
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
   const initialIsPost = contributionType === CalloutContributionType.Post;
   const initialIsWhiteboard = contributionType === CalloutContributionType.Whiteboard;
   const initialIsDocument = open && contributionType === CalloutContributionType.CollaboraDocument;
 
+  const onMessageContributor = useMessageContributor();
   const [whiteboardContributionId, setWhiteboardContributionId] = useState<string | undefined>(
     initialIsWhiteboard ? initialContributionId : undefined
   );
@@ -325,7 +436,7 @@ export function CalloutDetailDialogConnector({
     { id: string; title: string; kind: 'post' | 'whiteboard' | 'document' } | undefined
   >(undefined);
   const [deletingContribution, setDeletingContribution] = useState(false);
-  const notify = useNotification();
+  // A failed delete is reported by the global error handler, with the server's reason.
   const [deleteContribution] = useDeleteContributionMutation();
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -596,13 +707,32 @@ export function CalloutDetailDialogConnector({
 
   // See `ContributionsSlot` above for why `enabled` is intentionally NOT in this gate.
   const hasContributionType = Boolean(getCalloutContributionType(callout));
-  const contributionsSlot = hasContributionType ? (
+  const contributionsSlot = taskBoardView ? (
+    <TaskBoardConnector calloutId={callout.id} onOpenTask={taskBoardView.onOpenTask} fallback={null} />
+  ) : hasContributionType ? (
     <ContributionsSlot
       callout={callout}
       open={open}
       onContributionClick={handleContributionClick}
       onOpenMemoSignedCopies={setSignedCopiesMemoId}
     />
+  ) : undefined;
+  // A board's responses are tasks: head them as the feed does, count included.
+  const contributionsTitle = taskBoardView
+    ? t('callout.tasksHeader', { count: callout.contributions.length })
+    : undefined;
+  const contributionsActionSlot = taskBoardView ? (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
+      aria-label={t('callout.fullscreen')}
+      title={t('callout.fullscreen')}
+      onClick={event => taskBoardView.onOpenBoardView(event.currentTarget)}
+    >
+      <Maximize className="size-5" aria-hidden="true" />
+    </Button>
   ) : undefined;
 
   // Inline preview of the selected post contribution — mirrors the MUI flow
@@ -674,7 +804,6 @@ export function CalloutDetailDialogConnector({
       setConfirmDeleteContribution(undefined);
     } catch (err) {
       logError(new Error('Contribution delete failed', { cause: err as Error }));
-      notify(t('deleteContribution.saveFailed'), 'error');
     } finally {
       setDeletingContribution(false);
     }
@@ -935,7 +1064,7 @@ export function CalloutDetailDialogConnector({
       callout={callout}
       moveActions={moveActions}
       onShare={handleShareClick}
-      isTaskBoard={elevated}
+      isTaskBoard={elevated || Boolean(taskBoardView)}
       onDeleted={() => onOpenChange(false)}
     />
   );
@@ -998,6 +1127,7 @@ export function CalloutDetailDialogConnector({
           open={open}
           onOpenChange={onOpenChange}
           {...elevatedDialog}
+          {...restoreFocusToOpener}
           focusedPost={elevated && isPostSelected}
           editing={postEditOpen}
           callout={{
@@ -1017,7 +1147,9 @@ export function CalloutDetailDialogConnector({
           spacesFramingSlot={spacesFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
-          contributionsCount={callout.contributions.length}
+          contributionsActionSlot={contributionsActionSlot}
+          contributionsTitle={contributionsTitle}
+          contributionsCount={contributionsTitle ? undefined : callout.contributions.length}
           selectedContributionSlot={selectedContributionSlot}
           reactionsSlot={reactionsSlot}
           settingsSlot={settingsSlot}
@@ -1046,6 +1178,7 @@ export function CalloutDetailDialogConnector({
         calloutId={callout.id}
         contributionId={isPostSelected ? postContributionId : undefined}
         roomData={activeRoomData}
+        onMessageContributor={onMessageContributor}
         // In the focused-task dialog on a board (elevated, z-[110]) the comment
         // delete-confirmation would otherwise open behind it and block the UI —
         // lift it to the same nested tier as the dialog's other confirmations.
@@ -1063,6 +1196,7 @@ export function CalloutDetailDialogConnector({
             open={open}
             onOpenChange={onOpenChange}
             {...elevatedDialog}
+            {...restoreFocusToOpener}
             focusedPost={elevated && isPostSelected}
             // The post/task edit dialog opens over this one; its comment surface stays
             // out of the way until the user saves or cancels. The comments connector
@@ -1081,7 +1215,9 @@ export function CalloutDetailDialogConnector({
             commentsEnabled={activeCommentsEnabled}
             hasContributions={hasContributionType}
             contributionsSlot={contributionsSlot}
-            contributionsCount={callout.contributions.length}
+            contributionsActionSlot={contributionsActionSlot}
+            contributionsTitle={contributionsTitle}
+            contributionsCount={contributionsTitle ? undefined : callout.contributions.length}
             selectedContributionSlot={selectedContributionSlot}
             pollSlot={pollSlot}
             formFramingSlot={formFramingSlot}

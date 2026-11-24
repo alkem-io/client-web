@@ -1,11 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { ConnectedAccountsView } from '../ConnectedAccountsView';
 import { UserSecurityTabView, type UserSecurityViewState } from '../UserSecurityTabView';
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string, options?: Record<string, unknown>) => (options?.address ? `${key}:${options.address}` : key),
+  }),
 }));
 
 describe('UserSecurityTabView', () => {
@@ -38,6 +40,7 @@ describe('UserSecurityTabView', () => {
           state={loadingState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
         />
@@ -51,6 +54,7 @@ describe('UserSecurityTabView', () => {
           state={readyState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
         />
@@ -90,6 +94,7 @@ describe('UserSecurityTabView', () => {
           state={errorState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
         />
@@ -121,6 +126,7 @@ describe('UserSecurityTabView', () => {
           state={sessionExpiredState}
           passwordForm={null}
           webauthnForm={null}
+          twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={null}
         />
@@ -139,4 +145,49 @@ describe('UserSecurityTabView', () => {
       expect(action).toHaveAttribute('href', '/logout');
     }
   );
+
+  it(
+    'in the store app, says where security settings are managed instead of offering a sign-out that ' +
+      're-enters the app sign-in handoff, and leaves out Connected Accounts',
+    () => {
+      const { container } = render(
+        <UserSecurityTabView
+          state={{ kind: 'manageInBrowser', address: 'https://alkem.io/home' }}
+          passwordForm={null}
+          webauthnForm={null}
+          twoStepVerificationSection={null}
+          mcpApiKeysCard={null}
+          connectedAccountsSection={<p>connected-accounts-slot</p>}
+        />
+      );
+
+      expect(screen.getByText('user.security.manageInBrowser.description:https://alkem.io/home')).toBeInTheDocument();
+      expect(screen.queryAllByRole('link')).toHaveLength(0);
+      expect(screen.queryAllByRole('button')).toHaveLength(0);
+      expect(container.querySelector('a[href="/logout"]')).toBeNull();
+      expect(screen.queryByText('connected-accounts-slot')).not.toBeInTheDocument();
+      expect(screen.queryByText('user.security.connectedAccounts.title')).not.toBeInTheDocument();
+      expect(screen.queryByText('user.security.errorDescription')).not.toBeInTheDocument();
+      expect(screen.queryByText('user.security.sessionExpired.description')).not.toBeInTheDocument();
+    }
+  );
+
+  it('scrolls to the two-step section when the reminder link lands before the section has loaded', async () => {
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView;
+    globalThis.history.replaceState(null, '', '/user/me/settings/security#two-step-verification');
+    const readyState: UserSecurityViewState = { kind: 'ready', hasPassword: true, hasWebauthn: false };
+    const props = { passwordForm: null, webauthnForm: null, mcpApiKeysCard: null, connectedAccountsSection: null };
+
+    const { rerender } = render(
+      <UserSecurityTabView state={readyState} twoStepVerificationSection={null} {...props} />
+    );
+    expect(scrollIntoView).not.toHaveBeenCalled();
+
+    rerender(<UserSecurityTabView state={readyState} twoStepVerificationSection={<p>two-step</p>} {...props} />);
+
+    await waitFor(() => expect(scrollIntoView).toHaveBeenCalledTimes(1));
+    expect(scrollIntoView.mock.contexts[0]).toHaveAttribute('id', 'two-step-verification');
+    globalThis.history.replaceState(null, '', '/');
+  });
 });

@@ -6,12 +6,25 @@ const mockAddPollOption = vi.fn().mockResolvedValue({ data: {} });
 const mockUpdatePollOption = vi.fn().mockResolvedValue({ data: {} });
 const mockRemovePollOption = vi.fn().mockResolvedValue({ data: {} });
 const mockReorderPollOptions = vi.fn().mockResolvedValue({ data: {} });
+const mutationHookOptions = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useAddPollOptionMutation: () => [mockAddPollOption, { loading: false }],
-  useUpdatePollOptionMutation: () => [mockUpdatePollOption, { loading: false }],
-  useRemovePollOptionMutation: () => [mockRemovePollOption, { loading: false }],
-  useReorderPollOptionsMutation: () => [mockReorderPollOptions, { loading: false }],
+  useAddPollOptionMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [mockAddPollOption, { loading: false }];
+  },
+  useUpdatePollOptionMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [mockUpdatePollOption, { loading: false }];
+  },
+  useRemovePollOptionMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [mockRemovePollOption, { loading: false }];
+  },
+  useReorderPollOptionsMutation: (options: unknown) => {
+    mutationHookOptions(options);
+    return [mockReorderPollOptions, { loading: false }];
+  },
 }));
 
 describe('usePollOptionManagement', () => {
@@ -20,6 +33,16 @@ describe('usePollOptionManagement', () => {
     mockUpdatePollOption.mockClear();
     mockRemovePollOption.mockClear();
     mockReorderPollOptions.mockClear();
+    mutationHookOptions.mockClear();
+  });
+
+  test('runs every option mutation with the context its caller passes', () => {
+    renderHook(() => usePollOptionManagement({ pollId: 'poll-1', context: { skipGlobalErrorHandler: true } }));
+
+    expect(mutationHookOptions).toHaveBeenCalledTimes(4);
+    for (const [options] of mutationHookOptions.mock.calls) {
+      expect(options).toEqual({ context: { skipGlobalErrorHandler: true } });
+    }
   });
 
   test('addOption calls mutation with correct pollID and text', async () => {

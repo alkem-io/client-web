@@ -47,7 +47,7 @@ vi.mock('@/domain/space/hooks/useSubSpace', () => ({
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => hoisted.notify }));
 vi.mock('@/core/logging/sentry/log', () => ({ error: vi.fn() }));
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
+  useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en', exists: () => false } }),
 }));
 
 const { CalloutFramingFormConnector } = await import('./CalloutFramingFormConnector');
@@ -225,6 +225,22 @@ describe('CalloutFramingFormConnector', () => {
     expect(hoisted.refetchQueries).toHaveBeenCalled();
   });
 
+  it("a refusal without a form reason shows the server's reason", async () => {
+    hoisted.submit.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [new GraphQLError('Space is archived', { extensions: { code: 'OPERATION_NOT_ALLOWED' } })],
+      })
+    );
+    render(<CalloutFramingFormConnector callout={makeCallout()} />);
+
+    await userEvent.type(screen.getByRole('textbox', { name: /Your name/ }), 'Ada');
+    await userEvent.click(screen.getByRole('button', { name: 'formFillIn.submit' }));
+
+    await waitFor(() =>
+      expect(hoisted.notify).toHaveBeenCalledWith('apollo.errors.generic-with-code Space is archived', 'error')
+    );
+  });
+
   it('a successful submit toasts, resets the fill-in and refetches the responses', async () => {
     render(<CalloutFramingFormConnector callout={makeCallout({ responseMode: CalloutFormResponseMode.Multiple })} />);
 
@@ -349,6 +365,21 @@ describe('CalloutFramingFormConnector', () => {
       )
     );
     await waitFor(() => expect(hoisted.refetch).toHaveBeenCalled());
+  });
+
+  it("leaves a failed withdraw to the global error handler, which shows the server's reason", async () => {
+    hoisted.remove.mockRejectedValueOnce(new ApolloError({ graphQLErrors: [new GraphQLError('Refused')] }));
+    setResponses({ mine: [ownResponse] });
+    render(<CalloutFramingFormConnector callout={makeCallout()} />);
+
+    await userEvent.click(screen.getByRole('button', { name: 'formFillIn.ownResponses.withdraw' }));
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'formFillIn.ownResponses.withdrawConfirm.confirm' })
+    );
+
+    await waitFor(() => expect(hoisted.remove).toHaveBeenCalled());
+    expect(hoisted.remove.mock.calls[0][0]).not.toHaveProperty('context');
+    expect(hoisted.notify).not.toHaveBeenCalledWith(expect.anything(), 'error');
   });
 
   it('hides View responses when the viewer cannot read every response', () => {

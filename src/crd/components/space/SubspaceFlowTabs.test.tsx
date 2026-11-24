@@ -22,4 +22,28 @@ describe('SubspaceFlowTabs mobile bar', () => {
     render(<SubspaceFlowTabs phases={phases} activePhaseId="p1" onPhaseChange={() => {}} />);
     expect(screen.queryByRole('button', { name: 'a11y.openMenu' })).not.toBeInTheDocument();
   });
+
+  it('renders no bottom bar with a single phase and no menu', () => {
+    render(<SubspaceFlowTabs phases={phases} activePhaseId="p1" onPhaseChange={() => {}} />);
+    expect(screen.queryByRole('navigation', { name: 'a11y.bottomBar' })).not.toBeInTheDocument();
+  });
+
+  it('hides the single phase tab but keeps the menu button', () => {
+    render(
+      <SubspaceFlowTabs phases={phases} activePhaseId="p1" onPhaseChange={() => {}} onMobileMenuOpenChange={() => {}} />
+    );
+    expect(screen.queryByRole('button', { name: 'flow.phaseTab' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'a11y.openMenu' })).toBeInTheDocument();
+  });
+
+  it('shows the phase tabs when there are several', () => {
+    render(
+      <SubspaceFlowTabs
+        phases={[...phases, { id: 'p2', label: 'Build' }]}
+        activePhaseId="p1"
+        onPhaseChange={() => {}}
+      />
+    );
+    expect(screen.getAllByRole('button', { name: 'flow.phaseTab' })).toHaveLength(2);
+  });
 });

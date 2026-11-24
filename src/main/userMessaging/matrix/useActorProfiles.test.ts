@@ -3,9 +3,14 @@ import { describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({ query: vi.fn() }));
 
-vi.mock('@apollo/client', () => ({ useApolloClient: () => ({ query: harness.query }) }));
+vi.mock('@apollo/client', async importOriginal => ({
+  ...(await importOriginal<typeof import('@apollo/client')>()),
+  useApolloClient: () => ({ query: harness.query }),
+}));
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({ ActorProfileDocument: {} }));
 
+import { ApolloError } from '@apollo/client';
+import { GraphQLError } from 'graphql';
 import { useActorProfiles } from './useActorProfiles';
 
 const profileOf = (displayName: string) => ({ data: { actor: { profile: { displayName, avatar: { uri: 'u' } } } } });
@@ -40,6 +45,23 @@ describe('useActorProfiles', () => {
 
     await waitFor(() => expect(result.current.get('ok')?.displayName).toBe('Visible'));
     expect(result.current.has('denied')).toBe(false);
+  });
+
+  it('treats an actor that is not available like one that returns no actor', async () => {
+    harness.query.mockReset();
+    harness.query.mockImplementation(async ({ variables }) => {
+      if (variables.actorId === 'unavailable') {
+        throw new ApolloError({
+          graphQLErrors: [new GraphQLError('not available', { extensions: { code: 'FORBIDDEN_POLICY' } })],
+        });
+      }
+      return profileOf('Visible');
+    });
+
+    const { result } = renderHook(() => useActorProfiles(['unavailable', 'ok']));
+
+    await waitFor(() => expect(result.current.get('ok')?.displayName).toBe('Visible'));
+    expect(result.current.has('unavailable')).toBe(false);
   });
 
   it('gives no profile when the lookup returns no actor', async () => {

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 /**
- * The two device-push-token mutations, as **inline `gql` documents** imported by
- * both consumers — `useNativePushRegistration` (bind) and `LogoutPage`
+ * The device-push-token mutations, as **inline `gql` documents** imported by
+ * their consumers — `useNativePushRegistration` (bind, badge reset) and `LogoutPage`
  * (unbind) — so the cross-repo wire contract has a single file to read.
  *
  * **Documented deviation.** Every other operation in this repo goes through the
@@ -40,5 +40,11 @@ export type UnregisterDevicePushTokenVariables = {
 export const UnregisterDevicePushTokenDocument = gql`
   mutation UnregisterDevicePushToken($token: String!) {
     unregisterDevicePushToken(registrationData: { token: $token })
+  }
+`;
+
+export const ResetPushBadgeCountDocument = gql`
+  mutation ResetPushBadgeCount {
+    resetPushBadgeCount
   }
 `;

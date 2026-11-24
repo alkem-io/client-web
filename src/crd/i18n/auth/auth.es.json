@@ -66,7 +66,9 @@
     "lastName": "Apellido",
     "showPassword": "Mostrar contraseña",
     "hidePassword": "Ocultar contraseña",
-    "invalidEmail": "Introduce una dirección de correo válida."
+    "invalidEmail": "Introduce una dirección de correo válida.",
+    "totpCode": "Código de autenticación",
+    "recoveryCode": "Código de recuperación"
   },
   "providers": {
     "connectWith": "Continuar con {{provider}}",
@@ -84,5 +86,23 @@
     "websiteButton": "Ir a nuestro sitio web",
     "contributeTitle": "¿Quieres contribuir más?",
     "contributeDescription": "Regístrate a continuación en una cuenta Alkemio para colaborar con equipos y acceder a herramientas avanzadas."
+  },
+  "secondFactor": {
+    "subtitle": "Confirma que eres tú con tu segundo factor para terminar de iniciar sesión.",
+    "title": "Verificación en dos pasos",
+    "useAuthenticator": "Usar tu aplicación de autenticación",
+    "useRecoveryCode": "Usar un código de recuperación",
+    "useSecurityKey": "Usar una llave de seguridad",
+    "verify": "Verificar"
+  },
+  "secondFactorPage": {
+    "app": "Configura primero la verificación en dos pasos en un navegador web y después vuelve a iniciar sesión en la aplicación.",
+    "enrolled": "Tu segundo factor está configurado. Vuelve a iniciar sesión para continuar.",
+    "required": "Tu cuenta requiere la verificación en dos pasos. Configura un segundo factor a continuación para continuar.",
+    "secondWay": "Tu cuenta necesita una segunda forma de superar el segundo paso: una aplicación de autenticación, otra llave de seguridad o códigos de recuperación. Añade una a continuación y vuelve a iniciar sesión.",
+    "signInAgain": "Volver a iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "title": "Configura la verificación en dos pasos",
+    "unavailable": "No se pudo cargar tu configuración de seguridad. Vuelve a iniciar sesión para intentarlo de nuevo."
   }
 }

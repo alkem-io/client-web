@@ -8,5 +8,6 @@
     "joinTheWelcomeSpace": "Join the Welcome Space"
   },
   "versionNumber": "Version Number: <b>v{{version}}</b>",
-  "serverVersionNumber": "Server Version Number: <b>v{{version}}</b>"
+  "serverVersionNumber": "Server Version Number: <b>v{{version}}</b>",
+  "appVersionNumber": "App Version Number: <b>v{{version}}</b>"
 }

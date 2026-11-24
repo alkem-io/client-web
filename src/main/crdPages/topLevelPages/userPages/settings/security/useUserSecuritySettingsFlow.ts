@@ -18,18 +18,17 @@ export type UserSecuritySettingsFlowResult =
   | { kind: 'error'; error: Error; refetch: () => void }
   | { kind: 'ready'; flow: SettingsFlow; hasWebauthn: boolean; flowWasResumed: boolean; refetch: () => void };
 
+// The passkey card's method. Kratos's `webauthn` group is the security key — a second factor,
+// rendered by the two-step verification section — so it does not count here.
 const hasWebauthnNode = (node: UiNode): boolean => {
-  if (node.group === 'webauthn' || node.group === 'passkey') return true;
+  if (node.group === 'passkey') return true;
   const attrs = node.attributes;
-  if (
+  return (
     attrs.node_type === 'input' &&
     'onclickTrigger' in attrs &&
     typeof attrs.onclickTrigger === 'string' &&
-    (attrs.onclickTrigger.startsWith('oryWebAuthn') || attrs.onclickTrigger.startsWith('oryPasskey'))
-  ) {
-    return true;
-  }
-  return false;
+    attrs.onclickTrigger.startsWith('oryPasskey')
+  );
 };
 
 /**

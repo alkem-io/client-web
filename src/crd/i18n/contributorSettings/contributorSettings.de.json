@@ -61,8 +61,7 @@
     },
     "chooseCommunity": {
       "intro": "Füge deinen Virtual Contributor zu einer Community hinzu oder überspringe dies vorerst.",
-      "skip": "Vorerst überspringen",
-      "errorMessage": "Konnte nicht zur Community hinzugefügt werden — bitte erneut versuchen."
+      "skip": "Vorerst überspringen"
     },
     "tryVc": {
       "title": "{{name}} ist bereit!",
@@ -71,8 +70,7 @@
       "done": "Fertig"
     },
     "createdVirtualContributor": {
-      "successMessage": "Virtual Contributor '{{name}}' created successfully",
-      "errorMessage": "Virtual Contributor konnte nicht erstellt werden — bitte erneut versuchen."
+      "successMessage": "Virtual Contributor '{{name}}' created successfully"
     }
   },
   "breadcrumbs": {
@@ -139,7 +137,7 @@
       "aboutYou": {
         "title": "Über dich",
         "tagline": {
-          "label": "Slogan",
+          "label": "Überschrift",
           "hint": "Eine kurze Zeile, die in deinem Profil erscheint."
         },
         "location": {
@@ -149,7 +147,7 @@
           "countryPlaceholder": "Land auswählen"
         },
         "bio": {
-          "label": "Biografie",
+          "label": "Info",
           "hint": "Markdown wird unterstützt."
         },
         "skills": {
@@ -159,7 +157,7 @@
         },
         "keywords": {
           "label": "Schlüsselwörter",
-          "hint": "Schlüsselwörter, die deine Interessen beschreiben. Mit Enter hinzufügen.",
+          "hint": "Schlüsselwörter, die deine Interessen beschreiben. Sie erscheinen als Tags auf der Hover-Karte deines Profils. Mit Enter hinzufügen.",
           "placeholder": "z. B. Klima, Governance, Open Source"
         }
       },
@@ -225,8 +223,7 @@
         "dialogTitle": "Diese Mitgliedschaft verlassen?",
         "dialogDescription": "Du bist im Begriff, „{{spaceName}}“ zu verlassen. Du verlierst den Zugriff auf mitgliederexklusive Inhalte und musst dich erneut bewerben.",
         "dialogConfirm": "Verlassen",
-        "success": "Mitgliedschaft verlassen",
-        "error": "Verlassen fehlgeschlagen — bitte erneut versuchen"
+        "success": "Mitgliedschaft verlassen"
       },
       "pendingApplications": {
         "title": "Ausstehende Bewerbungen",
@@ -248,6 +245,9 @@
       "sessionExpired": {
         "description": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können diese Einstellungen nicht geladen werden. Ein Neuladen hilft nicht — melde dich ab und wieder an, um sie wiederherzustellen. Der Rest von Alkemio funktioniert währenddessen weiter.",
         "action": "Abmelden und erneut anmelden"
+      },
+      "manageInBrowser": {
+        "description": "Dein Passwort, deine Passkeys, die Bestätigung in zwei Schritten und deine verbundenen Konten werden in einem Webbrowser verwaltet, nicht in der App. Öffne {{address}} in einem beliebigen Webbrowser, melde dich an und gehe zu Einstellungen › Sicherheit. Der Rest von Alkemio funktioniert in der App weiter."
       },
       "password": {
         "title": "Passwort ändern",
@@ -326,8 +326,7 @@
           "cancel": "Abbrechen",
           "confirm": "Schlüssel widerrufen",
           "revoking": "Wird widerrufen…",
-          "success": "\"{{name}}\" wurde widerrufen.",
-          "error": "Der Schlüssel konnte nicht widerrufen werden — versuche es erneut."
+          "success": "\"{{name}}\" wurde widerrufen."
         },
         "errors": {
           "notFound": "Dieser API-Schlüssel konnte nicht gefunden werden.",
@@ -384,7 +383,8 @@
             "label": "Passkey",
             "set": "Eingerichtet",
             "notSet": "Nicht eingerichtet",
-            "manage": "Passkeys verwalten"
+            "manage": "Passkeys verwalten",
+            "explanation": "Meldet Sie ohne Passwort an. Er ist kein zweiter Schritt."
           }
         }
       },
@@ -424,6 +424,60 @@
             "SOLE_ORGANIZATION_OWNER": "Organisation (einziger Eigentümer)"
           }
         }
+      },
+      "twoStep": {
+        "authenticator": {
+          "active": "Ihre Authenticator-App ist aktiv.",
+          "codeLabel": "Code aus der App",
+          "confirm": "Bestätigen",
+          "explanation": "Eine App auf Ihrem Telefon, etwa Google Authenticator, Microsoft Authenticator oder 1Password, zeigt alle 30 Sekunden einen neuen sechsstelligen Code.",
+          "qrAlt": "QR-Code für Ihre Authenticator-App",
+          "removeDescription": "Sie können sich dann nicht mehr mit Codes aus dieser App anmelden.",
+          "removeTitle": "Authenticator-App entfernen?",
+          "secretLabel": "Schlüssel:",
+          "setUp": "Richten Sie eine Authenticator-App ein: Scannen Sie den QR-Code mit der App oder geben Sie den Schlüssel von Hand ein, und tippen Sie dann den angezeigten Code ein.",
+          "title": "Authenticator-App"
+        },
+        "description": "Fügen Sie der Anmeldung einen zweiten Schritt hinzu: Nach Ihrem Passwort bestätigen Sie zusätzlich mit Ihrem Telefon oder einem Sicherheitsschlüssel.",
+        "lastFactorWarning": "Dies ist Ihr letzter zweiter Faktor. Die Bestätigung in zwei Schritten ist für Sie vorgeschrieben, daher müssen Sie bei der nächsten Anmeldung erneut einen einrichten.",
+        "neverShare": "Ein Code wird niemals vorgelesen oder an jemanden gesendet, und Alkemio wird Sie nie danach fragen. Geben Sie Ihre Codes nicht weiter.",
+        "recoveryCodes": {
+          "active": "Sie haben Wiederherstellungscodes.",
+          "confirm": "Ich habe diese Codes gespeichert",
+          "copied": "Kopiert",
+          "copy": "Codes kopieren",
+          "copyFailed": "Kopieren fehlgeschlagen. Markieren Sie die Codes und kopieren Sie sie selbst.",
+          "download": "Codes herunterladen",
+          "explanation": "Einmalcodes für den Fall, dass Sie Ihre App oder Ihren Schlüssel nicht verwenden können. Jeder Code funktioniert einmal.",
+          "generate": "Wiederherstellungscodes erzeugen",
+          "needsFactor": "Richten Sie zuerst eine Authenticator-App oder einen Sicherheitsschlüssel ein.",
+          "regenerate": "Neu erzeugen",
+          "regenerateDescription": "Ihre aktuellen Wiederherstellungscodes funktionieren dann nicht mehr.",
+          "regenerateTitle": "Neue Wiederherstellungscodes erzeugen?",
+          "remove": "Wiederherstellungscodes entfernen",
+          "removeDescription": "Sie können sich dann nicht mehr mit einem Wiederherstellungscode anmelden.",
+          "removeTitle": "Ihre Wiederherstellungscodes entfernen?",
+          "shownOnce": "Bewahren Sie diese Codes jetzt sicher auf. Sie werden nicht noch einmal angezeigt.",
+          "title": "Wiederherstellungscodes"
+        },
+        "remove": "Entfernen",
+        "secondWay": {
+          "added": "Ihre zweite Möglichkeit für den zweiten Schritt ist eingerichtet. Melden Sie sich erneut an, damit sie zählt.",
+          "needed": "Ihr Konto benötigt eine zweite Möglichkeit für den zweiten Schritt: eine Authenticator-App, einen weiteren Sicherheitsschlüssel oder Wiederherstellungscodes. Fügen Sie unten eine hinzu und melden Sie sich danach erneut an.",
+          "suggested": "Die Bestätigung in zwei Schritten ist aktiv. Fügen Sie jetzt eine zweite Möglichkeit für den zweiten Schritt hinzu (eine Authenticator-App, einen weiteren Sicherheitsschlüssel oder Wiederherstellungscodes), damit Sie sich weiterhin anmelden können, wenn Sie diese verlieren."
+        },
+        "securityKeys": {
+          "add": "Sicherheitsschlüssel hinzufügen",
+          "empty": "Noch keine Sicherheitsschlüssel hinzugefügt.",
+          "explanation": "Verwenden Sie einen Passkey aus Ihrem Passwort-Manager oder auf diesem Gerät (Face ID, Touch ID, Windows Hello) oder einen physischen Schlüssel wie einen YubiKey. Ihr Browser fragt, welchen Sie verwenden möchten.",
+          "nameLabel": "Name des Schlüssels",
+          "nameRequired": "Geben Sie dem Schlüssel einen Namen.",
+          "removeDescription": "Sie können sich dann nicht mehr mit diesem Schlüssel anmelden.",
+          "removeNamed": "{{name}} entfernen",
+          "removeTitle": "Sicherheitsschlüssel „{{name}}“ entfernen?",
+          "title": "Passkeys und Sicherheitsschlüssel"
+        },
+        "title": "Bestätigung in zwei Schritten"
       }
     },
     "settings": {
@@ -433,8 +487,7 @@
         "allowMessagesLabel": "Andere Nutzer dürfen mir Direktnachrichten senden",
         "allowMessagesDescription": "Wenn deaktiviert, können andere Nutzer kein Direktnachrichten-Gespräch mit dir starten.",
         "allowEmailContactLabel": "Anderen erlauben, mich per E-Mail zu kontaktieren",
-        "allowEmailContactDescription": "Wenn aktiviert, können Personen, die dich nicht per Chat erreichen, dir eine E-Mail an deine Kontoadresse senden. Deine Adresse wird ihnen nie angezeigt.",
-        "error": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
+        "allowEmailContactDescription": "Wenn aktiviert, können Personen, die dich nicht per Chat erreichen, dir eine E-Mail an deine Kontoadresse senden. Deine Adresse wird ihnen nie angezeigt."
       },
       "designSystem": {
         "title": "Design-System",
@@ -445,15 +498,13 @@
       "language": {
         "title": "Sprache",
         "label": "Oberflächensprache",
-        "description": "Die in Alkemio verwendete Sprache. Änderungen gelten für alle deine Geräte.",
-        "error": "Spracheinstellung konnte nicht gespeichert werden — bitte erneut versuchen."
+        "description": "Die in Alkemio verwendete Sprache. Änderungen gelten für alle deine Geräte."
       }
     },
     "notifications": {
       "pageTitle": "Benachrichtigungen",
       "helpBanner": "Bearbeite deine Benachrichtigungseinstellungen. Änderungen werden automatisch gespeichert.",
       "toggleAria": "{{channel}}-Benachrichtigung umschalten für: {{label}}",
-      "toggleError": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen",
       "inAppLockedChat": "Chatnachrichten erscheinen bereits live im Chat-Panel, daher werden für diese Zeile keine In-App-Benachrichtigungen gesendet",
       "columns": {
         "activity": "Aktivität",
@@ -483,7 +534,7 @@
           "description": "Personalisiere Hinweise zu Interaktionen wie Antworten, Erwähnungen und Einladungen."
         },
         "platform": {
-          "title": "Plattform-Benachrichtigungen",
+          "title": "Forum-Benachrichtigungen",
           "description": "Bleibe über plattformweite Diskussionen, neue Funktionen und Ankündigungen informiert."
         },
         "platformAdmin": {
@@ -538,8 +589,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Benachrichtigung erhalten, wenn eine Organisation über meine Bewerbung entscheidet"
         },
         "platform": {
-          "forumDiscussionComment": "Benachrichtigung erhalten, wenn jemand eine Diskussion kommentiert, die ich erstellt habe",
-          "forumDiscussionCreated": "Benachrichtigung erhalten, wenn eine neue Plattform-Diskussion erstellt wird"
+          "forumDiscussionComment": "Benachrichtigung erhalten, wenn jemand eine Diskussion kommentiert, die ich im Forum erstellt habe",
+          "forumDiscussionCreated": "Benachrichtigung erhalten, wenn eine neue Forum-Diskussion erstellt wird"
         },
         "platformAdmin": {
           "userProfileCreated": "Benachrichtigung erhalten, wenn ein neues Nutzerprofil erstellt wird",
@@ -589,8 +640,7 @@
         "dialogTitle": "Verbindung mit dieser Organisation lösen?",
         "dialogDescription": "Du bist im Begriff, „{{name}}“ zu verlassen. Du verlierst deine Rolle und alle zugehörigen Rechte.",
         "dialogConfirm": "Verbindung lösen",
-        "success": "Verbindung erfolgreich gelöst",
-        "error": "Verbindung lösen fehlgeschlagen — bitte erneut versuchen"
+        "success": "Verbindung erfolgreich gelöst"
       }
     },
     "account": {
@@ -643,7 +693,6 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Profil",
       "identity": {
         "title": "Identität",
         "displayName": {
@@ -674,7 +723,7 @@
         },
         "keywords": {
           "label": "Schlüsselwörter",
-          "hint": "Themen, an denen deine Organisation arbeitet. Mit Enter hinzufügen.",
+          "hint": "Themen, an denen deine Organisation arbeitet. Sie erscheinen als Tags auf der Hover-Karte deiner Organisation. Mit Enter hinzufügen.",
           "placeholder": "z. B. Klima, Governance, Open Source"
         },
         "capabilities": {
@@ -762,7 +811,6 @@
       }
     },
     "community": {
-      "pageTitle": "Assoziierte",
       "title": "Mitglieder",
       "description": "Verwalte, wer mit dieser Organisation verbunden ist. Füge neue Mitglieder aus der Liste der verfügbaren Nutzer hinzu; das Entfernen eines Mitglieds entzieht die Organisationsrolle.",
       "currentAssociatesTitle": "Aktuelle Mitglieder",
@@ -780,7 +828,6 @@
       "removeError": "Entfernen fehlgeschlagen — bitte erneut versuchen"
     },
     "membership": {
-      "pageTitle": "Mitgliedschaft",
       "title": "Space-Mitgliedschaften",
       "searchPlaceholder": "Mitgliedschaften suchen...",
       "empty": "Diese Organisation ist noch in keinem Space Mitglied.",
@@ -805,7 +852,7 @@
         "dialogConfirm": "Verlassen",
         "success": "Mitgliedschaft verlassen",
         "error": "Verlassen fehlgeschlagen — bitte erneut versuchen",
-        "forbidden": "Nur Admins und Eigentümer dieser Organisation können einen Space verlassen"
+        "forbidden": "Verlassen nicht möglich. Der Space existiert möglicherweise nicht mehr, oder nur Admins und Eigentümer dieser Organisation können ihn verlassen."
       },
       "ledBy": "Geleitet von:",
       "ledByAria": "{{count}} Community-Leads",
@@ -828,10 +875,16 @@
         "contributionRolesLabel": "Beitragsrollen öffentlich anzeigen",
         "contributionRolesCaption": "Wenn aktiviert, sind die Rollenzuweisungen der Organisation (Administrator, Eigentümer, Mitglied) im öffentlichen Profil sichtbar."
       },
-      "errorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
+      "security": {
+        "requireSecondFactorCaption": "Inhaber, Admins und Mitarbeitende dieser Organisation müssen bei der Anmeldung einen zweiten Faktor verwenden. Sie haben 14 Tage Zeit, ihn einzurichten.",
+        "requireSecondFactorLabel": "Bestätigung in zwei Schritten für Mitglieder vorschreiben",
+        "title": "Sicherheit",
+        "turnOffTitle": "Bestätigung in zwei Schritten nicht mehr vorschreiben?",
+        "turnOffDescription": "Mitglieder brauchen bei der Anmeldung keinen zweiten Faktor mehr. Wenn du die Vorgabe wieder einschaltest, haben sie erneut 14 Tage Zeit, ihn einzurichten.",
+        "turnOffConfirm": "Nicht mehr vorschreiben"
+      }
     },
     "invitations": {
-      "pageTitle": "Einladungen",
       "title": "Space-Einladungen",
       "empty": "Keine ausstehenden Space-Einladungen.",
       "invitedBy": "Eingeladen von {{name}}",
@@ -848,8 +901,7 @@
       "acceptConfirmAction": "Einladung annehmen",
       "declineConfirmTitle": "Diese Einladung ablehnen?",
       "declineConfirmBody": "{{spaceName}} wird mitgeteilt, dass Ihre Organisation abgelehnt hat. Dies kann nicht rückgängig gemacht werden — ein Space-Administrator müsste eine neue Einladung senden.",
-      "declineConfirmAction": "Einladung ablehnen",
-      "errorToast": "Die Einladung konnte nicht aktualisiert werden — bitte erneut versuchen"
+      "declineConfirmAction": "Einladung ablehnen"
     },
     "associates": {
       "title": "Assoziierte",
@@ -982,7 +1034,7 @@
       },
       "keywords": {
         "label": "Schlüsselwörter",
-        "hint": "Fügen Sie Schlüsselwörter hinzu, damit Benutzer diesen Virtuellen Mitwirkenden entdecken können.",
+        "hint": "Fügen Sie Schlüsselwörter hinzu, damit Benutzer diesen Virtuellen Mitwirkenden entdecken können. Sie erscheinen als Tags auf seiner Hover-Karte.",
         "placeholder": "Schlüsselwort hinzufügen und Enter drücken"
       },
       "socialLinks": {
@@ -1064,9 +1116,6 @@
       "apiKeyHelper": "Vorhandene Schlüssel werden nie zurückgegeben. Lassen Sie das Feld leer, um den aktuellen Schlüssel beizubehalten.",
       "assistantIdLabel": "Assistant-ID",
       "modelLabel": "Modell"
-    },
-    "settings": {
-      "commitErrorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
     }
   },
   "shared": {
@@ -1116,7 +1165,6 @@
         "heading": "Neue Startseite erstellen"
       },
       "deleteSuccess": "Ressource gelöscht",
-      "deleteError": "Löschen fehlgeschlagen — bitte erneut versuchen",
       "noEntitlement": {
         "title": "Kapazität erreicht",
         "description": {

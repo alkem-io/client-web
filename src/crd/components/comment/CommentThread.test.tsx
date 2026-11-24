@@ -1,5 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { beforeAll, describe, expect, test, vi } from 'vitest';
+import type { ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
 import type { CommentData } from './types';
 
 vi.mock('react-i18next', () => ({
@@ -157,5 +159,30 @@ describe('CommentThread reply composer', () => {
     // Toggles are never held back, and a reopened box starts empty.
     openReply();
     expect(replyBox()).toHaveValue('');
+  });
+});
+
+describe('CommentThread onMessageContributor', () => {
+  test('is forwarded to replies, not only to top-level comments', async () => {
+    const preview: ContributorPreviewData = {
+      id: 'u2',
+      type: 'user',
+      name: 'Bob Builder',
+      href: '/user/bob',
+      canMessage: true,
+    };
+    const reply: CommentData = {
+      ...comment,
+      id: 'c2',
+      parentId: 'c1',
+      timestampMs: 2000,
+      author: { id: 'u2', name: 'Bob Builder', profileUrl: '/user/bob', preview },
+    };
+    const onMessageContributor = vi.fn();
+    renderThread({ comments: [comment, reply], onMessageContributor });
+
+    await userEvent.hover(screen.getByRole('link', { name: 'Bob Builder' }));
+    await userEvent.click(await screen.findByRole('button', { name: 'contributors.card.message' }));
+    expect(onMessageContributor).toHaveBeenCalledWith(preview);
   });
 });

@@ -65,7 +65,7 @@ describe('ContributionsPreviewConnector collabora document preview', () => {
       contributions: [{ id: 'contribution-1' }],
     };
 
-    const { container } = render(<ContributionsPreviewConnector callout={callout as never} onShowAll={vi.fn()} />);
+    const { container } = render(<ContributionsPreviewConnector callout={callout as never} />);
 
     const image = container.querySelector('img');
     expect(image).not.toBeNull();

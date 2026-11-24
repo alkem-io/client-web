@@ -11,14 +11,24 @@ import { DEVICE_PUSH_TOKEN_KEY } from '@/main/pushNotifications/constants';
 
 const unregisterDeviceToken = vi.hoisted(() => vi.fn());
 const unsubscribeMutation = vi.hoisted(() => vi.fn());
+const getLogoutUrl = vi.hoisted(() => vi.fn());
+const mutationHookOptions = vi.hoisted(() => ({ unsubscribe: vi.fn(), unregister: vi.fn() }));
+const logout = vi.hoisted(() => ({
+  outcome: { kind: 'redirect', url: '/end-session' } as
+    | { kind: string; url?: string; signInAgain?: boolean }
+    | undefined,
+  search: '',
+}));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
 vi.mock('@/core/auth/authentication/hooks/useLogoutUrl', () => ({
-  useLogoutUrl: () => ({ outcome: { kind: 'redirect', url: '/end-session' }, loading: false, getLogoutUrl: vi.fn() }),
+  useLogoutUrl: () => ({ outcome: logout.outcome, loading: false, getLogoutUrl }),
 }));
+
+vi.mock('@/core/routing/useQueryParams', () => ({ useQueryParams: () => new URLSearchParams(logout.search) }));
 
 vi.mock('@/core/auth/authentication/utils/useSignUpReturnUrl', () => ({
   useReturnUrl: () => ({ clearReturnUrl: vi.fn() }),
@@ -26,12 +36,18 @@ vi.mock('@/core/auth/authentication/utils/useSignUpReturnUrl', () => ({
 }));
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUnsubscribeFromPushNotificationsMutation: () => [unsubscribeMutation],
+  useUnsubscribeFromPushNotificationsMutation: (options?: unknown) => {
+    mutationHookOptions.unsubscribe(options);
+    return [unsubscribeMutation];
+  },
 }));
 
 vi.mock('@apollo/client', () => ({
   gql: (strings: TemplateStringsArray) => strings.join(''),
-  useMutation: () => [unregisterDeviceToken],
+  useMutation: (_document: unknown, options?: unknown) => {
+    mutationHookOptions.unregister(options);
+    return [unregisterDeviceToken];
+  },
 }));
 
 import LogoutPage from './LogoutPage';
@@ -45,6 +61,8 @@ describe('LogoutPage — native device-token unbind (SC-017)', () => {
     localStorage.clear();
     unsubscribeMutation.mockResolvedValue({});
     unregisterDeviceToken.mockResolvedValue({});
+    logout.outcome = { kind: 'redirect', url: '/end-session' };
+    logout.search = '';
     Object.defineProperty(window, 'location', { value: { ...originalLocation, replace }, configurable: true });
   });
 
@@ -68,6 +86,15 @@ describe('LogoutPage — native device-token unbind (SC-017)', () => {
 
     releaseUnbind();
     await waitFor(() => expect(replace).toHaveBeenCalledWith('/end-session'));
+  });
+
+  it('cleans up push unasked on the way out, so the unsubscribe and the unbind opt out of the global error handler', async () => {
+    render(<LogoutPage />);
+
+    await waitFor(() => expect(replace).toHaveBeenCalled());
+    const optedOut = expect.objectContaining({ context: { skipGlobalErrorHandler: true } });
+    expect(mutationHookOptions.unsubscribe).toHaveBeenCalledWith(optedOut);
+    expect(mutationHookOptions.unregister).toHaveBeenCalledWith(optedOut);
   });
 
   it('clears the stored token once cleanup has run', async () => {
@@ -94,5 +121,55 @@ describe('LogoutPage — native device-token unbind (SC-017)', () => {
 
     await waitFor(() => expect(replace).toHaveBeenCalledWith('/end-session'));
     expect(localStorage.getItem(DEVICE_PUSH_TOKEN_KEY)).toBeNull();
+  });
+});
+
+describe('LogoutPage — landing after every session has ended', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+    logout.search = '';
+    Object.defineProperty(window, 'location', { value: { ...originalLocation, replace }, configurable: true });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, 'location', { value: originalLocation, configurable: true });
+  });
+
+  it('starts the logout asking to sign in again for ?signInAgain=true', () => {
+    logout.outcome = undefined;
+    logout.search = 'signInAgain=true';
+
+    render(<LogoutPage />);
+
+    expect(getLogoutUrl).toHaveBeenCalledWith(true);
+  });
+
+  it('takes no landing target from the address', async () => {
+    logout.outcome = undefined;
+    logout.search = 'returnTo=%2F.%2F%2Fevil.example%2Flogin';
+
+    const { rerender } = render(<LogoutPage />);
+    expect(getLogoutUrl).toHaveBeenCalledWith(false);
+
+    logout.outcome = { kind: 'cleared' };
+    rerender(<LogoutPage />);
+    await waitFor(() => expect(replace).toHaveBeenCalledWith('/home'));
+  });
+
+  it('lands on the sign-in once cleared when asked to sign in again', async () => {
+    logout.outcome = { kind: 'cleared', signInAgain: true };
+
+    render(<LogoutPage />);
+
+    await waitFor(() => expect(replace).toHaveBeenCalledWith('/login'));
+  });
+
+  it('lands on the public home page once cleared with no return target', async () => {
+    logout.outcome = { kind: 'cleared' };
+
+    render(<LogoutPage />);
+
+    await waitFor(() => expect(replace).toHaveBeenCalledWith('/home'));
   });
 });

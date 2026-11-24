@@ -313,9 +313,6 @@
     "postUnsavedCloseConfirm": "Änderungen verwerfen",
     "postUnsavedCloseCancel": "Weiter bearbeiten",
     "uploadAfterCreateFailed": "Der Beitrag wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des Beitrags erneut versuchen.",
-    "pollOptionsSaveFailed": "Eine oder mehrere Änderungen an den Umfrageoptionen konnten nicht gespeichert werden. Sie können es in diesem Dialog erneut versuchen.",
-    "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut.",
-    "updateFailed": "Die Änderungen am Beitrag konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
     "contributors": "Mitwirkende",
     "subspaces": "Unterbereiche",
     "spacesHidden": "Einige Spaces in dieser Übersicht werden nicht angezeigt, weil du keinen Zugriff darauf hast.",
@@ -478,8 +475,7 @@
     "moveUp": "Nach oben",
     "moveDown": "Nach unten",
     "moveToBottom": "Nach ganz unten",
-    "delete": "Löschen",
-    "moveFailed": "Neue Reihenfolge fehlgeschlagen. Bitte erneut versuchen."
+    "delete": "Löschen"
   },
   "visibilityChange": {
     "publishTitle": "Diesen Beitrag veröffentlichen?",
@@ -488,16 +484,14 @@
     "unpublishTitle": "Diesen Beitrag in den Entwurf zurücksetzen?",
     "unpublishDescription": "Der Beitrag ist dann für Space-Mitglieder nicht mehr sichtbar.",
     "unpublishConfirm": "In Entwurf verschieben",
-    "notifyMembers": "Space-Mitglieder benachrichtigen",
-    "saveFailed": "Die Sichtbarkeit konnte nicht geändert werden. Bitte erneut versuchen."
+    "notifyMembers": "Space-Mitglieder benachrichtigen"
   },
   "sortContributions": {
     "title": "Beiträge sortieren",
     "description": "Per Drag-and-Drop neu anordnen. Die neue Reihenfolge wird beim Speichern übernommen.",
     "empty": "Dieser Beitrag hat noch keine Antworten zum Sortieren.",
     "confirm": "Reihenfolge speichern",
-    "dragHandle": "Ziehen zum Neuordnen",
-    "saveFailed": "Die neue Reihenfolge konnte nicht gespeichert werden. Bitte erneut versuchen."
+    "dragHandle": "Ziehen zum Neuordnen"
   },
   "deleteCallout": {
     "title": "Diesen Beitrag löschen?",
@@ -528,7 +522,6 @@
     "comments_one": "{{count}} Kommentar wird gelöscht",
     "comments_other": "{{count}} Kommentare werden gelöscht",
     "success": "Der Beitrag „{{title}}“ wurde gelöscht.",
-    "saveFailed": "Der Beitrag konnte nicht gelöscht werden. Bitte erneut versuchen.",
     "headerRichForm_one": "Das Formular und seine {{count}} Antwort werden gelöscht",
     "headerRichForm_other": "Das Formular und seine {{count}} Antworten werden gelöscht",
     "headerRichFormContributions_one": "Das Formular, seine Antworten und {{count}} Beitrag werden gelöscht",
@@ -540,8 +533,7 @@
   "deleteContribution": {
     "title": "Diesen Beitrag löschen?",
     "description": "„{{title}}“ wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
-    "confirm": "Löschen",
-    "saveFailed": "Der Beitrag konnte nicht gelöscht werden. Bitte erneut versuchen."
+    "confirm": "Löschen"
   },
   "saveAsTemplate": {
     "saveFailed": "Die Vorlage konnte nicht gespeichert werden. Bitte erneut versuchen."
@@ -761,7 +753,9 @@
         "unauthenticated": "Melde dich an, um diese Notiz zu bearbeiten.",
         "contentUpdatePolicy": "Du hast keine Berechtigung, diese Notiz zu bearbeiten. Bitte den Eigentümer, <ownerlink>{{ownerName}}</ownerlink>, die Freigabeeinstellungen zu ändern.",
         "contentUpdatePolicyNoOwner": "Du hast keine Berechtigung, diese Notiz zu bearbeiten. Der Eigentümer ist nicht mehr verfügbar – bitte einen Administrator des Bereichs, die Freigabeeinstellungen zu ändern.",
-        "noMembership": "Nur Mitglieder dieses Bereichs können diese Notiz bearbeiten. Tritt dem Bereich bei, um beizutragen."
+        "noMembership": "Nur Mitglieder dieses Bereichs können diese Notiz bearbeiten. Tritt dem Bereich bei, um beizutragen.",
+        "multiUserNotAllowed": "Du kannst diese Notiz nicht bearbeiten, weil dieser Space nur einen Bearbeiter gleichzeitig erlaubt.",
+        "roomCapacityReached": "Du kannst diese Notiz nicht bearbeiten, weil die maximale Anzahl gleichzeitiger Bearbeiter erreicht ist."
       }
     },
     "errors": {
@@ -967,9 +961,8 @@
     }
   },
   "postSnippet": {
-    "readMore": "… Mehr lesen",
-    "readLess": "Weniger lesen",
-    "seeFullDescription": "Vollständige Beschreibung anzeigen"
+    "readMore": "Mehr lesen",
+    "showLess": "Weniger anzeigen"
   },
   "postPreview": {
     "createdBy": "Erstellt von",
@@ -984,8 +977,7 @@
   "postLocation": {
     "label": "Beitragsstandort",
     "warning": "Seien Sie vorsichtig beim Ändern des Antwortstandorts. Wenn Sie die Antwort in einen anderen Beitrag verschieben, verschwindet sie aus dem aktuellen Beitrag. Dies kann es Personen — einschließlich des Verfassers — erschweren, sie wiederzufinden. Antworten können nur innerhalb desselben Bereichs oder Unterbereichs verschoben werden.",
-    "moved": "Antwort erfolgreich verschoben.",
-    "moveFailed": "Antwort konnte nicht verschoben werden. Bitte versuchen Sie es erneut."
+    "moved": "Antwort erfolgreich verschoben."
   },
   "whiteboardPreview": {
     "label": "Vorschau des ausgewählten Whiteboards",
@@ -1088,9 +1080,6 @@
     "customOption": {
       "placeholder": "Eigene Option hinzufügen..."
     },
-    "error": {
-      "voteFailed": "Ihre Stimme konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
-    },
     "subscription": {
       "voteRevoked": "Ihre Stimme wurde entfernt."
     }
@@ -1113,8 +1102,7 @@
     },
     "statusChange": {
       "closeSuccess": "Die Umfrage ist jetzt geschlossen.",
-      "reopenSuccess": "Die Umfrage ist jetzt für Stimmen geöffnet.",
-      "failed": "Der Status der Umfrage konnte nicht geändert werden. Bitte versuche es erneut."
+      "reopenSuccess": "Die Umfrage ist jetzt für Stimmen geöffnet."
     },
     "closePollConfirm": {
       "title": "Diese Umfrage schließen?",
@@ -1206,6 +1194,12 @@
       "mapAriaLabel": "Mitwirkenden-Kartenvorschau — Verschieben und Zoomen, um die feste Ansicht festzulegen",
       "captureHint": "Verschieben und zoomen Sie die Karte und klicken Sie dann auf 'Aktuelle Ansicht verwenden', um die Startposition festzulegen.",
       "controlAriaLabel": "Kartenansicht-Einstellungen"
+    },
+    "preview": {
+      "virtualContributor": "Virtueller Mitwirkender",
+      "viewOwnProfile": "Dein Profil ansehen",
+      "close": "Schließen",
+      "description": "Profilvorschau"
     }
   },
   "spaceCollection": {
@@ -1336,7 +1330,6 @@
     "noAnswer": "Keine Antwort",
     "success": "Ihre Antwort wurde gesendet.",
     "withdrawn": "Ihre Antwort wurde zurückgezogen.",
-    "withdrawFailed": "Ihre Antwort konnte nicht zurückgezogen werden. Bitte versuchen Sie es erneut.",
     "visibilityChanged": "Wer die Antworten sehen kann, hat sich geändert – bitte prüfen und erneut senden.",
     "errors": {
       "generic": "Ihre Antwort konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
@@ -1391,7 +1384,6 @@
       "confirm": "Löschen"
     },
     "singleTitle": "Antwort von {{name}}",
-    "deleteFailed": "Die Antwort konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
     "loadFailed": "Die Antworten konnten nicht geladen werden.",
     "exportCsv": "CSV exportieren",
     "exporting": "Wird exportiert…",

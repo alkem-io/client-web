@@ -134,8 +134,6 @@
         "admin": "Beheerder",
         "owner": "Eigenaar"
       },
-      "acceptError": "Accepteren mislukt — probeer opnieuw",
-      "declineError": "Weigeren mislukt — probeer opnieuw",
       "offeredRole": {
         "associate": "Betrokkene",
         "associateAdmin": "Betrokkene + Beheerder",
@@ -232,8 +230,7 @@
       "placeholder": "Beschrijf wat deze Virtual Contributor weet…",
       "save": "Opslaan",
       "cancel": "Annuleren",
-      "saving": "Opslaan…",
-      "saveError": "Kon de beschrijving niet opslaan — probeer het opnieuw."
+      "saving": "Opslaan…"
     },
     "empty": {
       "title": "Nog geen kennis",

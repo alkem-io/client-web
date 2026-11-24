@@ -8,5 +8,6 @@
     "joinTheWelcomeSpace": "Word lid van de Welcome Space"
   },
   "versionNumber": "Versienummer: <b>v{{version}}</b>",
-  "serverVersionNumber": "Serverversienummer: <b>v{{version}}</b>"
+  "serverVersionNumber": "Serverversienummer: <b>v{{version}}</b>",
+  "appVersionNumber": "App-versienummer: <b>v{{version}}</b>"
 }

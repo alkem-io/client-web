@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
@@ -40,7 +42,9 @@ const useUploadVisualsOnCreate = ({
 }: UseUploadVisualsOnCreateProps = {}): UseUploadVisualsOnCreateProvided => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const [uploadVisual] = useUploadVisualMutation();
+  const serverErrorMessage = useServerErrorMessage();
+  // The failure is reported below, in one message that also says the entity was created.
+  const [uploadVisual] = useUploadVisualMutation({ context: OWN_ERROR_HANDLING });
 
   const uploadVisuals = async (createResult: ProfileWithVisuals | undefined, data: VisualsForm | undefined) => {
     try {
@@ -72,8 +76,11 @@ const useUploadVisualsOnCreate = ({
         throw failure.reason;
       }
     } catch (error) {
-      // Space/Subspace is created anyway, just the images failed. Log the error and continue
-      notify(t('components.visual-upload.entityCreatedErrorUploading', { entity: entityName }), 'error');
+      // Space/Subspace is created anyway, just the images failed: say so, with the server's reason
+      // when there is one, then log the error and continue.
+      const created = t('components.visual-upload.entityCreatedErrorUploading', { entity: entityName });
+      const reason = serverErrorMessage(error, '');
+      notify(reason ? `${created} ${reason}` : created, 'error');
       if (error instanceof Error) {
         logError(error);
       } else {

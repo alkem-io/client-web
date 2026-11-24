@@ -66,7 +66,9 @@
     "lastName": "Nom",
     "showPassword": "Afficher le mot de passe",
     "hidePassword": "Masquer le mot de passe",
-    "invalidEmail": "Veuillez saisir une adresse e-mail valide."
+    "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
+    "totpCode": "Code d'authentification",
+    "recoveryCode": "Code de récupération"
   },
   "providers": {
     "connectWith": "Continuer avec {{provider}}",
@@ -84,5 +86,23 @@
     "websiteButton": "Aller sur notre site web",
     "contributeTitle": "Vous voulez contribuer davantage ?",
     "contributeDescription": "Inscrivez-vous ci-dessous pour un compte Alkemio afin de collaborer avec des équipes et d'accéder à des outils avancés."
+  },
+  "secondFactor": {
+    "subtitle": "Confirmez votre identité avec votre second facteur pour terminer la connexion.",
+    "title": "Validation en deux étapes",
+    "useAuthenticator": "Utiliser plutôt votre application d'authentification",
+    "useRecoveryCode": "Utiliser un code de récupération",
+    "useSecurityKey": "Utiliser une clé de sécurité",
+    "verify": "Vérifier"
+  },
+  "secondFactorPage": {
+    "app": "Configurez d'abord la validation en deux étapes dans un navigateur web, puis reconnectez-vous à l'application.",
+    "enrolled": "Votre second facteur est configuré. Reconnectez-vous pour continuer.",
+    "required": "Votre compte exige la validation en deux étapes. Configurez un second facteur ci-dessous pour continuer.",
+    "secondWay": "Votre compte a besoin d'un second moyen de passer la deuxième étape : une application d'authentification, une autre clé de sécurité ou des codes de récupération. Ajoutez-en un ci-dessous, puis reconnectez-vous.",
+    "signInAgain": "Se reconnecter",
+    "signOut": "Se déconnecter",
+    "title": "Configurer la validation en deux étapes",
+    "unavailable": "Impossible de charger vos paramètres de sécurité. Reconnectez-vous pour réessayer."
   }
 }

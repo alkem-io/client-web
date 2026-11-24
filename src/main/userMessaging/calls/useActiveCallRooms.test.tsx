@@ -20,13 +20,19 @@ vi.mock('@/main/userMessaging/matrix/matrixRooms', () => ({
   resolveMatrixRoomId: harness.resolve,
 }));
 
-import { useActiveCallRooms } from './useActiveCallRooms';
+import { useLiveCalls } from './useActiveCallRooms';
+import type { CallableConversation } from './useCallEligibility';
 
-const membership = (sender: string, ttlMs: number) => {
+/** The rooms with a call running. */
+const useActiveCallRooms = (conversations: readonly CallableConversation[]) =>
+  new Set(useLiveCalls(conversations).keys());
+
+const membership = (sender: string, ttlMs: number, createdTs = 0) => {
   const expiresAt = Date.now() + ttlMs;
   return {
     sender,
     deviceId: 'D',
+    createdTs: () => createdTs,
     isExpired: () => Date.now() >= expiresAt,
     getMsUntilExpiry: () => expiresAt - Date.now(),
   };
@@ -59,7 +65,7 @@ const conversations = [
   { roomId: 'vc', isGroup: false, isGuidance: false, members: [user, { type: 'VIRTUAL_CONTRIBUTOR' as never }] },
 ];
 
-describe('useActiveCallRooms', () => {
+describe('useLiveCalls', () => {
   beforeEach(() => {
     harness.platformRoles = ['FEATURE_BETA_TESTER'];
     harness.configured = true;
@@ -132,13 +138,47 @@ describe('useActiveCallRooms', () => {
     await waitFor(() => expect([...result.current]).toEqual(['g1']));
   });
 
-  it('with withoutMe, leaves out the calls the user is in on any device', async () => {
+  it('describes each running call by its memberships, and whether the user is in it on any device', async () => {
     harness.client = makeClient({
-      '!g1:hs': new FakeSession([membership('@ann:hs', 60_000), membership('@me:hs', 60_000)]),
-      '!g2:hs': new FakeSession([membership('@ann:hs', 60_000)]),
+      '!g1:hs': new FakeSession([membership('@ann:hs', 60_000, 300), membership('@me:hs', 60_000, 100)]),
+      '!g2:hs': new FakeSession([membership('@ann:hs', 60_000, 500)]),
     });
-    const { result } = renderHook(() => useActiveCallRooms(conversations, { withoutMe: true }));
-    await waitFor(() => expect([...result.current]).toEqual(['g2']));
+    const { result } = renderHook(() => useLiveCalls(conversations));
+    await waitFor(() =>
+      expect([...result.current]).toEqual([
+        ['g1', { startedTs: 100, latestTs: 300, withMe: true, participants: ['ann', 'me'] }],
+        ['g2', { startedTs: 500, latestTs: 500, withMe: false, participants: ['ann'] }],
+      ])
+    );
+  });
+
+  it('reports each person in a call once, by actor id, however many devices they joined from', async () => {
+    harness.client = makeClient({
+      '!g1:hs': new FakeSession([
+        membership('@bob:hs', 60_000),
+        membership('@ann:hs', 60_000),
+        membership('@bob:hs', 60_000),
+      ]),
+    });
+    const { result } = renderHook(() => useLiveCalls(conversations));
+    await waitFor(() => expect(result.current.get('g1')?.participants).toEqual(['ann', 'bob']));
+  });
+
+  it('reports someone joining a running call, and keeps the same value when nothing changed', async () => {
+    const session = new FakeSession([membership('@ann:hs', 60_000)]);
+    harness.client = makeClient({ '!g1:hs': session });
+    const { result } = renderHook(() => useLiveCalls(conversations));
+    await waitFor(() => expect(result.current.get('g1')?.participants).toEqual(['ann']));
+
+    const before = result.current;
+    act(() => session.emit('memberships_changed'));
+    expect(result.current).toBe(before);
+
+    act(() => {
+      session.memberships = [membership('@ann:hs', 60_000), membership('@bob:hs', 60_000)];
+      session.emit('memberships_changed');
+    });
+    expect(result.current.get('g1')?.participants).toEqual(['ann', 'bob']);
   });
 
   it('flags nothing for someone who is not a beta tester, or where calls are off', async () => {

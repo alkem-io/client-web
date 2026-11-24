@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   useMySpacesExplorerPageQuery,
   useSpaceExplorerAllSpacesQuery,
@@ -47,6 +47,8 @@ export interface SpacesExplorerContainerEntities {
   authenticated: boolean;
   setSearchTerms: (terms: string[]) => void;
   loadingSearchResults: boolean;
+  /** How many results the search has in total; undefined while not searching, or when a filter applied here hides some. */
+  searchTotal: number | undefined;
 }
 
 /**
@@ -96,6 +98,23 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     skip: !mySpaceIds || shouldSearch,
   });
 
+  // The search filters by Type on the server, so its total counts the shown Type only.
+  const searchTypes =
+    typeFilter === 'spaces'
+      ? [SearchResultType.Space]
+      : typeFilter === 'subspaces'
+        ? [SearchResultType.Subspace]
+        : undefined;
+
+  // Identifies the search a page belongs to: a page requested for an earlier search (other terms or Type) can arrive
+  // after the new search started, and must not be merged into it.
+  const searchKey = JSON.stringify([searchTerms, searchTypes]);
+  const currentSearchKey = useRef(searchKey);
+  // Only once the render commits: a render React discards must not change which search is current.
+  useLayoutEffect(() => {
+    currentSearchKey.current = searchKey;
+  }, [searchKey]);
+
   // PUBLIC: Search for spaces and subspaces
   const {
     data: rawSearchResults,
@@ -110,6 +129,8 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
           {
             category: SearchCategory.Spaces,
             size: BATCH_SIZE,
+            types: searchTypes,
+            countTotal: true,
           },
         ],
       },
@@ -120,24 +141,40 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
 
   // A null cursor means the search has no more results.
   const searchCursor = rawSearchResults?.search.spaceResults?.cursor;
+  // Membership and Privacy still filter the results here, on the client, so the server's total only counts what is
+  // shown while neither is set. -1 means the server did not count.
+  const serverSearchTotal = rawSearchResults?.search.spaceResults?.total ?? -1;
+  const searchTotal =
+    shouldSearch && membershipFilter === 'all' && privacyFilter === 'all' && serverSearchTotal >= 0
+      ? serverSearchTotal
+      : undefined;
 
   const fetchMoreSearchResults = async () => {
     if (!searchCursor) {
       return;
     }
 
+    const requestedFor = searchKey;
     await fetchMoreSearchResultsRaw({
       variables: {
         searchData: {
           terms: searchTerms,
           tagsetNames: ['skills', 'keywords'],
-          filters: [{ category: SearchCategory.Spaces, size: BATCH_SIZE, cursor: searchCursor }],
+          filters: [
+            {
+              category: SearchCategory.Spaces,
+              size: BATCH_SIZE,
+              cursor: searchCursor,
+              types: searchTypes,
+              countTotal: true,
+            },
+          ],
         },
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         const prevResults = prev.search.spaceResults;
         const nextResults = fetchMoreResult.search.spaceResults;
-        if (!prevResults || !nextResults) {
+        if (!prevResults || !nextResults || requestedFor !== currentSearchKey.current) {
           return prev;
         }
         return {
@@ -278,8 +315,9 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     ) {
       return false;
     }
-    if (typeFilter === 'spaces' && space.level !== SpaceLevel.L0) return false;
-    if (typeFilter === 'subspaces' && space.level === SpaceLevel.L0) return false;
+    // A search is filtered by Type on the server (searchTypes), so its cards are exactly what its total counts.
+    if (!shouldSearch && typeFilter === 'spaces' && space.level !== SpaceLevel.L0) return false;
+    if (!shouldSearch && typeFilter === 'subspaces' && space.level === SpaceLevel.L0) return false;
     if (privacyFilter === 'public' && !space.about.isContentPublic) return false;
     if (privacyFilter === 'private' && space.about.isContentPublic) return false;
     return true;
@@ -343,6 +381,7 @@ const useSpaceExplorer = (): SpacesExplorerContainerEntities => {
     hasMore: matchingCount > visibleCount || serverHasMore,
     setSearchTerms: changeFilter(setSearchTerms),
     loadingSearchResults: loadingSearchResults ?? false,
+    searchTotal,
   };
 };
 

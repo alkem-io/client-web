@@ -1,8 +1,15 @@
 import { createEvent, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type ReactNode, useState } from 'react';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { ComposerAttachment } from './types';
+
+const screenSize = vi.hoisted(() => ({ isSmallScreen: false, isMediumScreen: false, isLargeScreen: true }));
+
+vi.mock('@/crd/hooks/useMediaQuery', async importOriginal => ({
+  ...(await importOriginal<typeof import('@/crd/hooks/useMediaQuery')>()),
+  useScreenSize: () => screenSize,
+}));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -32,6 +39,28 @@ const typeAndSubmitWithEnter = (text: string) => {
   fireEvent.keyDown(textarea, { key: 'Enter' });
 };
 
+// Mirrors the chat connector: submitting synchronously flips `disabled` on
+// (isSending), and it stays on until the send settles.
+const SendingHarness = ({ onSubmit, value }: { onSubmit: (content: string) => void; value?: string }) => {
+  const [sending, setSending] = useState(false);
+  return (
+    <div>
+      <button type="button" onClick={() => setSending(false)}>
+        settle
+      </button>
+      <CommentInput
+        onSubmit={content => {
+          onSubmit(content);
+          setSending(true);
+        }}
+        refocusAfterSubmit={true}
+        disabled={sending}
+        value={value}
+      />
+    </div>
+  );
+};
+
 describe('CommentInput refocusAfterSubmit', () => {
   test('send button click returns focus to the textarea', () => {
     render(<CommentInput onSubmit={vi.fn()} refocusAfterSubmit={true} />);
@@ -44,36 +73,24 @@ describe('CommentInput refocusAfterSubmit', () => {
     expect(getTextarea()).toHaveFocus();
   });
 
-  test('waits out the in-flight disabled state, then refocuses (Enter send)', () => {
-    // Mirrors the chat connector: submitting synchronously flips `disabled` on
-    // (isSending), and it stays on until the send settles.
-    const Harness = () => {
-      const [sending, setSending] = useState(false);
-      return (
-        <div>
-          <button type="button" onClick={() => setSending(false)}>
-            settle
-          </button>
-          <CommentInput onSubmit={() => setSending(true)} refocusAfterSubmit={true} disabled={sending} />
-        </div>
-      );
-    };
-    render(<Harness />);
+  // iOS raises the keyboard and reveals the field only for a focus made inside
+  // the gesture, and only when that focus is allowed to scroll.
+  test('the focus happens during the send gesture and is allowed to scroll', () => {
+    const focus = vi.spyOn(HTMLTextAreaElement.prototype, 'focus');
+    try {
+      render(<SendingHarness onSubmit={vi.fn()} />);
 
-    getTextarea().focus();
-    typeAndSubmitWithEnter('hello');
-    expect(getTextarea()).toBeDisabled();
+      fireEvent.change(getTextarea(), { target: { value: 'hello' } });
+      focus.mockClear();
+      fireEvent.click(screen.getByRole('button', { name: 'comments.send' }));
 
-    // Browsers drop focus from an element that becomes disabled; jsdom doesn't,
-    // so move it away explicitly.
-    const settleButton = screen.getByRole('button', { name: 'settle' });
-    settleButton.focus();
-    expect(getTextarea()).not.toHaveFocus();
-
-    // Send settles, composer re-enables — focus comes back.
-    fireEvent.click(settleButton);
-    expect(getTextarea()).toBeEnabled();
-    expect(getTextarea()).toHaveFocus();
+      // The send is still in flight here: nothing waited for it to settle.
+      expect(getTextarea()).toHaveAttribute('aria-disabled', 'true');
+      expect(focus).toHaveBeenCalledTimes(1);
+      expect(focus).toHaveBeenCalledWith();
+    } finally {
+      focus.mockRestore();
+    }
   });
 
   test('without the prop, focus is not forced back', () => {
@@ -85,6 +102,72 @@ describe('CommentInput refocusAfterSubmit', () => {
     fireEvent.click(sendButton);
 
     expect(getTextarea()).not.toHaveFocus();
+  });
+});
+
+// A natively disabled field loses focus in a browser, which on a phone drops
+// the on-screen keyboard. jsdom does not blur on disable, so the attribute
+// itself is what is asserted.
+describe('CommentInput while a send is in flight', () => {
+  test('the field keeps focus and is never natively disabled (Enter send)', () => {
+    render(<SendingHarness onSubmit={vi.fn()} />);
+
+    getTextarea().focus();
+    typeAndSubmitWithEnter('hello');
+
+    expect(getTextarea()).not.toHaveAttribute('disabled');
+    expect(getTextarea()).toHaveAttribute('aria-disabled', 'true');
+    expect(getTextarea()).toHaveClass('opacity-50');
+    expect(getTextarea()).toHaveFocus();
+
+    fireEvent.click(screen.getByRole('button', { name: 'settle' }));
+    expect(getTextarea()).not.toHaveAttribute('disabled');
+    expect(getTextarea()).not.toHaveAttribute('aria-disabled');
+    expect(getTextarea()).not.toHaveClass('opacity-50');
+  });
+
+  test('the mentions field is not natively disabled either', () => {
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={vi.fn()} disabled={true} />);
+
+    expect(getTextarea()).not.toHaveAttribute('disabled');
+    expect(getTextarea()).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  test('Enter does not send a second time', () => {
+    const onSubmit = vi.fn();
+    render(<SendingHarness onSubmit={onSubmit} value="hello" />);
+
+    fireEvent.keyDown(getTextarea(), { key: 'Enter' });
+    fireEvent.keyDown(getTextarea(), { key: 'Enter' });
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();
+  });
+
+  // The consumer clears the draft once the send is confirmed and restores the
+  // sent text when it fails, so anything typed meanwhile would be lost.
+  test('typing is ignored for a controlled draft', () => {
+    const onValueChange = vi.fn();
+    render(<CommentInput onSubmit={vi.fn()} disabled={true} value="sent text" onValueChange={onValueChange} />);
+
+    fireEvent.change(getTextarea(), { target: { value: 'sent text and more' } });
+
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(getTextarea()).toHaveValue('sent text');
+  });
+
+  test('typing is ignored for a self-contained draft, and accepted again afterwards', () => {
+    render(<SendingHarness onSubmit={vi.fn()} />);
+
+    typeAndSubmitWithEnter('hello');
+    expect(getTextarea()).toHaveValue('');
+
+    fireEvent.change(getTextarea(), { target: { value: 'typed during the send' } });
+    expect(getTextarea()).toHaveValue('');
+
+    fireEvent.click(screen.getByRole('button', { name: 'settle' }));
+    fireEvent.change(getTextarea(), { target: { value: 'next message' } });
+    expect(getTextarea()).toHaveValue('next message');
   });
 });
 
@@ -382,5 +465,173 @@ describe('CommentInput iOS font size', () => {
     const wrapper = getTextarea().closest('.ios\\:text-base');
     expect(wrapper).not.toBeNull();
     expect(wrapper).toHaveClass('text-body');
+  });
+});
+
+// jsdom has no layout, so the input and dialog rects are stubbed and the inline
+// style is what is asserted. The numbers below follow from the input's top: the
+// list's bottom edge sits 4px above it, and the list never reaches the top 72px,
+// where the site and dialog headers paint over it.
+describe('CommentInput mention list placement', () => {
+  const stubTop = (element: Element, top: number, bottom = top + 30) =>
+    vi.spyOn(element, 'getBoundingClientRect').mockReturnValue({ top, bottom } as DOMRect);
+  const mentionSearch = vi.fn(async () => [{ id: 'u1', displayName: 'Neil' }]);
+
+  const openList = async () => {
+    fireEvent.change(getTextarea(), { target: { value: '@ne', selectionStart: 3, selectionEnd: 3 } });
+    // react-mentions runs the query from the select event a real keystroke also fires.
+    fireEvent.select(getTextarea());
+    const name = await screen.findByText('Neil');
+    return name.closest('.overflow-y-auto') as HTMLElement;
+  };
+
+  beforeEach(() => {
+    screenSize.isSmallScreen = true;
+  });
+
+  afterEach(() => {
+    screenSize.isSmallScreen = false;
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  test('on a small screen the list is anchored from the input top, not from 100vh', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 400);
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.position).toBe('fixed');
+    expect(style.top).toBe('396px');
+    expect(style.transform).toBe('translateY(-100%)');
+    expect(style.bottom).toBe('');
+    expect(style.cssText).not.toContain('vh');
+  });
+
+  test('inside a dialog the anchor is converted to the dialog coordinates, without a portal', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 500);
+    const { container } = render(
+      <div data-slot="dialog-content">
+        <CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />
+      </div>
+    );
+    const dialog = container.querySelector('[data-slot="dialog-content"]') as HTMLElement;
+    stubTop(dialog, 100);
+
+    const list = await openList();
+
+    expect(list.style.top).toBe('396px');
+    expect(dialog).toContainElement(list);
+  });
+
+  test('with room above the input the list keeps its full height', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 500);
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.maxHeight).toBe('min(14rem, 424px)');
+  });
+
+  test('with little room above the input the list opens below it, clear of the text', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 170);
+    vi.stubGlobal('visualViewport', { offsetTop: 0, height: 500 });
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe('204px');
+    expect(style.transform).toBe('');
+    expect(style.maxHeight).toBe('min(14rem, 292px)');
+  });
+
+  test('below the input, the list height stops at the keyboard inside a dialog too', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 120);
+    vi.stubGlobal('visualViewport', { offsetTop: 40, height: 300 });
+    const { container } = render(
+      <div data-slot="dialog-content">
+        <CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />
+      </div>
+    );
+    stubTop(container.querySelector('[data-slot="dialog-content"]') as HTMLElement, 20, 800);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe('134px');
+    expect(style.maxHeight).toBe('min(14rem, 182px)');
+  });
+
+  test.each([
+    [220, '216px', 'translateY(-100%)'],
+    [219, '253px', ''],
+  ])('with the input at %ipx the list needs 144px above it to open there', async (top, listTop, transform) => {
+    stubTop(HTMLTextAreaElement.prototype, top);
+    vi.stubGlobal('visualViewport', { offsetTop: 0, height: 844 });
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe(listTop);
+    expect(style.transform).toBe(transform);
+  });
+
+  test('a tall input with the keyboard up leaves more room above, so the list stays there', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 180, 300);
+    vi.stubGlobal('visualViewport', { offsetTop: 0, height: 300 });
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe('176px');
+    expect(style.transform).toBe('translateY(-100%)');
+    expect(style.maxHeight).toBe('min(14rem, 104px)');
+  });
+
+  test('room above is measured from the visible area when iOS has panned the page', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 300, 332);
+    vi.stubGlobal('visualViewport', { offsetTop: 250, height: 332 });
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe('336px');
+    expect(style.transform).toBe('');
+    expect(style.maxHeight).toBe('min(14rem, 242px)');
+  });
+
+  test('below the input, a short dialog limits the list height so it is not clipped', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 422);
+    vi.stubGlobal('visualViewport', { offsetTop: 0, height: 844 });
+    const { container } = render(
+      <div data-slot="dialog-content">
+        <CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />
+      </div>
+    );
+    stubTop(container.querySelector('[data-slot="dialog-content"]') as HTMLElement, 272, 572);
+
+    const { style } = await openList();
+
+    expect(style.top).toBe('184px');
+    expect(style.maxHeight).toBe('min(14rem, 112px)');
+  });
+
+  test('on a small screen the list wrapper sits above the z-10 links in a post', async () => {
+    stubTop(HTMLTextAreaElement.prototype, 400);
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const list = await openList();
+
+    expect(list.parentElement?.style.zIndex).toBe('30');
+  });
+
+  test('from 640px up the list has no inline positioning', async () => {
+    screenSize.isSmallScreen = false;
+    render(<CommentInput onSubmit={vi.fn()} mentionSearch={mentionSearch} />);
+
+    const list = await openList();
+
+    expect(list.getAttribute('style')).toBeNull();
+    expect(list).toHaveClass('max-h-72', 'w-72');
+    expect(list.parentElement?.style.zIndex).toBe('1');
   });
 });

@@ -107,7 +107,7 @@ import { type FormEditContext, FramingEditorConnector } from './FramingEditorCon
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
 import { useAccountSpaceCandidates } from './useAccountSpaceCandidates';
-import { translateFormDefinitionError, useCalloutFormDefinitionSave } from './useCalloutFormDefinitionSave';
+import { useCalloutFormDefinitionSave } from './useCalloutFormDefinitionSave';
 import { omitIneligibleIds, useSelectionCandidates } from './useSelectionCandidates';
 
 /**
@@ -427,6 +427,7 @@ function CalloutFormConnectorInner({
   const referenceUpload = useReferenceFileUpload(ambientStorageConfig, { temporaryLocation: temporaryUpload });
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
+  // Edit-path failures are reported by the global error handler, with the server's reason.
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
 
   // Inline-rename state for the framing Collabora document, owned here (not in the
@@ -693,7 +694,6 @@ function CalloutFormConnectorInner({
       );
     } catch (err) {
       logError(new Error('Poll status change failed', { cause: err as Error }));
-      notify(t('pollForm.statusChange.failed'), 'error');
     }
   };
 
@@ -761,7 +761,7 @@ function CalloutFormConnectorInner({
       );
       if (!outcome.ok) {
         logError(new Error('Form definition save failed', { cause: outcome.error as Error }));
-        notify(translateFormDefinitionError(outcome.code, t), 'error');
+        notify(outcome.message, 'error');
         void refetchFormResponses();
         return;
       }
@@ -803,7 +803,6 @@ function CalloutFormConnectorInner({
         }
       } catch (err) {
         logError(new Error('Callout reference creation failed', { cause: err as Error }));
-        notify(t('callout.referencesSaveFailed'), 'error');
         return;
       }
     }
@@ -822,7 +821,6 @@ function CalloutFormConnectorInner({
         }
       } catch (err) {
         logError(new Error('Callout reference deletion failed', { cause: err as Error }));
-        notify(t('callout.referencesSaveFailed'), 'error');
         return;
       }
     }
@@ -896,9 +894,7 @@ function CalloutFormConnectorInner({
       });
     } catch (err) {
       logError(new Error('Callout update mutation failed', { cause: err as Error }));
-      // Surface the failure so the admin knows the save did not go through (T005
-      // mid-race rejection recovery / spec Edge Case 'Concurrent churn').
-      notify(t('callout.updateFailed'), 'error');
+      // The global error handler tells the admin the save did not go through, with the server's reason.
       // Reload the candidate data so any concurrent change (e.g. a member who
       // left, or a space moved out of the account, between load and save) is
       // reflected.
@@ -960,7 +956,6 @@ function CalloutFormConnectorInner({
       await runPollOptionDiff();
     } catch (err) {
       logError(new Error('Poll option save failed', { cause: err as Error }));
-      notify(t('callout.pollOptionsSaveFailed'), 'error');
       return;
     }
 

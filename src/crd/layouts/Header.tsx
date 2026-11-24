@@ -2,6 +2,7 @@ import { Bell, LayoutGrid, MessageCircle, Search } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { PlatformNavigationMenu } from '@/crd/layouts/components/PlatformNavigationMenu';
 import { UserMenu } from '@/crd/layouts/components/UserMenu';
 import type {
@@ -22,13 +23,16 @@ type HeaderIconButtonProps = {
   badge?: React.ReactNode;
 };
 
+/** Phones only: a 44px tap target, the same as the avatar's, and a 20px icon. `!` beats the Button's default icon size. */
+const PHONE_ICON_BUTTON = 'max-md:size-11 max-md:[&_svg]:size-5!';
+
 function HeaderIconButton({ onClick, href, ariaLabel, icon, badge }: HeaderIconButtonProps) {
   if (onClick) {
     return (
       <Button
         variant="ghost"
         size="icon"
-        className="relative text-muted-foreground"
+        className={cn('relative text-muted-foreground', PHONE_ICON_BUTTON)}
         aria-label={ariaLabel}
         onClick={onClick}
       >
@@ -41,7 +45,7 @@ function HeaderIconButton({ onClick, href, ariaLabel, icon, badge }: HeaderIconB
     <Button
       variant="ghost"
       size="icon"
-      className="relative text-muted-foreground"
+      className={cn('relative text-muted-foreground', PHONE_ICON_BUTTON)}
       aria-label={ariaLabel}
       asChild={true}
     >
@@ -72,6 +76,7 @@ type HeaderProps = {
   onSearchClick?: () => void;
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
+  onRefreshClick?: () => void;
   onLanguageChange?: (code: string) => void;
   showGridToggle?: boolean;
   /**
@@ -116,6 +121,7 @@ export function Header({
   onSearchClick,
   onPendingMembershipsClick,
   onHelpClick,
+  onRefreshClick,
   onLanguageChange,
   showGridToggle,
   fullWidth = false,
@@ -123,6 +129,9 @@ export function Header({
   className,
 }: HeaderProps) {
   const { t } = useTranslation('crd-layout');
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+  // On phones the profile menu lists the apps items, so the grid icon goes. Signed-out visitors have no profile menu.
+  const appsInProfileMenu = !isDesktop && authenticated && Boolean(user);
   const [scrolledPastBanner, setScrolledPastBanner] = useState(false);
 
   useEffect(() => {
@@ -164,7 +173,11 @@ export function Header({
             {/* Left: Logo + breadcrumbs. The pill padding (`px-3 py-1`) is unconditional: toggling
                 it with the pill moved the contents 12px sideways / 8px down on every transition. */}
             <div className={cn('flex items-center gap-2 md:gap-4 min-w-0 px-1 md:px-3 py-1', pillClasses)}>
-              <a href={navigationHrefs.home} className="flex items-center shrink-0" aria-label={t('header.home')}>
+              <a
+                href={navigationHrefs.home}
+                className="flex items-center justify-center shrink-0 max-md:size-11"
+                aria-label={t('header.home')}
+              >
                 <AlkemioLogo className="w-8 h-8" />
               </a>
               {breadcrumbs && (
@@ -219,12 +232,14 @@ export function Header({
               )}
 
               {platformNavigationItems && platformNavigationItems.length > 0 ? (
-                <PlatformNavigationMenu items={platformNavigationItems} currentPath={currentPath} />
+                !appsInProfileMenu && (
+                  <PlatformNavigationMenu items={platformNavigationItems} currentPath={currentPath} />
+                )
               ) : (
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-muted-foreground"
+                  className={cn('text-muted-foreground', PHONE_ICON_BUTTON)}
                   aria-label={t('header.spaces')}
                   asChild={true}
                 >
@@ -242,11 +257,13 @@ export function Header({
                 navigationHrefs={navigationHrefs}
                 isAdmin={isAdmin}
                 pendingInvitationsCount={pendingInvitationsCount}
+                platformNavigationItems={platformNavigationItems}
                 languages={languages}
                 currentLanguage={currentLanguage}
                 onLogout={onLogout}
                 onPendingMembershipsClick={onPendingMembershipsClick}
                 onHelpClick={onHelpClick}
+                onRefreshClick={onRefreshClick}
                 onLanguageChange={onLanguageChange}
                 showGridToggle={showGridToggle}
               />

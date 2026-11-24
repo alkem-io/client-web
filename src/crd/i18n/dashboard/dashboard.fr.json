@@ -14,6 +14,22 @@
     "navigation": "Navigation du tableau de bord",
     "pendingCount": "{{count}} en attente"
   },
+  "unreadSummary": {
+    "messages": {
+      "heading": "Messages",
+      "text_one": "Vous avez <b>{{count}} message non lu</b>",
+      "text_other": "Vous avez <b>{{count}} messages non lus</b>",
+      "ariaLabel_one": "Vous avez {{count}} message non lu. Ouvrir les Messages",
+      "ariaLabel_other": "Vous avez {{count}} messages non lus. Ouvrir les Messages"
+    },
+    "notifications": {
+      "heading": "Notifications",
+      "text_one": "Vous avez <b>{{count}} nouvelle notification</b>",
+      "text_other": "Vous avez <b>{{count}} nouvelles notifications</b>",
+      "ariaLabel_one": "Vous avez {{count}} nouvelle notification. Ouvrir les Notifications",
+      "ariaLabel_other": "Vous avez {{count}} nouvelles notifications. Ouvrir les Notifications"
+    }
+  },
   "recentSpaces": {
     "title": "Espaces Récents",
     "exploreAll": "Explorer tous vos Espaces",

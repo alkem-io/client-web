@@ -3,7 +3,6 @@
   "expand": "Fullscreen",
   "collapse": "Exit fullscreen",
   "emptyColumn": "No tasks yet",
-  "moveError": "Couldn't move the task. Please try again.",
   "columns": {
     "manage": "Manage columns",
     "title": "Task board columns",
@@ -26,8 +25,7 @@
     },
     "dragLabel": "Reorder column",
     "deleteLabel": "Delete column",
-    "saving": "Saving…",
-    "saveError": "Couldn't save the column change. Please try again."
+    "saving": "Saving…"
   },
   "create": {
     "option": "Tasks board",

@@ -3,6 +3,7 @@ import type {
   UiNodeAnchorAttributes,
   UiNodeAttributes,
   UiNodeDivisionAttributes,
+  UiNodeImageAttributes,
   UiNodeInputAttributes,
   UiNodeScriptAttributes,
   UiNodeTextAttributes,
@@ -101,6 +102,9 @@ export const isScriptNode = (node: UiNode): node is UiNode & { attributes: UiNod
 export const isTextNode = (node: UiNode): node is UiNode & { attributes: UiNodeTextAttributes } =>
   node.attributes.node_type === 'text';
 
+export const isImageNode = (node: UiNode): node is UiNode & { attributes: UiNodeImageAttributes } =>
+  node.attributes.node_type === 'img';
+
 export const isDivisionNode = (node: UiNode): node is UiNode & { attributes: UiNodeDivisionAttributes } =>
   node.attributes.node_type === 'div';
 
@@ -109,6 +113,8 @@ const PASSKEY_TRIGGERS = [
   'oryPasskeyLoginAutocompleteInit',
   'oryPasskeyRegistration',
   'oryPasskeySettingsRegistration',
+  'oryWebAuthnRegistration',
+  'oryWebAuthnLogin',
 ] as const;
 
 // Triggers that should be rendered as visible buttons
@@ -116,6 +122,8 @@ const VISIBLE_PASSKEY_TRIGGERS = [
   'oryPasskeyLogin',
   'oryPasskeyRegistration',
   'oryPasskeySettingsRegistration',
+  'oryWebAuthnRegistration',
+  'oryWebAuthnLogin',
 ] as const;
 
 /**

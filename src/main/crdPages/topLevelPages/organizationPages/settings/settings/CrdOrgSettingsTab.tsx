@@ -1,6 +1,5 @@
 import { useApolloClient } from '@apollo/client';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   OrganizationInfoDocument,
   refetchOrganizationSettingsQuery,
@@ -8,15 +7,14 @@ import {
   useUpdateOrganizationSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { UpdateOrganizationSettingsEntityInput } from '@/core/apollo/generated/graphql-schema';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { OrgSettingsTabView } from '@/crd/components/organization/settings/OrgSettingsTabView';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { mapOrgSettings } from './orgSettingsMapper';
 
-type SwitchKey = 'spaceInvitations' | 'domain' | 'applications' | 'privacy';
+type SwitchKey = 'spaceInvitations' | 'domain' | 'applications' | 'privacy' | 'secondFactor';
 
 /**
- * Integration page for the Org Settings tab (US12). Four independent
+ * Integration page for the Org Settings tab. Five independent
  * switches — all wired through `updateOrganizationSettings` with the
  * optimistic-flip + hard-failure-revert + toast pattern (parity with
  * FR-133 and the User Settings communication switch).
@@ -35,8 +33,6 @@ type SwitchKey = 'spaceInvitations' | 'domain' | 'applications' | 'privacy';
  * `OrganizationInfo`, which carries that viewer-relative eligibility signal.
  */
 const CrdOrgSettingsTab = () => {
-  const { t } = useTranslation('crd-contributorSettings');
-  const notify = useNotification();
   const apolloClient = useApolloClient();
   const { organizationId, loading: loadingOrg } = useOrganizationContext();
 
@@ -73,7 +69,7 @@ const CrdOrgSettingsTab = () => {
         void apolloClient.refetchQueries({ include: [OrganizationInfoDocument] });
       }
     } catch {
-      notify(t('org.settings.errorToast'), 'error');
+      // Reported by the global error handler, with the server's reason.
     } finally {
       // Drop the override either way: on success the refetched value already
       // agrees with it, and on failure the persisted value is the truthful one.
@@ -84,6 +80,8 @@ const CrdOrgSettingsTab = () => {
 
   return (
     <OrgSettingsTabView
+      // A confirmation opened for one organization must not survive navigating to another.
+      key={organizationId}
       loading={loading && !data}
       allowSpaceInvitations={resolved('spaceInvitations', mapped.allowSpaceInvitations)}
       allowSpaceInvitationsSaving={Boolean(saving.spaceInvitations)}
@@ -114,6 +112,11 @@ const CrdOrgSettingsTab = () => {
       privacySaving={Boolean(saving.privacy)}
       onToggleContributionRoles={next =>
         void commit('privacy', next, { privacy: { contributionRolesPubliclyVisible: next } })
+      }
+      secondFactorRequired={resolved('secondFactor', mapped.secondFactorRequired)}
+      secondFactorRequiredSaving={Boolean(saving.secondFactor)}
+      onToggleSecondFactorRequired={next =>
+        void commit('secondFactor', next, { security: { secondFactorRequired: next } })
       }
     />
   );

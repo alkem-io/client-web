@@ -61,8 +61,7 @@
     },
     "chooseCommunity": {
       "intro": "Voeg je Virtual Contributor toe aan een community, of sla dit voorlopig over.",
-      "skip": "Voorlopig overslaan",
-      "errorMessage": "Kon niet aan de community worden toegevoegd — probeer het opnieuw."
+      "skip": "Voorlopig overslaan"
     },
     "tryVc": {
       "title": "{{name}} is klaar!",
@@ -71,8 +70,7 @@
       "done": "Klaar"
     },
     "createdVirtualContributor": {
-      "successMessage": "Virtual Contributor '{{name}}' succesvol gemaakt",
-      "errorMessage": "Kon de Virtual Contributor niet aanmaken — probeer het opnieuw."
+      "successMessage": "Virtual Contributor '{{name}}' succesvol gemaakt"
     }
   },
   "breadcrumbs": {
@@ -139,7 +137,7 @@
       "aboutYou": {
         "title": "Over jou",
         "tagline": {
-          "label": "Slogan",
+          "label": "Kopregel",
           "hint": "Een korte zin die op je profiel verschijnt."
         },
         "location": {
@@ -149,7 +147,7 @@
           "countryPlaceholder": "Kies een land"
         },
         "bio": {
-          "label": "Biografie",
+          "label": "Over",
           "hint": "Markdown wordt ondersteund."
         },
         "skills": {
@@ -159,7 +157,7 @@
         },
         "keywords": {
           "label": "Trefwoorden",
-          "hint": "Trefwoorden die je interesses beschrijven. Druk op Enter om toe te voegen.",
+          "hint": "Trefwoorden die je interesses beschrijven. Ze verschijnen als tags op de hoverkaart van je profiel. Druk op Enter om toe te voegen.",
           "placeholder": "bv. klimaat, governance, open source"
         }
       },
@@ -225,8 +223,7 @@
         "dialogTitle": "Dit lidmaatschap verlaten?",
         "dialogDescription": "Je staat op het punt om \"{{spaceName}}\" te verlaten. Je verliest toegang tot inhoud voor leden en moet opnieuw aanmelden om terug te komen.",
         "dialogConfirm": "Verlaten",
-        "success": "Lidmaatschap verlaten",
-        "error": "Verlaten mislukt — probeer opnieuw"
+        "success": "Lidmaatschap verlaten"
       },
       "pendingApplications": {
         "title": "Openstaande aanvragen",
@@ -248,6 +245,9 @@
       "sessionExpired": {
         "description": "Je sessie bij onze aanmeldprovider is verlopen, waardoor deze instellingen niet geladen kunnen worden. Vernieuwen helpt niet — meld je af en opnieuw aan om de sessie te herstellen. De rest van Alkemio blijft ondertussen gewoon werken.",
         "action": "Afmelden en opnieuw aanmelden"
+      },
+      "manageInBrowser": {
+        "description": "Je wachtwoord, passkeys, verificatie in twee stappen en gekoppelde accounts beheer je in een webbrowser, niet in de app. Open {{address}} in een willekeurige webbrowser, meld je aan en ga naar Instellingen › Beveiliging. De rest van Alkemio blijft gewoon werken in de app."
       },
       "password": {
         "title": "Wachtwoord wijzigen",
@@ -326,8 +326,7 @@
           "cancel": "Annuleren",
           "confirm": "Sleutel intrekken",
           "revoking": "Bezig met intrekken…",
-          "success": "\"{{name}}\" is ingetrokken.",
-          "error": "De sleutel kon niet worden ingetrokken — probeer het opnieuw."
+          "success": "\"{{name}}\" is ingetrokken."
         },
         "errors": {
           "notFound": "Die API-sleutel kon niet worden gevonden.",
@@ -384,7 +383,8 @@
             "label": "Passkey",
             "set": "Ingesteld",
             "notSet": "Niet ingesteld",
-            "manage": "Passkeys beheren"
+            "manage": "Passkeys beheren",
+            "explanation": "Logt je in zonder wachtwoord. Het is geen tweede stap."
           }
         }
       },
@@ -424,6 +424,60 @@
             "SOLE_ORGANIZATION_OWNER": "Organisatie (enige eigenaar)"
           }
         }
+      },
+      "twoStep": {
+        "authenticator": {
+          "active": "Je authenticator-app is actief.",
+          "codeLabel": "Code uit de app",
+          "confirm": "Bevestigen",
+          "explanation": "Een app op je telefoon, zoals Google Authenticator, Microsoft Authenticator of 1Password, toont elke 30 seconden een nieuwe zescijferige code.",
+          "qrAlt": "QR-code voor je authenticator-app",
+          "removeDescription": "Je kunt dan niet meer inloggen met codes uit deze app.",
+          "removeTitle": "Authenticator-app verwijderen?",
+          "secretLabel": "Sleutel:",
+          "setUp": "Stel een authenticator-app in: scan de QR-code met de app of voer de sleutel handmatig in, en typ dan de code die de app toont.",
+          "title": "Authenticator-app"
+        },
+        "description": "Voeg een tweede stap toe aan het inloggen: na je wachtwoord bevestig je ook met je telefoon of een beveiligingssleutel.",
+        "lastFactorWarning": "Dit is je laatste tweede factor. Verificatie in twee stappen is voor jou verplicht, dus je moet er de volgende keer dat je inlogt opnieuw een instellen.",
+        "neverShare": "Een code wordt nooit voorgelezen of naar iemand gestuurd, en Alkemio zal je er nooit om vragen. Deel je codes niet.",
+        "recoveryCodes": {
+          "active": "Je hebt herstelcodes.",
+          "confirm": "Ik heb deze codes bewaard",
+          "copied": "Gekopieerd",
+          "copy": "Codes kopiëren",
+          "copyFailed": "Kopiëren is mislukt. Selecteer de codes en kopieer ze zelf.",
+          "download": "Codes downloaden",
+          "explanation": "Eenmalige codes voor als je je app of sleutel niet kunt gebruiken. Elke code werkt één keer.",
+          "generate": "Herstelcodes genereren",
+          "needsFactor": "Stel eerst een authenticator-app of een beveiligingssleutel in.",
+          "regenerate": "Opnieuw genereren",
+          "regenerateDescription": "Je huidige herstelcodes werken dan niet meer.",
+          "regenerateTitle": "Nieuwe herstelcodes genereren?",
+          "remove": "Herstelcodes verwijderen",
+          "removeDescription": "Je kunt dan niet meer inloggen met een herstelcode.",
+          "removeTitle": "Je herstelcodes verwijderen?",
+          "shownOnce": "Bewaar deze codes nu op een veilige plek. Ze worden niet opnieuw getoond.",
+          "title": "Herstelcodes"
+        },
+        "remove": "Verwijderen",
+        "secondWay": {
+          "added": "Je tweede manier om de tweede stap te doorlopen is ingesteld. Log opnieuw in zodat die meetelt.",
+          "needed": "Je account heeft een tweede manier nodig om de tweede stap te doorlopen: een authenticator-app, nog een beveiligingssleutel of herstelcodes. Voeg er hieronder een toe en log daarna opnieuw in.",
+          "suggested": "Verificatie in twee stappen staat aan. Voeg nu een tweede manier toe om de tweede stap te doorlopen (een authenticator-app, nog een beveiligingssleutel of herstelcodes), zodat je nog kunt inloggen als je deze kwijtraakt."
+        },
+        "securityKeys": {
+          "add": "Beveiligingssleutel toevoegen",
+          "empty": "Nog geen beveiligingssleutels toegevoegd.",
+          "explanation": "Gebruik een passkey uit je wachtwoordbeheerder of op dit apparaat (Face ID, Touch ID, Windows Hello), of een fysieke sleutel zoals een YubiKey. Je browser vraagt welke je wilt gebruiken.",
+          "nameLabel": "Naam van de sleutel",
+          "nameRequired": "Geef de sleutel een naam.",
+          "removeDescription": "Je kunt dan niet meer inloggen met deze sleutel.",
+          "removeNamed": "{{name}} verwijderen",
+          "removeTitle": "Beveiligingssleutel \"{{name}}\" verwijderen?",
+          "title": "Passkeys en beveiligingssleutels"
+        },
+        "title": "Verificatie in twee stappen"
       }
     },
     "settings": {
@@ -433,8 +487,7 @@
         "allowMessagesLabel": "Andere gebruikers mogen mij directe berichten sturen",
         "allowMessagesDescription": "Wanneer uitgeschakeld, kunnen andere gebruikers geen direct-bericht-gesprek met je starten.",
         "allowEmailContactLabel": "Sta anderen toe mij via e-mail te contacteren",
-        "allowEmailContactDescription": "Wanneer ingeschakeld, kunnen mensen die je niet via chat kunnen bereiken je een e-mail sturen op je accountadres. Je adres wordt nooit aan hen getoond.",
-        "error": "Voorkeur niet opgeslagen — probeer opnieuw"
+        "allowEmailContactDescription": "Wanneer ingeschakeld, kunnen mensen die je niet via chat kunnen bereiken je een e-mail sturen op je accountadres. Je adres wordt nooit aan hen getoond."
       },
       "designSystem": {
         "title": "Design System",
@@ -445,15 +498,13 @@
       "language": {
         "title": "Taal",
         "label": "Interfacetaal",
-        "description": "De taal die in heel Alkemio wordt gebruikt. Wijzigingen gelden voor al je apparaten.",
-        "error": "Taalvoorkeur kon niet worden opgeslagen — probeer het opnieuw."
+        "description": "De taal die in heel Alkemio wordt gebruikt. Wijzigingen gelden voor al je apparaten."
       }
     },
     "notifications": {
       "pageTitle": "Meldingen",
       "helpBanner": "Bewerk je meldingsvoorkeuren. Wijzigingen worden automatisch opgeslagen.",
       "toggleAria": "Schakel {{channel}}-melding voor: {{label}}",
-      "toggleError": "Voorkeur niet opgeslagen — probeer opnieuw",
       "inAppLockedChat": "Chatberichten verschijnen al direct in het chatpaneel, dus voor deze rij worden geen in-app-meldingen verzonden",
       "columns": {
         "activity": "Activiteit",
@@ -483,7 +534,7 @@
           "description": "Personaliseer waarschuwingen voor interacties zoals antwoorden, vermeldingen en uitnodigingen."
         },
         "platform": {
-          "title": "Platformmeldingen",
+          "title": "Forummeldingen",
           "description": "Blijf op de hoogte van platformbrede discussies, nieuwe functies en aankondigingen."
         },
         "platformAdmin": {
@@ -538,8 +589,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Ontvang een melding wanneer een organisatie beslist over mijn aanvraag om betrokkene te worden"
         },
         "platform": {
-          "forumDiscussionComment": "Ontvang een melding wanneer iemand reageert op een discussie die ik heb gestart",
-          "forumDiscussionCreated": "Ontvang een melding wanneer er een nieuwe platformdiscussie wordt aangemaakt"
+          "forumDiscussionComment": "Ontvang een melding wanneer iemand reageert op een discussie die ik in het forum heb gestart",
+          "forumDiscussionCreated": "Ontvang een melding wanneer er een nieuwe forumdiscussie wordt aangemaakt"
         },
         "platformAdmin": {
           "userProfileCreated": "Ontvang een melding wanneer er een nieuw gebruikersprofiel wordt aangemaakt",
@@ -589,8 +640,7 @@
         "dialogTitle": "Ontkoppelen van deze organisatie?",
         "dialogDescription": "Je staat op het punt om \"{{name}}\" te verlaten. Je verliest je rol als betrokkene en alle bijbehorende rechten.",
         "dialogConfirm": "Ontkoppelen",
-        "success": "Succesvol ontkoppeld",
-        "error": "Ontkoppelen mislukt — probeer opnieuw"
+        "success": "Succesvol ontkoppeld"
       }
     },
     "account": {
@@ -643,7 +693,6 @@
   },
   "org": {
     "profile": {
-      "pageTitle": "Profiel",
       "identity": {
         "title": "Identiteit",
         "displayName": {
@@ -674,7 +723,7 @@
         },
         "keywords": {
           "label": "Trefwoorden",
-          "hint": "Onderwerpen waaraan je organisatie werkt. Druk op Enter om toe te voegen.",
+          "hint": "Onderwerpen waaraan je organisatie werkt. Ze verschijnen als tags op de hoverkaart van je organisatie. Druk op Enter om toe te voegen.",
           "placeholder": "bv. klimaat, governance, open source"
         },
         "capabilities": {
@@ -762,7 +811,6 @@
       }
     },
     "community": {
-      "pageTitle": "Betrokkenen",
       "title": "Betrokkenen",
       "description": "Beheer wie bij deze organisatie betrokken is. Voeg nieuwe betrokkenen toe uit de lijst met beschikbare gebruikers; het verwijderen van een betrokkene trekt hun organisatierol in.",
       "currentAssociatesTitle": "Huidige betrokkenen",
@@ -780,7 +828,6 @@
       "removeError": "Verwijderen mislukt — probeer opnieuw"
     },
     "membership": {
-      "pageTitle": "Lidmaatschap",
       "title": "Space-lidmaatschappen",
       "searchPlaceholder": "Zoek lidmaatschappen...",
       "empty": "Deze organisatie is nog geen lid van een Space.",
@@ -805,7 +852,7 @@
         "dialogConfirm": "Verlaten",
         "success": "Lidmaatschap verlaten",
         "error": "Verlaten mislukt — probeer opnieuw",
-        "forbidden": "Alleen beheerders en eigenaren van deze organisatie kunnen een space verlaten"
+        "forbidden": "Verlaten is niet gelukt. De space bestaat mogelijk niet meer, of alleen beheerders en eigenaren van deze organisatie kunnen hem verlaten."
       },
       "ledBy": "Geleid door:",
       "ledByAria": "{{count}} community-Leads",
@@ -828,10 +875,16 @@
         "contributionRolesLabel": "Toon bijdragerollen openbaar",
         "contributionRolesCaption": "Wanneer ingeschakeld, zijn de roltoewijzingen van de organisatie (Beheerder, Eigenaar, Betrokkene) zichtbaar op het openbare profiel."
       },
-      "errorToast": "Voorkeur opslaan mislukt — probeer opnieuw"
+      "security": {
+        "requireSecondFactorCaption": "Eigenaren, beheerders en medewerkers van deze organisatie moeten een tweede factor gebruiken bij het inloggen. Ze krijgen 14 dagen om er een in te stellen.",
+        "requireSecondFactorLabel": "Verificatie in twee stappen verplichten voor leden",
+        "title": "Beveiliging",
+        "turnOffTitle": "Verificatie in twee stappen niet langer verplichten?",
+        "turnOffDescription": "Leden hebben geen tweede factor meer nodig om in te loggen. Als je de verplichting weer inschakelt, krijgen ze opnieuw 14 dagen om er een in te stellen.",
+        "turnOffConfirm": "Niet langer verplichten"
+      }
     },
     "invitations": {
-      "pageTitle": "Uitnodigingen",
       "title": "Space-uitnodigingen",
       "empty": "Geen openstaande Space-uitnodigingen.",
       "invitedBy": "Uitgenodigd door {{name}}",
@@ -848,8 +901,7 @@
       "acceptConfirmAction": "Uitnodiging accepteren",
       "declineConfirmTitle": "Deze uitnodiging afwijzen?",
       "declineConfirmBody": "{{spaceName}} krijgt te horen dat je organisatie de uitnodiging heeft afgewezen. Dit kan niet ongedaan worden gemaakt — een Space-beheerder moet dan een nieuwe uitnodiging sturen.",
-      "declineConfirmAction": "Uitnodiging afwijzen",
-      "errorToast": "De uitnodiging kon niet worden bijgewerkt — probeer het opnieuw"
+      "declineConfirmAction": "Uitnodiging afwijzen"
     },
     "associates": {
       "title": "Betrokkenen",
@@ -982,7 +1034,7 @@
       },
       "keywords": {
         "label": "Trefwoorden",
-        "hint": "Voeg trefwoorden toe zodat gebruikers deze Virtual Contributor kunnen vinden.",
+        "hint": "Voeg trefwoorden toe zodat gebruikers deze Virtual Contributor kunnen vinden. Ze verschijnen als tags op de hoverkaart.",
         "placeholder": "Voeg een trefwoord toe en druk op Enter"
       },
       "socialLinks": {
@@ -1064,9 +1116,6 @@
       "apiKeyHelper": "Bestaande sleutels worden nooit teruggegeven. Laat leeg om de huidige sleutel te behouden.",
       "assistantIdLabel": "Assistant-ID",
       "modelLabel": "Model"
-    },
-    "settings": {
-      "commitErrorToast": "Voorkeur opslaan mislukt — probeer opnieuw"
     }
   },
   "shared": {
@@ -1116,7 +1165,6 @@
         "heading": "Nieuwe startpagina aanmaken"
       },
       "deleteSuccess": "Resource verwijderd",
-      "deleteError": "Verwijderen mislukt — probeer opnieuw",
       "noEntitlement": {
         "title": "Capaciteit bereikt",
         "description": {

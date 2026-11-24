@@ -23,10 +23,6 @@ vi.mock('react-i18next', () => ({
     t: (key: string, values?: { name?: string }) => (titleStrings[key] ?? key).replace('{{name}}', values?.name ?? ''),
   }),
 }));
-const mockSelectedRoomId = vi.fn<() => string | null>();
-vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
-  useUserMessagingContext: () => ({ selectedRoomId: mockSelectedRoomId() }),
-}));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { settings: { notification: { sound: mockSound() } } } }),
 }));
@@ -50,7 +46,6 @@ describe('useUnreadTabBadge', () => {
     mockConversations.mockReturnValue(0);
     mockNotifications.mockReturnValue(0);
     mockSound.mockReturnValue({ chatMessage: true, inAppNotification: true });
-    mockSelectedRoomId.mockReturnValue(null);
   });
 
   afterEach(() => {
@@ -178,15 +173,6 @@ describe('useUnreadTabBadge', () => {
 
     it('shows nothing for a call without a name', () => {
       setIncomingCallRooms(new Map([['group', null]]));
-
-      renderHook(() => useUnreadTabBadge());
-
-      expect(document.title).toBe('Alkemio');
-    });
-
-    it('shows nothing for the conversation being viewed', () => {
-      mockSelectedRoomId.mockReturnValue('direct');
-      setIncomingCallRooms(new Map([['direct', { name: 'Ana', isGroup: false }]]));
 
       renderHook(() => useUnreadTabBadge());
 

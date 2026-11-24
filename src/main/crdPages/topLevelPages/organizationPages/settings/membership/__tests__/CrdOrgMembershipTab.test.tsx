@@ -6,6 +6,8 @@ import { createInstance } from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import commonEn from '@/crd/i18n/common/common.en.json';
 import contributorSettingsEn from '@/crd/i18n/contributorSettings/contributorSettings.en.json';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 
@@ -43,7 +45,8 @@ const i18n = createInstance();
 beforeAll(async () => {
   await i18n.init({
     lng: 'en',
-    resources: { en: { 'crd-contributorSettings': contributorSettingsEn } },
+    defaultNS: 'crd-common',
+    resources: { en: { 'crd-common': commonEn, 'crd-contributorSettings': contributorSettingsEn } },
     interpolation: { escapeValue: false },
   });
 });
@@ -146,6 +149,7 @@ describe('CrdOrgMembershipTab', () => {
     expect(mockFetchSpaceDetails).toHaveBeenCalledWith({ variables: { spaceId: 'sub-a-1' } });
     expect(mockRemoveRoleFromOrganization).toHaveBeenCalledWith({
       variables: { contributorId: 'org-1', roleSetId: 'rs-sub', role: RoleName.Member },
+      context: OWN_ERROR_HANDLING,
     });
     expect(mockRefetch).toHaveBeenCalled();
   });
@@ -206,24 +210,37 @@ describe('CrdOrgMembershipTab', () => {
     expect(mockNotify).toHaveBeenCalledWith(en.leave.success, 'success');
   });
 
-  it('reports an error, never success, when the leave is rejected', async () => {
-    mockRemoveRoleFromOrganization.mockRejectedValue(new Error('Authorization: unable to grant'));
+  it("reports the server's reason, never success, when the leave is rejected", async () => {
+    mockRemoveRoleFromOrganization.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [
+          new GraphQLError('The organisation is the last lead of this Space', {
+            extensions: { code: 'BAD_USER_INPUT', userMessage: 'userMessages.validation.badUserInput' },
+          }),
+        ],
+      })
+    );
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     renderTab();
 
     await openLeaveDialogFor(user, 1);
     await user.click(screen.getByRole('button', { name: en.leave.dialogConfirm }));
 
-    await waitFor(() => expect(mockNotify).toHaveBeenCalledWith(en.leave.error, 'error'));
-    expect(mockNotify).not.toHaveBeenCalledWith(en.leave.success, 'success');
+    await waitFor(() =>
+      expect(mockNotify).toHaveBeenCalledWith('The organisation is the last lead of this Space', 'error')
+    );
+    expect(mockNotify).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     expect(mockRefetch).toHaveBeenCalled();
   });
 
-  it('says only the organization’s admins and owners can leave when the server denies it', async () => {
+  it.each([
+    ['one not-available error', [AlkemioGraphqlErrorCode.FORBIDDEN_POLICY]],
+    ['several not-available errors', [AlkemioGraphqlErrorCode.FORBIDDEN_POLICY, AlkemioGraphqlErrorCode.FORBIDDEN]],
+  ])('shows its own not-available text exactly once for %s', async (_, codes) => {
     mockRemoveRoleFromOrganization.mockRejectedValue(
       new ApolloError({
-        graphQLErrors: [new GraphQLError('denied', { extensions: { code: AlkemioGraphqlErrorCode.FORBIDDEN_POLICY } })],
+        graphQLErrors: codes.map(code => new GraphQLError('not available', { extensions: { code } })),
       })
     );
     const user = userEvent.setup({ pointerEventsCheck: 0 });
@@ -233,7 +250,7 @@ describe('CrdOrgMembershipTab', () => {
     await user.click(screen.getByRole('button', { name: en.leave.dialogConfirm }));
 
     await waitFor(() => expect(mockNotify).toHaveBeenCalledWith(en.leave.forbidden, 'error'));
-    expect(mockNotify).not.toHaveBeenCalledWith(en.leave.error, 'error');
+    expect(mockNotify).toHaveBeenCalledTimes(1);
   });
 
   it('warns that leaving also leaves every subspace and gives up Lead', async () => {
@@ -257,6 +274,26 @@ describe('CrdOrgMembershipTab', () => {
     await waitFor(() => expect(mockNotify).toHaveBeenCalledWith(en.leave.error, 'error'));
     expect(mockRemoveRoleFromOrganization).not.toHaveBeenCalled();
     expect(mockNotify).not.toHaveBeenCalledWith(en.leave.success, 'success');
+  });
+
+  it('says the Space may no longer exist when looking it up answers that it is not available', async () => {
+    mockFetchSpaceDetails.mockResolvedValue({
+      data: undefined,
+      error: new ApolloError({
+        graphQLErrors: [
+          new GraphQLError('not available', { extensions: { code: AlkemioGraphqlErrorCode.FORBIDDEN_POLICY } }),
+        ],
+      }),
+    });
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    renderTab();
+
+    await openLeaveDialogFor(user, 1);
+    await user.click(screen.getByRole('button', { name: en.leave.dialogConfirm }));
+
+    await waitFor(() => expect(mockNotify).toHaveBeenCalledWith(en.leave.forbidden, 'error'));
+    expect(mockNotify).toHaveBeenCalledTimes(1);
+    expect(mockRemoveRoleFromOrganization).not.toHaveBeenCalled();
   });
 
   it('cancelling the dialog sends nothing', async () => {

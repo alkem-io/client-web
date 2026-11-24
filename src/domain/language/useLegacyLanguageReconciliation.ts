@@ -20,6 +20,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { useUpdateUserSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import i18n, { supportedLngs } from '@/core/i18n/config';
 import type { LanguageConfig } from '@/domain/platform/config/configuration';
 
@@ -56,7 +57,7 @@ export function useLegacyLanguageReconciliation({
   authLoading = false,
   languageConfig,
 }: ReconciliationOpts): ReconciliationResult {
-  const [updateUserSettings] = useUpdateUserSettingsMutation();
+  const [updateUserSettings] = useUpdateUserSettingsMutation({ context: OWN_ERROR_HANDLING });
   const didRunRef = useRef(false);
   const [reconcileComplete, setReconcileComplete] = useState(false);
 

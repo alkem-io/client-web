@@ -15,6 +15,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const isAppMode = vi.hoisted(() => vi.fn<() => boolean>());
 const subscribeMutation = vi.hoisted(() => vi.fn());
+const mutationHookOptions = vi.hoisted(() => ({ subscribe: vi.fn(), unsubscribe: vi.fn() }));
 
 vi.mock('@/core/appMode/isAppMode', () => ({ isAppMode }));
 
@@ -23,8 +24,14 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   // one would throw before `pushManager.subscribe` and make case 2 pass for the
   // wrong reason.
   useVapidPublicKeyQuery: () => ({ data: { vapidPublicKey: 'QUJDREVG' }, loading: false }),
-  useSubscribeToPushNotificationsMutation: () => [subscribeMutation],
-  useUnsubscribeFromPushNotificationsMutation: () => [vi.fn()],
+  useSubscribeToPushNotificationsMutation: (options?: unknown) => {
+    mutationHookOptions.subscribe(options);
+    return [subscribeMutation];
+  },
+  useUnsubscribeFromPushNotificationsMutation: (options?: unknown) => {
+    mutationHookOptions.unsubscribe(options);
+    return [vi.fn()];
+  },
 }));
 
 import { usePushNotifications } from './usePushNotifications';
@@ -90,5 +97,15 @@ describe('usePushNotifications — app mode (SC-004)', () => {
     const { result } = renderHook(() => usePushNotifications());
 
     expect(result.current.isSupported).toBe(true);
+  });
+
+  it('runs unasked on mount or is reported by the settings toggle, so subscribe and unsubscribe opt out of the global error handler', () => {
+    isAppMode.mockReturnValue(false);
+
+    renderHook(() => usePushNotifications());
+
+    const optedOut = expect.objectContaining({ context: { skipGlobalErrorHandler: true } });
+    expect(mutationHookOptions.subscribe).toHaveBeenCalledWith(optedOut);
+    expect(mutationHookOptions.unsubscribe).toHaveBeenCalledWith(optedOut);
   });
 });

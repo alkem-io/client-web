@@ -16,4 +16,10 @@ export enum AlkemioGraphqlErrorCode {
   ROLESET_INVITATION_RESEND_THROTTLED = 'ROLESET_INVITATION_RESEND_THROTTLED',
   // A Platform Support user acting on their own account on an organization's Community tab.
   PLATFORM_SUPPORT_SELF_TARGET = 'PLATFORM_SUPPORT_SELF_TARGET',
+  // The recipient has turned direct messaging off.
+  MESSAGING_NOT_ENABLED = 'MESSAGING_NOT_ENABLED',
+  // The sender has used up their hourly message allowance.
+  MESSAGE_SEND_LIMIT_REACHED = 'MESSAGE_SEND_LIMIT_REACHED',
+  // A rule requires a second factor this session did not use; the client routes to /second-factor.
+  SECOND_FACTOR_REQUIRED = 'SECOND_FACTOR_REQUIRED',
 }

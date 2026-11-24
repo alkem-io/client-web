@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSendDirectMessageToUsersMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { DirectMessageDeliveryStatus } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { SendConfirmationDialog } from '@/crd/components/chat/SendConfirmationDialog';
@@ -11,6 +13,7 @@ import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import { Textarea } from '@/crd/primitives/textarea';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { getMessageSendLimitMessage } from '@/main/constants/messageSendLimit';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
 const SEARCH_PAGE_SIZE = 20;
@@ -49,6 +52,7 @@ function mapToShareUser(user: SearchedUser): ShareUser | null {
 export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: CalloutShareOnAlkemioFormProps) {
   const { t } = useTranslation('crd-common');
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const { userModel: currentUser } = useCurrentUserContext();
   const { setIsOpen, setSelectedConversationId } = useUserMessagingContext();
 
@@ -111,6 +115,7 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: Callout
             message: finalMessage,
           },
         },
+        context: OWN_ERROR_HANDLING,
       });
 
       const results = data?.sendDirectMessageToUsers ?? [];
@@ -137,8 +142,11 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: Callout
       setMessage(initialMessage);
       setSearchQuery('');
       setShowErrors(false);
-    } catch {
-      notify(t('share.alkemio.errors.sendFailed'), 'error');
+    } catch (error) {
+      notify(
+        getMessageSendLimitMessage(error) ?? serverErrorMessage(error, t('share.alkemio.errors.sendFailed')),
+        'error'
+      );
     }
   };
 
