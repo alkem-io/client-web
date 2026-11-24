@@ -292,4 +292,4 @@ export {
   EVENT_REACTION,
   EVENT_STICKER,
 };
-export type { CallOutcome, EntryOptions, MediaRef, ParsedCall, ParsedMessage, ParsedReaction, RawEvent };
+export type { MediaRef, ParsedCall, ParsedMessage, ParsedReaction, RawEvent };
