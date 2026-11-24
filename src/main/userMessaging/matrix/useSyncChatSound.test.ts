@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const harness = vi.hoisted(() => ({
   client: null as unknown,
   playSound: vi.fn(),
+  stopSound: vi.fn(),
   selectedRoomId: null as string | null,
   platformRoles: [] as string[],
   callsConfigured: true,
@@ -11,7 +12,7 @@ const harness = vi.hoisted(() => ({
 }));
 
 vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => harness.client }));
-vi.mock('@/core/sound/soundPlayer', () => ({ playSound: harness.playSound }));
+vi.mock('@/core/sound/soundPlayer', () => ({ playSound: harness.playSound, stopSound: harness.stopSound }));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({
     userModel: { id: 'me', settings: { notification: { sound: { chatMessage: true } } } },
@@ -26,6 +27,8 @@ vi.mock('./conversationSummaryStore', () => ({
   storeFor: () => ({ alkemioRoomIdFor: harness.alkemioRoomIdFor }),
 }));
 
+import { closeCall, getCallOverlay, openCall } from '../calls/callOverlayStore';
+import { setIncomingCallRooms } from '../calls/incomingCallStore';
 import { chatSoundStorageKey } from '../chatSoundPreference';
 import { useSyncChatSound } from './useSyncChatSound';
 
@@ -144,5 +147,22 @@ describe('useSyncChatSound', () => {
     client.emit('Room.timeline', callStarted, { roomId: '!conv' }, false, false, live);
 
     expect(harness.playSound).not.toHaveBeenCalled();
+  });
+
+  it('cuts the call sound short when the call is answered here, and when no call is left to deal with', () => {
+    harness.client = makeClient(true);
+    act(() => setIncomingCallRooms(new Map([['alk-conv', { name: 'Maria', isGroup: false }]])));
+    renderHook(() => useSyncChatSound());
+    harness.stopSound.mockClear();
+
+    // Answer: the call opens in this tab.
+    act(() => openCall({ matrixRoomId: '!conv', intent: 'join_existing_dm' }));
+    expect(harness.stopSound).toHaveBeenCalledExactlyOnceWith('call');
+    act(() => closeCall(getCallOverlay()?.widgetId ?? ''));
+    harness.stopSound.mockClear();
+
+    // Declined, answered elsewhere, or the caller gave up: nothing is waiting any more.
+    act(() => setIncomingCallRooms(new Map()));
+    expect(harness.stopSound).toHaveBeenCalledExactlyOnceWith('call');
   });
 });

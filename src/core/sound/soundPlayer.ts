@@ -18,7 +18,7 @@ export type SoundKey = 'chat' | 'notification' | 'call';
 const SOUND_SOURCES: Record<SoundKey, string> = {
   chat: '/sounds/chat.mp3',
   notification: '/sounds/notification.mp3',
-  // The chat ping's tone and key as a three-note rise, played three times (2.5 s); once, not looped.
+  // The chat ping's tone and key as a three-note rise: three rings a second apart (under 5 s); once, not looped.
   call: '/sounds/call.wav',
 };
 
@@ -50,4 +50,13 @@ export const playSound = (key: SoundKey): void => {
   // Swallow the rejection — the autoplay policy rejects with NotAllowedError
   // until the page has had a user gesture, and that must never surface (FR-011).
   void audio.play().catch(() => {});
+};
+
+/** Cuts a sound short, e.g. the call sound once the call is answered; nothing happens if it is not playing. */
+export const stopSound = (key: SoundKey): void => {
+  const audio = audioElements[key];
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
 };
