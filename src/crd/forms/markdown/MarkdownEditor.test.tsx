@@ -1,6 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, test, vi } from 'vitest';
+import type { Editor } from '@tiptap/react';
+import { useState } from 'react';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MarkdownEditor } from './MarkdownEditor';
 
 vi.mock('react-i18next', () => ({
@@ -74,5 +76,84 @@ describe('MarkdownEditor — character counter', () => {
     renderEditor('a'.repeat(80), { maxLength: 100 });
     await userEvent.hover(await findCounter(80, 100));
     expect((await screen.findAllByText('editor.charCountHint')).length).toBeGreaterThan(0);
+  });
+});
+
+type EditorDom = HTMLElement & { editor: Editor };
+
+function ControlledEditor({ initial, onChange }: { initial: string; onChange: (md: string) => void }) {
+  const [value, setValue] = useState(initial);
+  return (
+    <MarkdownEditor
+      value={value}
+      onChange={md => {
+        setValue(md);
+        onChange(md);
+      }}
+    />
+  );
+}
+
+const longDocument = Array.from({ length: 40 }, (_, i) => `Paragraph number ${i + 1} about topic ${i + 1}.`).join(
+  '\n\n'
+);
+
+// The editor is recreated once the initial markdown is converted, so re-query
+// the DOM until the mounted instance holds the whole document.
+const findEditor = () =>
+  waitFor(() => {
+    const editor = (document.querySelector('.ProseMirror') as EditorDom | null)?.editor;
+    expect(editor?.getText()).toContain('Paragraph number 40');
+    return editor as Editor;
+  });
+
+const textAroundCursor = (editor: Editor) => editor.state.selection.$from.parent.textContent;
+
+describe('MarkdownEditor — toolbar keeps the cursor in place', () => {
+  // Clicking a toolbar button blurs the editor; the command re-focuses it on the
+  // next animation frame. In a browser the parent's echo of the new markdown can
+  // land before that frame, so hold the re-focus back to reproduce that ordering.
+  beforeEach(() => {
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(cb => window.setTimeout(() => cb(0), 300));
+    Range.prototype.getClientRects = () => [] as unknown as DOMRectList;
+    Range.prototype.getBoundingClientRect = () => new DOMRect();
+  });
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  test.each([
+    ['editor.bulletList', 'bulletList'],
+    ['editor.orderedList', 'orderedList'],
+    ['editor.heading2', 'heading'],
+    ['editor.blockquote', 'blockquote'],
+  ])('%s on a line near the top leaves the cursor on that line', async (buttonLabel, mark) => {
+    const onChange = vi.fn();
+    render(<ControlledEditor initial={longDocument} onChange={onChange} />);
+    const editor = await findEditor();
+
+    act(() => {
+      // Cursor inside the second paragraph, near the top of a long document.
+      editor.chain().focus().setTextSelection(45).run();
+    });
+    expect(textAroundCursor(editor)).toBe('Paragraph number 2 about topic 2.');
+    const cursorOffset = editor.state.selection.$from.parentOffset;
+
+    await userEvent.click(screen.getByRole('button', { name: buttonLabel }));
+
+    // The formatting change is still saved through onChange...
+    await waitFor(() => expect(onChange).toHaveBeenCalled());
+    expect(editor.isActive(mark)).toBe(true);
+    // ...and the value echoed back by the parent must not reset the document.
+    await new Promise(resolve => setTimeout(resolve, 400));
+    expect(textAroundCursor(editor)).toBe('Paragraph number 2 about topic 2.');
+    expect(editor.state.selection.$from.parentOffset).toBe(cursorOffset);
+  });
+
+  test('a value set from outside still loads when the editor is not focused', async () => {
+    const { rerender } = render(<MarkdownEditor value="first" onChange={vi.fn()} />);
+    await waitFor(() => expect(document.querySelector('.ProseMirror')?.textContent).toBe('first'));
+    rerender(<MarkdownEditor value="second value" onChange={vi.fn()} />);
+    await waitFor(() => expect(document.querySelector('.ProseMirror')?.textContent).toBe('second value'));
   });
 });
