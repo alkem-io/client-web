@@ -16,6 +16,13 @@ describe('PresenceIndicator', () => {
     expect(screen.getByRole('img', { name: `presence.${presence}` })).toHaveClass(colourClass);
   });
 
+  test('away is half filled, so it differs from online by shape as well as colour', () => {
+    const { rerender } = render(<PresenceIndicator presence="away" />);
+    expect(screen.getByRole('img').children).toHaveLength(1);
+    rerender(<PresenceIndicator presence="online" />);
+    expect(screen.getByRole('img').children).toHaveLength(0);
+  });
+
   test.each([['unknown' as const], [undefined]])('renders nothing for %s presence, never a fake offline', presence => {
     const { container } = render(<PresenceIndicator presence={presence} />);
     expect(container).toBeEmptyDOMElement();

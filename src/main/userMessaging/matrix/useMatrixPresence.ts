@@ -1,4 +1,4 @@
-import { type MatrixClient, type User, UserEvent } from 'matrix-js-sdk';
+import { ClientEvent, type MatrixClient, type MatrixEvent, type User } from 'matrix-js-sdk';
 import { useState, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import type { UserPresence } from '../models';
@@ -9,14 +9,20 @@ export type UserStatus = { presence: UserPresence; statusMessage?: string };
 
 const noop = () => {};
 
-// The SDK emits LastPresenceTs for every presence event; Presence only when the
-// state changes, so a new status message alone would go unnoticed.
+// The client re-emits each m.presence after its User is in the store. The User's
+// own events fire before a newly met User is stored, and Presence only fires when
+// the state changes, so a new status message alone would go unnoticed.
 const subscribeToPresence = (client: MatrixClient | null) => (listener: () => void) => {
   if (!client) {
     return noop;
   }
-  client.on(UserEvent.LastPresenceTs, listener);
-  return () => client.removeListener(UserEvent.LastPresenceTs, listener);
+  const onEvent = (event: MatrixEvent) => {
+    if (event.getType() === 'm.presence') {
+      listener();
+    }
+  };
+  client.on(ClientEvent.Event, onEvent);
+  return () => client.removeListener(ClientEvent.Event, onEvent);
 };
 
 // Read from the event itself: the SDK keeps User.presenceStatusMsg when a later

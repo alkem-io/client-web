@@ -35,7 +35,8 @@ describe('UserPresencePopover', () => {
 
   test('a status message opens a card even when the availability is unknown', async () => {
     renderPopover({ statusMessage: 'In a workshop', presence: 'unknown' });
-    fireEvent.click(screen.getByRole('button', { name: 'Ann Lee' }));
+    // The button names the status too: a keyboard user cannot enter the hover card.
+    fireEvent.click(screen.getByRole('button', { name: 'Ann Lee, In a workshop' }));
     await waitFor(() => expect(card()?.textContent).toBe('In a workshop'));
   });
 

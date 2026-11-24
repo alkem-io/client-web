@@ -72,7 +72,7 @@ describe('ChatMessageBubble', () => {
         showAuthor={true}
       />
     );
-    fireEvent.click(getByRole('button', { name: 'Alice Smith presence.online' }));
+    fireEvent.click(getByRole('button', { name: 'Alice Smith, In a workshop presence.online' }));
     expect(await findByText('In a workshop')).toBeInTheDocument();
   });
 

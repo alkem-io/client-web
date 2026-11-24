@@ -42,7 +42,9 @@ export function UserPresencePopover({ displayName, statusMessage, presence, chil
           className="relative flex shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {children}
-          <span className="sr-only">{displayName}</span>
+          {/* The card is a hover card, which a keyboard or screen-reader user cannot
+              enter, so the button itself carries everything the card says. */}
+          <span className="sr-only">{statusMessage ? `${displayName}, ${statusMessage}` : displayName}</span>
           <PresenceIndicator presence={presence} />
         </button>
       </HoverCardTrigger>

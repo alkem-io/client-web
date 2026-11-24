@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { UserEvent } from 'matrix-js-sdk';
+import { ClientEvent } from 'matrix-js-sdk';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({ client: null as unknown }));
@@ -10,16 +10,19 @@ import { useMatrixPresence, useOwnStatusMessage } from './useMatrixPresence';
 
 type FakeUser = { presence: string; events: { presence?: { getContent: () => { status_msg?: string } } } };
 
+type FakeEvent = { getType: () => string };
+const presenceEvent: FakeEvent = { getType: () => 'm.presence' };
+
 const makeClient = (users: Record<string, FakeUser>) => {
-  const handlers = new Map<string, () => void>();
+  const handlers = new Map<string, (event: FakeEvent) => void>();
   return {
     users,
     getUserId: () => '@me:hs',
     getUser: (userId: string) => users[userId] ?? null,
     setPresence: vi.fn(() => Promise.resolve()),
-    on: vi.fn((name: string, handler: () => void) => handlers.set(name, handler)),
+    on: vi.fn((name: string, handler: (event: FakeEvent) => void) => handlers.set(name, handler)),
     removeListener: vi.fn((name: string) => handlers.delete(name)),
-    emit: (name: string) => handlers.get(name)?.(),
+    emit: (name: string, event: FakeEvent) => handlers.get(name)?.(event),
     listening: (name: string) => handlers.has(name),
   };
 };
@@ -75,27 +78,52 @@ describe('useMatrixPresence', () => {
 
     act(() => {
       client.users['@a:hs'] = reported('online');
-      client.emit(UserEvent.LastPresenceTs);
+      client.emit(ClientEvent.Event, presenceEvent);
     });
     expect(result.current.get('a')).toEqual({ presence: 'online' });
 
     act(() => {
       client.users['@a:hs'] = reported('online', 'Lunch');
-      client.emit(UserEvent.LastPresenceTs);
+      client.emit(ClientEvent.Event, presenceEvent);
     });
     expect(result.current.get('a')).toEqual({ presence: 'online', statusMessage: 'Lunch' });
+  });
+
+  it('picks up a person the SDK meets for the first time, once they are in its store', () => {
+    const client = makeClient({});
+    harness.client = client;
+    const { result } = renderHook(() => useMatrixPresence(['a']));
+    expect(result.current.get('a')).toEqual({ presence: 'unknown' });
+
+    act(() => {
+      client.users['@a:hs'] = reported('offline');
+      client.emit(ClientEvent.Event, presenceEvent);
+    });
+    expect(result.current.get('a')).toEqual({ presence: 'offline' });
+  });
+
+  it('ignores events that are not presence', () => {
+    const client = makeClient({ '@a:hs': reported('offline') });
+    harness.client = client;
+    const { result } = renderHook(() => useMatrixPresence(['a']));
+
+    act(() => {
+      client.users['@a:hs'] = reported('online');
+      client.emit(ClientEvent.Event, { getType: () => 'm.room.message' });
+    });
+    expect(result.current.get('a')).toEqual({ presence: 'offline' });
   });
 
   it('removes its presence listener on unmount', () => {
     const client = makeClient({});
     harness.client = client;
     const { unmount } = renderHook(() => useMatrixPresence(['a']));
-    expect(client.listening(UserEvent.LastPresenceTs)).toBe(true);
+    expect(client.listening(ClientEvent.Event)).toBe(true);
 
     unmount();
 
-    expect(client.removeListener).toHaveBeenCalledWith(UserEvent.LastPresenceTs, expect.any(Function));
-    expect(client.listening(UserEvent.LastPresenceTs)).toBe(false);
+    expect(client.removeListener).toHaveBeenCalledWith(ClientEvent.Event, expect.any(Function));
+    expect(client.listening(ClientEvent.Event)).toBe(false);
   });
 });
 
@@ -112,7 +140,7 @@ describe('useOwnStatusMessage', () => {
 
     act(() => {
       client.users['@me:hs'] = reported('online');
-      client.emit(UserEvent.LastPresenceTs);
+      client.emit(ClientEvent.Event, presenceEvent);
     });
 
     expect(result.current.statusMessage).toBe('');
