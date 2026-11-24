@@ -5,6 +5,7 @@ import {
   GUIDANCE_INTRO_ID,
   injectGuidanceIntro,
   isGuidanceConversation,
+  mapConversationToListItem,
   mapMessageToChatMessage,
   mapReactionsToCommentReactions,
   sortUnifiedConversations,
@@ -121,7 +122,7 @@ describe('mapMessageToChatMessage', () => {
       id: 'm1',
       message: 'hello',
       timestamp: 500,
-      sender: { id: ME, displayName: 'Me', avatarUri: undefined },
+      sender: { id: ME, displayName: 'Me', avatarUri: undefined, presence: 'unknown' },
       reactions: [],
       attachments: [],
     };
@@ -135,11 +136,49 @@ describe('mapMessageToChatMessage', () => {
       id: 'm2',
       message: 'hi',
       timestamp: 1,
-      sender: { id: 'other', displayName: 'Other' },
+      sender: { id: 'other', displayName: 'Other', presence: 'unknown' },
       reactions: [],
       attachments: [],
     };
     expect(mapMessageToChatMessage(msg, { currentUserId: ME }).isOwn).toBe(false);
+  });
+
+  it('carries the sender presence and status message to the author', () => {
+    const msg: ConversationMessage = {
+      id: 'm3',
+      message: 'hi',
+      timestamp: 1,
+      sender: { id: 'other', displayName: 'Other', presence: 'away', statusMessage: 'In a workshop' },
+      reactions: [],
+      attachments: [],
+    };
+    expect(mapMessageToChatMessage(msg, { currentUserId: ME }).author).toMatchObject({
+      presence: 'away',
+      statusMessage: 'In a workshop',
+    });
+  });
+});
+
+describe('mapConversationToListItem presence', () => {
+  const member = (id: string, presence: 'online' | 'offline') => ({
+    id,
+    type: ActorType.User,
+    displayName: id,
+    presence,
+  });
+  const options = { currentUserId: ME, formatTimestamp: String };
+
+  it('a 1:1 row carries the counterpart presence', () => {
+    const conversation = makeConversation({ members: [member(ME, 'offline'), member('ann', 'online')] });
+    expect(mapConversationToListItem(conversation, options).presence).toBe('online');
+  });
+
+  it.each([
+    ['a group', { isGroup: true }],
+    ['the guidance conversation', { isGuidance: true }],
+  ])('%s row carries no presence', (_name, overrides) => {
+    const conversation = makeConversation({ ...overrides, members: [member(ME, 'online'), member('ann', 'online')] });
+    expect(mapConversationToListItem(conversation, options).presence).toBeUndefined();
   });
 });
 
@@ -165,6 +204,7 @@ describe('mapMemberToCommentAuthor virtual contributor flag', () => {
     const author = mapMemberToCommentAuthor({
       id: GUIDANCE_VC,
       type: ActorType.VirtualContributor,
+      presence: 'unknown',
       displayName: 'Guidance',
     });
     expect(author.isVirtualContributor).toBe(true);

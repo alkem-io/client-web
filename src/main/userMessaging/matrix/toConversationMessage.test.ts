@@ -4,7 +4,14 @@ import type { ParsedMessage } from './matrixEvents';
 import { nonMemberActorIds, toConversationMessage } from './toConversationMessage';
 
 const member = (id: string, displayName: string): ConversationMember =>
-  ({ id, displayName, avatarUri: `https://avatar/${id}`, type: 'USER' }) as ConversationMember;
+  ({
+    id,
+    displayName,
+    avatarUri: `https://avatar/${id}`,
+    presence: 'away',
+    statusMessage: `${displayName} is busy`,
+    type: 'USER',
+  }) as ConversationMember;
 
 const parsed = (overrides: Partial<ParsedMessage> = {}): ParsedMessage => ({
   eventId: '$e1',
@@ -16,7 +23,7 @@ const parsed = (overrides: Partial<ParsedMessage> = {}): ParsedMessage => ({
 });
 
 describe('toConversationMessage', () => {
-  it('maps the sender to the member whose actor id is the Matrix localpart', () => {
+  it('maps the sender to the member whose actor id is the Matrix localpart, with its presence and status message', () => {
     const message = toConversationMessage(parsed(), {
       members: [member('alice', 'Alice')],
       otherProfiles: new Map(),
@@ -26,7 +33,13 @@ describe('toConversationMessage', () => {
       id: '$e1',
       message: 'hi',
       timestamp: 5,
-      sender: { id: 'alice', displayName: 'Alice', avatarUri: 'https://avatar/alice' },
+      sender: {
+        id: 'alice',
+        displayName: 'Alice',
+        avatarUri: 'https://avatar/alice',
+        presence: 'away',
+        statusMessage: 'Alice is busy',
+      },
       reactions: [],
       attachments: [],
     });
@@ -38,11 +51,17 @@ describe('toConversationMessage', () => {
       otherProfiles: new Map([['alice', { displayName: 'Alice (left)' }]]),
       attachmentBucketId: undefined,
     };
-    expect(toConversationMessage(parsed(), context).sender?.displayName).toBe('Alice (left)');
+    expect(toConversationMessage(parsed(), context).sender).toEqual({
+      id: 'alice',
+      displayName: 'Alice (left)',
+      avatarUri: undefined,
+      presence: 'unknown',
+    });
     expect(toConversationMessage(parsed({ sender: '@ghost:hs' }), context).sender).toEqual({
       id: 'ghost',
       displayName: '',
       avatarUri: undefined,
+      presence: 'unknown',
     });
   });
 

@@ -11,6 +11,7 @@ import {
 } from '@/crd/primitives/dropdown-menu';
 import { Input } from '@/crd/primitives/input';
 import { ConversationAvatar } from './ConversationAvatar';
+import { PresenceIndicator } from './PresenceIndicator';
 import type { ChatListItem } from './types';
 
 type ChatConversationListProps = {
@@ -106,14 +107,17 @@ export function ChatConversationList({
                   aria-current={selected ? 'true' : undefined}
                   className="flex min-w-0 flex-1 items-center gap-3 rounded-lg px-2 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <ConversationAvatar
-                    size="sm"
-                    displayName={item.displayName}
-                    avatarUrl={item.avatarUrl}
-                    isGroup={item.isGroup}
-                    isGuidance={item.isGuidance}
-                    memberAvatars={item.memberAvatars}
-                  />
+                  <span className="relative flex shrink-0">
+                    <ConversationAvatar
+                      size="sm"
+                      displayName={item.displayName}
+                      avatarUrl={item.avatarUrl}
+                      isGroup={item.isGroup}
+                      isGuidance={item.isGuidance}
+                      memberAvatars={item.memberAvatars}
+                    />
+                    <PresenceIndicator presence={item.presence} />
+                  </span>
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="flex items-center justify-between gap-2">
                       <span className="flex min-w-0 items-center gap-1.5">

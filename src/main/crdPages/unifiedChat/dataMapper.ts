@@ -169,6 +169,7 @@ export const mapConversationToListItem = (
     lastMessageTimestamp: conv.lastMessage ? formatTimestamp(conv.lastMessage.timestamp) : undefined,
     unreadCount: conv.unreadCount,
     pinned: conv.pinned,
+    presence: conv.isGroup || conv.isGuidance ? undefined : otherMembers[0]?.presence,
     userPinned: conv.userPinned,
   };
 };
@@ -187,6 +188,8 @@ export const mapMessageToChatMessage = (
         id: message.sender.id,
         name: message.sender.displayName,
         avatarUrl: message.sender.avatarUri,
+        presence: message.sender.presence,
+        statusMessage: message.sender.statusMessage,
       }
     : undefined,
   content: message.message,

@@ -101,7 +101,6 @@ vi.mock('@/crd/components/chat/NewChatDialog', () => ({ NewChatDialog: () => nul
 vi.mock('@/crd/components/common/ImageCropDialog', () => ({ ImageCropDialog: () => null }));
 
 type PanelProps = {
-  onGoToSettings?: () => void;
   onTitleClick?: () => void;
   titleActionLabel?: string;
   expandLabel: string;
