@@ -109,9 +109,10 @@ const isDeclineOf = (event: RawEvent, ring: RawEvent): boolean =>
 
 /**
  * What became of `ring`, judged by the events after it (oldest first): answered
- * once someone else joins while it rings, lasting until either of the two
- * leaves; declined when the person rung turns it down; unanswered once the
- * ringer has left or the ring's lifetime has passed; ringing until then.
+ * once someone else joins before the ringer leaves, even after the ring stopped,
+ * lasting until either of the two leaves; declined when the person rung turns it
+ * down; unanswered once the ringer has left or the ring's lifetime has passed;
+ * ringing until then.
  */
 const callOf = (ring: RawEvent, newer: readonly RawEvent[], now: number): ParsedCall => {
   const end = ringEndOf(ring);
@@ -124,13 +125,7 @@ const callOf = (ring: RawEvent, newer: readonly RawEvent[], now: number): Parsed
       if (membership === 'leave' && (event.sender === ring.sender || event.sender === answer.sender)) {
         return { outcome: 'answered', durationMs: event.timestamp - answer.timestamp };
       }
-    } else if (
-      membership === 'join' &&
-      event.sender !== ring.sender &&
-      event.timestamp <= end &&
-      !declined &&
-      !ringerLeft
-    ) {
+    } else if (membership === 'join' && event.sender !== ring.sender && !declined && !ringerLeft) {
       answer = event;
     } else if (membership === 'leave' && event.sender === ring.sender) {
       ringerLeft = true;

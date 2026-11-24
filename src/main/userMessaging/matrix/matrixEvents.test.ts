@@ -227,11 +227,20 @@ describe('calls', () => {
     expect(judged([ring(1_000), decline], 20_000)).toEqual({ outcome: 'ringing' });
   });
 
-  it('is unanswered once the ringer leaves or the ring lifetime passes, and not answered by a later join', () => {
+  it('is unanswered once the ringer leaves or the ring lifetime passes, and not answered by a join after the ringer left', () => {
     expect(judged([ring(1_000), rtcMember(3_000, ALICE, 'leave')], 4_000)).toEqual({ outcome: 'unanswered' });
     expect(judged([ring(1_000)], 31_000)).toEqual({ outcome: 'unanswered' });
-    expect(judged([ring(1_000), callMember(40_000, BOB, true)])).toEqual({ outcome: 'unanswered' });
+    expect(judged([ring(1_000), rtcMember(35_000, ALICE, 'leave'), callMember(40_000, BOB, true)])).toEqual({
+      outcome: 'unanswered',
+    });
     expect(judged([ring(1_000), callMember(2_000, ALICE, true)])).toEqual({ outcome: 'unanswered' });
+  });
+
+  it('is answered by a join after the ring stopped while the ringer is still in the call', () => {
+    expect(judged([ring(1_000), callMember(40_000, BOB, true), callMember(640_000, BOB, false)])).toEqual({
+      outcome: 'answered',
+      durationMs: 600_000,
+    });
   });
 
   it('is ringing while the lifetime runs and nobody joined or left', () => {
