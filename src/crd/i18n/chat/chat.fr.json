@@ -63,7 +63,12 @@
     "loading": "Chargement des conversations",
     "draft": "Brouillon :",
     "attachmentPreview_one": "{{count}} pièce jointe",
-    "attachmentPreview_other": "{{count}} pièces jointes"
+    "attachmentPreview_other": "{{count}} pièces jointes",
+    "pin": "Épingler",
+    "unpin": "Désépingler",
+    "pinned": "Épinglée",
+    "rowOptions": "Options pour {{name}}",
+    "pinError": "Impossible de mettre à jour l'épingle. Veuillez réessayer."
   },
   "guidance": {
     "beta": "Bêta",
@@ -135,5 +140,21 @@
     "listBadge": "Appel en cours",
     "callingYou": "{{name}} vous appelle",
     "groupCall": "Appel dans {{name}}"
+  },
+  "presence": {
+    "online": "En ligne",
+    "away": "Absent",
+    "offline": "Hors ligne"
+  },
+  "status": {
+    "set": "Définir un statut",
+    "change": "Modifier le statut",
+    "label": "Votre statut",
+    "placeholder": "Que faites-vous en ce moment ?",
+    "edit": "Modifier votre statut : {{status}}",
+    "save": "Enregistrer le statut",
+    "clear": "Effacer le statut",
+    "hint": "Les personnes avec qui vous discutez le voient sur votre avatar.",
+    "saveError": "Impossible d'enregistrer votre statut. Veuillez réessayer."
   }
 }

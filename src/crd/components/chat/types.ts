@@ -1,5 +1,14 @@
 import type { CommentAuthor, CommentReaction, MessageAttachment } from '@/crd/components/comment/types';
 
+/** A person's availability; 'unknown' renders nothing, never a fake 'offline'. */
+export type ChatPresence = 'online' | 'away' | 'offline' | 'unknown';
+
+/** A message author, with what the avatar popover shows. */
+export type ChatAuthor = CommentAuthor & {
+  presence?: ChatPresence;
+  statusMessage?: string;
+};
+
 /** A single avatar shown in a group composite avatar. */
 export type ChatMemberAvatar = {
   id: string;
@@ -29,15 +38,19 @@ export type ChatListItem = {
   unreadCount: number;
   /** True for the Guidance row; sorts first while search is empty. */
   pinned?: boolean;
+  /** Pinned by the user: shows the pin indicator and offers Unpin. */
+  userPinned?: boolean;
   /** A call is running in this conversation. */
   hasActiveCall?: boolean;
+  /** The counterpart's availability in a 1:1 conversation. */
+  presence?: ChatPresence;
 };
 
 /** A single message in a thread. Shape compatible with the comment system. */
 export type ChatMessage = {
   id: string;
   /** Undefined for synthetic/system messages. */
-  author?: CommentAuthor;
+  author?: ChatAuthor;
   content: string;
   /** Epoch milliseconds; sort key and the source of every time shown in the
    *  thread. Synthetic intro uses 0 to sort first and carries no time. */

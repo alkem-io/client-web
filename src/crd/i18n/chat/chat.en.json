@@ -63,7 +63,12 @@
     "loading": "Loading conversations",
     "draft": "Draft:",
     "attachmentPreview_one": "{{count}} attachment",
-    "attachmentPreview_other": "{{count}} attachments"
+    "attachmentPreview_other": "{{count}} attachments",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinned": "Pinned",
+    "rowOptions": "Options for {{name}}",
+    "pinError": "Couldn't update the pin. Please try again."
   },
   "guidance": {
     "beta": "Beta",
@@ -135,5 +140,21 @@
     "listBadge": "Call active",
     "callingYou": "{{name}} is calling you",
     "groupCall": "Call in {{name}}"
+  },
+  "presence": {
+    "online": "Online",
+    "away": "Away",
+    "offline": "Offline"
+  },
+  "status": {
+    "set": "Set status",
+    "change": "Edit status",
+    "label": "Your status",
+    "placeholder": "What are you up to?",
+    "edit": "Edit your status: {{status}}",
+    "save": "Save status",
+    "clear": "Clear status",
+    "hint": "People you chat with see this on your avatar.",
+    "saveError": "We couldn't save your status. Please try again."
   }
 }

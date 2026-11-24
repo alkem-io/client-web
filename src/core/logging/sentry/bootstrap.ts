@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { useEffect } from 'react';
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router-dom';
+import { appPlatform, isAppMode } from '@/core/appMode/isAppMode';
 
 const DEFAULT_ENVIRONMENT = 'development';
 
@@ -23,6 +24,7 @@ const bootstrap = (sentryEnabled?: boolean, sentryEndpoint?: string, environment
       tracesSampleRate: 1.0,
       environment: environment ?? DEFAULT_ENVIRONMENT,
       release: `client-web@${import.meta.env.VITE_BUILD_VERSION}`,
+      initialScope: { tags: { app_mode: isAppMode(), app_platform: appPlatform() } },
     });
   }
 };

@@ -139,7 +139,7 @@
       "aboutYou": {
         "title": "À propos de vous",
         "tagline": {
-          "label": "Slogan",
+          "label": "Titre",
           "hint": "Une courte ligne affichée sur votre profil."
         },
         "location": {
@@ -149,7 +149,7 @@
           "countryPlaceholder": "Sélectionnez un pays"
         },
         "bio": {
-          "label": "Biographie",
+          "label": "À propos",
           "hint": "Markdown pris en charge."
         },
         "skills": {
@@ -541,7 +541,7 @@
           "description": "Personnalisez les alertes pour les interactions — réponses, mentions et invitations."
         },
         "platform": {
-          "title": "Notifications de plateforme",
+          "title": "Notifications du forum",
           "description": "Restez informé des discussions de la plateforme, des nouvelles fonctionnalités et des annonces."
         },
         "platformAdmin": {
@@ -596,8 +596,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Recevoir une notification lorsqu’une organisation statue sur ma candidature d’association"
         },
         "platform": {
-          "forumDiscussionComment": "Recevoir une notification lorsque quelqu'un commente une discussion que j'ai créée",
-          "forumDiscussionCreated": "Recevoir une notification lorsqu'une nouvelle discussion de plateforme est créée"
+          "forumDiscussionComment": "Recevoir une notification lorsque quelqu'un commente une discussion que j'ai créée dans le forum",
+          "forumDiscussionCreated": "Recevoir une notification lorsqu'une nouvelle discussion du forum est créée"
         },
         "platformAdmin": {
           "userProfileCreated": "Recevoir une notification lorsqu'un nouveau profil utilisateur est créé",

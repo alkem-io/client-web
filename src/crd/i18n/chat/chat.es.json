@@ -63,7 +63,12 @@
     "loading": "Cargando conversaciones",
     "draft": "Borrador:",
     "attachmentPreview_one": "{{count}} archivo adjunto",
-    "attachmentPreview_other": "{{count}} archivos adjuntos"
+    "attachmentPreview_other": "{{count}} archivos adjuntos",
+    "pin": "Fijar",
+    "unpin": "Desfijar",
+    "pinned": "Fijada",
+    "rowOptions": "Opciones de {{name}}",
+    "pinError": "No se pudo actualizar la fijación. Inténtalo de nuevo."
   },
   "guidance": {
     "beta": "Beta",
@@ -135,5 +140,21 @@
     "listBadge": "Llamada activa",
     "callingYou": "{{name}} te está llamando",
     "groupCall": "Llamada en {{name}}"
+  },
+  "presence": {
+    "online": "En línea",
+    "away": "Ausente",
+    "offline": "Desconectado"
+  },
+  "status": {
+    "set": "Establecer estado",
+    "change": "Editar estado",
+    "label": "Tu estado",
+    "placeholder": "¿Qué estás haciendo?",
+    "edit": "Editar tu estado: {{status}}",
+    "save": "Guardar estado",
+    "clear": "Borrar estado",
+    "hint": "Las personas con las que chateas lo ven en tu avatar.",
+    "saveError": "No pudimos guardar tu estado. Inténtalo de nuevo."
   }
 }

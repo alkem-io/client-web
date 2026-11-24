@@ -14,7 +14,6 @@ const chatProps: Omit<ComponentProps<typeof ChatPanel>, 'open' | 'children'> = {
   onClose: () => {},
   closeLabel: 'Close chat',
   backLabel: 'Back to conversations',
-  settingsLabel: 'Notification settings',
   muteSoundLabel: 'Mute chat sound',
   unmuteSoundLabel: 'Unmute chat sound',
   expandLabel: 'Expand chat',

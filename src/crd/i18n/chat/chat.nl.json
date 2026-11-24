@@ -63,7 +63,12 @@
     "loading": "Gesprekken laden",
     "draft": "Concept:",
     "attachmentPreview_one": "{{count}} bijlage",
-    "attachmentPreview_other": "{{count}} bijlagen"
+    "attachmentPreview_other": "{{count}} bijlagen",
+    "pin": "Vastzetten",
+    "unpin": "Losmaken",
+    "pinned": "Vastgezet",
+    "rowOptions": "Opties voor {{name}}",
+    "pinError": "Kon het vastzetten niet bijwerken. Probeer het opnieuw."
   },
   "guidance": {
     "beta": "Bèta",
@@ -135,5 +140,21 @@
     "listBadge": "Gesprek actief",
     "callingYou": "{{name}} belt je",
     "groupCall": "Gesprek in {{name}}"
+  },
+  "presence": {
+    "online": "Online",
+    "away": "Afwezig",
+    "offline": "Offline"
+  },
+  "status": {
+    "set": "Status instellen",
+    "change": "Status bewerken",
+    "label": "Je status",
+    "placeholder": "Waar ben je mee bezig?",
+    "edit": "Je status bewerken: {{status}}",
+    "save": "Status opslaan",
+    "clear": "Status wissen",
+    "hint": "Mensen met wie je chat zien dit bij je avatar.",
+    "saveError": "We konden je status niet opslaan. Probeer het opnieuw."
   }
 }
