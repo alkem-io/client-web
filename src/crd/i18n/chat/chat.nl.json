@@ -144,7 +144,7 @@
       "confirm": "Gesprek verlaten",
       "cancel": "In gesprek blijven"
     },
-    "listBadge": "Gesprek actief",
+    "listJoin": "Deelnemen aan gesprek: {{name}}",
     "callingYou": "{{name}} belt je",
     "groupCall": "Gesprek in {{name}}"
   },

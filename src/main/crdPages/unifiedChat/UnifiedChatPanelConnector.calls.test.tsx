@@ -12,10 +12,14 @@ const state: { selectedConversationId: string | null; conversations: Conversatio
   conversations: [],
 };
 const openGroupSettings = vi.fn();
+const setSelectedConversationId = vi.fn();
 const calls = vi.hoisted(() => ({
   eligibility: { eligible: false, matrixRoomId: null as string | null },
   session: { participants: [] as string[], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false },
-  live: new Map<string, { participants: string[]; startedTs?: number; latestTs?: number }>(),
+  live: new Map<
+    string,
+    { participants: string[]; startedTs?: number; latestTs?: number; matrixRoomId?: string; withMe?: boolean }
+  >(),
   incoming: new Map<string, unknown>(),
   dismissCall: vi.fn(),
   openCall: vi.fn(),
@@ -58,7 +62,7 @@ vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
     isOpen: true,
     setIsOpen: vi.fn(),
     selectedConversationId: state.selectedConversationId,
-    setSelectedConversationId: vi.fn(),
+    setSelectedConversationId,
     setSelectedRoomId: vi.fn(),
     setNewlyCreatedConversationId: vi.fn(),
   }),
@@ -91,7 +95,7 @@ vi.mock('./useUnifiedConversationView', () => ({
   }),
 }));
 vi.mock('./ConversationThread', () => ({ ConversationThread: () => null }));
-type ListProps = { conversations: { id: string; hasActiveCall?: boolean }[] };
+type ListProps = { conversations: { id: string; hasActiveCall?: boolean; onJoinCall?: () => void }[] };
 let listProps: ListProps | undefined;
 vi.mock('@/crd/components/chat/ChatConversationList', () => ({
   ChatConversationList: (props: ListProps) => {
@@ -189,6 +193,7 @@ describe('UnifiedChatPanelConnector calls', () => {
     calls.rotate.mockReset();
     calls.rotate.mockResolvedValue(false);
     calls.eligibilityInput.length = 0;
+    setSelectedConversationId.mockClear();
     state.conversations = [directChat, groupChat];
     state.selectedConversationId = 'group';
     listProps = undefined;
@@ -498,8 +503,35 @@ describe('UnifiedChatPanelConnector calls', () => {
     calls.live = new Map([['r-group', { participants: ['u2'] }]]);
     render(<UnifiedChatPanelConnector />);
     expect(listProps?.conversations).toEqual([
-      { id: 'group', hasActiveCall: true, presence: 'busy' },
+      { id: 'group', hasActiveCall: true, presence: 'busy', onJoinCall: expect.any(Function) },
       { id: 'direct' },
     ]);
+  });
+
+  it('joins a running call from its list row, opening the conversation', async () => {
+    state.selectedConversationId = null;
+    calls.live = new Map([['r-group', { participants: ['u2'], matrixRoomId: '!group:hs' }]]);
+    render(<UnifiedChatPanelConnector />);
+
+    await act(async () => listProps?.conversations[0].onJoinCall?.());
+    expect(setSelectedConversationId).toHaveBeenCalledWith('group');
+    expect(calls.openCall).toHaveBeenCalledExactlyOnceWith({ matrixRoomId: '!group:hs', intent: 'join_existing' });
+  });
+
+  it('joins a 1:1 call from its list row as a direct call', async () => {
+    state.selectedConversationId = null;
+    calls.live = new Map([['r-direct', { participants: ['u1'], matrixRoomId: '!direct:hs' }]]);
+    render(<UnifiedChatPanelConnector />);
+
+    await act(async () => listProps?.conversations[0].onJoinCall?.());
+    expect(calls.openCall).toHaveBeenCalledExactlyOnceWith({ matrixRoomId: '!direct:hs', intent: 'join_existing_dm' });
+  });
+
+  it('offers no Join on a row whose call the user is already in', () => {
+    state.selectedConversationId = null;
+    calls.live = new Map([['r-group', { participants: ['me', 'u2'], matrixRoomId: '!group:hs', withMe: true }]]);
+    render(<UnifiedChatPanelConnector />);
+    expect(listProps?.conversations[0]).toMatchObject({ id: 'group', hasActiveCall: true });
+    expect(listProps?.conversations[0].onJoinCall).toBeUndefined();
   });
 });

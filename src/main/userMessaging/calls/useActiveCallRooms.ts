@@ -9,6 +9,8 @@ import { type CallableConversation, isBetaTester, isCallableConversation, useIsS
 
 /** A running call, as its live memberships describe it. */
 type LiveCall = {
+  /** The Matrix room the call runs in. */
+  readonly matrixRoomId: string;
   /** The earliest creation time among the live memberships, in ms (server clock). */
   readonly startedTs: number;
   /** The latest creation time among the live memberships, in ms (server clock). */
@@ -29,6 +31,7 @@ const sameCalls = (a: LiveCalls, b: LiveCalls): boolean =>
     const other = b.get(roomId);
     return (
       other !== undefined &&
+      other.matrixRoomId === call.matrixRoomId &&
       other.startedTs === call.startedTs &&
       other.latestTs === call.latestTs &&
       other.withMe === call.withMe &&
@@ -36,9 +39,14 @@ const sameCalls = (a: LiveCalls, b: LiveCalls): boolean =>
     );
   });
 
-const describeCall = (memberships: readonly MembershipLike[], myUserId: string | null): LiveCall => {
+const describeCall = (
+  matrixRoomId: string,
+  memberships: readonly MembershipLike[],
+  myUserId: string | null
+): LiveCall => {
   const created = memberships.map(membership => membership.createdTs());
   return {
+    matrixRoomId,
     startedTs: Math.min(...created),
     latestTs: Math.max(...created),
     withMe: memberships.some(membership => membership.sender === myUserId),
@@ -98,7 +106,9 @@ const useLiveCalls = (conversations: readonly CallableConversation[]): LiveCalls
         const next: LiveCalls = new Map(
           [...alkemioByMatrixId].flatMap(([matrixRoomId, alkemioRoomId]) => {
             const memberships = live.get(matrixRoomId) ?? [];
-            return memberships.length > 0 ? [[alkemioRoomId, describeCall(memberships, myUserId)] as const] : [];
+            return memberships.length > 0
+              ? [[alkemioRoomId, describeCall(matrixRoomId, memberships, myUserId)] as const]
+              : [];
           })
         );
         setActive(previous => (sameCalls(previous, next) ? previous : next));

@@ -144,7 +144,7 @@
       "confirm": "Salir de la llamada",
       "cancel": "Seguir en la llamada"
     },
-    "listBadge": "Llamada activa",
+    "listJoin": "Unirse a la llamada: {{name}}",
     "callingYou": "{{name}} te está llamando",
     "groupCall": "Llamada en {{name}}"
   },

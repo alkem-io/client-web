@@ -40,8 +40,10 @@ export type ChatListItem = {
   pinned?: boolean;
   /** Pinned by the user: shows the pin indicator and offers Unpin. */
   userPinned?: boolean;
-  /** A call is running in this conversation. */
+  /** A call is running in this conversation: the preview line says so. */
   hasActiveCall?: boolean;
+  /** Joins the running call; the row shows a Join chip only when set. */
+  onJoinCall?: () => void;
   /** The counterpart's availability in a 1:1 conversation; 'busy' for any conversation with a call running. */
   presence?: ChatPresence;
 };

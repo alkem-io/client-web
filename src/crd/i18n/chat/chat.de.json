@@ -144,7 +144,7 @@
       "confirm": "Anruf verlassen",
       "cancel": "Im Anruf bleiben"
     },
-    "listBadge": "Anruf aktiv",
+    "listJoin": "Anruf beitreten: {{name}}",
     "callingYou": "{{name}} ruft dich an",
     "groupCall": "Anruf in {{name}}"
   },

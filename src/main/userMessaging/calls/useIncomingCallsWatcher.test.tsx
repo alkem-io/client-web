@@ -51,7 +51,7 @@ vi.mock('./useActiveCallRooms', () => ({
   },
 }));
 
-const othersCall: LiveCall = { startedTs: 1, latestTs: 1, withMe: false, participants: ['ann'] };
+const othersCall: LiveCall = { matrixRoomId: '!r:hs', startedTs: 1, latestTs: 1, withMe: false, participants: ['ann'] };
 const running = (...roomIds: string[]) => new Map(roomIds.map(roomId => [roomId, othersCall]));
 
 import { getIncomingCallRooms } from './incomingCallStore';
@@ -111,7 +111,7 @@ describe('useIncomingCallsWatcher', () => {
   // From here on: a call dealt with stays dealt with for the rest of the file.
   it('leaves out a call the user is in on any device', () => {
     harness.active = new Map([
-      ['direct', { startedTs: 1, latestTs: 2, withMe: true, participants: ['ann', 'me'] }],
+      ['direct', { matrixRoomId: '!direct:hs', startedTs: 1, latestTs: 2, withMe: true, participants: ['ann', 'me'] }],
       ['group', othersCall],
     ]);
     renderHook(() => useIncomingCallsWatcher());
@@ -124,7 +124,7 @@ describe('useIncomingCallsWatcher', () => {
   it('keeps ringing a 1:1 call while its conversation is open, but counts an open group call as seen', () => {
     // Later than the direct call dealt with above, so a new call.
     harness.active = new Map([
-      ['direct', { startedTs: 10, latestTs: 10, withMe: false, participants: ['ann'] }],
+      ['direct', { matrixRoomId: '!direct:hs', startedTs: 10, latestTs: 10, withMe: false, participants: ['ann'] }],
       ['group', othersCall],
     ]);
     harness.selectedRoomId = 'direct';

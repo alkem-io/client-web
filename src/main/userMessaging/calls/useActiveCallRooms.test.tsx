@@ -146,8 +146,8 @@ describe('useLiveCalls', () => {
     const { result } = renderHook(() => useLiveCalls(conversations));
     await waitFor(() =>
       expect([...result.current]).toEqual([
-        ['g1', { startedTs: 100, latestTs: 300, withMe: true, participants: ['ann', 'me'] }],
-        ['g2', { startedTs: 500, latestTs: 500, withMe: false, participants: ['ann'] }],
+        ['g1', { matrixRoomId: '!g1:hs', startedTs: 100, latestTs: 300, withMe: true, participants: ['ann', 'me'] }],
+        ['g2', { matrixRoomId: '!g2:hs', startedTs: 500, latestTs: 500, withMe: false, participants: ['ann'] }],
       ])
     );
   });

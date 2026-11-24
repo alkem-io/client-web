@@ -78,17 +78,37 @@ describe('ChatConversationList scrolling', () => {
   });
 });
 
-describe('ChatConversationList call badge', () => {
-  test('flags only the conversations with a running call', () => {
+describe('ChatConversationList running call', () => {
+  test('a row with a running call says so in place of its preview, and offers Join', async () => {
+    const onJoinCall = vi.fn();
     renderList([
-      conversation({ id: 'with-call', displayName: 'Team', isGroup: true, hasActiveCall: true }),
-      conversation({ id: 'without-call', displayName: 'Other team', isGroup: true }),
+      conversation({
+        id: 'with-call',
+        displayName: 'Team',
+        isGroup: true,
+        lastMessagePreview: 'See you tomorrow',
+        draftPreview: 'unsent',
+        hasActiveCall: true,
+        onJoinCall,
+      }),
+      conversation({ id: 'without-call', displayName: 'Other team', isGroup: true, lastMessagePreview: 'Hi' }),
     ]);
 
-    const badges = screen.getAllByRole('img', { name: 'call.listBadge' });
-    expect(badges).toHaveLength(1);
-    expect(badges[0].closest('li')).toHaveTextContent('Team');
-    expect(badges[0].closest('li')).not.toHaveTextContent('Other team');
+    const [withCall, withoutCall] = screen.getAllByRole('listitem');
+    expect(withCall).toHaveTextContent('call.banner.inProgress');
+    expect(withCall).not.toHaveTextContent('See you tomorrow');
+    expect(withCall).not.toHaveTextContent('unsent');
+    expect(withoutCall).not.toHaveTextContent('call.banner.inProgress');
+    expect(screen.getAllByRole('button', { name: 'call.listJoin' })).toHaveLength(1);
+
+    await userEvent.click(screen.getByRole('button', { name: 'call.listJoin' }));
+    expect(onJoinCall).toHaveBeenCalledOnce();
+  });
+
+  test('a running call with nothing to join shows no Join chip', () => {
+    renderList([conversation({ hasActiveCall: true })]);
+    expect(screen.getByText('call.banner.inProgress')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'call.listJoin' })).not.toBeInTheDocument();
   });
 });
 

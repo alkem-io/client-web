@@ -184,6 +184,28 @@ export const UnifiedChatPanelConnector = ({
     const timer = setTimeout(() => setDroppedCallIn(null), DROPPED_CALL_NOTICE_MS);
     return () => clearTimeout(timer);
   }, [droppedCallIn]);
+  const openCallWith = (
+    conversation: { readonly id: string; readonly isGroup: boolean },
+    matrixRoomId: string,
+    action: CallAction,
+    media: CallMedia
+  ) => {
+    if (queuedCall) {
+      return;
+    }
+    const intent = callIntentFor({ isGroup: conversation.isGroup, action, media });
+    setDroppedCallIn(null);
+    setQueuedCall({ conversationId: conversation.id, matrixRoomId, intent, swapDone: false });
+    // A due chat credential is replaced first: a call open across the swap would end.
+    void rotateActiveSessionIfDue().then(rotated => {
+      if (rotated) {
+        setQueuedCall(queued => (queued ? { ...queued, swapDone: true } : null));
+      } else {
+        setQueuedCall(null);
+        openCall({ matrixRoomId, intent });
+      }
+    });
+  };
 
   // Realtime conversation events are subscribed globally by
   // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
@@ -254,7 +276,19 @@ export const UnifiedChatPanelConnector = ({
       const call = liveCalls.get(conversation.roomId);
       const groupBusy = conversation.isGroup && call?.participants.some(actorId => inCall.has(actorId));
       const item = call
-        ? { ...mapped, hasActiveCall: true, presence: groupBusy ? ('busy' as const) : mapped.presence }
+        ? {
+            ...mapped,
+            hasActiveCall: true,
+            presence: groupBusy ? ('busy' as const) : mapped.presence,
+            // Joining opens the conversation too. No Join while the user is in the call on any
+            // device: a second join from this browser would write over its membership.
+            onJoinCall: call.withMe
+              ? undefined
+              : () => {
+                  handleSelect(conversation.id);
+                  openCallWith(conversation, call.matrixRoomId, 'join', 'video');
+                },
+          }
         : mapped;
       const draft = drafts[conversation.id];
       // A draft replaces the last-message preview but leaves the ordering and the
@@ -396,23 +430,10 @@ export const UnifiedChatPanelConnector = ({
   } else if (selectedConversation) {
     const { isGroup } = selectedConversation;
     const { matrixRoomId } = callEligibility;
-    const conversationId = selectedConversation.id;
-    const openCallWith = (action: CallAction, media: CallMedia) => {
-      if (!matrixRoomId || queuedCall) {
-        return;
+    const openSelectedCall = (action: CallAction, media: CallMedia) => {
+      if (matrixRoomId) {
+        openCallWith(selectedConversation, matrixRoomId, action, media);
       }
-      const intent = callIntentFor({ isGroup, action, media });
-      setDroppedCallIn(null);
-      setQueuedCall({ conversationId, matrixRoomId, intent, swapDone: false });
-      // A due chat credential is replaced first: a call open across the swap would end.
-      void rotateActiveSessionIfDue().then(rotated => {
-        if (rotated) {
-          setQueuedCall(queued => (queued ? { ...queued, swapDone: true } : null));
-        } else {
-          setQueuedCall(null);
-          openCall({ matrixRoomId, intent });
-        }
-      });
     };
     let callActions: ReactNode = null;
     if (callEligibility.eligible && callSession.participantCount === 0) {
@@ -420,8 +441,8 @@ export const UnifiedChatPanelConnector = ({
         <CallControls
           startAudioLabel={t('call.startAudio')}
           startVideoLabel={t('call.startVideo')}
-          onStartAudio={() => openCallWith('start', 'voice')}
-          onStartVideo={() => openCallWith('start', 'video')}
+          onStartAudio={() => openSelectedCall('start', 'voice')}
+          onStartVideo={() => openSelectedCall('start', 'video')}
         />
       );
     }
@@ -436,7 +457,7 @@ export const UnifiedChatPanelConnector = ({
           <CallBanner
             variant="ringing"
             callerName={firstName(counterpart?.displayName ?? '')}
-            onAnswer={() => openCallWith('join', 'video')}
+            onAnswer={() => openSelectedCall('join', 'video')}
             onDecline={() => dismissCall(roomId, call.latestTs)}
           />
         );
@@ -455,7 +476,7 @@ export const UnifiedChatPanelConnector = ({
             startedAt={call?.startedTs}
             // Every tab of a browser is the same chat device: a join from a second tab would
             // write over the first tab's membership, and its leave would end both.
-            onJoin={callSession.isJoinedOnThisDevice ? undefined : media => openCallWith('join', media)}
+            onJoin={callSession.isJoinedOnThisDevice ? undefined : media => openSelectedCall('join', media)}
           />
         );
       }

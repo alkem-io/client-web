@@ -144,7 +144,7 @@
       "confirm": "Leave call",
       "cancel": "Stay in call"
     },
-    "listBadge": "Call active",
+    "listJoin": "Join call: {{name}}",
     "callingYou": "{{name}} is calling you",
     "groupCall": "Call in {{name}}"
   },
