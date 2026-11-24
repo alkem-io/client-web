@@ -71,6 +71,8 @@ export type GroupMember = {
   name: string;
   avatarUrl?: string;
   isCurrentUser?: boolean;
+  presence?: ChatPresence;
+  statusMessage?: string;
 };
 
 /** Header model for the conversation/thread view. */
