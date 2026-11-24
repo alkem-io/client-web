@@ -139,7 +139,7 @@
       "aboutYou": {
         "title": "Over jou",
         "tagline": {
-          "label": "Slogan",
+          "label": "Kopregel",
           "hint": "Een korte zin die op je profiel verschijnt."
         },
         "location": {
@@ -149,7 +149,7 @@
           "countryPlaceholder": "Kies een land"
         },
         "bio": {
-          "label": "Biografie",
+          "label": "Over",
           "hint": "Markdown wordt ondersteund."
         },
         "skills": {
@@ -541,7 +541,7 @@
           "description": "Personaliseer waarschuwingen voor interacties zoals antwoorden, vermeldingen en uitnodigingen."
         },
         "platform": {
-          "title": "Platformmeldingen",
+          "title": "Forummeldingen",
           "description": "Blijf op de hoogte van platformbrede discussies, nieuwe functies en aankondigingen."
         },
         "platformAdmin": {
@@ -596,8 +596,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Ontvang een melding wanneer een organisatie beslist over mijn aanvraag om betrokkene te worden"
         },
         "platform": {
-          "forumDiscussionComment": "Ontvang een melding wanneer iemand reageert op een discussie die ik heb gestart",
-          "forumDiscussionCreated": "Ontvang een melding wanneer er een nieuwe platformdiscussie wordt aangemaakt"
+          "forumDiscussionComment": "Ontvang een melding wanneer iemand reageert op een discussie die ik in het forum heb gestart",
+          "forumDiscussionCreated": "Ontvang een melding wanneer er een nieuwe forumdiscussie wordt aangemaakt"
         },
         "platformAdmin": {
           "userProfileCreated": "Ontvang een melding wanneer er een nieuw gebruikersprofiel wordt aangemaakt",

@@ -139,7 +139,7 @@
       "aboutYou": {
         "title": "About You",
         "tagline": {
-          "label": "Tagline",
+          "label": "Headline",
           "hint": "A short line shown on your profile."
         },
         "location": {
@@ -149,7 +149,7 @@
           "countryPlaceholder": "Select a country"
         },
         "bio": {
-          "label": "Bio",
+          "label": "About",
           "hint": "Markdown supported."
         },
         "skills": {
@@ -541,7 +541,7 @@
           "description": "Personalise alerts for interactions like replies, mentions, and invites."
         },
         "platform": {
-          "title": "Platform Notifications",
+          "title": "Forum Notifications",
           "description": "Stay updated on platform-level discussions, new features, and announcements."
         },
         "platformAdmin": {
@@ -596,8 +596,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Receive a notification when an organisation decides on my application to associate"
         },
         "platform": {
-          "forumDiscussionComment": "Receive a notification when someone comments on a discussion I created",
-          "forumDiscussionCreated": "Receive a notification when a new platform discussion is created"
+          "forumDiscussionComment": "Receive a notification when someone comments on a discussion I created in the forum",
+          "forumDiscussionCreated": "Receive a notification when a new forum discussion is created"
         },
         "platformAdmin": {
           "userProfileCreated": "Receive a notification when a new user profile is created",

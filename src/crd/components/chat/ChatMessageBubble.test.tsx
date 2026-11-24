@@ -60,6 +60,22 @@ describe('ChatMessageBubble', () => {
     expect(img).toHaveAttribute('alt', '');
   });
 
+  test('the group sender avatar shows the availability dot and opens the sender card', async () => {
+    const { getByRole, findByText } = render(
+      <ChatMessageBubble
+        message={{
+          ...baseMessage,
+          author: { id: 'u1', name: 'Alice Smith', statusMessage: 'In a workshop', presence: 'online' },
+        }}
+        avatarGutter={true}
+        showAvatar={true}
+        showAuthor={true}
+      />
+    );
+    fireEvent.click(getByRole('button', { name: 'Alice Smith, In a workshop presence.online' }));
+    expect(await findByText('In a workshop')).toBeInTheDocument();
+  });
+
   test('avatarGutter without showAvatar renders the spacer and no avatar', () => {
     const { container } = render(
       <ChatMessageBubble message={baseMessage} avatarGutter={true} showAvatar={false} showAuthor={false} />
@@ -86,8 +102,9 @@ describe('ChatMessageBubble', () => {
     const { getByText, container } = render(
       <ChatMessageBubble message={vcMessage} avatarGutter={true} showAvatar={true} showAuthor={true} />
     );
-    const nameSpan = getByText('Alice Smith');
-    expect(nameSpan).not.toHaveClass('sr-only');
+    // The avatar button names the sender too, in screen-reader-only text.
+    const nameSpan = getByText('Alice Smith', { selector: ':not(.sr-only)' });
+    expect(nameSpan).toBeInTheDocument();
     // VC badge renders (VirtualContributorBadge renders "virtualContributor" key via the mocked t()).
     expect(container.textContent).toContain('virtualContributor');
   });

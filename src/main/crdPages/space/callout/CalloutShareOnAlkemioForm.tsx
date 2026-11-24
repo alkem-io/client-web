@@ -11,6 +11,7 @@ import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import { Textarea } from '@/crd/primitives/textarea';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { getMessageSendLimitMessage } from '@/main/constants/messageSendLimit';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
 const SEARCH_PAGE_SIZE = 20;
@@ -111,6 +112,7 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: Callout
             message: finalMessage,
           },
         },
+        context: { skipGlobalErrorHandler: true },
       });
 
       const results = data?.sendDirectMessageToUsers ?? [];
@@ -137,8 +139,8 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: Callout
       setMessage(initialMessage);
       setSearchQuery('');
       setShowErrors(false);
-    } catch {
-      notify(t('share.alkemio.errors.sendFailed'), 'error');
+    } catch (error) {
+      notify(getMessageSendLimitMessage(error) ?? t('share.alkemio.errors.sendFailed'), 'error');
     }
   };
 

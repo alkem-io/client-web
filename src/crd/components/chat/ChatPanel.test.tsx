@@ -9,6 +9,7 @@ import { TooltipProvider } from '@/crd/primitives/tooltip';
 import { CallControls } from './CallControls';
 import { ChatOptionsMenu } from './ChatOptionsMenu';
 import { ChatPanel } from './ChatPanel';
+import { ChatSettingsMenu } from './ChatSettingsMenu';
 
 const screenSize = { isSmallScreen: false, isMediumScreen: false, isLargeScreen: true };
 vi.mock('@/crd/hooks/useMediaQuery', () => ({ useScreenSize: () => screenSize }));
@@ -19,7 +20,6 @@ const baseProps: ComponentProps<typeof ChatPanel> = {
   onClose: () => {},
   closeLabel: 'Close chat',
   backLabel: 'Back to conversations',
-  settingsLabel: 'Notification settings',
   muteSoundLabel: 'Mute chat sound',
   unmuteSoundLabel: 'Unmute chat sound',
   expandLabel: 'Expand chat',
@@ -83,7 +83,15 @@ describe('ChatPanel', () => {
     test('every header control is enlarged on phones and keeps its compact size from the sm breakpoint', () => {
       renderPanel({
         onBack: vi.fn(),
-        onGoToSettings: vi.fn(),
+        settingsMenu: (
+          <ChatSettingsMenu
+            label="Notification settings"
+            statusLabel="Set status"
+            onEditStatus={vi.fn()}
+            notificationSettingsLabel="Notification settings"
+            onOpenNotificationSettings={vi.fn()}
+          />
+        ),
         headerActions: (
           <TooltipProvider>
             <CallControls
@@ -126,11 +134,24 @@ describe('ChatPanel', () => {
       }
     });
 
-    test('shows the notification-settings gear only when the consumer passes onGoToSettings', () => {
+    test('shows the settings control only when the consumer passes one, just before close', () => {
       const { rerender } = renderPanel();
-      expect(screen.queryByRole('button', { name: 'Notification settings' })).not.toBeInTheDocument();
-      rerender(<ChatPanel {...baseProps} onGoToSettings={() => {}} />);
-      expect(screen.getByRole('button', { name: 'Notification settings' })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Settings' })).not.toBeInTheDocument();
+      rerender(<ChatPanel {...baseProps} settingsMenu={<button type="button">Settings</button>} />);
+      const buttons = within(screen.getByRole('banner')).getAllByRole('button');
+      expect(buttons.slice(-2).map(button => button.textContent || button.getAttribute('aria-label'))).toEqual([
+        'Settings',
+        'Close chat',
+      ]);
+    });
+
+    test('shows a line under the title only when the consumer passes one', () => {
+      const { rerender } = renderPanel();
+      const header = screen.getByRole('banner');
+      expect(header).toHaveTextContent(/^Design team$/);
+      rerender(<ChatPanel {...baseProps} subtitle={<button type="button">In a workshop</button>} />);
+      expect(within(header).getByRole('button', { name: 'In a workshop' })).toBeInTheDocument();
+      expect(within(header).getByText('Design team')).toBeInTheDocument();
     });
 
     test('the title is plain text when there is no title action', () => {

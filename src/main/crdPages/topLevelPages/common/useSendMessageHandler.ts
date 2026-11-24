@@ -7,6 +7,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import type { ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
+import { getMessageSendLimitMessage } from '@/main/constants/messageSendLimit';
 import { useStartDirectChat } from '@/main/crdPages/unifiedChat/useStartDirectChat';
 
 export type SendMessageHandlerResult = {
@@ -107,14 +108,23 @@ export const useSendMessageToOrganizationHandler = (params: {
     if (!recipientOrganizationId) {
       throw new Error('Recipient organization not loaded.');
     }
-    await sendMessageToOrganization({
-      variables: {
-        messageData: {
-          message: messageText,
-          organizationId: recipientOrganizationId,
+    try {
+      await sendMessageToOrganization({
+        variables: {
+          messageData: {
+            message: messageText,
+            organizationId: recipientOrganizationId,
+          },
         },
-      },
-    });
+        context: { skipGlobalErrorHandler: true },
+      });
+    } catch (error) {
+      const limitMessage = getMessageSendLimitMessage(error);
+      if (limitMessage) {
+        throw new Error(limitMessage);
+      }
+      throw error;
+    }
     toast.success(t('common.messagePopover.successToast'));
   };
 
