@@ -8,7 +8,6 @@ import {
   useLicensingAdminSpacesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
-import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   AdminSearchableTable,
@@ -48,7 +47,6 @@ type LicensingSpaceRow = AdminTableRow & {
 export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
   const { t } = useTranslation('crd-admin');
   const notify = useNotification();
-  const guard = usePermissionDeniedNotifier();
   const promoteRows = usePendingRows();
   // `errorPolicy: 'all'`, as the Spaces section: one space with a corrupt
   // nested policy must not blank the whole list.
@@ -120,7 +118,7 @@ export function LicensingSpacesList({ plans }: { plans: LicensingPlan[] }) {
             saving={promoteRows.isPending(row.id)}
             onCheckedChange={next => {
               void promoteRows
-                .run(row.id, () => guard(() => updatePromote({ variables: { spaceId: row.id, promote: next } })))
+                .run(row.id, () => updatePromote({ variables: { spaceId: row.id, promote: next } }))
                 .catch(() => {});
             }}
           />

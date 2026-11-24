@@ -1,3 +1,4 @@
+import type { DefaultContext } from '@apollo/client';
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import type { WhiteboardPreviewImage } from './WhiteboardPreviewImagesModels';
@@ -16,7 +17,8 @@ const useUploadWhiteboardVisuals = () => {
     uploadVisuals: async (
       previewImages: WhiteboardPreviewImage[] | undefined,
       visualsIds: VisualsIds,
-      whiteboardNameId: string = 'whiteboard'
+      whiteboardNameId: string = 'whiteboard',
+      context?: DefaultContext
     ) => {
       if (visualsIds.cardVisualId) {
         const previewImage = previewImages?.find(pi => pi.visualType === VisualType.Card);
@@ -30,6 +32,7 @@ const useUploadWhiteboardVisuals = () => {
                 visualID: visualsIds.cardVisualId,
               },
             },
+            context,
           });
         }
       }
@@ -45,6 +48,7 @@ const useUploadWhiteboardVisuals = () => {
                 visualID: visualsIds.previewVisualId,
               },
             },
+            context,
           });
         }
       }

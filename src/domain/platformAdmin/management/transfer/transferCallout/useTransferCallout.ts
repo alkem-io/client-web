@@ -9,6 +9,7 @@ import {
   useTransferCalloutMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, UrlResolverResultState } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
@@ -104,7 +105,7 @@ const useTransferCallout = () => {
       result = await transferCalloutMutation({
         variables: { calloutId: callout.id, targetCalloutsSetId: calloutsSetId },
         // Handled below, so a Form rejection gets its own message instead of the generic one.
-        context: { skipGlobalErrorHandler: true },
+        context: OWN_ERROR_HANDLING,
       });
     } catch (error) {
       if (getCalloutFormErrorCode(error) === CalloutFormErrorCode.FORM_TRANSFER_NOT_ALLOWED) {

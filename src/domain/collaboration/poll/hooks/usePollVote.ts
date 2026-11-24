@@ -18,6 +18,7 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
   const [voteRemoved, setVoteRemoved] = useState(false);
   const apolloClient = useApolloClient();
 
+  // A failed vote is reported by the global error handler, with the server's reason.
   const [castPollVoteMutation, { loading: mutationLoading, error }] = useCastPollVoteMutation();
   const [removePollVoteMutation, { loading: removeLoading, error: removeError }] = useRemovePollVoteMutation();
 

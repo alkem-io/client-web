@@ -19,6 +19,7 @@ import {
   type CalloutFramingType,
   type UpdateProfileInput,
 } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { sortBySortOrder } from '@/core/utils/sortBySortOrder';
 import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
@@ -259,6 +260,8 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
           sortOrder: newStateData.sortOrder,
         },
       },
+      // The Add phase dialog shows a failed create itself.
+      context: OWN_ERROR_HANDLING,
       // Await the refetch so the follow-up sort-order mutation (and any
       // consumer that reseeds off this query) sees a settled cache. Without
       // this, the create-stage refetch — which can carry the colliding
@@ -290,6 +293,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
         innovationFlowID: requiredInnovationFlow.id,
         stateIDs: stateIdsSorted,
       },
+      context: OWN_ERROR_HANDLING,
       // Await so `handleCreateState` only resolves once the cache reflects the
       // final, de-collided ordering — callers can reseed immediately after.
       awaitRefetchQueries: true,

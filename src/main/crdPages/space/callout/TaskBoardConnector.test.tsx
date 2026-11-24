@@ -4,12 +4,23 @@ import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/g
 
 const useTaskBoardDataQuery = vi.fn();
 const moveTaskMock = vi.fn();
-const reorderTasksMock = vi.fn();
+type ReorderOptions = {
+  variables: unknown;
+  optimisticResponse: { updateContributionsSortOrder: unknown };
+};
+const reorderTasksMock = vi.fn((_options: ReorderOptions) => Promise.resolve({}));
+const mutationHookOptions = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useTaskBoardDataQuery: (options: unknown) => useTaskBoardDataQuery(options),
-  useMoveTaskToColumnMutation: () => [moveTaskMock, {}] as const,
-  useUpdateContributionsSortOrderMutation: () => [reorderTasksMock, {}] as const,
+  useMoveTaskToColumnMutation: (options: unknown) => {
+    mutationHookOptions('moveTask', options);
+    return [moveTaskMock, {}] as const;
+  },
+  useUpdateContributionsSortOrderMutation: (options: unknown) => {
+    mutationHookOptions('reorderTasks', options);
+    return [reorderTasksMock, {}] as const;
+  },
 }));
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn() } }));
@@ -201,24 +212,26 @@ describe('TaskBoardConnector', () => {
 
     const onMoveTask = capturedViewProps?.onMoveTask as (id: string, column: string, ordered: string[]) => void;
     onMoveTask('contrib-1', 'Done', ['contrib-1']);
-    // The move's own onError surfaces the toast; the reorder must NOT fire on a
-    // failed move (which would reorder a card that never changed column).
+    // The reorder must NOT fire on a failed move (which would reorder a card that
+    // never changed column).
     await waitFor(() => expect(moveTaskMock).toHaveBeenCalledTimes(1));
     await Promise.resolve();
     expect(reorderTasksMock).not.toHaveBeenCalled();
   });
 
-  it('shows an error toast when the move fails', async () => {
+  it("leaves a refused move or reorder to the global error handler, which shows the server's reason", async () => {
     const { toast } = await import('sonner');
-    moveTaskMock.mockResolvedValue({ data: {} });
+    moveTaskMock.mockRejectedValue(new Error('move failed'));
     useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
     render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
 
+    expect(mutationHookOptions).toHaveBeenCalledWith('moveTask', undefined);
+    expect(mutationHookOptions).toHaveBeenCalledWith('reorderTasks', undefined);
     const onMoveTask = capturedViewProps?.onMoveTask as (id: string, column: string, ordered: string[]) => void;
     onMoveTask('contrib-1', 'Done', ['contrib-1']);
-    const options = moveTaskMock.mock.calls[0][0];
-    options.onError();
-    expect(toast.error).toHaveBeenCalledWith('moveError');
+    await waitFor(() => expect(moveTaskMock).toHaveBeenCalledTimes(1));
+    await Promise.resolve();
+    expect(toast.error).not.toHaveBeenCalled();
   });
 
   it('persists a within-column reorder with optimistic sortOrder, only with MOVE_TASK', () => {

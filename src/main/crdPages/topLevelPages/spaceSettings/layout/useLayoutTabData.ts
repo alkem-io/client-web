@@ -9,6 +9,8 @@ import {
   useUpdateInnovationFlowStateSettingsMutation,
   useUpdateInnovationFlowStatesSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import type {
   LayoutColumnId,
   LayoutPoolColumn,
@@ -201,11 +203,17 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
   // bailed once with the new data still in scope).
   const [reseedToken, setReseedToken] = useState(0);
 
-  const [updateInnovationFlowState] = useUpdateInnovationFlowStateMutation();
   const [updateInnovationFlowStateSettings] = useUpdateInnovationFlowStateSettingsMutation();
-  const [updateCalloutFlowState] = useUpdateCalloutFlowStateMutation();
-  const [updateCalloutsSortOrder] = useUpdateCalloutsSortOrderMutation();
-  const [updateInnovationFlowStatesSortOrder] = useUpdateInnovationFlowStatesSortOrderMutation();
+  // Save failures show in the unsaved-changes bar, with the server's reason.
+  const serverErrorMessage = useServerErrorMessage();
+  const [updateInnovationFlowState] = useUpdateInnovationFlowStateMutation({
+    context: OWN_ERROR_HANDLING,
+  });
+  const [updateCalloutFlowState] = useUpdateCalloutFlowStateMutation({ context: OWN_ERROR_HANDLING });
+  const [updateCalloutsSortOrder] = useUpdateCalloutsSortOrderMutation({ context: OWN_ERROR_HANDLING });
+  const [updateInnovationFlowStatesSortOrder] = useUpdateInnovationFlowStatesSortOrderMutation({
+    context: OWN_ERROR_HANDLING,
+  });
 
   // Borrow only the structural action handlers from the legacy hook —
   // they handle the create+sortOrder atomicity and refetches.
@@ -525,7 +533,7 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
     } catch (err) {
       setSaveBar({
         kind: 'saveError',
-        message: errorMessage(err),
+        message: serverErrorMessage(err, errorMessage(err)),
       });
       return false;
     }

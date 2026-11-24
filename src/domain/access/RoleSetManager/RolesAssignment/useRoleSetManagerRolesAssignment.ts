@@ -12,7 +12,7 @@ import {
   useRemoveRoleFromVirtualContributorMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { RoleName } from '@/core/apollo/generated/graphql-schema';
-import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 
 type useRoleSetManagerRolesAssignmentParams = {
@@ -20,9 +20,9 @@ type useRoleSetManagerRolesAssignmentParams = {
   refetchRoleSetOnMutation?: boolean;
   /**
    * Apollo link context attached to every mutation this hook runs — e.g.
-   * `{ skipGlobalErrorHandler: true }` for a caller that renders every failure itself
-   * and must not get a second, generic toast from the global error link. Omitted by
-   * default, so existing callers keep the global handler.
+   * `OWN_ERROR_HANDLING` for a caller that shows its own message for every failure, so
+   * the global error link does not add a second one. Omitted by default, so callers keep
+   * the global handler.
    */
   context?: DefaultContext;
 };
@@ -49,21 +49,18 @@ const useRoleSetManagerRolesAssignment = ({
   refetchRoleSetOnMutation = false,
   context,
 }: useRoleSetManagerRolesAssignmentParams): useRoleSetManagerRolesAssignmentProvided => {
-  const guard = usePermissionDeniedNotifier();
-
   const refetchQueries = (cache: Parameters<typeof evictFromCache>[0]) => {
     if (refetchRoleSetOnMutation && roleSetId) {
       evictFromCache(cache, roleSetId, 'RoleSet');
     }
   };
 
-  // Platform Roles: the five assignment rules (contracts/graphql-contract.md) reject with
-  // distinct, rule-naming messages that the UI surfaces verbatim (FR-012) — skip the global
-  // error toast so the caller's own inline handling isn't shadowed by a generic translation.
+  // Platform Roles: the assignment rules reject with distinct, rule-naming messages that the
+  // admin page shows inline for every failure, so the global error link stays silent for them.
   const [runAssignPlatformRoleToUser, { loading: assignPlatformRoleToUserLoading }] =
-    useAssignPlatformRoleToUserMutation({ context: { skipGlobalErrorHandler: true } });
+    useAssignPlatformRoleToUserMutation({ context: OWN_ERROR_HANDLING });
   const [runRemovePlatformRoleFromUser, { loading: removePlatformRoleFromUserLoading }] =
-    useRemovePlatformRoleFromUserMutation({ context: { skipGlobalErrorHandler: true } });
+    useRemovePlatformRoleFromUserMutation({ context: OWN_ERROR_HANDLING });
   const assignPlatformRoleToUser = (userId: string, role: RoleName) => {
     return runAssignPlatformRoleToUser({
       variables: {
@@ -87,9 +84,9 @@ const useRoleSetManagerRolesAssignment = ({
   };
 
   const [runAssignPlatformRoleToOrganization, { loading: assignPlatformRoleToOrganizationLoading }] =
-    useAssignPlatformRoleToOrganizationMutation({ context: { skipGlobalErrorHandler: true } });
+    useAssignPlatformRoleToOrganizationMutation({ context: OWN_ERROR_HANDLING });
   const [runRemovePlatformRoleFromOrganization, { loading: removePlatformRoleFromOrganizationLoading }] =
-    useRemovePlatformRoleFromOrganizationMutation({ context: { skipGlobalErrorHandler: true } });
+    useRemovePlatformRoleFromOrganizationMutation({ context: OWN_ERROR_HANDLING });
   const assignPlatformRoleToOrganization = (organizationId: string, role: RoleName) => {
     return runAssignPlatformRoleToOrganization({
       variables: {
@@ -210,39 +207,18 @@ const useRoleSetManagerRolesAssignment = ({
     assignRoleToVirtualContributorLoading ||
     removeRoleFromVirtualContributorLoading;
 
-  /**
-   * Surfaces authorization failures that would otherwise be silent, via the shared
-   * `usePermissionDeniedNotifier` guard. Scoped deliberately to authorization codes
-   * only: every other failure class (validation, network, server) is already
-   * reported by the global error link, so notifying here as well would show the
-   * user two toasts for one failure. The rejection is always re-thrown so callers
-   * still see it.
-   */
-  const withPermissionErrorNotification =
-    <TArgs extends unknown[]>(run: (...args: TArgs) => Promise<unknown>) =>
-    (...args: TArgs) =>
-      guard(() => run(...args));
-
   const notReady = () => Promise.reject('roleSetId is not defined');
   return {
-    assignPlatformRoleToUser: roleSetId ? withPermissionErrorNotification(assignPlatformRoleToUser) : notReady,
-    removePlatformRoleFromUser: roleSetId ? withPermissionErrorNotification(removePlatformRoleFromUser) : notReady,
-    assignPlatformRoleToOrganization: roleSetId
-      ? withPermissionErrorNotification(assignPlatformRoleToOrganization)
-      : notReady,
-    removePlatformRoleFromOrganization: roleSetId
-      ? withPermissionErrorNotification(removePlatformRoleFromOrganization)
-      : notReady,
-    assignRoleToUser: roleSetId ? withPermissionErrorNotification(assignRoleToUser) : notReady,
-    removeRoleFromUser: roleSetId ? withPermissionErrorNotification(removeRoleFromUser) : notReady,
-    assignRoleToOrganization: roleSetId ? withPermissionErrorNotification(assignRoleToOrganization) : notReady,
-    removeRoleFromOrganization: roleSetId ? withPermissionErrorNotification(removeRoleFromOrganization) : notReady,
-    assignRoleToVirtualContributor: roleSetId
-      ? withPermissionErrorNotification(assignRoleToVirtualContributor)
-      : notReady,
-    removeRoleFromVirtualContributor: roleSetId
-      ? withPermissionErrorNotification(removeRoleFromVirtualContributor)
-      : notReady,
+    assignPlatformRoleToUser: roleSetId ? assignPlatformRoleToUser : notReady,
+    removePlatformRoleFromUser: roleSetId ? removePlatformRoleFromUser : notReady,
+    assignPlatformRoleToOrganization: roleSetId ? assignPlatformRoleToOrganization : notReady,
+    removePlatformRoleFromOrganization: roleSetId ? removePlatformRoleFromOrganization : notReady,
+    assignRoleToUser: roleSetId ? assignRoleToUser : notReady,
+    removeRoleFromUser: roleSetId ? removeRoleFromUser : notReady,
+    assignRoleToOrganization: roleSetId ? assignRoleToOrganization : notReady,
+    removeRoleFromOrganization: roleSetId ? removeRoleFromOrganization : notReady,
+    assignRoleToVirtualContributor: roleSetId ? assignRoleToVirtualContributor : notReady,
+    removeRoleFromVirtualContributor: roleSetId ? removeRoleFromVirtualContributor : notReady,
     loading,
   };
 };

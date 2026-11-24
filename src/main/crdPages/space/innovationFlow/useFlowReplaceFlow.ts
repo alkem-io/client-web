@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   refetchInnovationFlowDetailsQuery,
   useSpaceTemplatesManagerQuery,
   useUpdateCollaborationFromSpaceTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { error as logError } from '@/core/logging/sentry/log';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { ApplyFlowOptions } from '@/crd/components/space/innovationFlow/CrdApplySpaceTemplateDialog';
 import type { TemplatePickerSelectProps } from '@/crd/components/templates/types';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
@@ -60,8 +58,6 @@ export function useFlowReplaceFlow({
   accountId,
   onApplyComplete,
 }: UseFlowReplaceFlowOptions): FlowReplaceFlowState {
-  const { t } = useTranslation('crd-spaceSettings');
-  const notify = useNotification();
   const [importing, setImporting] = useState(false);
 
   const { data: tmData } = useSpaceTemplatesManagerQuery({
@@ -108,11 +104,10 @@ export function useFlowReplaceFlow({
       });
       onApplyComplete?.();
     } catch (err) {
+      // The dialog chain has already collapsed at this point; the global error handler tells the
+      // admin the replace failed, with the server's reason. The flow is unchanged and they can
+      // retry from the button.
       logError(new Error('Replace innovation flow failed', { cause: err as Error }));
-      // The dialog chain has already collapsed at this point, so without a
-      // visible error the admin would believe the replace succeeded. Surface
-      // it; the flow is unchanged and they can retry from the button.
-      notify(t('layout.replaceFlow.error'), 'error');
     } finally {
       setImporting(false);
     }

@@ -2,8 +2,10 @@ import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAdminUserEmailChangeDriftResolveMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { mapEmailChangeErrorCode } from './emailChangeErrorMapping';
+import { EMAIL_CHANGE_GENERIC_ERROR_KEY, mapEmailChangeErrorCode } from './emailChangeErrorMapping';
 
 export type UseResolveUserEmailDriftProvided = {
   resolveDrift: (canonicalEmail: string) => Promise<boolean>;
@@ -15,10 +17,12 @@ export type UseResolveUserEmailDriftProvided = {
 const useResolveUserEmailDrift = (userId: string): UseResolveUserEmailDriftProvided => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const [errorMessage, setErrorMessage] = useState<string>();
 
   const [resolveDriftMutation, { loading }] = useAdminUserEmailChangeDriftResolveMutation({
-    context: { skipGlobalErrorHandler: true },
+    // Every failure is shown inline in the dialog.
+    context: OWN_ERROR_HANDLING,
     refetchQueries: ['platformAdminUsersList', 'LatestUserEmailChangeAuditEntry', 'UserEmailChangeAuditEntries'],
     awaitRefetchQueries: true,
   });
@@ -33,7 +37,8 @@ const useResolveUserEmailDrift = (userId: string): UseResolveUserEmailDriftProvi
     } catch (error) {
       const code =
         error instanceof ApolloError ? (error.graphQLErrors[0]?.extensions?.code as string | undefined) : undefined;
-      setErrorMessage(t(mapEmailChangeErrorCode(code)));
+      const key = mapEmailChangeErrorCode(code);
+      setErrorMessage(key === EMAIL_CHANGE_GENERIC_ERROR_KEY ? serverErrorMessage(error, t(key)) : t(key));
       return false;
     }
   };

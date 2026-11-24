@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 import {
   useCreateTaskColumnOnCalloutMutation,
   useDeleteTaskColumnOnCalloutMutation,
@@ -24,7 +22,6 @@ type TaskBoardColumnsConnectorProps = {
  * mounting this alongside `TaskBoardConnector` adds no extra network cost.
  */
 export function TaskBoardColumnsConnector({ calloutId, open, onOpenChange }: TaskBoardColumnsConnectorProps) {
-  const { t } = useTranslation('crd-taskBoard');
   const { data } = useTaskBoardDataQuery({ variables: { calloutId } });
   const [createColumn] = useCreateTaskColumnOnCalloutMutation();
   const [renameColumn] = useUpdateTaskColumnOnCalloutMutation();
@@ -34,18 +31,12 @@ export function TaskBoardColumnsConnector({ calloutId, open, onOpenChange }: Tas
   const callout = data?.lookup.callout;
   const columnNames = getBoardColumns({ classification: { tagsets: callout?.classification?.tagsets } });
 
-  // Surface a toast for a failed column mutation and re-throw so the dialog's
-  // save sweep aborts and keeps itself open. Column edits run in their own
-  // server transactions under a template-row lock, so the sweep must sequence
-  // creates/renames before the reorder (a reorder naming a not-yet-committed
-  // column fails the server's permutation check).
+  // A failed column mutation is reported by the global error handler, with the server's reason, and
+  // rejects so the dialog's save sweep aborts and keeps itself open. Column edits run in their own
+  // server transactions under a template-row lock, so the sweep must sequence creates/renames before
+  // the reorder (a reorder naming a not-yet-committed column fails the server's permutation check).
   const runColumnMutation = async (mutate: () => Promise<unknown>): Promise<void> => {
-    try {
-      await mutate();
-    } catch (error) {
-      toast.error(t('columns.saveError'));
-      throw error;
-    }
+    await mutate();
   };
 
   return (

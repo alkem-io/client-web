@@ -50,7 +50,6 @@
         "defaultWelcomeMessage": "Wir möchten Sie einladen, zu {{space}} beizutragen.",
         "addedNotice": "Virtueller Mitwirkender hinzugefügt.",
         "invitedNotice": "Einladung gesendet.",
-        "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
         "previewAriaLabel": "Vorschau von {{name}}",
         "searchAriaLabel": "Virtuelle Mitwirkende nach Namen suchen",
         "noResultsLabel": "Keine passenden virtuellen Mitwirkenden",

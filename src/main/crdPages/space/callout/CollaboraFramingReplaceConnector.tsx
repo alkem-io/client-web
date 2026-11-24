@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useReplaceCollaboraDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
@@ -56,13 +58,17 @@ export function CollaboraFramingReplaceConnector({
 }: CollaboraFramingReplaceConnectorProps) {
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
+  const toServerErrorMessage = useServerErrorMessage();
 
   const [file, setFile] = useState<File | null>(null);
   const [importError, setImportError] = useState<DocumentImportError | null>(null);
   const [titleValue, setTitleValue] = useState('');
   const [serverErrorMessage, setServerErrorMessage] = useState<string | null>(null);
 
-  const [replaceCollaboraDocument, { loading }] = useReplaceCollaboraDocumentMutation();
+  // Every server rejection is shown inline via serverErrorMessage.
+  const [replaceCollaboraDocument, { loading }] = useReplaceCollaboraDocumentMutation({
+    context: OWN_ERROR_HANDLING,
+  });
 
   const formatList = COLLABORA_IMPORT_EXTENSIONS_P1.join(', ');
   const capMb = Math.round(COLLABORA_IMPORT_MAX_BYTES / (1024 * 1024));
@@ -175,19 +181,14 @@ export function CollaboraFramingReplaceConnector({
       setServerErrorMessage(t('callout.documentImportErrorServiceUnavailable'));
       return;
     }
-    // Active-edit block (FR-013) and content/type rejections (FR-006/FR-012) arrive
-    // as BAD_USER_INPUT ValidationExceptions carrying a user-readable message — the
-    // client can't know lock state itself, so surface the server's message verbatim.
-    const graphQLMessage = graphQLError?.message;
-    if (graphQLMessage) {
-      setServerErrorMessage(graphQLMessage);
-      return;
+    // Any other rejection — an active-edit block, a content/type refusal — shows the server's reason: the
+    // client can't know lock state itself. A failure without one (e.g. a pure networkError, or a non-Apollo
+    // throw) shows a localized generic message and is logged: these are the genuine infra failures worth
+    // capturing in Sentry.
+    setServerErrorMessage(toServerErrorMessage(err, t('callout.documentReplaceError')));
+    if (!graphQLError) {
+      logError(err instanceof Error ? err : new Error('replaceCollaboraDocument mutation failed'));
     }
-    // Un-coded failure (e.g. a pure networkError, or a non-Apollo throw): show a
-    // localized generic message rather than a raw one, and log it — these are the
-    // genuine infra failures worth capturing in Sentry.
-    setServerErrorMessage(t('callout.documentReplaceError'));
-    logError(err instanceof Error ? err : new Error('replaceCollaboraDocument mutation failed'));
   };
 
   const handleConfirm = async () => {

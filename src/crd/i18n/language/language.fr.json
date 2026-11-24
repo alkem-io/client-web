@@ -9,8 +9,7 @@
   },
   "settings": {
     "languageLabel": "Langue de l'interface",
-    "languageDescription": "La langue utilisée dans Alkemio. Les modifications s'appliquent sur tous vos appareils.",
-    "languageSaveError": "Impossible d'enregistrer la préférence de langue — veuillez réessayer."
+    "languageDescription": "La langue utilisée dans Alkemio. Les modifications s'appliquent sur tous vos appareils."
   },
   "invite": {
     "suggestedLanguageLabel": "Langue attendue",

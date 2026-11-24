@@ -115,7 +115,7 @@ function Connector({ accountId, accountName, open, onClose }: CrdCreateInnovatio
     try {
       await create(value);
     } catch {
-      notify(t('createHub.createError'), 'error');
+      // The global error handler reports the failure; the dialog stays open to retry.
     }
   };
 

@@ -14,7 +14,10 @@ const refetchApplicationsAndInvitations = vi.fn().mockResolvedValue(undefined);
 const notify = vi.fn();
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string) => key,
+    i18n: { exists: (key: string) => key.startsWith('apollo.errors.userMessages.') },
+  }),
 }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 vi.mock('@/main/crdPages/permissions/usePermissionReasonText', () => ({ default: () => () => 'no permission' }));
@@ -54,8 +57,25 @@ const roleLimitError = (message: string) =>
   new ApolloError({
     graphQLErrors: [{ message, extensions: { code: 'ROLESET_POLICY_ROLE_LIMITS_VIOLATED' } } as never],
   });
-const forbiddenError = () =>
-  new ApolloError({ graphQLErrors: [{ message: 'Forbidden', extensions: { code: 'FORBIDDEN' } } as never] });
+const NOT_AVAILABLE_MESSAGE = 'apollo.errors.userMessages.authorization.forbiddenPolicy';
+const notAvailableError = () =>
+  new ApolloError({
+    graphQLErrors: [
+      {
+        message: 'Not available',
+        extensions: { code: 'FORBIDDEN_POLICY', userMessage: 'userMessages.authorization.forbiddenPolicy' },
+      } as never,
+    ],
+  });
+const notAllowedError = (message: string) =>
+  new ApolloError({
+    graphQLErrors: [
+      {
+        message,
+        extensions: { code: 'OPERATION_NOT_ALLOWED', userMessage: 'userMessages.operations.operationNotAllowed' },
+      } as never,
+    ],
+  });
 
 const associateRow = {
   role: RoleName.Associate,
@@ -191,9 +211,9 @@ describe('useOrgAssociatesTabData — exactly one message per failure', () => {
     );
   });
 
-  it('adds nothing on an authorization refusal — the role assignment wrapper already toasted', async () => {
+  it('says a refused role change or removal is not available, once each', async () => {
     usersInRoles = [ownerRow];
-    removeRoleFromUser.mockRejectedValueOnce(forbiddenError()).mockRejectedValueOnce(forbiddenError());
+    removeRoleFromUser.mockRejectedValueOnce(notAvailableError()).mockRejectedValueOnce(notAvailableError());
     const { result } = render();
 
     await act(async () => {
@@ -205,7 +225,47 @@ describe('useOrgAssociatesTabData — exactly one message per failure', () => {
     });
 
     expect(removeRoleFromUser).toHaveBeenCalledTimes(2);
-    expect(notify).not.toHaveBeenCalled();
+    expect(notify).toHaveBeenCalledTimes(2);
+    expect(notify).toHaveBeenNthCalledWith(1, NOT_AVAILABLE_MESSAGE, 'error');
+    expect(notify).toHaveBeenNthCalledWith(2, NOT_AVAILABLE_MESSAGE, 'error');
+  });
+
+  it("shows the server's reason for any other refused role change", async () => {
+    assignRoleToUser.mockRejectedValueOnce(notAllowedError('Organization verification is pending'));
+    const { result } = render();
+
+    await act(async () => {
+      await result.current.onToggleRole('u-1', 'Admin', true).catch(() => undefined);
+    });
+
+    expect(notify).toHaveBeenCalledTimes(1);
+    expect(notify).toHaveBeenCalledWith(
+      'apollo.errors.userMessages.operations.operationNotAllowed Organization verification is pending',
+      'error'
+    );
+  });
+
+  it("shows the server's reason when revoking a pending invitation is refused", async () => {
+    invitations = [
+      {
+        id: 'inv-1',
+        state: 'invited',
+        createdDate: '2026-09-01T00:00:00.000Z',
+        contributorType: 'USER',
+        extraRoles: [],
+        actor: { profile: { displayName: 'Alan Turing' } },
+      },
+    ];
+    deleteInvitation.mockRejectedValueOnce(notAvailableError());
+    const { result } = render();
+
+    act(() => result.current.onPendingRevoke('inv-1'));
+    await act(async () => {
+      await result.current.onConfirm();
+    });
+
+    expect(notify).toHaveBeenCalledTimes(1);
+    expect(notify).toHaveBeenCalledWith(NOT_AVAILABLE_MESSAGE, 'error');
   });
 
   it('toasts once when approving an application fails', async () => {

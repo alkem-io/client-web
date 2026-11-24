@@ -9,8 +9,7 @@
   },
   "settings": {
     "languageLabel": "Език на интерфейса",
-    "languageDescription": "Езикът, използван в Alkemio. Промените се отразяват на всички ваши устройства.",
-    "languageSaveError": "Неуспешно запазване на езиковото предпочитание — опитайте отново."
+    "languageDescription": "Езикът, използван в Alkemio. Промените се отразяват на всички ваши устройства."
   },
   "invite": {
     "suggestedLanguageLabel": "Очакван език",

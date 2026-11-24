@@ -1,6 +1,5 @@
 import { useApolloClient } from '@apollo/client';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   OrganizationInfoDocument,
   refetchOrganizationSettingsQuery,
@@ -8,7 +7,6 @@ import {
   useUpdateOrganizationSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { UpdateOrganizationSettingsEntityInput } from '@/core/apollo/generated/graphql-schema';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { OrgSettingsTabView } from '@/crd/components/organization/settings/OrgSettingsTabView';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import { mapOrgSettings } from './orgSettingsMapper';
@@ -35,8 +33,6 @@ type SwitchKey = 'spaceInvitations' | 'domain' | 'applications' | 'privacy' | 's
  * `OrganizationInfo`, which carries that viewer-relative eligibility signal.
  */
 const CrdOrgSettingsTab = () => {
-  const { t } = useTranslation('crd-contributorSettings');
-  const notify = useNotification();
   const apolloClient = useApolloClient();
   const { organizationId, loading: loadingOrg } = useOrganizationContext();
 
@@ -68,14 +64,12 @@ const CrdOrgSettingsTab = () => {
         variables: { settingsData: { organizationID: organizationId, settings } },
         refetchQueries: [refetchOrganizationSettingsQuery({ orgId: organizationId })],
         awaitRefetchQueries: true,
-        // The failure's one toast is the one below.
-        context: { skipGlobalErrorHandler: true },
       });
       if (refreshProfileEligibility) {
         void apolloClient.refetchQueries({ include: [OrganizationInfoDocument] });
       }
     } catch {
-      notify(t('org.settings.errorToast'), 'error');
+      // Reported by the global error handler, with the server's reason.
     } finally {
       // Drop the override either way: on success the refetched value already
       // agrees with it, and on failure the persisted value is the truthful one.

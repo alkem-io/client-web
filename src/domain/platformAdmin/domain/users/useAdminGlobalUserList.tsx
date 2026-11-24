@@ -10,7 +10,6 @@ import {
   useRevokeLicensePlanFromAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
-import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SearchableListTypes';
@@ -48,7 +47,6 @@ const useAdminGlobalUserList = ({
 }: UseAdminGlobalUserListOptions = {}): Provided => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const guard = usePermissionDeniedNotifier();
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -132,42 +130,38 @@ const useAdminGlobalUserList = ({
 
   const [assignLicense] = useAssignLicensePlanToAccountMutation();
   const assignLicensePlan = async (accountId: string, licensePlanId: string) => {
-    await guard(() =>
-      assignLicense({
-        variables: {
-          accountId,
-          licensePlanId,
-          licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
-        },
-        refetchQueries: [
-          refetchPlatformAdminUsersListQuery({
-            first: pageSize,
-            filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
-          }),
-        ],
-        onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
-      })
-    );
+    await assignLicense({
+      variables: {
+        accountId,
+        licensePlanId,
+        licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
+      },
+      refetchQueries: [
+        refetchPlatformAdminUsersListQuery({
+          first: pageSize,
+          filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
+        }),
+      ],
+      onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
+    });
   };
 
   const [revokeLicense] = useRevokeLicensePlanFromAccountMutation();
   const revokeLicensePlan = async (accountId: string, licensePlanId: string) => {
-    await guard(() =>
-      revokeLicense({
-        variables: {
-          accountId,
-          licensePlanId,
-          licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
-        },
-        refetchQueries: [
-          refetchPlatformAdminUsersListQuery({
-            first: pageSize,
-            filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
-          }),
-        ],
-        onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
-      })
-    );
+    await revokeLicense({
+      variables: {
+        accountId,
+        licensePlanId,
+        licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
+      },
+      refetchQueries: [
+        refetchPlatformAdminUsersListQuery({
+          first: pageSize,
+          filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
+        }),
+      ],
+      onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
+    });
   };
 
   const licensePlans =

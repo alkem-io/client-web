@@ -29,6 +29,7 @@ export function useCreateInnovationHub({
 }: UseCreateInnovationHubArgs): UseCreateInnovationHubResult {
   const [creating, startCreating] = useTransition();
   const [pending, setPending] = useState(false);
+  // A failed create is reported by the global error handler, with the server's reason.
   const [createMutation] = useCreateInnovationHubMutation({
     refetchQueries: ['AdminInnovationHubsList', 'AccountInformation'],
   });
