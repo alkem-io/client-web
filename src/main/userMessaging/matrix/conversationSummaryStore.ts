@@ -1,7 +1,7 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
-import { lastMessageOf, type ParsedMessage, type RawEvent } from './matrixEvents';
+import { lastMessageOf, type ParsedMessage, type RawEvent, ringingUntil } from './matrixEvents';
 import {
   CLIENT_ROOM,
   CLIENT_SYNC,
@@ -57,6 +57,8 @@ class ConversationSummaryStore {
   private readonly pinWrites = new Map<string, boolean>();
   // The rooms where a ring counts as an entry (the latest one, and a missed one as unread).
   private ringRooms: ReadonlySet<string> = new Set();
+  // Rooms with a ring still ringing, computed again once it stops.
+  private readonly ringEnds = new Map<string, ReturnType<typeof setTimeout>>();
 
   constructor(private readonly client: MatrixClient) {
     client.on(
@@ -312,6 +314,18 @@ class ConversationSummaryStore {
       // An existing pin is kept: tags changes and the user's own toggle own it.
       const pinned = this.summaries.get(alkemioRoomId)?.pinned ?? isFavourite(room);
       this.publish(alkemioRoomId, { lastMessage, unreadCount, pinned });
+      // A ring is no preview or unread while it rings, and no event arrives when it stops.
+      clearTimeout(this.ringEnds.get(alkemioRoomId));
+      const now = Date.now();
+      const until = withCalls ? ringingUntil(loaded, now) : undefined;
+      if (until === undefined) {
+        this.ringEnds.delete(alkemioRoomId);
+      } else {
+        this.ringEnds.set(
+          alkemioRoomId,
+          setTimeout(() => this.invalidate(alkemioRoomId), until - now)
+        );
+      }
     } catch {
       // Left as it was; the room's next change recomputes it.
     }

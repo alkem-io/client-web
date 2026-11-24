@@ -349,4 +349,29 @@ describe('ConversationSummaryStore', () => {
       })
     );
   });
+
+  it('makes a ring the preview and a missed call only once it stops ringing, though no further event arrives', async () => {
+    const ring = {
+      eventId: '$ring',
+      type: 'org.matrix.msc4075.rtc.notification',
+      sender: `@other:${HS}`,
+      ts: Date.now(),
+      content: { notification_type: 'ring', lifetime: 100 },
+    };
+    const room: FakeRoom = { roomId: '!alk-1', events: [text('$1', 'hello'), ring], marker: '$1', notifications: 0 };
+    const { client } = makeClient([room]);
+    const store = new ConversationSummaryStore(client);
+    store.setRingRooms(new Set(['alk-1']));
+
+    store.watch(['alk-1']);
+    await vi.waitFor(() => expect(store.getSnapshot().get('alk-1')).toBeDefined());
+    expect(store.getSnapshot().get('alk-1')).toMatchObject({ lastMessage: { body: 'hello' }, unreadCount: 0 });
+
+    await vi.waitFor(() =>
+      expect(store.getSnapshot().get('alk-1')).toMatchObject({
+        lastMessage: { eventId: '$ring', call: { outcome: 'unanswered' } },
+        unreadCount: 1,
+      })
+    );
+  });
 });

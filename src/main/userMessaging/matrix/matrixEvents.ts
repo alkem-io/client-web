@@ -64,7 +64,7 @@ type ParsedMessage = {
   readonly sender: string;
   readonly media?: MediaRef;
   readonly reactions: ParsedReaction[];
-  /** Set only on the entry a 1:1 ring makes in the timeline. */
+  /** Set only on the entry a 1:1 ring makes in the timeline, once it has stopped ringing. */
   readonly call?: ParsedCall;
 };
 
@@ -147,14 +147,28 @@ const callOf = (ring: RawEvent, newer: readonly RawEvent[], now: number): Parsed
   return { outcome: ringerLeft || now >= end ? 'unanswered' : 'ringing' };
 };
 
-const parseRing = (ring: RawEvent, newer: readonly RawEvent[], now: number): ParsedMessage => ({
-  eventId: ring.eventId,
-  body: '',
-  timestamp: ring.timestamp,
-  sender: ring.sender,
-  reactions: [],
-  call: callOf(ring, newer, now),
-});
+/** A ring still ringing is no entry yet: what becomes of it is not known until it stops. */
+const parseRing = (ring: RawEvent, newer: readonly RawEvent[], now: number): ParsedMessage | undefined => {
+  const call = callOf(ring, newer, now);
+  if (call.outcome === 'ringing') {
+    return undefined;
+  }
+  return { eventId: ring.eventId, body: '', timestamp: ring.timestamp, sender: ring.sender, reactions: [], call };
+};
+
+/**
+ * When the soonest of the rings among `events` (oldest first) that still ring
+ * stops ringing, if any does: it becomes an entry then.
+ */
+const ringingUntil = (events: readonly RawEvent[], now: number): number | undefined => {
+  let until: number | undefined;
+  for (const [index, event] of events.entries()) {
+    if (isRing(event) && ringEndOf(event) > now && callOf(event, events.slice(index + 1), now).outcome === 'ringing') {
+      until = Math.min(until ?? ringEndOf(event), ringEndOf(event));
+    }
+  }
+  return until;
+};
 
 const serverNameOf = (userId: string): string => userId.slice(userId.indexOf(':') + 1);
 
@@ -201,7 +215,10 @@ const projectMessages = (
 
   for (const [index, event] of events.entries()) {
     if (withCalls && isRing(event)) {
-      messages.push(parseRing(event, events.slice(index + 1), now));
+      const call = parseRing(event, events.slice(index + 1), now);
+      if (call) {
+        messages.push(call);
+      }
       continue;
     }
     if (!isMessageLike(event.type)) {
@@ -253,9 +270,11 @@ const lastMessageOf = (
   for (let index = events.length - 1; index >= 0; index--) {
     const event = events[index];
     if (withCalls && isRing(event)) {
-      return parseRing(event, events.slice(index + 1), now);
-    }
-    if (isMessageLike(event.type)) {
+      const call = parseRing(event, events.slice(index + 1), now);
+      if (call) {
+        return call;
+      }
+    } else if (isMessageLike(event.type)) {
       const message = parseMessage(event, homeserver);
       if (message) {
         return message;
@@ -269,10 +288,16 @@ const lastMessageOf = (
  * The newest entry among `events` (oldest first), rendered or not: the read
  * marker must reach every event the unread count would count.
  */
-const newestEntryId = (events: RawEvent[], withCalls = false): string | null => {
+const newestEntryId = (
+  events: RawEvent[],
+  { withCalls = false, now = Date.now() }: EntryOptions = {}
+): string | null => {
   for (let index = events.length - 1; index >= 0; index--) {
     const event = events[index];
-    if (isMessageLike(event.type) || (withCalls && isRing(event))) {
+    if (
+      isMessageLike(event.type) ||
+      (withCalls && isRing(event) && callOf(event, events.slice(index + 1), now).outcome !== 'ringing')
+    ) {
       return event.eventId;
     }
   }
@@ -287,6 +312,7 @@ export {
   lastMessageOf,
   newestEntryId,
   projectMessages,
+  ringingUntil,
   serverNameOf,
   EVENT_MESSAGE,
   EVENT_REACTION,

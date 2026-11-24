@@ -2,7 +2,7 @@ import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useState } from 'react';
 import { useMatrixClient, useMatrixSessionEstablishing } from '@/core/matrix/activeClient';
 import { useCallsShown } from '../calls/useCallEligibility';
-import { newestEntryId, type ParsedMessage, projectMessages } from './matrixEvents';
+import { newestEntryId, type ParsedMessage, projectMessages, ringingUntil } from './matrixEvents';
 import {
   CLIENT_ROOM,
   CLIENT_SYNC,
@@ -67,17 +67,23 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
     let cancelled = false;
     let loading = true;
     let room: Room | null = null;
+    let ringEnd: ReturnType<typeof setTimeout> | undefined;
     const homeserver = homeserverOf(client);
 
     const refresh = () => {
       if (!cancelled && room) {
         const events = liveEvents(room);
+        const now = Date.now();
         setState({
           roomKey,
-          messages: projectMessages(events, homeserver, { withCalls }),
-          readUpToEventId: newestEntryId(events, withCalls),
+          messages: projectMessages(events, homeserver, { withCalls, now }),
+          readUpToEventId: newestEntryId(events, { withCalls, now }),
           isLoading: loading,
         });
+        // A ring still ringing shows once it stops, with no further event to say so.
+        clearTimeout(ringEnd);
+        const until = withCalls ? ringingUntil(events, now) : undefined;
+        ringEnd = until === undefined ? undefined : setTimeout(refresh, until - now);
       }
     };
 
@@ -157,6 +163,7 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
 
     return () => {
       cancelled = true;
+      clearTimeout(ringEnd);
       client.removeListener(ROOM_TIMELINE as never, onTimeline as never);
       client.removeListener(ROOM_REDACTION as never, onTimeline as never);
       client.removeListener(ROOM_LOCAL_ECHO_UPDATED as never, onLocalEcho as never);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { lastMessageOf, newestEntryId, projectMessages, type RawEvent } from './matrixEvents';
+import { callOf, lastMessageOf, newestEntryId, projectMessages, type RawEvent, ringingUntil } from './matrixEvents';
 
 const HS = 'matrix.alkem.io';
 const ALICE = `@alice-id:${HS}`;
@@ -180,8 +180,8 @@ describe('calls', () => {
   const rtcMember = (timestamp: number, sender: string, membership: 'join' | 'leave') =>
     at(timestamp, 'org.matrix.msc4143.rtc.member', { slot_id: 's', member: { id: 'm', membership } }, sender);
   const text = (timestamp: number, body: string) => at(timestamp, 'm.room.message', { msgtype: 'm.text', body });
-  const callOf = (events: RawEvent[], now = 1_000_000) =>
-    projectMessages(events, HS, { withCalls: true, now }).find(message => message.call)?.call;
+  // What became of the first event, a ring, judged by the events after it.
+  const judged = ([first, ...newer]: RawEvent[], now = 1_000_000) => callOf(first, newer, now);
 
   it('places a ring at its time between the messages around it, without a body', () => {
     const before = text(1_000, 'before');
@@ -194,47 +194,47 @@ describe('calls', () => {
   });
 
   it('is answered when the other person joins while it rings, lasting until either leaves', () => {
-    expect(callOf([ring(1_000), callMember(5_000, BOB, true), callMember(725_000, ALICE, false)])).toEqual({
+    expect(judged([ring(1_000), callMember(5_000, BOB, true), callMember(725_000, ALICE, false)])).toEqual({
       outcome: 'answered',
       durationMs: 720_000,
     });
-    expect(callOf([ring(1_000), rtcMember(5_000, BOB, 'join'), rtcMember(65_000, BOB, 'leave')])).toEqual({
+    expect(judged([ring(1_000), rtcMember(5_000, BOB, 'join'), rtcMember(65_000, BOB, 'leave')])).toEqual({
       outcome: 'answered',
       durationMs: 60_000,
     });
   });
 
   it('has no length while the leave that ended an answered call is not loaded', () => {
-    expect(callOf([ring(1_000), rtcMember(5_000, BOB, 'join')])).toEqual({ outcome: 'answered' });
+    expect(judged([ring(1_000), rtcMember(5_000, BOB, 'join')])).toEqual({ outcome: 'answered' });
   });
 
   it('is declined when the person rung turns it down', () => {
     const call = ring(1_000);
     const decline = at(3_000, 'org.matrix.msc4310.rtc.decline', { 'm.relates_to': { event_id: call.eventId } }, BOB);
-    expect(callOf([call, decline, callMember(4_000, ALICE, false)])).toEqual({ outcome: 'declined' });
+    expect(judged([call, decline, callMember(4_000, ALICE, false)])).toEqual({ outcome: 'declined' });
   });
 
   it('is not declined by a decline of another ring', () => {
     const decline = at(3_000, 'org.matrix.msc4310.rtc.decline', { 'm.relates_to': { event_id: '$other' } }, BOB);
-    expect(callOf([ring(1_000), decline], 20_000)).toEqual({ outcome: 'ringing' });
+    expect(judged([ring(1_000), decline], 20_000)).toEqual({ outcome: 'ringing' });
   });
 
   it('is unanswered once the ringer leaves or the ring lifetime passes, and not answered by a later join', () => {
-    expect(callOf([ring(1_000), rtcMember(3_000, ALICE, 'leave')], 4_000)).toEqual({ outcome: 'unanswered' });
-    expect(callOf([ring(1_000)], 31_000)).toEqual({ outcome: 'unanswered' });
-    expect(callOf([ring(1_000), callMember(40_000, BOB, true)])).toEqual({ outcome: 'unanswered' });
-    expect(callOf([ring(1_000), callMember(2_000, ALICE, true)])).toEqual({ outcome: 'unanswered' });
+    expect(judged([ring(1_000), rtcMember(3_000, ALICE, 'leave')], 4_000)).toEqual({ outcome: 'unanswered' });
+    expect(judged([ring(1_000)], 31_000)).toEqual({ outcome: 'unanswered' });
+    expect(judged([ring(1_000), callMember(40_000, BOB, true)])).toEqual({ outcome: 'unanswered' });
+    expect(judged([ring(1_000), callMember(2_000, ALICE, true)])).toEqual({ outcome: 'unanswered' });
   });
 
   it('is ringing while the lifetime runs and nobody joined or left', () => {
-    expect(callOf([ring(1_000)], 20_000)).toEqual({ outcome: 'ringing' });
+    expect(judged([ring(1_000)], 20_000)).toEqual({ outcome: 'ringing' });
   });
 
   it('caps the lifetime at 90 seconds and defaults it to 30 seconds', () => {
-    expect(callOf([ring(0, { lifetime: 600_000 })], 89_000)?.outcome).toBe('ringing');
-    expect(callOf([ring(0, { lifetime: 600_000 })], 90_000)?.outcome).toBe('unanswered');
-    expect(callOf([ring(0, { lifetime: undefined })], 29_000)?.outcome).toBe('ringing');
-    expect(callOf([ring(0, { lifetime: undefined })], 30_000)?.outcome).toBe('unanswered');
+    expect(judged([ring(0, { lifetime: 600_000 })], 89_000)?.outcome).toBe('ringing');
+    expect(judged([ring(0, { lifetime: 600_000 })], 90_000)?.outcome).toBe('unanswered');
+    expect(judged([ring(0, { lifetime: undefined })], 29_000)?.outcome).toBe('ringing');
+    expect(judged([ring(0, { lifetime: undefined })], 30_000)?.outcome).toBe('unanswered');
   });
 
   it('takes the older call notify ring too, and no group notification or withdrawn ring', () => {
@@ -259,7 +259,23 @@ describe('calls', () => {
       eventId: call.eventId,
       call: { outcome: 'answered' },
     });
-    expect(newestEntryId(events, true)).toBe(call.eventId);
+    expect(newestEntryId(events, { withCalls: true, now: 100_000 })).toBe(call.eventId);
+  });
+
+  it('makes no entry, preview or read marker from a ring still ringing, and says when it stops', () => {
+    const hello = text(1_000, 'hello');
+    const call = ring(2_000);
+    const events = [hello, call];
+    const at = { withCalls: true, now: 20_000 };
+    expect(projectMessages(events, HS, at).map(message => message.eventId)).toEqual([hello.eventId]);
+    expect(lastMessageOf(events, HS, at)?.eventId).toBe(hello.eventId);
+    expect(newestEntryId(events, at)).toBe(hello.eventId);
+    expect(ringingUntil(events, 20_000)).toBe(32_000);
+
+    const later = { withCalls: true, now: 32_000 };
+    expect(lastMessageOf(events, HS, later)).toMatchObject({ eventId: call.eventId, call: { outcome: 'unanswered' } });
+    expect(newestEntryId(events, later)).toBe(call.eventId);
+    expect(ringingUntil(events, 32_000)).toBeUndefined();
   });
 
   it('makes no entry, preview or read marker from a ring where calls are not shown', () => {

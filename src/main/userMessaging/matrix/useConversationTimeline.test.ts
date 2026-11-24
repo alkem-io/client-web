@@ -173,6 +173,32 @@ describe('useConversationTimeline', () => {
     harness.callsShown = false;
   });
 
+  it('shows a ring once it stops ringing, though no further event arrives', async () => {
+    const rungAt = Date.now();
+    const ring = {
+      getId: () => '$ring',
+      getType: () => 'org.matrix.msc4075.rtc.notification',
+      getSender: () => `@a:${HS}`,
+      getTs: () => rungAt,
+      getOriginalContent: () => ({ notification_type: 'ring', lifetime: 100 }),
+    };
+    const { client } = makeClient(0, 0);
+    harness.client = {
+      ...client,
+      getRoom: () => ({ roomId: '!r', getLiveTimeline: () => ({ getEvents: () => [ring] }) }),
+    };
+    harness.callsShown = true;
+
+    const { result } = renderHook(() => useConversationTimeline('alk-room', false));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.messages).toEqual([]);
+    expect(result.current.readUpToEventId).toBeNull();
+
+    await waitFor(() => expect(result.current.messages.map(message => message.call?.outcome)).toEqual(['unanswered']));
+    expect(result.current.readUpToEventId).toBe('$ring');
+    harness.callsShown = false;
+  });
+
   it('does nothing without an opened conversation or without a Matrix session', () => {
     const { client, scrollback } = makeClient(10, 10);
     harness.client = client;

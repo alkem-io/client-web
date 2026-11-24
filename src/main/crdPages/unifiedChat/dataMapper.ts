@@ -159,7 +159,7 @@ const chatCallOf = (message: ConversationMessage, currentUserId: string | undefi
   if (call.outcome === 'declined') {
     return { kind: 'declined' };
   }
-  // Answered, or still ringing: a call, with its length once the leave that ended it is loaded.
+  // Answered: a call, with its length once the leave that ended it is loaded.
   return {
     kind: 'call',
     minutes: call.durationMs === undefined ? undefined : Math.max(1, Math.round(call.durationMs / 60_000)),

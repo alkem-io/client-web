@@ -295,7 +295,6 @@ describe('calls', () => {
     });
     expect(callFor(ring({ outcome: 'answered', durationMs: 15_000 }))).toEqual({ kind: 'call', minutes: 1 });
     expect(callFor(ring({ outcome: 'answered' }))).toEqual({ kind: 'call', minutes: undefined });
-    expect(callFor(ring({ outcome: 'ringing' }))).toEqual({ kind: 'call', minutes: undefined });
   });
 
   it('gives a call no author, so it stands alone in the thread', () => {
