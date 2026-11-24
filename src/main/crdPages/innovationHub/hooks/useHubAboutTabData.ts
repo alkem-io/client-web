@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateInnovationHubMutation, useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { InnovationHubSettingsFragment, UpdateInnovationHubInput } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import { HUB_BANNER_ASPECT_RATIO } from '@/crd/components/innovationHub/InnovationHubBanner';
 import type { HubAboutSectionKey, HubAboutSectionSaveStatus } from '../CrdInnovationHubSettingsPage.types';
@@ -98,6 +100,7 @@ const buildSectionInput = (
 
 export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefined): HubAboutTabState => {
   const { t } = useTranslation('crd-innovationHub');
+  const serverErrorMessage = useServerErrorMessage();
 
   const saved: HubAboutFormValues | null = hub ? mapInnovationHubToAboutValues(hub) : null;
 
@@ -109,8 +112,9 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
   const savedFlashTimers = useRef<Partial<Record<HubAboutSectionKey, ReturnType<typeof setTimeout>>>>({});
   const [, startTransition] = useTransition();
 
-  const [updateInnovationHub] = useUpdateInnovationHubMutation();
-  const [uploadVisual, { loading: bannerUploading }] = useUploadVisualMutation();
+  // Save and upload failures show inline on their section.
+  const [updateInnovationHub] = useUpdateInnovationHubMutation({ context: OWN_ERROR_HANDLING });
+  const [uploadVisual, { loading: bannerUploading }] = useUploadVisualMutation({ context: OWN_ERROR_HANDLING });
 
   const [pendingBannerCrop, setPendingBannerCrop] = useState<PendingBannerCrop | null>(null);
 
@@ -212,12 +216,12 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
             setErrors(prev => ({ ...prev, [key]: t('settings.about.save.errorPrefix') }));
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           setSaveStatus(prev => ({ ...prev, [key]: 'idle' }));
-          setErrors(prev => ({ ...prev, [key]: `${t('settings.about.save.errorPrefix')} ${err.message}` }));
+          setErrors(prev => ({ ...prev, [key]: serverErrorMessage(err, t('settings.about.save.errorPrefix')) }));
         });
     },
-    [hub, updateInnovationHub, t]
+    [hub, updateInnovationHub, t, serverErrorMessage]
   );
 
   // ────────────────── Banner crop + upload ──────────────────
@@ -280,14 +284,14 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
             });
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           setErrors(prev => ({
             ...prev,
-            banner: `${t('settings.about.banner.errors.uploadFailed')} ${err.message}`,
+            banner: serverErrorMessage(err, t('settings.about.banner.errors.uploadFailed')),
           }));
         });
     },
-    [hub, uploadVisual, t]
+    [hub, uploadVisual, t, serverErrorMessage]
   );
 
   const onBannerCropCancel = useCallback(() => setPendingBannerCrop(null), []);

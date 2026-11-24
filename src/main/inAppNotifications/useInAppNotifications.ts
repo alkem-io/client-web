@@ -7,6 +7,7 @@ import {
   useUpdateNotificationStateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { type NotificationEvent, NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import type { InAppNotificationModel } from './model/InAppNotificationModel';
@@ -196,7 +197,7 @@ export const useInAppNotifications = () => {
       hiddenIdsMarkedRead.add(id);
       updateState({
         variables: { ID: id, state: NotificationEventInAppState.Read },
-        context: { skipGlobalErrorHandler: true },
+        context: OWN_ERROR_HANDLING,
         update: (cache, result) => {
           if (result?.data?.updateNotificationState === NotificationEventInAppState.Read) {
             updateNotificationsCache(cache, [id], NotificationEventInAppState.Read);

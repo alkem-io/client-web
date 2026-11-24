@@ -9,12 +9,14 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import type { UpdateProfileInput, UpdateVirtualContributorInput } from '@/core/apollo/generated/graphql-schema';
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import type {
   VcProfileFormValues,
   VcProfileReference,
 } from '@/crd/components/virtualContributor/settings/VCProfileTabView.types';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
-import type { TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
+import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
 import {
   countReferenceChanges,
   diffProfileReferences,
@@ -90,10 +92,12 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
 
-  const [updateVc] = useUpdateVirtualContributorMutation();
-  const [createReference] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
-  const [createTagset] = useCreateTagsetOnProfileMutation();
+  // Save failures show in the unsaved-changes bar, with the server's reason.
+  const serverErrorMessage = useServerErrorMessage();
+  const [updateVc] = useUpdateVirtualContributorMutation({ context: OWN_ERROR_HANDLING });
+  const [createReference] = useCreateReferenceOnProfileMutation({ context: OWN_ERROR_HANDLING });
+  const [deleteReference] = useDeleteReferenceMutation({ context: OWN_ERROR_HANDLING });
+  const [createTagset] = useCreateTagsetOnProfileMutation({ context: OWN_ERROR_HANDLING });
   const [uploadVisual] = useUploadVisualMutation();
 
   useEffect(() => {
@@ -251,6 +255,7 @@ export const useVcProfileTabData = (vcId: string | undefined): UseVcProfileTabDa
           },
         }),
       deleteReference: ref => deleteReference({ variables: { input: { ID: ref.id } } }),
+      describeError: error => serverErrorMessage(error, errorMessage(error)),
     });
 
     // Rebase the buffer on the fresh server values: what saved now matches the server, what

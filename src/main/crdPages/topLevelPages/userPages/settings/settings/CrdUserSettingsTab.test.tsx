@@ -25,15 +25,17 @@ vi.mock('@/domain/platform/config/useConfig', () => ({
 }));
 
 const updateUserSettingsMock = vi.fn();
+const useUpdateUserSettingsMutationMock = vi.fn();
 const refetchUserSettingsQueryMock = vi.fn((v: unknown) => ({ query: 'UserSettings', variables: v }));
 const useUserSettingsQueryMock = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useUpdateUserSettingsMutation: () => [updateUserSettingsMock, { loading: false }],
+  useUpdateUserSettingsMutation: (options?: unknown) => {
+    useUpdateUserSettingsMutationMock(options);
+    return [updateUserSettingsMock, { loading: false }];
+  },
   refetchUserSettingsQuery: (v: unknown) => refetchUserSettingsQueryMock(v),
   useUserSettingsQuery: (opts: unknown) => useUserSettingsQueryMock(opts),
 }));
-
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
 
 vi.mock('../../useUserPageRouteContext', () => ({ default: () => ({ userId: 'user-1' }) }));
 
@@ -167,7 +169,7 @@ describe('CrdUserSettingsTab language row (T011)', () => {
     // Mutation was called
     expect(updateUserSettingsMock).toHaveBeenCalledTimes(1);
 
-    // On error the container calls notify and reverts — i18n.changeLanguage is NOT called
+    // On error the container reverts — i18n.changeLanguage is NOT called
     // (the optimistic override is rolled back, not applied)
     expect(mockI18nInstance.changeLanguage).not.toHaveBeenCalled();
 
@@ -175,5 +177,14 @@ describe('CrdUserSettingsTab language row (T011)', () => {
     // the account language (null → platform default 'en'), not 'nl'
     const trigger = screen.getByRole('combobox', { name: 'user.settings.language.label' });
     expect(trigger.textContent).toBe('en');
+  });
+
+  test("leaves a failed settings write to the global error handler, so the server's reason is the one message", () => {
+    useUserSettingsQueryMock.mockReturnValue({ data: settingsData(true, false), loading: false });
+
+    render(<CrdUserSettingsTab />);
+
+    expect(useUpdateUserSettingsMutationMock).toHaveBeenCalled();
+    expect(useUpdateUserSettingsMutationMock.mock.calls[0][0]).toBeUndefined();
   });
 });

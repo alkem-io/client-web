@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -12,7 +11,8 @@ import {
   UrlType,
   VirtualContributorBodyOfKnowledgeType,
 } from '@/core/apollo/generated/graphql-schema';
-import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   CalloutFormErrorCode,
@@ -25,7 +25,7 @@ const T_PREFIX = 'pages.admin.vcConversion';
 const useVcConversion = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const handleApolloError = useApolloErrorHandler();
+  const serverErrorMessage = useServerErrorMessage();
   const [vcUrl, setVcUrl] = useState('');
   const [mutationCompleted, setMutationCompleted] = useState(false);
 
@@ -89,7 +89,7 @@ const useVcConversion = () => {
       await convertMutation({
         variables: { virtualContributorID: vc.id },
         // Handled below, so a Form rejection gets its own message instead of the generic one.
-        context: { skipGlobalErrorHandler: true },
+        context: OWN_ERROR_HANDLING,
       });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
       setVcUrl('');
@@ -100,9 +100,7 @@ const useVcConversion = () => {
         notify(t(`${T_PREFIX}.formNotAllowed`), 'error');
         return;
       }
-      if (error instanceof ApolloError) handleApolloError(error);
-      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
-      notify(message, 'error');
+      notify(serverErrorMessage(error, t(`${T_PREFIX}.errorMessage`)), 'error');
     }
   };
 

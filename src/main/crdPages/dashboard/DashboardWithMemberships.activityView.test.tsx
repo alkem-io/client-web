@@ -181,6 +181,17 @@ describe('DashboardWithMemberships — activity view preference wiring (corr-cli
     expect(screen.getAllByTestId('activity-feed').length).toBeGreaterThan(0);
     expect(screen.queryByTestId('non-activity-sections')).toBeNull();
   });
+
+  test('seeding the setting from the legacy device choice runs unasked, so it opts out of the global error handler', () => {
+    mockUserModel = { id: 'user-1', settings: { dashboard: {} } };
+    localStorage.setItem('dashboardView', 'SPACES');
+
+    render(<DashboardWithMemberships dialogState={dialogState} onPendingMembershipsClick={vi.fn()} />);
+
+    expect(updateUserSettingsMock).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
+  });
 });
 
 // The filter object is shared by the initial query and the `fetchMore` call, which are

@@ -134,8 +134,6 @@
         "admin": "Admin",
         "owner": "Owner"
       },
-      "acceptError": "Couldn't accept — try again",
-      "declineError": "Couldn't decline — try again",
       "offeredRole": {
         "associate": "Associate",
         "associateAdmin": "Associate + Admin",
@@ -232,8 +230,7 @@
       "placeholder": "Describe what this Virtual Contributor knows…",
       "save": "Save",
       "cancel": "Cancel",
-      "saving": "Saving…",
-      "saveError": "Couldn't save the description — try again."
+      "saving": "Saving…"
     },
     "empty": {
       "title": "No knowledge yet",

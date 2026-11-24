@@ -9,8 +9,7 @@
   },
   "settings": {
     "languageLabel": "Oberflächensprache",
-    "languageDescription": "Die in Alkemio verwendete Sprache. Änderungen gelten für alle Ihre Geräte.",
-    "languageSaveError": "Spracheinstellung konnte nicht gespeichert werden — bitte erneut versuchen."
+    "languageDescription": "Die in Alkemio verwendete Sprache. Änderungen gelten für alle Ihre Geräte."
   },
   "invite": {
     "suggestedLanguageLabel": "Erwartete Sprache",

@@ -69,9 +69,8 @@ export const useHubVirtualContributorsTabData = (
             ? t('settings.virtualContributors.toast.removed')
             : t('settings.virtualContributors.toast.reordered');
       toast.success(successMessage);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      toast.error(`${t('settings.virtualContributors.toast.error')} ${message}`);
+    } catch {
+      // The global error handler reports the failure, with the server's reason.
     }
   };
 

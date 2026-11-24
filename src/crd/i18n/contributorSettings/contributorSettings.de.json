@@ -61,8 +61,7 @@
     },
     "chooseCommunity": {
       "intro": "Füge deinen Virtual Contributor zu einer Community hinzu oder überspringe dies vorerst.",
-      "skip": "Vorerst überspringen",
-      "errorMessage": "Konnte nicht zur Community hinzugefügt werden — bitte erneut versuchen."
+      "skip": "Vorerst überspringen"
     },
     "tryVc": {
       "title": "{{name}} ist bereit!",
@@ -71,8 +70,7 @@
       "done": "Fertig"
     },
     "createdVirtualContributor": {
-      "successMessage": "Virtual Contributor '{{name}}' created successfully",
-      "errorMessage": "Virtual Contributor konnte nicht erstellt werden — bitte erneut versuchen."
+      "successMessage": "Virtual Contributor '{{name}}' created successfully"
     }
   },
   "breadcrumbs": {
@@ -225,8 +223,7 @@
         "dialogTitle": "Diese Mitgliedschaft verlassen?",
         "dialogDescription": "Du bist im Begriff, „{{spaceName}}“ zu verlassen. Du verlierst den Zugriff auf mitgliederexklusive Inhalte und musst dich erneut bewerben.",
         "dialogConfirm": "Verlassen",
-        "success": "Mitgliedschaft verlassen",
-        "error": "Verlassen fehlgeschlagen — bitte erneut versuchen"
+        "success": "Mitgliedschaft verlassen"
       },
       "pendingApplications": {
         "title": "Ausstehende Bewerbungen",
@@ -329,8 +326,7 @@
           "cancel": "Abbrechen",
           "confirm": "Schlüssel widerrufen",
           "revoking": "Wird widerrufen…",
-          "success": "\"{{name}}\" wurde widerrufen.",
-          "error": "Der Schlüssel konnte nicht widerrufen werden — versuche es erneut."
+          "success": "\"{{name}}\" wurde widerrufen."
         },
         "errors": {
           "notFound": "Dieser API-Schlüssel konnte nicht gefunden werden.",
@@ -491,8 +487,7 @@
         "allowMessagesLabel": "Andere Nutzer dürfen mir Direktnachrichten senden",
         "allowMessagesDescription": "Wenn deaktiviert, können andere Nutzer kein Direktnachrichten-Gespräch mit dir starten.",
         "allowEmailContactLabel": "Anderen erlauben, mich per E-Mail zu kontaktieren",
-        "allowEmailContactDescription": "Wenn aktiviert, können Personen, die dich nicht per Chat erreichen, dir eine E-Mail an deine Kontoadresse senden. Deine Adresse wird ihnen nie angezeigt.",
-        "error": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
+        "allowEmailContactDescription": "Wenn aktiviert, können Personen, die dich nicht per Chat erreichen, dir eine E-Mail an deine Kontoadresse senden. Deine Adresse wird ihnen nie angezeigt."
       },
       "designSystem": {
         "title": "Design-System",
@@ -503,15 +498,13 @@
       "language": {
         "title": "Sprache",
         "label": "Oberflächensprache",
-        "description": "Die in Alkemio verwendete Sprache. Änderungen gelten für alle deine Geräte.",
-        "error": "Spracheinstellung konnte nicht gespeichert werden — bitte erneut versuchen."
+        "description": "Die in Alkemio verwendete Sprache. Änderungen gelten für alle deine Geräte."
       }
     },
     "notifications": {
       "pageTitle": "Benachrichtigungen",
       "helpBanner": "Bearbeite deine Benachrichtigungseinstellungen. Änderungen werden automatisch gespeichert.",
       "toggleAria": "{{channel}}-Benachrichtigung umschalten für: {{label}}",
-      "toggleError": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen",
       "inAppLockedChat": "Chatnachrichten erscheinen bereits live im Chat-Panel, daher werden für diese Zeile keine In-App-Benachrichtigungen gesendet",
       "columns": {
         "activity": "Aktivität",
@@ -647,8 +640,7 @@
         "dialogTitle": "Verbindung mit dieser Organisation lösen?",
         "dialogDescription": "Du bist im Begriff, „{{name}}“ zu verlassen. Du verlierst deine Rolle und alle zugehörigen Rechte.",
         "dialogConfirm": "Verbindung lösen",
-        "success": "Verbindung erfolgreich gelöst",
-        "error": "Verbindung lösen fehlgeschlagen — bitte erneut versuchen"
+        "success": "Verbindung erfolgreich gelöst"
       }
     },
     "account": {
@@ -860,7 +852,7 @@
         "dialogConfirm": "Verlassen",
         "success": "Mitgliedschaft verlassen",
         "error": "Verlassen fehlgeschlagen — bitte erneut versuchen",
-        "forbidden": "Nur Admins und Eigentümer dieser Organisation können einen Space verlassen"
+        "forbidden": "Verlassen nicht möglich. Der Space existiert möglicherweise nicht mehr, oder nur Admins und Eigentümer dieser Organisation können ihn verlassen."
       },
       "ledBy": "Geleitet von:",
       "ledByAria": "{{count}} Community-Leads",
@@ -883,7 +875,6 @@
         "contributionRolesLabel": "Beitragsrollen öffentlich anzeigen",
         "contributionRolesCaption": "Wenn aktiviert, sind die Rollenzuweisungen der Organisation (Administrator, Eigentümer, Mitglied) im öffentlichen Profil sichtbar."
       },
-      "errorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen",
       "security": {
         "requireSecondFactorCaption": "Inhaber, Admins und Mitarbeitende dieser Organisation müssen bei der Anmeldung einen zweiten Faktor verwenden. Sie haben 14 Tage Zeit, ihn einzurichten.",
         "requireSecondFactorLabel": "Bestätigung in zwei Schritten für Mitglieder vorschreiben",
@@ -910,8 +901,7 @@
       "acceptConfirmAction": "Einladung annehmen",
       "declineConfirmTitle": "Diese Einladung ablehnen?",
       "declineConfirmBody": "{{spaceName}} wird mitgeteilt, dass Ihre Organisation abgelehnt hat. Dies kann nicht rückgängig gemacht werden — ein Space-Administrator müsste eine neue Einladung senden.",
-      "declineConfirmAction": "Einladung ablehnen",
-      "errorToast": "Die Einladung konnte nicht aktualisiert werden — bitte erneut versuchen"
+      "declineConfirmAction": "Einladung ablehnen"
     },
     "associates": {
       "title": "Assoziierte",
@@ -1126,9 +1116,6 @@
       "apiKeyHelper": "Vorhandene Schlüssel werden nie zurückgegeben. Lassen Sie das Feld leer, um den aktuellen Schlüssel beizubehalten.",
       "assistantIdLabel": "Assistant-ID",
       "modelLabel": "Modell"
-    },
-    "settings": {
-      "commitErrorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
     }
   },
   "shared": {
@@ -1178,7 +1165,6 @@
         "heading": "Neue Startseite erstellen"
       },
       "deleteSuccess": "Ressource gelöscht",
-      "deleteError": "Löschen fehlgeschlagen — bitte erneut versuchen",
       "noEntitlement": {
         "title": "Kapazität erreicht",
         "description": {

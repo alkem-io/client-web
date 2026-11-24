@@ -73,9 +73,6 @@ export const useOrgInvitationResponse = (
         variables: { invitationId, eventName },
         refetchQueries,
         awaitRefetchQueries: true,
-        // Every outcome is reported below (inline notice, warning or error toast) — the
-        // global error link must not add a second, generic toast.
-        context: { skipGlobalErrorHandler: true },
       });
       const withheld = result.data?.eventOnInvitation.extraRolesWithheld;
       const withheldRole = withheld && withheldRoleKey(withheld);
@@ -94,12 +91,7 @@ export const useOrgInvitationResponse = (
       }
       onSettled();
     } catch {
-      notify(
-        action === 'accept'
-          ? t('orgProfile.invitationDialog.acceptError')
-          : t('orgProfile.invitationDialog.declineError'),
-        'error'
-      );
+      // A failed answer is reported by the global error handler, with the server's reason.
     } finally {
       setPendingAction(null);
     }

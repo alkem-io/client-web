@@ -7,7 +7,12 @@ vi.mock('@/core/ui/notifications/useNotification', () => ({
 }));
 
 // Only the keys the real crd-common namespace declares resolve; everything else falls back.
-const EXISTING_KEYS = new Set(['apollo.errors.network.session_store_unavailable', 'apollo.errors.generic']);
+const EXISTING_KEYS = new Set([
+  'apollo.errors.network.session_store_unavailable',
+  'apollo.errors.generic',
+  'apollo.errors.userMessages.authorization.forbiddenPolicy',
+  'apollo.errors.userMessages.operations.operationNotAllowed',
+]);
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -16,7 +21,10 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-import { useApolloErrorHandler } from './useApolloErrorHandler';
+import { ApolloLink, execute, gql, Observable } from '@apollo/client';
+import { renderHook } from '@testing-library/react';
+import { useErrorHandlerLink } from '../graphqlLinks/useErrorHandlerLink';
+import { useApolloErrorHandler, useServerErrorMessage } from './useApolloErrorHandler';
 
 /**
  * Shaped like the `ApolloError` the global error link builds. Only `networkError` and
@@ -114,5 +122,139 @@ describe('useApolloErrorHandler', () => {
     useApolloErrorHandler()(apolloError(null));
 
     expect(notify).not.toHaveBeenCalled();
+  });
+
+  describe('a not-available error', () => {
+    const ID = '6df9be66-1c2d-4e5f-8a9b-0c1d2e3f4a5b';
+
+    const graphQLError = (message: string, extensions: Record<string, unknown>) => ({ message, extensions });
+
+    const withGraphQLErrors = (graphQLErrors: unknown[]) =>
+      ({ networkError: null, graphQLErrors, clientErrors: [] }) as never;
+
+    const neutral = graphQLError(`Space ${ID} of the account ${ID} could not be updated for the caller ${ID}.`, {
+      code: 'FORBIDDEN_POLICY',
+      userMessage: 'userMessages.authorization.forbiddenPolicy',
+      errorId: 'ref-1',
+    });
+
+    // Shaped as a server without the neutral outcome sends them: a composed message, no userMessage.
+    const earlierServerRefusals = [
+      [
+        'FORBIDDEN',
+        graphQLError('User is not allowed to perform this action.', { code: 'FORBIDDEN', errorId: 'ref-2' }),
+      ],
+      [
+        'FORBIDDEN_POLICY',
+        graphQLError(
+          `Authorization: unable to grant 'grant' privilege: assign role user: ${ID} on authorization ${ID} of type 'RoleSet'`,
+          { code: 'FORBIDDEN_POLICY', errorId: 'ref-3' }
+        ),
+      ],
+    ] as const;
+
+    it('shows the one translated sentence and not the server message', () => {
+      useApolloErrorHandler()(withGraphQLErrors([neutral]));
+
+      expect(notify).toHaveBeenCalledTimes(1);
+      expect(notify).toHaveBeenCalledWith(
+        'apollo.errors.userMessages.authorization.forbiddenPolicy',
+        'error',
+        undefined
+      );
+    });
+
+    it.each(earlierServerRefusals)('shows one message for a %s refusal from an earlier server', (_, refusal) => {
+      useApolloErrorHandler()(withGraphQLErrors([refusal]));
+
+      expect(notify).toHaveBeenCalledTimes(1);
+    });
+
+    describe('answering a mutation, through the global error link', () => {
+      const MUTATION = gql`
+        mutation SomeMutation {
+          deletePost(deleteData: { ID: "x" }) {
+            id
+          }
+        }
+      `;
+
+      const runMutation = (errors: unknown[]) => {
+        const { result } = renderHook(() => useErrorHandlerLink());
+        const answering = new ApolloLink(
+          () =>
+            new Observable(observer => {
+              observer.next({ errors } as never);
+              observer.complete();
+            })
+        );
+        return new Promise<void>(resolve => {
+          execute(ApolloLink.from([result.current, answering]), { query: MUTATION }).subscribe({
+            error: () => resolve(),
+            complete: () => resolve(),
+          });
+        });
+      };
+
+      it('shows one message for the neutral outcome', async () => {
+        await runMutation([neutral, neutral]);
+
+        expect(notify).toHaveBeenCalledTimes(1);
+      });
+
+      it.each(
+        earlierServerRefusals
+      )('shows one message for a %s refusal from an earlier server', async (_, refusal) => {
+        await runMutation([refusal]);
+
+        expect(notify).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+});
+
+describe('useServerErrorMessage', () => {
+  const ID = '6df9be66-1c2d-4e5f-8a9b-0c1d2e3f4a5b';
+  const FALLBACK = 'The change could not be saved. Please try again.';
+
+  const withGraphQLErrors = (graphQLErrors: unknown[]) =>
+    ({ networkError: null, graphQLErrors, clientErrors: [] }) as never;
+
+  const notAvailable = {
+    message: 'Not available',
+    extensions: { code: 'FORBIDDEN_POLICY', userMessage: 'userMessages.authorization.forbiddenPolicy' },
+  };
+  const notAllowed = {
+    message: `Unable to remove Space (${ID}), with level 0, as it contains 6 subspaces`,
+    extensions: { code: 'OPERATION_NOT_ALLOWED', userMessage: 'userMessages.operations.operationNotAllowed' },
+  };
+
+  it('carries the server reason the global handler would have shown, without ids', () => {
+    expect(useServerErrorMessage()(withGraphQLErrors([notAllowed]), FALLBACK)).toBe(
+      'apollo.errors.userMessages.operations.operationNotAllowed Unable to remove Space, with level 0, as it contains 6 subspaces'
+    );
+  });
+
+  it('shows the not-available sentence for a refusal that says nothing more', () => {
+    expect(useServerErrorMessage()(withGraphQLErrors([notAvailable]), FALLBACK)).toBe(
+      'apollo.errors.userMessages.authorization.forbiddenPolicy'
+    );
+  });
+
+  it('prefers an error that says more than "not available" when a response carries both', () => {
+    expect(useServerErrorMessage()(withGraphQLErrors([notAvailable, notAllowed]), FALLBACK)).toContain(
+      'as it contains 6 subspaces'
+    );
+  });
+
+  it('ignores a URL resolver error', () => {
+    const urlResolver = { message: 'No space at this URL', extensions: { code: 'URL_RESOLVER_ERROR' } };
+    expect(useServerErrorMessage()(withGraphQLErrors([urlResolver]), FALLBACK)).toBe(FALLBACK);
+  });
+
+  it('uses the fallback for a failure with no GraphQL error', () => {
+    expect(useServerErrorMessage()(apolloError(new Error('Failed to fetch')), FALLBACK)).toBe(FALLBACK);
+    expect(useServerErrorMessage()(new Error('Upload failed'), FALLBACK)).toBe(FALLBACK);
+    expect(useServerErrorMessage()(undefined, FALLBACK)).toBe(FALLBACK);
   });
 });

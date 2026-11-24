@@ -145,8 +145,7 @@
       "toast": {
         "added": "Espacio añadido.",
         "removed": "Espacio quitado.",
-        "reordered": "Orden actualizado.",
-        "error": "Acción fallida."
+        "reordered": "Orden actualizado."
       }
     },
     "packs": {
@@ -174,8 +173,7 @@
       "toast": {
         "added": "Innovation Pack añadido.",
         "removed": "Innovation Pack quitado.",
-        "reordered": "Orden actualizado.",
-        "error": "Acción fallida."
+        "reordered": "Orden actualizado."
       }
     },
     "virtualContributors": {
@@ -202,8 +200,7 @@
       "toast": {
         "added": "Colaborador virtual añadido.",
         "removed": "Colaborador virtual quitado.",
-        "reordered": "Orden actualizado.",
-        "error": "Acción fallida."
+        "reordered": "Orden actualizado."
       }
     },
     "addResourceDialog": {
@@ -278,7 +275,6 @@
       "subdomainMin": "Debe tener al menos 3 caracteres.",
       "subdomainMax": "Debe tener como máximo 25 caracteres."
     },
-    "createError": "Se produjo un error al crear el Innovation Hub.",
     "createSuccess": "¡El Innovation Hub se creó correctamente!"
   }
 }

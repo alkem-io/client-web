@@ -134,8 +134,6 @@
         "admin": "Admin",
         "owner": "Propriétaire"
       },
-      "acceptError": "Échec de l'acceptation — réessayez",
-      "declineError": "Échec du refus — réessayez",
       "offeredRole": {
         "associate": "Associé",
         "associateAdmin": "Associé + Admin",
@@ -232,8 +230,7 @@
       "placeholder": "Décrivez ce que sait ce Virtual Contributor…",
       "save": "Enregistrer",
       "cancel": "Annuler",
-      "saving": "Enregistrement…",
-      "saveError": "Impossible d’enregistrer la description — réessayez."
+      "saving": "Enregistrement…"
     },
     "empty": {
       "title": "Pas encore de connaissances",

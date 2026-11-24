@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { CreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/graphql-schema';
-import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
@@ -45,8 +44,8 @@ export function WhiteboardContributionAddConnector({
   };
   const [whiteboardName, setWhiteboardName] = useState(fallbackName);
   const [editingWhiteboard, setEditingWhiteboard] = useState<CreatedWhiteboard | undefined>();
+  // A failed create is reported by the global error handler, with the server's reason; the dialog stays open.
   const [createWhiteboard] = useCreateWhiteboardOnCalloutMutation();
-  const handleApolloError = useApolloErrorHandler();
 
   const handleOpen = () => {
     setWhiteboardName(fallbackName);
@@ -67,7 +66,6 @@ export function WhiteboardContributionAddConnector({
     const trimmed = whiteboardName.trim();
     if (!trimmed) return;
     const { data } = await createWhiteboard({
-      context: { skipGlobalErrorHandler: true },
       variables: {
         calloutId,
         whiteboard: {
@@ -112,7 +110,7 @@ export function WhiteboardContributionAddConnector({
               {t('dialogs.cancel')}
             </Button>
             <Button
-              onClick={() => void handleCreate().catch(handleApolloError)}
+              onClick={() => void handleCreate().catch(() => undefined)}
               disabled={!whiteboardName.trim() || creating}
               aria-busy={creating}
             >

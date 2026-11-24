@@ -3,7 +3,6 @@
   "expand": "Plein écran",
   "collapse": "Quitter le plein écran",
   "emptyColumn": "Aucune tâche pour l'instant",
-  "moveError": "Impossible de déplacer la tâche. Veuillez réessayer.",
   "columns": {
     "manage": "Gérer les colonnes",
     "title": "Colonnes du tableau des tâches",
@@ -26,8 +25,7 @@
     },
     "dragLabel": "Réordonner la colonne",
     "deleteLabel": "Supprimer la colonne",
-    "saving": "Enregistrement…",
-    "saveError": "Impossible d'enregistrer la modification de la colonne. Veuillez réessayer."
+    "saving": "Enregistrement…"
   },
   "create": {
     "option": "Tableau de tâches",

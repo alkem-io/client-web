@@ -229,7 +229,7 @@ describe('UnifiedChatPanelConnector header', () => {
     expect(panelProps.onToggleSound).toBeUndefined();
   });
 
-  it('unmutes when the sound is off, and reports a failed save once', async () => {
+  it('unmutes when the sound is off, adding no message of its own when the save fails', async () => {
     chatSound.enabled = false;
     chatSound.setEnabled = vi.fn().mockRejectedValue(new Error('network'));
     render(<UnifiedChatPanelConnector />);
@@ -238,7 +238,8 @@ describe('UnifiedChatPanelConnector header', () => {
     panelProps.onToggleSound?.();
 
     expect(chatSound.setEnabled).toHaveBeenCalledExactlyOnceWith(true);
-    await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('panel.soundToggleError', 'error'));
+    await Promise.resolve();
+    expect(notify).not.toHaveBeenCalled();
   });
 
   it('has no sound toggle when the sound cannot be changed', () => {
