@@ -27,6 +27,9 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useMemoMarkdownLazyQuery: () => [vi.fn()],
 }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+vi.mock('@/main/crdPages/topLevelPages/common/useSendMessageHandler', () => ({
+  useMessageContributor: () => vi.fn(),
+}));
 vi.mock(
   '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions',
   () => ({ default: () => ({ canCreateContribution: false }) })
