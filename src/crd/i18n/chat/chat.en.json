@@ -63,7 +63,12 @@
     "loading": "Loading conversations",
     "draft": "Draft:",
     "attachmentPreview_one": "{{count}} attachment",
-    "attachmentPreview_other": "{{count}} attachments"
+    "attachmentPreview_other": "{{count}} attachments",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinned": "Pinned",
+    "rowOptions": "Options for {{name}}",
+    "pinError": "Couldn't update the pin. Please try again."
   },
   "guidance": {
     "beta": "Beta",

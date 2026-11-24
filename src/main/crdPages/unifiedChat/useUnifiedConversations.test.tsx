@@ -44,9 +44,10 @@ vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
   }),
 }));
 vi.mock('./UnifiedChatProvider', () => ({ useUnifiedChatContext: () => ({ guidanceVcId: undefined }) }));
-// No Matrix client: the summaries are undefined.
+// Undefined summaries: no Matrix client.
+const matrix = vi.hoisted(() => ({ summaries: undefined as Map<string, unknown> | undefined }));
 vi.mock('@/main/userMessaging/matrix/conversationSummaryStore', () => ({
-  useConversationSummaries: () => undefined,
+  useConversationSummaries: () => matrix.summaries,
   displayedUnreadCount: () => 0,
 }));
 
@@ -65,9 +66,23 @@ describe('useUnifiedConversations without a Matrix session', () => {
         displayName: 'Other',
         unreadCount: 0,
         lastMessage: undefined,
+        userPinned: false,
       })
     );
     expect(result.current.conversations[0].members.map(m => m.type)).toEqual([ActorType.User, ActorType.User]);
     expect(result.current.totalUnreadCount).toBe(0);
+  });
+});
+
+describe('useUnifiedConversations with a Matrix session', () => {
+  it("flags a conversation the user pinned, from its room's summary", () => {
+    matrix.summaries = new Map([['room-1', { unreadCount: 0, pinned: true }]]);
+    try {
+      const { result } = renderHook(() => useUnifiedConversations());
+
+      expect(result.current.conversations[0].userPinned).toBe(true);
+    } finally {
+      matrix.summaries = undefined;
+    }
   });
 });

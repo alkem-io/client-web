@@ -63,7 +63,12 @@
     "loading": "Unterhaltungen werden geladen",
     "draft": "Entwurf:",
     "attachmentPreview_one": "{{count}} Anhang",
-    "attachmentPreview_other": "{{count}} Anhänge"
+    "attachmentPreview_other": "{{count}} Anhänge",
+    "pin": "Anheften",
+    "unpin": "Lösen",
+    "pinned": "Angeheftet",
+    "rowOptions": "Optionen für {{name}}",
+    "pinError": "Anheften konnte nicht aktualisiert werden. Bitte versuche es erneut."
   },
   "guidance": {
     "beta": "Beta",
