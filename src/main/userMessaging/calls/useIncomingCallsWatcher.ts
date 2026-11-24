@@ -6,6 +6,7 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { isGuidanceConversation } from '@/main/crdPages/unifiedChat/dataMapper';
 import { useGuidanceVcId } from '@/main/guidance/chatWidget/useGuidanceVcId';
 import { storeFor } from '../matrix/conversationSummaryStore';
+import { DEFAULT_RING_LIFETIME_MS } from '../matrix/matrixEvents';
 import { useUserMessagingContext } from '../UserMessagingContext';
 import { useIsDocumentActive } from '../useIsDocumentActive';
 import { isCallsConfigured } from './callConfig';
@@ -26,7 +27,8 @@ const isDealtWith = (call: LiveCall, roomId: string, isSeen: boolean, dismissals
  * too, for calls the user has not dealt with yet, and publishes them for the
  * unread signals. A call is dealt with, in every tab, once the user joins it on
  * any device, leaves it, or declines it; a group call also once the user opens
- * its conversation while it runs. A 1:1 call rings in its open conversation instead.
+ * its conversation while it runs. A 1:1 call rings in its open conversation instead,
+ * and counts as seen there once a ring would have stopped ringing.
  * It also tells the conversation summaries in which conversations a ring is an entry.
  * The sound for a call starting comes from its notification event (useSyncChatSound).
  */
@@ -100,6 +102,21 @@ export const useIncomingCallsWatcher = () => {
       }
     }
   }, [liveCalls, openGroupRoomId, isDocumentActive, dismissals]);
+
+  // The open 1:1 conversation's call rings there only for as long as its ring rings, then counts as
+  // seen as an open group's does, while the user is in this tab.
+  const openDirectCall =
+    selectedRoomId && selectedRoomId !== openGroupRoomId ? liveCalls.get(selectedRoomId) : undefined;
+  useEffect(() => {
+    if (!selectedRoomId || !openDirectCall || !isDocumentActive) {
+      return;
+    }
+    const timer = setTimeout(
+      () => dismissCall(selectedRoomId, openDirectCall.latestTs),
+      Math.max(0, openDirectCall.startedTs + DEFAULT_RING_LIFETIME_MS - Date.now())
+    );
+    return () => clearTimeout(timer);
+  }, [selectedRoomId, openDirectCall, isDocumentActive]);
 
   // A group call is named after the group; a direct one after the other person, who started it.
   const calls = new Map<string, IncomingCall | null>();

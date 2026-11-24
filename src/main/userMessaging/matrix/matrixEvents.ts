@@ -307,6 +307,7 @@ const newestEntryId = (
 export {
   actorIdOf,
   callOf,
+  DEFAULT_RING_LIFETIME_MS,
   isMessageLike,
   isRing,
   lastMessageOf,

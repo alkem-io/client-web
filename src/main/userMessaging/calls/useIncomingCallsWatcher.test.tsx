@@ -153,14 +153,14 @@ describe('useIncomingCallsWatcher', () => {
   });
 
   it('keeps ringing a 1:1 call while its conversation is open, but counts an open group call as seen', () => {
-    // Later than the direct call dealt with above, so a new call.
+    // Later than the direct call dealt with above, so a new call, and just started.
     harness.active = new Map([
       [
         'direct',
         {
           matrixRoomId: '!direct:hs',
-          startedTs: 10,
-          latestTs: 10,
+          startedTs: Date.now(),
+          latestTs: Date.now(),
           withMe: false,
           withMyDevice: false,
           participants: ['ann'],
@@ -181,5 +181,36 @@ describe('useIncomingCallsWatcher', () => {
     harness.selectedRoomId = 'group';
     rerender();
     expect([...getIncomingCallRooms()]).toEqual([['direct', { name: 'Ana', isGroup: false }]]);
+  });
+
+  it('counts an open 1:1 call as seen once its ring would have stopped ringing', () => {
+    // Later than the calls dealt with above, so a new call.
+    const startedTs = Date.now() + 60_000;
+    vi.setSystemTime(startedTs);
+    harness.active = new Map([
+      [
+        'direct',
+        {
+          matrixRoomId: '!direct:hs',
+          startedTs,
+          latestTs: startedTs,
+          withMe: false,
+          withMyDevice: false,
+          participants: ['ann'],
+        },
+      ],
+    ]);
+    harness.selectedRoomId = 'direct';
+    vi.spyOn(document, 'hasFocus').mockReturnValue(true);
+    renderHook(() => useIncomingCallsWatcher());
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    expect([...getIncomingCallRooms()]).toEqual([['direct', { name: 'Ana', isGroup: false }]]);
+
+    act(() => {
+      vi.advanceTimersByTime(28_000);
+    });
+    expect([...getIncomingCallRooms()]).toEqual([]);
   });
 });
