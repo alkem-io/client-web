@@ -109,7 +109,7 @@ describe('CalloutDetailDialogConnector tab title', () => {
 
   it('shows the callout title while open and the page title again once closed', () => {
     const view = render(<CalloutDetailDialogConnector open={true} onOpenChange={vi.fn()} callout={callout} />);
-    expect(document.title).toBe('Mobile iss… | Building t… | Alkemio');
+    expect(document.title).toBe('Mobile issues tracker | Building the A-team | Alkemio');
 
     view.rerender(<CalloutDetailDialogConnector open={false} onOpenChange={vi.fn()} callout={callout} />);
     expect(document.title).toBe(PAGE_TITLE);
@@ -118,7 +118,7 @@ describe('CalloutDetailDialogConnector tab title', () => {
   it('keeps the unread badge prefix on top of the callout title', () => {
     setTitlePrefix('(3) ');
     const view = render(<CalloutDetailDialogConnector open={true} onOpenChange={vi.fn()} callout={callout} />);
-    expect(document.title).toBe('(3) Mobile iss… | Building t… | Alkemio');
+    expect(document.title).toBe('(3) Mobile issues tracker | Building the A-team | Alkemio');
 
     view.unmount();
     expect(document.title).toBe(`(3) ${PAGE_TITLE}`);

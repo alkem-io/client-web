@@ -45,7 +45,7 @@ describe('TaskBoardDialog tab title', () => {
 
   it('shows the board title while open and the page title once closed', () => {
     const view = render(<TaskBoardDialog calloutId="c1" title="Sprint board" open={true} onOpenChange={vi.fn()} />);
-    expect(document.title).toBe('Sprint boa… | Building t… | Alkemio');
+    expect(document.title).toBe('Sprint board | Building the A-team | Alkemio');
 
     view.rerender(<TaskBoardDialog calloutId="c1" title="Sprint board" open={false} onOpenChange={vi.fn()} />);
     expect(document.title).toBe(PAGE_TITLE);
@@ -59,9 +59,9 @@ describe('TaskBoardDialog tab title', () => {
       </>
     );
     const view = render(board(true));
-    expect(document.title).toBe('Sprint boa… | Building t… | Alkemio');
+    expect(document.title).toBe('Sprint board | Building the A-team | Alkemio');
 
     view.rerender(board(false));
-    expect(document.title).toBe('Sprint boa… | Building t… | Alkemio');
+    expect(document.title).toBe('Sprint board | Building the A-team | Alkemio');
   });
 });

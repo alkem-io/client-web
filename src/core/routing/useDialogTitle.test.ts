@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { claimDialogTitle, setBaseTitle, setTitleOverride, setTitlePrefix } from './documentTitle';
-import { shortenTitlePart, useDialogTitle } from './useDialogTitle';
+import { useDialogTitle } from './useDialogTitle';
 import { usePageTitle } from './usePageTitle';
 import '@/core/i18n/config';
 
@@ -89,26 +89,6 @@ describe('dialog title layer', () => {
   });
 });
 
-describe('shortenTitlePart', () => {
-  it('keeps parts of up to 11 characters as they are', () => {
-    expect(shortenTitlePart('Retro')).toBe('Retro');
-    expect(shortenTitlePart('Sprint boar')).toBe('Sprint boar');
-  });
-
-  it('cuts longer parts to 10 characters plus an ellipsis', () => {
-    expect(shortenTitlePart('Sprint board')).toBe('Sprint boa…');
-    expect(shortenTitlePart('Mobile issues tracker')).toBe('Mobile iss…');
-  });
-
-  it('drops a space left before the ellipsis', () => {
-    expect(shortenTitlePart('Interview notes')).toBe('Interview…');
-  });
-
-  it('never splits an emoji', () => {
-    expect(shortenTitlePart('🌍'.repeat(12))).toBe(`${'🌍'.repeat(10)}…`);
-  });
-});
-
 describe('useDialogTitle', () => {
   beforeEach(() => {
     setTitleOverride(null);
@@ -130,15 +110,15 @@ describe('useDialogTitle', () => {
     const { rerender } = renderHook(({ enabled }) => useDialogTitle('Retro', enabled), {
       initialProps: { enabled: true },
     });
-    expect(document.title).toBe('Retro | Building t… | Alkemio');
+    expect(document.title).toBe('Retro | Building the A-team | Alkemio');
 
     rerender({ enabled: false });
     expect(document.title).toBe(PAGE_TITLE);
   });
 
-  it('shortens both the title and the page name, never "Alkemio"', () => {
+  it('shows the title and the page name in full, however long', () => {
     renderHook(() => useDialogTitle('Mobile issues tracker', true));
-    expect(document.title).toBe('Mobile iss… | Building t… | Alkemio');
+    expect(document.title).toBe('Mobile issues tracker | Building the A-team | Alkemio');
   });
 
   it('leaves the page name out on a page without one', () => {
@@ -149,7 +129,7 @@ describe('useDialogTitle', () => {
 
   it('restores the page title on unmount', () => {
     const { unmount } = renderHook(() => useDialogTitle('Retro', true));
-    expect(document.title).toBe('Retro | Building t… | Alkemio');
+    expect(document.title).toBe('Retro | Building the A-team | Alkemio');
 
     unmount();
     expect(document.title).toBe(PAGE_TITLE);
@@ -163,13 +143,13 @@ describe('useDialogTitle', () => {
       },
       { initialProps: { boardTitle: 'Sprint 1', taskOpen: true } }
     );
-    expect(document.title).toBe('Fix login | Building t… | Alkemio');
+    expect(document.title).toBe('Fix login | Building the A-team | Alkemio');
 
     rerender({ boardTitle: 'Sprint 2', taskOpen: true });
-    expect(document.title).toBe('Fix login | Building t… | Alkemio');
+    expect(document.title).toBe('Fix login | Building the A-team | Alkemio');
 
     rerender({ boardTitle: 'Sprint 2', taskOpen: false });
-    expect(document.title).toBe('Sprint 2 | Building t… | Alkemio');
+    expect(document.title).toBe('Sprint 2 | Building the A-team | Alkemio');
     unmount();
   });
 
@@ -178,7 +158,7 @@ describe('useDialogTitle', () => {
       initialProps: { title: 'Retro' },
     });
     rerender({ title: 'Mobile bugs' });
-    expect(document.title).toBe('Mobile bugs | Building t… | Alkemio');
+    expect(document.title).toBe('Mobile bugs | Building the A-team | Alkemio');
   });
 });
 
@@ -192,7 +172,7 @@ describe('usePageTitle hands its name to an open dialog', () => {
       usePageTitle('Mobile app');
       useDialogTitle('Beta tester feedback', true);
     });
-    expect(document.title).toBe('Beta teste… | Mobile app | Alkemio');
+    expect(document.title).toBe('Beta tester feedback | Mobile app | Alkemio');
   });
 
   it('gives no page name on a page shown without a suffix', () => {
