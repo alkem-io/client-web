@@ -5,7 +5,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { UnifiedChatPanelConnector } from './UnifiedChatPanelConnector';
 
 type Member = { id: string; displayName: string; avatarUri?: string; presence?: string };
-type Conversation = { id: string; roomId: string; members: Member[]; isGuidance: boolean; isGroup: boolean };
+type Conversation = {
+  id: string;
+  roomId: string;
+  members: Member[];
+  isGuidance: boolean;
+  isGroup: boolean;
+  ringingEventId?: string;
+};
 
 const state: { selectedConversationId: string | null; conversations: Conversation[] } = {
   selectedConversationId: null,
@@ -20,8 +27,10 @@ const calls = vi.hoisted(() => ({
     string,
     { participants: string[]; startedTs?: number; latestTs?: number; matrixRoomId?: string; withMyDevice?: boolean }
   >(),
-  incoming: new Map<string, unknown>(),
   dismissCall: vi.fn(),
+  sendRtcDecline: vi.fn(),
+  client: null as unknown,
+  notify: vi.fn(),
   openCall: vi.fn(),
   rotate: vi.fn(),
   eligibilityInput: [] as unknown[],
@@ -39,11 +48,14 @@ vi.mock('@/main/userMessaging/calls/useCallEligibility', () => ({
 vi.mock('@/main/userMessaging/calls/useRoomCallSession', () => ({ useRoomCallSession: () => calls.session }));
 vi.mock('@/main/userMessaging/calls/useActiveCallRooms', () => ({ useLiveCalls: () => calls.live }));
 vi.mock('@/main/userMessaging/calls/callOverlayStore', () => ({ openCall: calls.openCall }));
-vi.mock('@/main/userMessaging/calls/incomingCallStore', () => ({ useIncomingCallRooms: () => calls.incoming }));
 vi.mock('@/main/userMessaging/calls/callDismissalStore', () => ({ dismissCall: calls.dismissCall }));
 const leaveGroup = vi.fn();
 
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => calls.notify }));
+vi.mock('@/core/matrix/activeClient', async importOriginal => ({
+  ...(await importOriginal<typeof import('@/core/matrix/activeClient')>()),
+  useMatrixClient: () => calls.client,
+}));
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
@@ -194,8 +206,10 @@ describe('UnifiedChatPanelConnector calls', () => {
     calls.eligibility = { eligible: false, matrixRoomId: null };
     calls.session = { participants: [], participantCount: 0, isJoinedOnThisDevice: false, isJoinedHere: false };
     calls.live = new Map();
-    calls.incoming = new Map();
     calls.dismissCall.mockClear();
+    calls.sendRtcDecline.mockReset();
+    calls.client = null;
+    calls.notify.mockClear();
     calls.openCall.mockClear();
     calls.rotate.mockReset();
     calls.rotate.mockResolvedValue(false);
@@ -464,7 +478,7 @@ describe('UnifiedChatPanelConnector calls', () => {
     calls.live = new Map([['r-direct', { participants: ['u1'], startedTs: 5, latestTs: 7 }]]);
   };
 
-  it('shows a running 1:1 call already dealt with as a banner and joins it as a direct call', async () => {
+  it('shows a running 1:1 call whose ring is not ringing as a banner and joins it as a direct call', async () => {
     directCallRunning();
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     render(<UnifiedChatPanelConnector />);
@@ -477,9 +491,19 @@ describe('UnifiedChatPanelConnector calls', () => {
     expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!direct:hs', intent: 'join_existing_dm_voice' });
   });
 
-  it('rings for a 1:1 call not dealt with yet; Answer joins it', async () => {
+  const ringing = () => {
     directCallRunning();
-    calls.incoming = new Map([['r-direct', { name: 'Ann', isGroup: false }]]);
+    state.conversations = [{ ...directChat, ringingEventId: '$ring' }, groupChat];
+    calls.client = {
+      getUserId: () => null,
+      on: vi.fn(),
+      removeListener: vi.fn(),
+      sendRtcDecline: calls.sendRtcDecline,
+    };
+  };
+
+  it('rings while the other person’s ring rings; Answer joins it', async () => {
+    ringing();
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     render(<UnifiedChatPanelConnector />);
 
@@ -490,26 +514,29 @@ describe('UnifiedChatPanelConnector calls', () => {
     expect(calls.dismissCall).not.toHaveBeenCalled();
   });
 
-  it('declines a ringing 1:1 call by dismissing it locally as declined, without joining', async () => {
-    directCallRunning();
-    calls.incoming = new Map([['r-direct', { name: 'Ann', isGroup: false }]]);
+  it('declines a ringing call by sending the decline of its ring, then dismissing it in every tab, without joining', async () => {
+    ringing();
+    calls.sendRtcDecline.mockResolvedValue({ event_id: '$decline' });
     const user = userEvent.setup({ pointerEventsCheck: 0 });
     render(<UnifiedChatPanelConnector />);
 
     await user.click(screen.getByRole('button', { name: 'call.banner.decline' }));
-    expect(calls.dismissCall).toHaveBeenCalledExactlyOnceWith('r-direct', 7, true);
+    expect(calls.sendRtcDecline).toHaveBeenCalledExactlyOnceWith('!direct:hs', '$ring');
+    await vi.waitFor(() => expect(calls.dismissCall).toHaveBeenCalledExactlyOnceWith('r-direct', 7));
     expect(calls.openCall).not.toHaveBeenCalled();
     expect(calls.rotate).not.toHaveBeenCalled();
   });
 
-  it('never rings for a group call', () => {
-    eligible();
-    calls.session = { participants: ['@u1:hs'], participantCount: 1, isJoinedOnThisDevice: false, isJoinedHere: false };
-    calls.live = new Map([['r-group', { participants: ['u1'], startedTs: 5, latestTs: 5 }]]);
-    calls.incoming = new Map([['r-group', { name: 'Team', isGroup: true }]]);
+  it('keeps ringing and shows the error once when the decline cannot be sent', async () => {
+    ringing();
+    calls.sendRtcDecline.mockRejectedValue(new Error('M_FORBIDDEN'));
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
     render(<UnifiedChatPanelConnector />);
-    expect(screen.queryByTestId('call-banner-ringing')).not.toBeInTheDocument();
-    expect(screen.getByTestId('call-banner')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'call.banner.decline' }));
+    await vi.waitFor(() => expect(calls.notify).toHaveBeenCalledExactlyOnceWith('apollo.errors.generic', 'error'));
+    expect(calls.dismissCall).not.toHaveBeenCalled();
+    expect(screen.getByTestId('call-banner-ringing')).toBeInTheDocument();
   });
 
   it('shows nothing call-related in a 1:1 conversation that is not eligible', () => {

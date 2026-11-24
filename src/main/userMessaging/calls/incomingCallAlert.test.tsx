@@ -253,15 +253,13 @@ describe('the incoming-call alert', () => {
 
   it('keeps ringing a 1:1 call while its conversation is open, until it is declined in one tab', async () => {
     harness.conversation = directConversation;
-    const startedTs = Date.now();
-    session.memberships = [membership('@ana:hs', startedTs)];
     const tabB = await tab();
     const tabA = await tab();
     tabA.select('room');
     expect(tabA.alerting()).toBe(true);
     expect(tabB.alerting()).toBe(true);
 
-    tabA.decline(startedTs);
+    tabA.decline(1_000);
     expect(tabA.alerting()).toBe(false);
     act(() => {
       window.dispatchEvent(new StorageEvent('storage', { key: window.localStorage.key(0) }));

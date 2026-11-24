@@ -10,6 +10,7 @@ const harness = vi.hoisted(() => ({
   querySkip: undefined as boolean | undefined,
   selectedRoomId: null as string | null,
   setRingRooms: vi.fn(),
+  summaries: new Map<string, { ringingEventId?: string }>(),
 }));
 
 const vc = { id: 'vc', type: 'VIRTUAL_CONTRIBUTOR' };
@@ -48,6 +49,7 @@ vi.mock('./callConfig', () => ({ isCallsConfigured: () => true }));
 vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => ({}) }));
 vi.mock('../matrix/conversationSummaryStore', () => ({
   storeFor: () => ({ setRingRooms: harness.setRingRooms }),
+  useConversationSummaries: () => harness.summaries,
 }));
 vi.mock('./useActiveCallRooms', () => ({
   useLiveCalls: (conversations: unknown[]) => {
@@ -66,7 +68,6 @@ const othersCall: LiveCall = {
 };
 const running = (...roomIds: string[]) => new Map(roomIds.map(roomId => [roomId, othersCall]));
 
-import { dismissCall } from './callDismissalStore';
 import { getIncomingCallRooms } from './incomingCallStore';
 import { useIncomingCallsWatcher } from './useIncomingCallsWatcher';
 
@@ -77,6 +78,7 @@ describe('useIncomingCallsWatcher', () => {
     harness.guidanceVcId = 'vc';
     harness.active = new Map();
     harness.selectedRoomId = null;
+    harness.summaries = new Map();
   });
   afterEach(() => {
     vi.useRealTimers();
@@ -119,7 +121,7 @@ describe('useIncomingCallsWatcher', () => {
     });
     expect(harness.querySkip).toBe(true);
     expect(harness.conversations).toEqual([]);
-    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Map());
+    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Set());
   });
 
   it('makes a ring an entry in the 1:1 conversations with another person only, never in a group', () => {
@@ -127,7 +129,7 @@ describe('useIncomingCallsWatcher', () => {
     act(() => {
       vi.advanceTimersByTime(2000);
     });
-    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Map([['direct', undefined]]));
+    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Set(['direct']));
   });
 
   // From here on: a call dealt with stays dealt with for the rest of the file.
@@ -153,15 +155,15 @@ describe('useIncomingCallsWatcher', () => {
     expect([...getIncomingCallRooms()]).toEqual([['group', { name: 'Team', isGroup: true }]]);
   });
 
-  it('keeps ringing a 1:1 call while its conversation is open, but counts an open group call as seen', () => {
-    // Later than the direct call dealt with above, so a new call, and just started.
+  it('keeps a 1:1 call while its conversation is open and its ring rings, but counts an open group call as seen', () => {
+    // Later than the direct call dealt with above, so a new call.
     harness.active = new Map([
       [
         'direct',
         {
           matrixRoomId: '!direct:hs',
-          startedTs: Date.now(),
-          latestTs: Date.now(),
+          startedTs: 10,
+          latestTs: 10,
           withMe: false,
           withMyDevice: false,
           participants: ['ann'],
@@ -170,6 +172,7 @@ describe('useIncomingCallsWatcher', () => {
       ['group', othersCall],
     ]);
     harness.selectedRoomId = 'direct';
+    harness.summaries = new Map([['direct', { ringingEventId: '$ring' }]]);
     const { rerender } = renderHook(() => useIncomingCallsWatcher());
     act(() => {
       vi.advanceTimersByTime(2000);
@@ -184,47 +187,19 @@ describe('useIncomingCallsWatcher', () => {
     expect([...getIncomingCallRooms()]).toEqual([['direct', { name: 'Ana', isGroup: false }]]);
   });
 
-  it('counts an open 1:1 call as seen once its ring would have stopped ringing', () => {
+  it('counts an open 1:1 call as seen once no ring rings there, and not before its summary is known', () => {
     // Later than the calls dealt with above, so a new call.
-    const startedTs = Date.now() + 60_000;
-    vi.setSystemTime(startedTs);
-    harness.active = new Map([
-      [
-        'direct',
-        {
-          matrixRoomId: '!direct:hs',
-          startedTs,
-          latestTs: startedTs,
-          withMe: false,
-          withMyDevice: false,
-          participants: ['ann'],
-        },
-      ],
-    ]);
+    const newCall = { ...othersCall, startedTs: 1_000_000, latestTs: 1_000_000 };
+    harness.active = new Map([['direct', newCall]]);
     harness.selectedRoomId = 'direct';
-    vi.spyOn(document, 'hasFocus').mockReturnValue(true);
-    renderHook(() => useIncomingCallsWatcher());
+    const { rerender } = renderHook(() => useIncomingCallsWatcher());
     act(() => {
       vi.advanceTimersByTime(2000);
     });
     expect([...getIncomingCallRooms()]).toEqual([['direct', { name: 'Ana', isGroup: false }]]);
 
-    act(() => {
-      vi.advanceTimersByTime(28_000);
-    });
+    harness.summaries = new Map([['direct', {}]]);
+    rerender();
     expect([...getIncomingCallRooms()]).toEqual([]);
-  });
-
-  it('tells the summaries which call the user declined in a 1:1 conversation, and not one only seen', () => {
-    // Later than every call above.
-    const latestTs = Date.now() + 120_000;
-    renderHook(() => useIncomingCallsWatcher());
-    act(() => {
-      vi.advanceTimersByTime(2000);
-    });
-    act(() => dismissCall('direct', latestTs));
-    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Map([['direct', undefined]]));
-    act(() => dismissCall('direct', latestTs + 1, true));
-    expect(harness.setRingRooms).toHaveBeenLastCalledWith(new Map([['direct', latestTs + 1]]));
   });
 });

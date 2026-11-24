@@ -341,36 +341,11 @@ describe('ConversationSummaryStore', () => {
     await vi.waitFor(() => expect(store.getSnapshot().get('alk-1')).toBeDefined());
     expect(store.getSnapshot().get('alk-1')).toMatchObject({ lastMessage: { body: 'hello' }, unreadCount: 0 });
 
-    store.setRingRooms(new Map([['alk-1', undefined]]));
+    store.setRingRooms(new Set(['alk-1']));
     await vi.waitFor(() =>
       expect(store.getSnapshot().get('alk-1')).toMatchObject({
         lastMessage: { eventId: '$ring', call: { outcome: 'unanswered' } },
         unreadCount: 1,
-      })
-    );
-  });
-
-  it('reads a ring the user declined here as declined, never as a missed call to count', async () => {
-    const ring = {
-      eventId: '$ring',
-      type: 'org.matrix.msc4075.rtc.notification',
-      sender: `@other:${HS}`,
-      ts: 2,
-      content: { notification_type: 'ring', lifetime: 30_000 },
-    };
-    const room: FakeRoom = { roomId: '!alk-1', events: [text('$1', 'hello'), ring], marker: '$1', notifications: 0 };
-    const { client } = makeClient([room]);
-    const store = new ConversationSummaryStore(client);
-    store.setRingRooms(new Map([['alk-1', undefined]]));
-    store.watch(['alk-1']);
-    await vi.waitFor(() => expect(store.getSnapshot().get('alk-1')).toMatchObject({ unreadCount: 1 }));
-
-    // Declined while the call's only member, the ringer, had joined just before the ring.
-    store.setRingRooms(new Map([['alk-1', 1]]));
-    await vi.waitFor(() =>
-      expect(store.getSnapshot().get('alk-1')).toMatchObject({
-        lastMessage: { eventId: '$ring', call: { outcome: 'declined' } },
-        unreadCount: 0,
       })
     );
   });
@@ -386,11 +361,15 @@ describe('ConversationSummaryStore', () => {
     const room: FakeRoom = { roomId: '!alk-1', events: [text('$1', 'hello'), ring], marker: '$1', notifications: 0 };
     const { client } = makeClient([room]);
     const store = new ConversationSummaryStore(client);
-    store.setRingRooms(new Map([['alk-1', undefined]]));
+    store.setRingRooms(new Set(['alk-1']));
 
     store.watch(['alk-1']);
     await vi.waitFor(() => expect(store.getSnapshot().get('alk-1')).toBeDefined());
-    expect(store.getSnapshot().get('alk-1')).toMatchObject({ lastMessage: { body: 'hello' }, unreadCount: 0 });
+    expect(store.getSnapshot().get('alk-1')).toMatchObject({
+      lastMessage: { body: 'hello' },
+      unreadCount: 0,
+      ringingEventId: '$ring',
+    });
 
     await vi.waitFor(() =>
       expect(store.getSnapshot().get('alk-1')).toMatchObject({
@@ -398,5 +377,6 @@ describe('ConversationSummaryStore', () => {
         unreadCount: 1,
       })
     );
+    expect(store.getSnapshot().get('alk-1')?.ringingEventId).toBeUndefined();
   });
 });

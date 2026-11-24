@@ -1,7 +1,6 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useState } from 'react';
 import { useMatrixClient, useMatrixSessionEstablishing } from '@/core/matrix/activeClient';
-import { declinedUpTo, useCallDismissals } from '../calls/callDismissalStore';
 import { useCallsShown } from '../calls/useCallEligibility';
 import { newestEntryId, type ParsedMessage, projectMessages, ringingUntil } from './matrixEvents';
 import {
@@ -54,7 +53,6 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
   const establishing = useMatrixSessionEstablishing();
   const roomKey = client && alkemioRoomId ? alkemioRoomId : null;
   const withCalls = useCallsShown() && !isGroup;
-  const declinedCallUpTo = declinedUpTo(useCallDismissals(), alkemioRoomId ?? '');
   const [state, setState] = useState<TimelineState>({
     roomKey: null,
     messages: [],
@@ -71,8 +69,6 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
     let room: Room | null = null;
     let ringEnd: ReturnType<typeof setTimeout> | undefined;
     const homeserver = homeserverOf(client);
-    const declined =
-      declinedCallUpTo === undefined ? undefined : { upTo: declinedCallUpTo, by: client.getUserId() ?? '' };
 
     const refresh = () => {
       if (!cancelled && room) {
@@ -80,8 +76,8 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
         const now = Date.now();
         setState({
           roomKey,
-          messages: projectMessages(events, homeserver, { withCalls, now, declined }),
-          readUpToEventId: newestEntryId(events, { withCalls, now, declined }),
+          messages: projectMessages(events, homeserver, { withCalls, now }),
+          readUpToEventId: newestEntryId(events, { withCalls, now }),
           isLoading: loading,
         });
         // A ring still ringing shows once it stops, with no further event to say so.
@@ -175,7 +171,7 @@ const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean)
       client.removeListener(CLIENT_ROOM as never, onRoom as never);
       client.removeListener(CLIENT_SYNC as never, onSync as never);
     };
-  }, [client, roomKey, withCalls, declinedCallUpTo]);
+  }, [client, roomKey, withCalls]);
 
   if (!client) {
     // Without a client the thread waits only while the session is being established

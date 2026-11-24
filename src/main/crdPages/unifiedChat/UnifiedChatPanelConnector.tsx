@@ -32,7 +32,6 @@ import { buildUserNotificationSettingsUrl } from '@/main/routing/urlBuilders';
 import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsContext';
 import { dismissCall } from '@/main/userMessaging/calls/callDismissalStore';
 import { openCall } from '@/main/userMessaging/calls/callOverlayStore';
-import { useIncomingCallRooms } from '@/main/userMessaging/calls/incomingCallStore';
 import { useLiveCalls } from '@/main/userMessaging/calls/useActiveCallRooms';
 import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibility';
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
@@ -143,7 +142,6 @@ export const UnifiedChatPanelConnector = ({
   // Calls: shown only to beta testers, in a synced session, where the environment has calls.
   const callEligibility = useCallEligibility(selectedConversation ?? null);
   const callSession = useRoomCallSession(callEligibility.matrixRoomId);
-  const incomingCallRooms = useIncomingCallRooms();
   // A call clicked while the chat credential is being replaced: it opens once the new session
   // has synced and resolved the same room again, so the call never spans the swap.
   const [queuedCall, setQueuedCall] = useState<{
@@ -373,12 +371,12 @@ export const UnifiedChatPanelConnector = ({
     setSelectedRoomId(null);
   };
 
-  // The reaction hooks reject when Matrix refuses the event; the message stays unchanged,
-  // so surface the same generic error toast a failed GraphQL mutation shows.
-  const notifyReactionFailed = () => notify(t('apollo.errors.generic', { ns: 'crd-common' }), 'error');
+  // When Matrix refuses an event (a reaction, a decline) nothing changes, so surface the same
+  // generic error toast a failed GraphQL mutation shows.
+  const notifyMatrixFailed = () => notify(t('apollo.errors.generic', { ns: 'crd-common' }), 'error');
 
   const onAddReaction = (messageId: string, emoji: string) => {
-    handleAddReaction(messageId)(emoji)?.catch(notifyReactionFailed);
+    handleAddReaction(messageId)(emoji)?.catch(notifyMatrixFailed);
   };
 
   // CommentReactions toggles by emoji; resolve the current user's reaction id for removal.
@@ -386,7 +384,7 @@ export const UnifiedChatPanelConnector = ({
     const raw = rawMessages.find(message => message.id === messageId);
     const reaction = raw?.reactions.find(item => item.emoji === emoji && item.sender?.id === currentUserId);
     if (reaction) {
-      handleRemoveReaction(reaction.id)?.catch(notifyReactionFailed);
+      handleRemoveReaction(reaction.id)?.catch(notifyMatrixFailed);
     }
   };
 
@@ -451,18 +449,22 @@ export const UnifiedChatPanelConnector = ({
     }
     // A running call gets the banner under the header, unless this tab is in it: the call is open here.
     if (callEligibility.eligible && callSession.participantCount > 0 && !callSession.isJoinedHere) {
-      const { roomId, members } = selectedConversation;
+      const { roomId, members, ringingEventId } = selectedConversation;
       const call = liveCalls.get(roomId);
       const firstName = (displayName: string) => displayName.split(' ')[0];
-      if (!isGroup && call && incomingCallRooms.has(roomId)) {
-        // A 1:1 call not dealt with yet rings until it is answered or declined (in every tab), or its
-        // ring has run out: the watcher then counts it as seen, and the running banner shows.
+      if (call && ringingEventId && matrixRoomId && matrixClient) {
+        // Rings for as long as the other person's ring does. Declining tells the caller, every device
+        // and every tab.
         callBanner = (
           <CallBanner
             variant="ringing"
             callerName={firstName(counterpart?.displayName ?? '')}
             onAnswer={() => openSelectedCall('join', 'video')}
-            onDecline={() => dismissCall(roomId, call.latestTs, true)}
+            onDecline={() =>
+              matrixClient
+                .sendRtcDecline(matrixRoomId, ringingEventId)
+                .then(() => dismissCall(roomId, call.latestTs), notifyMatrixFailed)
+            }
           />
         );
       } else {

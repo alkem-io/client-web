@@ -15,6 +15,8 @@ export type UnifiedConversation = UserConversation & {
   pinned: boolean;
   /** Pinned by the user, from their Matrix favourite tag on the room. */
   userPinned: boolean;
+  /** The ring from the other person still ringing in a 1:1, by Matrix event id. */
+  ringingEventId?: string;
 };
 
 /**
