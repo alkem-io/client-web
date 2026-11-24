@@ -4,7 +4,6 @@ import {
   useVirtualContributorKnowledgeBaseLastUpdatedQuery,
   useVirtualContributorProfileWithModelCardQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
 import useKnowledgeBase from '@/domain/community/virtualContributor/knowledgeBase/useKnowledgeBase';
@@ -18,8 +17,7 @@ import { mapVcKnowledgeBaseToViewProps } from './vcKnowledgeBaseMapper';
  * callouts list is returned raw for the page to feed into the CRD callouts feed.
  */
 export const useVcKnowledgeBaseData = () => {
-  const { t, i18n } = useTranslation('crd-profilePages');
-  const notify = useNotification();
+  const { i18n } = useTranslation('crd-profilePages');
   const { vcId } = useUrlResolver();
 
   const kb = useKnowledgeBase({ id: vcId });
@@ -29,7 +27,7 @@ export const useVcKnowledgeBaseData = () => {
       await kb.updateDescription({ description: next });
       return true;
     } catch {
-      notify(t('knowledgeBase.description.saveError'), 'error');
+      // The global error handler reports the failure, with the server's reason.
       return false;
     }
   };

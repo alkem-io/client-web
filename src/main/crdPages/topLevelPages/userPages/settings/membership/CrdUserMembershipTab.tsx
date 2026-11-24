@@ -56,7 +56,7 @@ const CrdUserMembershipTab = () => {
       await state.onConfirmLeave();
       notify(t('user.membership.leave.success'), 'success');
     } catch {
-      notify(t('user.membership.leave.error'), 'error');
+      // Reported by the global error handler.
     }
   };
 

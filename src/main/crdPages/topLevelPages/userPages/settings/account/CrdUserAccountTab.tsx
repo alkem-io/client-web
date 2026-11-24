@@ -74,26 +74,29 @@ const CrdUserAccountTab = () => {
   const accountHostName = userData?.lookup.user?.profile?.displayName;
 
   const refetchAccount = ['AccountInformation'];
+  // A failed delete is reported by the global error handler, with the server's reason (such as a
+  // Space that still has subspaces). Handling it here only keeps the delete call from rejecting.
+  const reportedByGlobalHandler = () => {};
 
   const [deleteSpace, { loading: deletingSpace }] = useDeleteSpaceMutation({
     refetchQueries: refetchAccount,
     onCompleted: () => notify(t('shared.account.deleteSuccess'), 'success'),
-    onError: () => notify(t('shared.account.deleteError'), 'error'),
+    onError: reportedByGlobalHandler,
   });
   const [deleteVc, { loading: deletingVc }] = useDeleteVirtualContributorOnAccountMutation({
     refetchQueries: refetchAccount,
     onCompleted: () => notify(t('shared.account.deleteSuccess'), 'success'),
-    onError: () => notify(t('shared.account.deleteError'), 'error'),
+    onError: reportedByGlobalHandler,
   });
   const [deletePack, { loading: deletingPack }] = useDeleteInnovationPackMutation({
     refetchQueries: refetchAccount,
     onCompleted: () => notify(t('shared.account.deleteSuccess'), 'success'),
-    onError: () => notify(t('shared.account.deleteError'), 'error'),
+    onError: reportedByGlobalHandler,
   });
   const [deleteHub, { loading: deletingHub }] = useDeleteInnovationHubMutation({
     refetchQueries: refetchAccount,
     onCompleted: () => notify(t('shared.account.deleteSuccess'), 'success'),
-    onError: () => notify(t('shared.account.deleteError'), 'error'),
+    onError: reportedByGlobalHandler,
   });
   const deletingAny = deletingSpace || deletingVc || deletingPack || deletingHub;
 

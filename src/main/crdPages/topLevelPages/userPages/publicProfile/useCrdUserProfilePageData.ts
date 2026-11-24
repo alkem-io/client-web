@@ -1,4 +1,5 @@
 import { useUserHostedResourcesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import useUserContributions from '@/domain/community/user/userContributions/useUserContributions';
 import useUserOrganizationIds from '@/domain/community/user/userContributions/useUserOrganizationIds';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -19,7 +20,7 @@ export const useCrdUserProfilePageData = () => {
     // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { userId: userId! },
     skip: !userId || !isAuthenticated,
-    context: { skipGlobalErrorHandler: true },
+    context: OWN_ERROR_HANDLING,
   });
   const accountResources = hostedData?.lookup.user?.hostedResources ?? undefined;
 

@@ -134,9 +134,9 @@ describe('CrdAdminSpacesPage', () => {
     expect(updateSpaceVisibilityMock).not.toHaveBeenCalled();
   });
 
-  // client-8: a denied save must surface the standard toast and leave the dialog open
-  // so the admin can see the failure, instead of silently closing.
-  test('a FORBIDDEN_POLICY rejection notifies and keeps the dialog open', async () => {
+  // client-8: a refused save leaves the dialog open so the admin can see the failure, which the
+  // global error link reports; the page adds no message of its own.
+  test('a FORBIDDEN_POLICY rejection keeps the dialog open without a message of its own', async () => {
     updateSpaceNameIdMock.mockRejectedValueOnce({
       graphQLErrors: [{ message: 'nope', extensions: { code: 'FORBIDDEN_POLICY' } }],
     });
@@ -148,8 +148,9 @@ describe('CrdAdminSpacesPage', () => {
     await userEvent.type(alias, 's1-renamed');
     await userEvent.click(within(dialog).getByRole('button', { name: 'spaces.save' }));
 
-    await waitFor(() => expect(notify).toHaveBeenCalledWith('permissions.errorDenied', 'error'));
+    await waitFor(() => expect(updateSpaceNameIdMock).toHaveBeenCalled());
     expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(notify).not.toHaveBeenCalled();
   });
 
   test('license-plans action is absent without the manage-license-plans capability', () => {
@@ -220,7 +221,7 @@ describe('CrdAdminSpacesPage', () => {
       expect(beta).not.toBeDisabled();
     });
 
-    test('a permission refusal notifies exactly once and the box keeps the stored value', async () => {
+    test('a permission refusal raises no message of its own and the box keeps the stored value', async () => {
       withPromote([true, false]);
       updateSpacePromoteMock.mockRejectedValueOnce({
         graphQLErrors: [{ message: 'nope', extensions: { code: 'FORBIDDEN_POLICY' } }],
@@ -228,8 +229,8 @@ describe('CrdAdminSpacesPage', () => {
       render(<CrdAdminSpacesPage />);
       const box = screen.getByRole('checkbox', { name: promoteLabel('Beta [ARCHIVED]') });
       await userEvent.click(box);
-      await waitFor(() => expect(notify).toHaveBeenCalledWith('permissions.errorDenied', 'error'));
-      expect(notify).toHaveBeenCalledTimes(1);
+      await waitFor(() => expect(box).not.toHaveAttribute('aria-busy', 'true'));
+      expect(notify).not.toHaveBeenCalled();
       expect(box).not.toBeChecked();
     });
 

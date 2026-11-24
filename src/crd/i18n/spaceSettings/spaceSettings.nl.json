@@ -183,7 +183,6 @@
     "replaceFlow": {
       "button": "Innovation Flow vervangen",
       "loading": "Nieuwe flow laden…",
-      "error": "Het vervangen van de innovation flow is mislukt. De flow is ongewijzigd — probeer het opnieuw.",
       "applyDialog": {
         "title": "Nieuwe template toepassen",
         "description": "Je staat op het punt een nieuwe template toe te passen. Deze actie verwijdert je huidige innovation flow permanent. De bestaande Posts die aan verschillende fasen zijn gekoppeld, blijven echter behouden en worden gegroepeerd onder de eerste fase van de nieuwe opzet.<br/><br/>Kies een van de volgende opties:",
@@ -930,7 +929,6 @@
       "title": "Gevarenzone",
       "description": "Verwijder deze Space en alle inhoud ervan permanent.",
       "delete": "Deze Space verwijderen",
-      "deleteError": "De Space kon niet worden verwijderd. Probeer het opnieuw.",
       "deleteDialog": {
         "title": "Space verwijderen",
         "description": "Hierdoor wordt deze Space en alle inhoud ervan permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",

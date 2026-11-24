@@ -87,7 +87,7 @@ export function useReferenceFileUpload(
             notify(t('components.file-upload.file-upload-success'), 'success');
             return url;
           } catch {
-            notify(t('components.file-upload.file-upload-error'), 'error');
+            // The global error handler reports the failure, with the server's reason.
             return null;
           }
         }

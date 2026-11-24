@@ -8,6 +8,7 @@ import type {
   LatestContributionsSpacesFlatQuery,
   PendingInvitationsCountQuery,
 } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { dropCachedQueries } from '@/core/apollo/utils/dropCachedQueries';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
@@ -15,14 +16,17 @@ const CHECK_THROTTLE_MS = 5_000;
 
 /** The user's space memberships and pending-invitation counts, as one comparable string. */
 const readMembershipState = async (client: ApolloClient<object>, fetchPolicy: FetchPolicy): Promise<string> => {
-  const context = { skipGlobalErrorHandler: true };
   const [memberships, invitations] = await Promise.all([
     client.query<LatestContributionsSpacesFlatQuery>({
       query: LatestContributionsSpacesFlatDocument,
       fetchPolicy,
-      context,
+      context: OWN_ERROR_HANDLING,
     }),
-    client.query<PendingInvitationsCountQuery>({ query: PendingInvitationsCountDocument, fetchPolicy, context }),
+    client.query<PendingInvitationsCountQuery>({
+      query: PendingInvitationsCountDocument,
+      fetchPolicy,
+      context: OWN_ERROR_HANDLING,
+    }),
   ]);
   return JSON.stringify([
     memberships.data.me.spaceMembershipsFlat.map(membership => membership.id).sort(),

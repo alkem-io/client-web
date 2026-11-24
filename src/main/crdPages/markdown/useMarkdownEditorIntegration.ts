@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
@@ -34,9 +36,11 @@ export const useMarkdownEditorIntegration = (
   const { temporaryLocation = false, storageBucketId: storageBucketIdOverride } = options;
   const { t } = useTranslation();
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
   const storageConfig = useStorageConfigContext();
-  const [uploadFile] = useUploadFileMutation();
+  // A failed upload throws; the editor reports its message through `onError`.
+  const [uploadFile] = useUploadFileMutation({ context: OWN_ERROR_HANDLING });
 
   const onError = (message: string) => notify(message, 'error');
 
@@ -47,6 +51,8 @@ export const useMarkdownEditorIntegration = (
     }
     const result = await uploadFile({
       variables: { file, uploadData: { storageBucketId, temporaryLocation } },
+    }).catch((error: unknown) => {
+      throw new Error(serverErrorMessage(error, t('components.file-upload.file-upload-error')));
     });
     const url = result.data?.uploadFileOnStorageBucket?.url;
     if (!url) {

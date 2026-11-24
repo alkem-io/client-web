@@ -183,7 +183,6 @@
     "replaceFlow": {
       "button": "Replace innovation flow",
       "loading": "Loading new flow…",
-      "error": "Replacing the innovation flow failed. The flow is unchanged — please try again.",
       "applyDialog": {
         "title": "Apply new template",
         "description": "You are about to apply a new template. This action will permanently delete your current innovation flow. However, the existing Posts linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
@@ -930,7 +929,6 @@
       "title": "Danger Zone",
       "description": "Permanently delete this space and all its content.",
       "delete": "Delete this Space",
-      "deleteError": "The space could not be deleted. Please try again.",
       "deleteDialog": {
         "title": "Delete Space",
         "description": "This will permanently delete this space and all its content. This action cannot be undone.",

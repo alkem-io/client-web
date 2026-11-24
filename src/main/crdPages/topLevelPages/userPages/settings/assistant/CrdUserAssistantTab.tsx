@@ -1,7 +1,5 @@
-import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
 import { usePlatformCapabilitiesQuery, useUserAssistantSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { UserAssistantTabView } from '@/crd/components/user/settings/UserAssistantTabView';
 import { useAssistantEnabled } from '@/main/assistant/useAssistantEnabled';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -25,8 +23,6 @@ import useUserAssistantTabData from './useUserAssistantTabData';
  * the tab is never reachable while the feature ships OFF.
  */
 const CrdUserAssistantTab = () => {
-  const { t } = useTranslation('crd-contributorSettings');
-  const notify = useNotification();
   const isAssistantEnabled = useAssistantEnabled();
   const { userId, profileUrl } = useUserPageRouteContext();
 
@@ -52,7 +48,7 @@ const CrdUserAssistantTab = () => {
     try {
       await onToggle(capabilityName, next);
     } catch {
-      notify(t('user.assistant.toggleError'), 'error');
+      // Reported by the global error handler.
     }
   };
 

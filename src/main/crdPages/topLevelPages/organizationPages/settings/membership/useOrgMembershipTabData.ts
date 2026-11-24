@@ -4,6 +4,7 @@ import {
   useSpaceContributionDetailsLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import type { MembershipFilter } from '@/crd/components/contributor/settings/MembershipsSection.types';
 
 export type OrgPendingLeave = {
@@ -80,13 +81,16 @@ export const useOrgMembershipTabData = (
       const result = await fetchSpaceDetails({ variables: { spaceId: leaving.leave.spaceId } });
       const roleSetId = result.data?.lookup.space?.about.membership.roleSetID;
       if (!roleSetId) {
-        throw new Error('Role set of the space could not be resolved');
+        // A Space deleted since the list loaded answers the lookup as not available: pass that on.
+        throw result.error ?? new Error('Role set of the space could not be resolved');
       }
       // Removing MEMBER removes every role the organization holds in the
       // space (Lead included) and in all of its subspaces — the server owns
       // that cascade.
       await removeRoleFromOrganization({
         variables: { contributorId: leaving.organizationId, roleSetId, role: RoleName.Member },
+        // The tab reports the outcome itself.
+        context: OWN_ERROR_HANDLING,
       });
     } finally {
       // The leave's outcome is decided above: a failed refetch must neither

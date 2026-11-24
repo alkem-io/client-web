@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { SpaceTargetPicker } from '@/crd/components/admin/transfer/SpaceTargetPicker';
 import { UrlResolveField } from '@/crd/components/admin/transfer/UrlResolveField';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -18,6 +19,7 @@ type PendingOp = 'l1l0' | 'l1l2' | 'l2l1' | 'movel1l0' | 'movel1l2' | 'movel2l1'
 export function SpaceConversionPanel() {
   const { t } = useTranslation('crd-admin');
   const { t: tApp } = useTranslation();
+  const serverErrorMessage = useServerErrorMessage();
   const {
     space,
     resolvedLevel,
@@ -108,8 +110,7 @@ export function SpaceConversionPanel() {
         );
       }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : t('transfer.spaceMove.confirmTitle');
-      setMoveError(msg);
+      setMoveError(serverErrorMessage(err, tApp('pages.admin.spaceConversion.moveError')));
     }
     setPendingOp(null);
   };

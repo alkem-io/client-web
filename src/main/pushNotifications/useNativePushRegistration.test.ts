@@ -253,7 +253,7 @@ describe('useNativePushRegistration (SC-020)', () => {
       await waitFor(() => expect(logged).toHaveBeenCalledTimes(2));
     });
 
-    it('opts only the reset out of the global error handler', async () => {
+    it('runs the bind and the reset unasked, so both opt out of the global error handler', async () => {
       await mountOn('ios');
 
       const optionsFor = (name: string) =>
@@ -261,7 +261,9 @@ describe('useNativePushRegistration (SC-020)', () => {
       expect(optionsFor('ResetPushBadgeCount')).toEqual(
         expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
       );
-      expect(optionsFor('RegisterDevicePushToken')).toBeUndefined();
+      expect(optionsFor('RegisterDevicePushToken')).toEqual(
+        expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+      );
     });
 
     it('stops clearing after unmount', async () => {

@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import {
   LONG_MARKDOWN_TEXT_LENGTH,
   LONG_TEXT_LENGTH,
@@ -43,6 +45,7 @@ import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/Invi
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import {
+  errorMessage,
   NO_UNSAVED_CHANGES,
   type TabUnsavedChanges,
   toUnsavedChangesBarState,
@@ -97,6 +100,7 @@ export default function CrdSpaceSettingsPage() {
   const { t, i18n } = useTranslation('crd-spaceSettings');
   const { t: tCommon } = useTranslation('crd-common');
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const scope = useSettingsScope();
   const { id: spaceId, level, url: spaceUrl, roleSetId, communityId, accountId, loading: scopeLoading } = scope;
 
@@ -350,6 +354,9 @@ export default function CrdSpaceSettingsPage() {
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
 
   const [saveFailed, setSaveFailed] = useState(false);
+  // The reason a Save of the application form or the updates draft failed, shown in the
+  // save-failed dialog; a failed tab Save shows the tab's own error there instead.
+  const [saveFailedReason, setSaveFailedReason] = useState<string | null>(null);
   const [reloadRequested, setReloadRequested] = useState(false);
   // Reload only once the discarded buffers have disarmed the guard's reload confirm — the admin
   // already chose to drop the changes, so the browser must not ask a second time.
@@ -359,6 +366,7 @@ export default function CrdSpaceSettingsPage() {
 
   const saveActiveTab = async () => {
     if (!activeUnsaved.canSave) return;
+    setSaveFailedReason(null);
     if (await activeUnsaved.saveAll()) notify(tCommon('unsavedChanges.saved'), 'success');
     else setSaveFailed(true);
   };
@@ -445,13 +453,16 @@ export default function CrdSpaceSettingsPage() {
     // Invalid edits are never sent — the dialog's Save is disabled for them, as the bar's is.
     if (switchingSave || !canSaveAll) return;
     setSwitchingSave(true);
+    setSaveFailedReason(null);
     let saved = true;
     try {
       if (activeUnsaved.count > 0) saved = await activeUnsaved.saveAll();
-      if (saved && applicationForm.isDirty) await applicationForm.onSave();
-      if (saved && updatesTab.isDirty) await updatesTab.onSubmit();
-    } catch {
+      // A failure here opens the save-failed dialog below, with the server's reason.
+      if (saved && applicationForm.isDirty) await applicationForm.onSave(OWN_ERROR_HANDLING);
+      if (saved && updatesTab.isDirty) await updatesTab.onSubmit(OWN_ERROR_HANDLING);
+    } catch (error) {
       saved = false;
+      setSaveFailedReason(serverErrorMessage(error, errorMessage(error)));
     } finally {
       setSwitchingSave(false);
     }
@@ -1067,7 +1078,7 @@ export default function CrdSpaceSettingsPage() {
 
       <SaveFailedDialog
         open={saveFailed}
-        message={activeUnsaved.error}
+        message={saveFailedReason ?? activeUnsaved.error}
         onRefresh={() => {
           discardAll();
           setReloadRequested(true);

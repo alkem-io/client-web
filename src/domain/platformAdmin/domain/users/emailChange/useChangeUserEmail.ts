@@ -2,6 +2,8 @@ import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAdminUserEmailChangeMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { EMAIL_CHANGE_GENERIC_ERROR_KEY, mapEmailChangeErrorCode } from './emailChangeErrorMapping';
 
@@ -25,10 +27,12 @@ export type UseChangeUserEmailProvided = {
 const useChangeUserEmail = (userId: string): UseChangeUserEmailProvided => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const [errorMessage, setErrorMessage] = useState<string>();
 
   const [changeEmailMutation, { loading }] = useAdminUserEmailChangeMutation({
-    context: { skipGlobalErrorHandler: true },
+    // Every failure is shown inline in the dialog.
+    context: OWN_ERROR_HANDLING,
     refetchQueries: ['platformAdminUsersList', 'LatestUserEmailChangeAuditEntry', 'UserEmailChangeAuditEntries'],
     awaitRefetchQueries: true,
   });
@@ -58,7 +62,8 @@ const useChangeUserEmail = (userId: string): UseChangeUserEmailProvided => {
     } catch (error) {
       const code =
         error instanceof ApolloError ? (error.graphQLErrors[0]?.extensions?.code as string | undefined) : undefined;
-      setErrorMessage(t(mapEmailChangeErrorCode(code)));
+      const key = mapEmailChangeErrorCode(code);
+      setErrorMessage(key === EMAIL_CHANGE_GENERIC_ERROR_KEY ? serverErrorMessage(error, t(key)) : t(key));
       return false;
     }
   };

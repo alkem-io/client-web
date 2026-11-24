@@ -69,6 +69,11 @@ describe('useCreateInnovationHub', () => {
     expect(lastOptions).toMatchObject({ refetchQueries: ['AdminInnovationHubsList', 'AccountInformation'] });
   });
 
+  test("leaves a failed create to the global error handler, so the server's reason is the one message", () => {
+    renderHook(() => useCreateInnovationHub({ accountId: 'acc-1' }));
+    expect(lastOptions).not.toHaveProperty('context');
+  });
+
   test('sends List-type hub with empty space-list filter and trimmed profile, calls onCreated', async () => {
     const onCreated = vi.fn();
     const { result } = renderHook(() => useCreateInnovationHub({ accountId: 'acc-1', onCreated }));

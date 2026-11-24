@@ -51,6 +51,8 @@ type SaveProfileChangesParams<R extends ProfileReference, T extends string> = {
   references: ProfileReferenceChanges<R>;
   createReference: (ref: R) => Promise<unknown>;
   deleteReference: (ref: R) => Promise<unknown>;
+  /** The message the unsaved-changes bar shows for a failed step. */
+  describeError: (error: unknown) => string;
 };
 
 /**
@@ -65,6 +67,7 @@ export const saveProfileChanges = async <R extends ProfileReference, T extends s
   references,
   createReference,
   deleteReference,
+  describeError,
 }: SaveProfileChangesParams<R, T>) => {
   let firstError: string | null = null;
   const attempt = async (run: () => Promise<unknown>) => {
@@ -72,7 +75,7 @@ export const saveProfileChanges = async <R extends ProfileReference, T extends s
       await run();
       return true;
     } catch (err) {
-      firstError ??= err instanceof Error ? err.message : String(err);
+      firstError ??= describeError(err);
       return false;
     }
   };

@@ -5,7 +5,6 @@ import {
   useDeleteInnovationPackMutation,
   usePlatformAdminInnovationPacksQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { usePermissionDeniedNotifier } from '@/core/apollo/hooks/usePermissionDeniedNotifier';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { canDeleteOrgResource } from '@/main/crdPages/innovationPack/innovationPackAccess';
 import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
@@ -16,7 +15,6 @@ import { usePendingRows } from '../_shared/usePendingRows';
 const CrdAdminInnovationPacksPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const guard = usePermissionDeniedNotifier();
   const promoteRows = usePendingRows();
   const { data, loading } = usePlatformAdminInnovationPacksQuery();
 
@@ -51,7 +49,7 @@ const CrdAdminInnovationPacksPage = () => {
       }}
       onPromoteChange={(row, next) => {
         void promoteRows
-          .run(row.id, () => guard(() => updatePromote({ variables: { innovationPackId: row.id, promote: next } })))
+          .run(row.id, () => updatePromote({ variables: { innovationPackId: row.id, promote: next } }))
           .catch(() => {});
       }}
       isPromoteSaving={row => promoteRows.isPending(row.id)}

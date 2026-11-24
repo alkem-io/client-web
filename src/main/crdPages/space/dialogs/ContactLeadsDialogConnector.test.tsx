@@ -7,12 +7,17 @@ vi.mock('react-i18next', async importOriginal => ({
   ...(await importOriginal<typeof import('react-i18next')>()),
   useTranslation: () => ({
     t: (key: string, opts?: Record<string, unknown>) => (opts ? `${key}:${JSON.stringify(opts)}` : key),
+    i18n: { exists: () => false },
   }),
 }));
 
 const sendDirectMessageMock = vi.fn();
+const sendDirectMessageOptions = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useSendDirectMessageToUsersMutation: () => [sendDirectMessageMock, { loading: false }],
+  useSendDirectMessageToUsersMutation: (options: unknown) => {
+    sendDirectMessageOptions(options);
+    return [sendDirectMessageMock, { loading: false }];
+  },
 }));
 
 vi.mock('@/core/apollo/generated/graphql-schema', () => ({
@@ -186,12 +191,21 @@ describe('ContactLeadsDialogConnector — hourly message allowance used up', () 
     );
   });
 
-  test('another failure raises exactly one notification, with the send-failed text', async () => {
+  test("another refusal raises exactly one notification, with the server's reason", async () => {
     sendDirectMessageMock.mockRejectedValue(
       new ApolloError({
-        graphQLErrors: [new GraphQLError('Something failed', { extensions: { code: 'UNSPECIFIED' } })],
+        graphQLErrors: [new GraphQLError('Something failed', { extensions: { code: 'OPERATION_NOT_ALLOWED' } })],
       })
     );
+
+    await send();
+
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(notifyMock).toHaveBeenCalledWith(expect.stringContaining('Something failed'), 'error');
+  });
+
+  test('a failure without a server answer raises exactly one notification, with the send-failed text', async () => {
+    sendDirectMessageMock.mockRejectedValue(new ApolloError({ networkError: new Error('Failed to fetch') }));
 
     await send();
 

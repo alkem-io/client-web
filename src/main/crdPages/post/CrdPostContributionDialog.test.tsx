@@ -14,6 +14,7 @@ const state = vi.hoisted(() => ({
   deleteReference: vi.fn(),
   moveContribution: vi.fn(),
   notify: vi.fn(),
+  mutationHookOptions: vi.fn(),
 }));
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
@@ -44,9 +45,18 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCreatePostOnCalloutMutation: () => [state.createPost, { loading: false }],
   useUpdatePostMutation: () => [state.updatePost, { loading: false }],
   useDeleteContributionMutation: () => [state.deleteContribution],
-  useCreateReferenceOnProfileMutation: () => [state.createReference],
-  useDeleteReferenceMutation: () => [state.deleteReference],
-  useMoveContributionToCalloutMutation: () => [state.moveContribution],
+  useCreateReferenceOnProfileMutation: (options: unknown) => {
+    state.mutationHookOptions('createReference', options);
+    return [state.createReference];
+  },
+  useDeleteReferenceMutation: (options: unknown) => {
+    state.mutationHookOptions('deleteReference', options);
+    return [state.deleteReference];
+  },
+  useMoveContributionToCalloutMutation: (options: unknown) => {
+    state.mutationHookOptions('moveContribution', options);
+    return [state.moveContribution];
+  },
 }));
 
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => state.notify }));
@@ -149,6 +159,14 @@ describe('CrdPostContributionDialog — save closes the dialog', () => {
     expect(state.updatePost).not.toHaveBeenCalled();
     expect(onOpenChange).not.toHaveBeenCalled();
     expect(state.notify).not.toHaveBeenCalled();
+  });
+
+  test("edit mode: a refused reference change or move is left to the global error handler, which shows the server's reason", () => {
+    render(<CrdPostContributionDialog {...editProps} open={true} onOpenChange={vi.fn()} />);
+
+    for (const name of ['createReference', 'deleteReference', 'moveContribution']) {
+      expect(state.mutationHookOptions).toHaveBeenCalledWith(name, undefined);
+    }
   });
 });
 

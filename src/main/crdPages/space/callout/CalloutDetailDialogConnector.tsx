@@ -13,7 +13,6 @@ import {
   CalloutFramingType,
 } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import { CalloutPostPreview } from '@/crd/components/callout/CalloutPostPreview';
 import { CalloutWhiteboardContributionPreview } from '@/crd/components/callout/CalloutWhiteboardContributionPreview';
@@ -437,7 +436,7 @@ function CalloutDetailDialogLayer({
     { id: string; title: string; kind: 'post' | 'whiteboard' | 'document' } | undefined
   >(undefined);
   const [deletingContribution, setDeletingContribution] = useState(false);
-  const notify = useNotification();
+  // A failed delete is reported by the global error handler, with the server's reason.
   const [deleteContribution] = useDeleteContributionMutation();
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -805,7 +804,6 @@ function CalloutDetailDialogLayer({
       setConfirmDeleteContribution(undefined);
     } catch (err) {
       logError(new Error('Contribution delete failed', { cause: err as Error }));
-      notify(t('deleteContribution.saveFailed'), 'error');
     } finally {
       setDeletingContribution(false);
     }

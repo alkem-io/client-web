@@ -2,6 +2,7 @@ import { Bot, Building2, Globe, Layers, type LucideIcon, Shield, ShieldCheck, Us
 import { useTranslation } from 'react-i18next';
 import { useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { isAppMode } from '@/core/appMode/isAppMode';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { SettingsSectionIconColor } from '@/crd/components/common/SettingsSection';
@@ -27,13 +28,14 @@ import useUserNotificationsTabData from './useUserNotificationsTabData';
  * - `useUserNotificationsTabData` (optimistic-overrides + onToggle with
  *   hard-failure revert per FR-064 / Q5).
  *
- * On hard failure the hook re-throws; this page catches and surfaces an
- * error toast. The failed channel snaps back to the server value because
- * the override has already been cleared by the hook.
+ * On hard failure the hook re-throws and the global error handler reports
+ * it, with the server's reason. The failed channel snaps back to the server
+ * value because the override has already been cleared by the hook.
  */
 const CrdUserNotificationsTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const { userId } = useUserPageRouteContext();
   const { platformPrivilegeWrapper } = useCurrentUserContext();
 
@@ -98,7 +100,7 @@ const CrdUserNotificationsTab = () => {
       // hook expects. The mapper produced these ids so they're guaranteed valid.
       await onToggle(groupId as Parameters<typeof onToggle>[0], property, channel, next);
     } catch {
-      notify(t('user.notifications.toggleError'), 'error');
+      // Reported by the global error handler.
     }
   };
 
@@ -106,7 +108,7 @@ const CrdUserNotificationsTab = () => {
     try {
       await onToggleSound(property, next);
     } catch {
-      notify(t('user.notifications.toggleError'), 'error');
+      // Reported by the global error handler.
     }
   };
 
@@ -117,8 +119,8 @@ const CrdUserNotificationsTab = () => {
       } else {
         await pushSubscribe();
       }
-    } catch {
-      notify(t('user.notifications.push.error'), 'error');
+    } catch (error) {
+      notify(serverErrorMessage(error, t('user.notifications.push.error')), 'error');
     }
   };
 
