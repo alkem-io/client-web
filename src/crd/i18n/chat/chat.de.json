@@ -144,7 +144,8 @@
   "presence": {
     "online": "Online",
     "away": "Abwesend",
-    "offline": "Offline"
+    "offline": "Offline",
+    "busy": "Im Gespräch"
   },
   "status": {
     "set": "Status festlegen",

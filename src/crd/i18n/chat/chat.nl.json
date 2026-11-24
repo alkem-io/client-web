@@ -144,7 +144,8 @@
   "presence": {
     "online": "Online",
     "away": "Afwezig",
-    "offline": "Offline"
+    "offline": "Offline",
+    "busy": "In gesprek"
   },
   "status": {
     "set": "Status instellen",

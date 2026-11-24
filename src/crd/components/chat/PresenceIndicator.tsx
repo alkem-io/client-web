@@ -3,11 +3,12 @@ import { cn } from '@/crd/lib/utils';
 import type { ChatPresence } from './types';
 
 // Each state has its own shape, so none reads by colour alone: online is a full
-// dot, away is half filled, offline is a hollow ring.
+// dot, away is half filled, offline is a hollow ring, busy (in a call) is crossed by a bar.
 const DOT_CLASS = {
   online: 'bg-emerald-500',
   away: 'overflow-hidden border-2 border-amber-500 bg-amber-500',
   offline: 'border-2 border-muted-foreground bg-card',
+  busy: 'bg-red-500',
 } as const;
 
 type PresenceIndicatorProps = {
@@ -31,6 +32,9 @@ export function PresenceIndicator({ presence }: PresenceIndicatorProps) {
       className={cn('absolute -bottom-0.5 -right-0.5 size-3 rounded-full ring-2 ring-card', DOT_CLASS[presence])}
     >
       {presence === 'away' && <span className="absolute inset-y-0 right-0 w-1/2 bg-card" />}
+      {presence === 'busy' && (
+        <span className="absolute inset-x-0.5 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-card" />
+      )}
     </span>
   );
 }
