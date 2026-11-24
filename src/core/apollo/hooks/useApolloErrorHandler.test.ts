@@ -11,6 +11,7 @@ const EXISTING_KEYS = new Set([
   'apollo.errors.network.session_store_unavailable',
   'apollo.errors.generic',
   'apollo.errors.userMessages.authorization.forbiddenPolicy',
+  'apollo.errors.userMessages.operations.operationNotAllowed',
 ]);
 
 vi.mock('react-i18next', () => ({
@@ -23,7 +24,7 @@ vi.mock('react-i18next', () => ({
 import { ApolloLink, execute, gql, Observable } from '@apollo/client';
 import { renderHook } from '@testing-library/react';
 import { useErrorHandlerLink } from '../graphqlLinks/useErrorHandlerLink';
-import { useApolloErrorHandler } from './useApolloErrorHandler';
+import { useApolloErrorHandler, useServerErrorMessage } from './useApolloErrorHandler';
 
 /**
  * Shaped like the `ApolloError` the global error link builds. Only `networkError` and
@@ -209,5 +210,51 @@ describe('useApolloErrorHandler', () => {
         expect(notify).toHaveBeenCalledTimes(1);
       });
     });
+  });
+});
+
+describe('useServerErrorMessage', () => {
+  const ID = '6df9be66-1c2d-4e5f-8a9b-0c1d2e3f4a5b';
+  const FALLBACK = 'The change could not be saved. Please try again.';
+
+  const withGraphQLErrors = (graphQLErrors: unknown[]) =>
+    ({ networkError: null, graphQLErrors, clientErrors: [] }) as never;
+
+  const notAvailable = {
+    message: 'Not available',
+    extensions: { code: 'FORBIDDEN_POLICY', userMessage: 'userMessages.authorization.forbiddenPolicy' },
+  };
+  const notAllowed = {
+    message: `Unable to remove Space (${ID}), with level 0, as it contains 6 subspaces`,
+    extensions: { code: 'OPERATION_NOT_ALLOWED', userMessage: 'userMessages.operations.operationNotAllowed' },
+  };
+
+  it('carries the server reason the global handler would have shown, without ids', () => {
+    expect(useServerErrorMessage()(withGraphQLErrors([notAllowed]), FALLBACK)).toBe(
+      'apollo.errors.userMessages.operations.operationNotAllowed Unable to remove Space, with level 0, as it contains 6 subspaces'
+    );
+  });
+
+  it('shows the not-available sentence for a refusal that says nothing more', () => {
+    expect(useServerErrorMessage()(withGraphQLErrors([notAvailable]), FALLBACK)).toBe(
+      'apollo.errors.userMessages.authorization.forbiddenPolicy'
+    );
+  });
+
+  it('prefers an error that says more than "not available" when a response carries both', () => {
+    expect(useServerErrorMessage()(withGraphQLErrors([notAvailable, notAllowed]), FALLBACK)).toContain(
+      'as it contains 6 subspaces'
+    );
+  });
+
+  it('ignores a URL resolver error', () => {
+    const urlResolver = { message: 'No space at this URL', extensions: { code: 'URL_RESOLVER_ERROR' } };
+    expect(useServerErrorMessage()(withGraphQLErrors([urlResolver]), FALLBACK)).toBe(FALLBACK);
+  });
+
+  it('uses the fallback for a failure with no GraphQL error', () => {
+    expect(useServerErrorMessage()(apolloError(new Error('Failed to fetch')), FALLBACK)).toBe(FALLBACK);
+    expect(useServerErrorMessage()(new Error('Upload failed'), FALLBACK)).toBe(FALLBACK);
+    expect(useServerErrorMessage()(undefined, FALLBACK)).toBe(FALLBACK);
   });
 });

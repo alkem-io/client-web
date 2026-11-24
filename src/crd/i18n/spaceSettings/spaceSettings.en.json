@@ -930,7 +930,6 @@
       "title": "Danger Zone",
       "description": "Permanently delete this space and all its content.",
       "delete": "Delete this Space",
-      "deleteError": "The space could not be deleted. Please try again.",
       "deleteDialog": {
         "title": "Delete Space",
         "description": "This will permanently delete this space and all its content. This action cannot be undone.",

@@ -930,7 +930,6 @@
       "title": "Gevarenzone",
       "description": "Verwijder deze Space en alle inhoud ervan permanent.",
       "delete": "Deze Space verwijderen",
-      "deleteError": "De Space kon niet worden verwijderd. Probeer het opnieuw.",
       "deleteDialog": {
         "title": "Space verwijderen",
         "description": "Hierdoor wordt deze Space en alle inhoud ervan permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",

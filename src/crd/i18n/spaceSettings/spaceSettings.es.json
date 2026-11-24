@@ -930,7 +930,6 @@
       "title": "Zona de peligro",
       "description": "Elimina permanentemente este espacio y todo su contenido.",
       "delete": "Eliminar este espacio",
-      "deleteError": "No se pudo eliminar el espacio. Inténtalo de nuevo.",
       "deleteDialog": {
         "title": "Eliminar espacio",
         "description": "Esto eliminará permanentemente este espacio y todo su contenido. Esta acción no se puede deshacer.",

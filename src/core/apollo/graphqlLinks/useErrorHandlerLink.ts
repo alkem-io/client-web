@@ -1,17 +1,10 @@
 import { ApolloError, type Operation } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { getMainDefinition } from '@apollo/client/utilities';
-import type { GraphQLFormattedError } from 'graphql';
 import { useMemo, useRef } from 'react';
 import { routeToSecondFactor } from '@/core/auth/authentication/routeToSecondFactor';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
-import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
-
-// "Not available": the thing may not exist, or the caller may not access it. For a mutation, the
-// user's own action, the first one in a response is reported and the rest are dropped, so the action
-// gets one message however many errors carry it. For a query or subscription, which loads something
-// to display, they are all dropped: the screen renders without that part or shows its own state.
-const NOT_AVAILABLE_ERRORS: string[] = [AlkemioGraphqlErrorCode.FORBIDDEN, AlkemioGraphqlErrorCode.FORBIDDEN_POLICY];
+import { isNotAvailableError, useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
 
 const getOperationType = (operation: Operation) => {
   const definition = getMainDefinition(operation.query);
@@ -36,23 +29,26 @@ export const useErrorHandlerLink = () => {
           return;
         }
 
-        // Check if this operation should skip global error handling
+        // An operation whose caller shows its own message, or none (OWN_ERROR_HANDLING).
         const { skipGlobalErrorHandler } = operation.getContext();
         if (skipGlobalErrorHandler) {
           return;
         }
 
+        // "Not available": the thing may not exist, or the caller may not access it. For a mutation,
+        // the user's own action, the first one in a response is reported and the rest are dropped, so
+        // the action gets one message however many errors carry it. For a query or subscription, which
+        // loads something to display, they are all dropped: the screen renders without that part or
+        // shows its own state.
         const operationType = getOperationType(operation);
-        const isNotAvailable = (error: GraphQLFormattedError) =>
-          NOT_AVAILABLE_ERRORS.includes(error.extensions?.code as string);
         const reportedNotAvailableIndex =
-          operationType === 'mutation' ? (graphQLErrors?.findIndex(isNotAvailable) ?? -1) : -1;
+          operationType === 'mutation' ? (graphQLErrors?.findIndex(isNotAvailableError) ?? -1) : -1;
 
         const reportableGraphqlErrors = graphQLErrors?.filter((error, index) => {
           if (error.extensions?.code === AlkemioGraphqlErrorCode.URL_RESOLVER_ERROR) {
             return false;
           }
-          return !isNotAvailable(error) || index === reportedNotAvailableIndex;
+          return !isNotAvailableError(error) || index === reportedNotAvailableIndex;
         });
 
         // A subscription losing its transport is not a user-facing failure: nothing the user did

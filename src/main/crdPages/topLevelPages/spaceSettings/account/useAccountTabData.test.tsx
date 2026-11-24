@@ -66,19 +66,22 @@ describe('useAccountTabData — delete outcome (spec 045 FR-024a)', () => {
     expect(notify).not.toHaveBeenCalled();
   });
 
-  it('reports a failed delete, closes the dialog and stays on the tab', () => {
+  it('closes the dialog and stays on the tab when the delete fails', () => {
     const { result } = renderHook(() => useAccountTabData('space-1'));
     act(() => result.current.onDeleteSpace());
 
     act(() => mutationOptions.onError?.());
 
     expect(result.current.pendingDeleteSpace).toBe(false);
-    expect(notify).toHaveBeenCalledWith('account.dangerZone.deleteError', 'error');
     expect(replace).not.toHaveBeenCalled();
   });
 
-  it('shows its own delete failure, so the delete opts out of the global error handler', () => {
+  it("leaves a failed delete to the global error handler, so the server's reason is the one message", () => {
     renderHook(() => useAccountTabData('space-1'));
-    expect(mutationOptions.context).toEqual({ skipGlobalErrorHandler: true });
+
+    act(() => mutationOptions.onError?.());
+
+    expect(mutationOptions.context).toBeUndefined();
+    expect(notify).not.toHaveBeenCalled();
   });
 });

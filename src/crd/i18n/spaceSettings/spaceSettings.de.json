@@ -930,7 +930,6 @@
       "title": "Gefahrenzone",
       "description": "Diesen Space und alle Inhalte dauerhaft löschen.",
       "delete": "Diesen Space löschen",
-      "deleteError": "Der Space konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
       "deleteDialog": {
         "title": "Space löschen",
         "description": "Dadurch werden dieser Space und alle Inhalte dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",

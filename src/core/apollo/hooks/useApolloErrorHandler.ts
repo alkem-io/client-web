@@ -86,26 +86,57 @@ export const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction
 
 const NETWORK_ERROR_FALLBACK_KEY = 'apollo.errors.network.generic' as TranslationKey;
 
-// Codes whose server message is never shown beside the translation: it adds nothing the user can act on.
-const CODES_WITHOUT_DETAIL: string[] = [
-  AlkemioGraphqlErrorCode.UNSPECIFIED,
+// "Not available": the thing may not exist, or the caller may not access it.
+const NOT_AVAILABLE_ERROR_CODES: string[] = [
   AlkemioGraphqlErrorCode.FORBIDDEN,
   AlkemioGraphqlErrorCode.FORBIDDEN_POLICY,
 ];
+
+export const isNotAvailableError = (error: GraphQLFormattedError) =>
+  NOT_AVAILABLE_ERROR_CODES.includes(error.extensions?.code as string);
+
+// Codes whose server message is never shown beside the translation: it adds nothing the user can act on.
+const CODES_WITHOUT_DETAIL: string[] = [AlkemioGraphqlErrorCode.UNSPECIFIED, ...NOT_AVAILABLE_ERROR_CODES];
+
+/**
+ * What the global handler shows for one GraphQL error: its translation, then the server's own
+ * message (ids removed) when that says something more.
+ */
+const getMessagesForGraphQLError = (graphqlError: GraphQLFormattedError, t: TFunction, i18n: i18n): string[] => {
+  const translation = getTranslationForCode(graphqlError, t, i18n);
+  const code = graphqlError.extensions?.code as string;
+  const detail = stripIdsFromMessage(graphqlError.message);
+  const hasDetail = detail && detail !== translation && !CODES_WITHOUT_DETAIL.includes(code);
+  return hasDetail ? [translation, detail] : [translation];
+};
+
+/**
+ * For a caller that opts out of the global handler (OWN_ERROR_HANDLING) because it shows some
+ * failures its own way: the one message for any other failure. It is what the global handler would
+ * have shown for the first GraphQL error, preferring one that says more than "not available", so the
+ * server's reason still reaches the user. `fallback` is for a failure that carries no GraphQL error,
+ * such as a lost connection or a failure before the request was sent.
+ */
+export const useServerErrorMessage = () => {
+  const { t, i18n } = useTranslation();
+
+  return (error: unknown, fallback: string): string => {
+    const graphQLErrors = ((error as ApolloError | undefined)?.graphQLErrors ?? []).filter(
+      graphqlError => graphqlError.extensions?.code !== AlkemioGraphqlErrorCode.URL_RESOLVER_ERROR
+    );
+    const reported = graphQLErrors.find(graphqlError => !isNotAvailableError(graphqlError)) ?? graphQLErrors[0];
+    return reported ? getMessagesForGraphQLError(reported, t, i18n).join(' ') : fallback;
+  };
+};
 
 export const useApolloErrorHandler = (severity: Severity = 'error') => {
   const { t, i18n } = useTranslation();
   const notify = useNotification();
 
   const notifyGraphQLError = (graphqlError: GraphQLFormattedError) => {
-    const translation = getTranslationForCode(graphqlError, t, i18n);
     const numericCode = graphqlError.extensions?.numericCode as number | undefined;
-    notify(translation, severity, numericCode);
-
-    const code = graphqlError.extensions?.code as string;
-    const detail = stripIdsFromMessage(graphqlError.message);
-    if (detail && detail !== translation && !CODES_WITHOUT_DETAIL.includes(code)) {
-      notify(detail, severity, numericCode);
+    for (const message of getMessagesForGraphQLError(graphqlError, t, i18n)) {
+      notify(message, severity, numericCode);
     }
   };
 
@@ -165,14 +196,6 @@ export const isApolloNotFoundError = (error: ApolloError | undefined) => {
   return false;
 };
 
-export const isApolloForbiddenError = (error: ApolloError | undefined) => {
-  if (error?.graphQLErrors) {
-    const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
-    return extensions.some(extension => extension?.code === AlkemioGraphqlErrorCode.FORBIDDEN);
-  }
-  return false;
-};
-
 export const isApolloForbiddenPolicyError = (error: ApolloError | undefined) => {
   if (error?.graphQLErrors) {
     const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
@@ -181,9 +204,8 @@ export const isApolloForbiddenPolicyError = (error: ApolloError | undefined) => 
   return false;
 };
 
-export const isApolloAuthorizationError = (error: ApolloError | undefined) => {
-  return error && (isApolloForbiddenError(error) || isApolloForbiddenPolicyError(error));
-};
+export const isApolloAuthorizationError = (error: ApolloError | undefined) =>
+  Boolean(error?.graphQLErrors?.some(isNotAvailableError));
 
 export const isUrlResolverError = (error: ApolloError | undefined) => {
   if (error?.graphQLErrors) {
