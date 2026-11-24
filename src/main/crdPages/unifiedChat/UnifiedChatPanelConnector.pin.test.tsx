@@ -14,6 +14,9 @@ vi.mock('@/core/matrix/activeClient', async importOriginal => ({
   ...(await importOriginal<typeof import('@/core/matrix/activeClient')>()),
   useMatrixClient: () => pin.client,
 }));
+vi.mock('@/main/userMessaging/matrix/useMatrixPresence', () => ({
+  useOwnStatusMessage: () => ({ statusMessage: '', setStatusMessage: vi.fn() }),
+}));
 vi.mock('@/main/userMessaging/matrix/conversationSummaryStore', async importOriginal => ({
   ...(await importOriginal<typeof import('@/main/userMessaging/matrix/conversationSummaryStore')>()),
   storeFor: () => ({ togglePin: pin.togglePin }),
