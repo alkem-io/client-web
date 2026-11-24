@@ -154,6 +154,15 @@ describe('ChatPanel', () => {
       expect(within(header).getByText('Design team')).toBeInTheDocument();
     });
 
+    test('shows the banner directly under the header, above the notice and the body', () => {
+      renderPanel({ banner: <div data-testid="call-banner" />, notice: <div data-testid="notice" /> });
+      const header = screen.getByRole('banner');
+      const banner = screen.getByTestId('call-banner');
+      expect(header.contains(banner)).toBe(false);
+      expect(header.nextElementSibling).toBe(banner);
+      expect(banner.nextElementSibling).toBe(screen.getByTestId('notice'));
+    });
+
     test('the title is plain text when there is no title action', () => {
       renderPanel({ titleAvatar: <span data-testid="title-avatar" /> });
       expect(screen.queryByRole('button', { name: /Design team/ })).not.toBeInTheDocument();

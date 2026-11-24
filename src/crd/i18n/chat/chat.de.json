@@ -123,6 +123,15 @@
     "joinVideo": "Mit Video beitreten",
     "joinAudio": "Nur mit Audio beitreten",
     "joinedOnThisDevice": "Auf diesem Gerät bereits beigetreten",
+    "banner": {
+      "inProgress": "Anruf läuft",
+      "participantsTwo": "{{first}} und {{second}}",
+      "participantsMore_one": "{{first}}, {{second}} und {{count}} weitere Person",
+      "participantsMore_other": "{{first}}, {{second}} und {{count}} weitere Personen",
+      "calling": "{{name}} ruft dich an",
+      "answer": "Annehmen",
+      "decline": "Anruf ablehnen"
+    },
     "preparing": "Anruf wird vorbereitet… Er startet gleich.",
     "dropped": "Der Anruf konnte nicht gestartet werden. Bitte versuche es erneut.",
     "overlayLabel": "Anruf",

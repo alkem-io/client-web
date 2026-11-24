@@ -123,6 +123,15 @@
     "joinVideo": "Deelnemen met video",
     "joinAudio": "Alleen met audio deelnemen",
     "joinedOnThisDevice": "Al deelgenomen op dit apparaat",
+    "banner": {
+      "inProgress": "Gesprek bezig",
+      "participantsTwo": "{{first}} en {{second}}",
+      "participantsMore_one": "{{first}}, {{second}} en {{count}} andere",
+      "participantsMore_other": "{{first}}, {{second}} en {{count}} anderen",
+      "calling": "{{name}} belt je",
+      "answer": "Opnemen",
+      "decline": "Gesprek weigeren"
+    },
     "preparing": "Gesprek wordt voorbereid… Het start zo meteen.",
     "dropped": "Kon het gesprek niet starten. Probeer het opnieuw.",
     "overlayLabel": "Gesprek",

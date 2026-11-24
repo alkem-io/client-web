@@ -45,6 +45,8 @@ type ChatPanelProps = {
   subtitle?: ReactNode;
   /** Conversation-specific actions (e.g. group/guidance menu) shown in the header. */
   headerActions?: ReactNode;
+  /** The open conversation's call strip (e.g. CallBanner), shown directly under the header. */
+  banner?: ReactNode;
   /** A status strip shown under the header, e.g. a connection notice. */
   notice?: ReactNode;
   children: ReactNode;
@@ -89,6 +91,7 @@ export function ChatPanel({
   titleActionLabel,
   subtitle,
   headerActions,
+  banner,
   notice,
   children,
 }: ChatPanelProps) {
@@ -230,6 +233,7 @@ export function ChatPanel({
                 <X aria-hidden="true" className={chatHeaderLargeIconClass} />
               </button>
             </header>
+            {banner}
             {notice}
             <div className="flex min-h-0 flex-1 flex-col">{children}</div>
           </div>

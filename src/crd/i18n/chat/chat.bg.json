@@ -123,6 +123,15 @@
     "joinVideo": "Присъединяване с видео",
     "joinAudio": "Присъединяване само с аудио",
     "joinedOnThisDevice": "Вече сте се присъединили от това устройство",
+    "banner": {
+      "inProgress": "Тече разговор",
+      "participantsTwo": "{{first}} и {{second}}",
+      "participantsMore_one": "{{first}}, {{second}} и още {{count}}",
+      "participantsMore_other": "{{first}}, {{second}} и още {{count}}",
+      "calling": "{{name}} ви се обажда",
+      "answer": "Отговор",
+      "decline": "Отхвърляне на обаждането"
+    },
     "preparing": "Подготвяне на разговора… Ще започне след малко.",
     "dropped": "Разговорът не можа да започне. Моля, опитайте отново.",
     "overlayLabel": "Разговор",

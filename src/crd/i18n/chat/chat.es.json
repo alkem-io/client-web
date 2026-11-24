@@ -123,6 +123,15 @@
     "joinVideo": "Unirse con vídeo",
     "joinAudio": "Unirse solo con audio",
     "joinedOnThisDevice": "Ya te has unido desde este dispositivo",
+    "banner": {
+      "inProgress": "Llamada en curso",
+      "participantsTwo": "{{first}} y {{second}}",
+      "participantsMore_one": "{{first}}, {{second}} y {{count}} más",
+      "participantsMore_other": "{{first}}, {{second}} y {{count}} más",
+      "calling": "{{name}} te está llamando",
+      "answer": "Responder",
+      "decline": "Rechazar llamada"
+    },
     "preparing": "Preparando la llamada… Empezará en un momento.",
     "dropped": "No se pudo iniciar la llamada. Inténtalo de nuevo.",
     "overlayLabel": "Llamada",

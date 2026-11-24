@@ -123,6 +123,15 @@
     "joinVideo": "Join with video",
     "joinAudio": "Join with audio only",
     "joinedOnThisDevice": "Already joined on this device",
+    "banner": {
+      "inProgress": "Call in progress",
+      "participantsTwo": "{{first}} and {{second}}",
+      "participantsMore_one": "{{first}}, {{second}} and {{count}} more",
+      "participantsMore_other": "{{first}}, {{second}} and {{count}} more",
+      "calling": "{{name}} is calling you",
+      "answer": "Answer",
+      "decline": "Decline call"
+    },
     "preparing": "Preparing your call… It will start in a moment.",
     "dropped": "Couldn't start the call. Please try again.",
     "overlayLabel": "Call",
