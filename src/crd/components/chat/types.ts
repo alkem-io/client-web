@@ -1,7 +1,7 @@
 import type { CommentAuthor, CommentReaction, MessageAttachment } from '@/crd/components/comment/types';
 
-/** A person's availability; 'unknown' renders nothing, never a fake 'offline'. */
-export type ChatPresence = 'online' | 'away' | 'offline' | 'unknown';
+/** A person's availability, 'busy' meaning in a call; 'unknown' renders nothing, never a fake 'offline'. */
+export type ChatPresence = 'online' | 'away' | 'offline' | 'busy' | 'unknown';
 
 /** A message author, with what the avatar popover shows. */
 export type ChatAuthor = CommentAuthor & {
@@ -42,7 +42,7 @@ export type ChatListItem = {
   userPinned?: boolean;
   /** A call is running in this conversation. */
   hasActiveCall?: boolean;
-  /** The counterpart's availability in a 1:1 conversation. */
+  /** The counterpart's availability in a 1:1 conversation; 'busy' for any conversation with a call running. */
   presence?: ChatPresence;
 };
 
@@ -71,6 +71,8 @@ export type GroupMember = {
   name: string;
   avatarUrl?: string;
   isCurrentUser?: boolean;
+  presence?: ChatPresence;
+  statusMessage?: string;
 };
 
 /** Header model for the conversation/thread view. */

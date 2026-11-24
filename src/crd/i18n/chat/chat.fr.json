@@ -143,7 +143,8 @@
   "presence": {
     "online": "En ligne",
     "away": "Absent",
-    "offline": "Hors ligne"
+    "offline": "Hors ligne",
+    "busy": "En appel"
   },
   "status": {
     "set": "Définir un statut",

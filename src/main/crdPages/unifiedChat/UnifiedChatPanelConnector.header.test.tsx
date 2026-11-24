@@ -297,10 +297,10 @@ describe('UnifiedChatPanelConnector header', () => {
     ['a 1:1 chat', 'direct'],
     ['a group chat', 'group'],
   ])('%s header shows neither your status nor the gear menu', (_name, conversationId) => {
-    ownStatus.statusMessage = 'In a workshop';
+    ownStatus.statusMessage = 'Out for lunch';
     state.selectedConversationId = conversationId;
     render(<UnifiedChatPanelConnector />);
-    expect(panelProps.subtitle).toBeUndefined();
+    expect(screen.queryByText('Out for lunch')).not.toBeInTheDocument();
     expect(panelProps.settingsMenu).toBeUndefined();
     expect(screen.queryByRole('button', { name: 'status.edit' })).not.toBeInTheDocument();
   });

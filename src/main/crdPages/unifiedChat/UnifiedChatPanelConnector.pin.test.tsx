@@ -62,7 +62,7 @@ vi.mock('@/main/userMessaging/calls/useCallEligibility', () => ({
   useCallEligibility: () => ({ eligible: false, matrixRoomId: null }),
 }));
 vi.mock('@/main/userMessaging/calls/useRoomCallSession', () => ({ useRoomCallSession: () => ({}) }));
-vi.mock('@/main/userMessaging/calls/useActiveCallRooms', () => ({ useActiveCallRooms: () => new Set() }));
+vi.mock('@/main/userMessaging/calls/useActiveCallRooms', () => ({ useLiveCalls: () => new Map() }));
 vi.mock('./ConversationThread', () => ({ ConversationThread: () => null }));
 
 type ListProps = { conversations: { id: string; userPinned?: boolean }[]; onTogglePin: (id: string) => void };
