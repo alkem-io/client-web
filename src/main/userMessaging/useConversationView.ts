@@ -7,6 +7,7 @@ import {
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, type RoomMessageAttachmentInput } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -145,7 +146,7 @@ export const useConversationView = (
             },
           },
           // The attachment composer shows its own error for an unconfirmed send.
-          context: { skipGlobalErrorHandler: true },
+          context: OWN_ERROR_HANDLING,
         });
       } else {
         setIsSendingDirect(true);

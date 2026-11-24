@@ -45,9 +45,8 @@ export function useCreateInnovationPack({
 }: UseCreateInnovationPackArgs): UseCreateInnovationPackResult {
   const [creating, startCreating] = useTransition();
   const [pending, setPending] = useState(false);
-  // The create dialog toasts a failed create itself.
+  // A failed create is reported by the global error handler, with the server's reason.
   const [createMutation] = useCreateInnovationPackMutation({
-    context: { skipGlobalErrorHandler: true },
     refetchQueries: ['AccountInformation', 'AdminInnovationPacksList', 'InnovationLibrary'],
   });
   const [fetchPack] = useAdminInnovationPackLazyQuery({ fetchPolicy: 'network-only' });

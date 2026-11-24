@@ -24,7 +24,7 @@ export type UseApplicationFormDataResult = {
   onQuestionMoveDown: (index: number) => void;
   /**
    * Resolves once the form is saved and refetched; rejects on failure. A caller that shows its own
-   * failure passes `{ skipGlobalErrorHandler: true }` as the context.
+   * failure passes `OWN_ERROR_HANDLING` as the context.
    */
   onSave: (context?: DefaultContext) => Promise<void>;
   onReset: () => void;

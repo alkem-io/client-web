@@ -22,7 +22,8 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 }));
 
 vi.mock('@/core/routing/useNavigate', () => ({ default: () => vi.fn() }));
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+const notify = vi.hoisted(() => vi.fn());
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 vi.mock('@/crd/components/contributor/settings/ContributorAccountView', () => ({ ContributorAccountView: () => null }));
 vi.mock('@/crd/components/dialogs/ConfirmationDialog', () => ({ ConfirmationDialog: () => null }));
 vi.mock('@/main/crdPages/innovationHub/CrdCreateInnovationHubDialog', () => ({
@@ -45,13 +46,14 @@ vi.mock('./userAccountMapper', () => ({ mapUserAccountToViewProps: () => ({}) })
 import CrdUserAccountTab from './CrdUserAccountTab';
 
 describe('CrdUserAccountTab', () => {
-  it('reports its own delete outcomes, so every delete opts out of the global error handler', () => {
+  it("leaves a failed delete to the global error handler, so the server's reason is the one message", () => {
     render(<CrdUserAccountTab />);
 
     for (const useDeleteMutation of Object.values(deleteMutationHooks)) {
-      expect(useDeleteMutation).toHaveBeenCalledWith(
-        expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
-      );
+      const options = useDeleteMutation.mock.calls[0]?.[0] as { context?: unknown; onError?: () => void };
+      expect(options.context).toBeUndefined();
+      options.onError?.();
     }
+    expect(notify).not.toHaveBeenCalled();
   });
 });

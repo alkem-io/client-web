@@ -183,7 +183,6 @@
     "replaceFlow": {
       "button": "Reemplazar flujo de innovación",
       "loading": "Cargando nuevo flujo…",
-      "error": "No se pudo reemplazar el flujo de innovación. El flujo no ha cambiado: inténtalo de nuevo.",
       "applyDialog": {
         "title": "Aplicar nueva plantilla",
         "description": "Estás a punto de aplicar una nueva plantilla. Esta acción eliminará permanentemente tu flujo de innovación actual. Sin embargo, las publicaciones existentes vinculadas a distintas fases se conservarán y se agruparán en la primera fase de la nueva configuración.<br/><br/>Elige una de las siguientes opciones:",

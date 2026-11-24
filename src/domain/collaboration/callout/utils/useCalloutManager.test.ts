@@ -21,10 +21,10 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 import { useCalloutManager } from './useCalloutManager';
 
 describe('useCalloutManager', () => {
-  it('leaves a refused visibility change or delete to the caller, which shows its own message', () => {
+  it("leaves a refused visibility change or delete to the global error handler, which shows the server's reason", () => {
     renderHook(() => useCalloutManager());
 
-    expect(updateVisibilityOptions.mock.calls[0][0].context).toEqual({ skipGlobalErrorHandler: true });
-    expect(deleteCalloutOptions.mock.calls[0][0].context).toEqual({ skipGlobalErrorHandler: true });
+    expect(updateVisibilityOptions.mock.calls[0][0]?.context).toBeUndefined();
+    expect(deleteCalloutOptions.mock.calls[0][0]?.context).toBeUndefined();
   });
 });

@@ -1,5 +1,10 @@
+import { ApolloError } from '@apollo/client';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key, i18n: { exists: () => false } }),
+}));
 
 // ─── Apollo hook mocks ────────────────────────────────────────────────────
 
@@ -204,6 +209,28 @@ describe('useUserProfileTabData — saveAll', () => {
     expect(result.current.unsaved.error).toBe('Server says no');
     expect(result.current.values?.displayName).toBe('Ada L.');
     expect(result.current.unsaved.count).toBe(1);
+  });
+
+  it("shows the server's reason, without ids, when the update is refused", async () => {
+    mockUpdateUser.mockRejectedValueOnce(
+      new ApolloError({
+        graphQLErrors: [
+          {
+            message: 'Display name (6df9be66-1c2d-4e5f-8a9b-0c1d2e3f4a5b) is already taken',
+            extensions: { code: 'OPERATION_NOT_ALLOWED' },
+          } as never,
+        ],
+      })
+    );
+    const { result } = renderHook(() => useUserProfileTabData('user-1'));
+    act(() => result.current.onChange({ displayName: 'Ada L.' }));
+
+    await act(async () => {
+      await result.current.unsaved.saveAll();
+    });
+
+    expect(result.current.unsaved.error).toContain('Display name is already taken');
+    expect(result.current.unsaved.error).not.toContain('6df9be66');
   });
 
   it('reports the Save as failed when the refresh afterwards fails, so a retry cannot create the references twice', async () => {

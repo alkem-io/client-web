@@ -28,8 +28,8 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 import useKnowledgeBase from './useKnowledgeBase';
 
 describe('useKnowledgeBase', () => {
-  it('leaves a failed description save to its caller, which shows its own message, so it opts out of the global error handler', () => {
+  it("leaves a failed description save to the global error handler, which shows the server's reason", () => {
     renderHook(() => useKnowledgeBase({ id: 'vc-1' }));
-    expect(mutationOptions.updateVC).toEqual(expect.objectContaining({ context: { skipGlobalErrorHandler: true } }));
+    expect(mutationOptions.updateVC).not.toHaveProperty('context');
   });
 });

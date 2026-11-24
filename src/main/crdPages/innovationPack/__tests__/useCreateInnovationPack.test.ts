@@ -14,8 +14,8 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 import { useCreateInnovationPack } from '../useCreateInnovationPack';
 
 describe('useCreateInnovationPack', () => {
-  it('its dialog toasts a failed create, so the mutation opts out of the global error handler', () => {
+  it("leaves a failed create to the global error handler, so the server's reason is the one message", () => {
     renderHook(() => useCreateInnovationPack({ accountId: 'acc-1' }));
-    expect(hookOptions.current).toMatchObject({ context: { skipGlobalErrorHandler: true } });
+    expect(hookOptions.current).not.toHaveProperty('context');
   });
 });

@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSendDirectMessageToUsersMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { DirectMessageDeliveryStatus } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { SendConfirmationDialog } from '@/crd/components/chat/SendConfirmationDialog';
@@ -50,6 +52,7 @@ function mapToShareUser(user: SearchedUser): ShareUser | null {
 export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: CalloutShareOnAlkemioFormProps) {
   const { t } = useTranslation('crd-common');
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const { userModel: currentUser } = useCurrentUserContext();
   const { setIsOpen, setSelectedConversationId } = useUserMessagingContext();
 
@@ -77,9 +80,7 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: Callout
     .map(mapToShareUser)
     .filter((u): u is ShareUser => u !== null);
 
-  const [sendDirectMessage, { loading: sending }] = useSendDirectMessageToUsersMutation({
-    context: { skipGlobalErrorHandler: true },
-  });
+  const [sendDirectMessage, { loading: sending }] = useSendDirectMessageToUsersMutation();
 
   const userError = selectedUsers.length === 0 ? t('share.alkemio.errors.atLeastOneUser') : null;
   const messageError =
@@ -114,7 +115,7 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: Callout
             message: finalMessage,
           },
         },
-        context: { skipGlobalErrorHandler: true },
+        context: OWN_ERROR_HANDLING,
       });
 
       const results = data?.sendDirectMessageToUsers ?? [];
@@ -142,7 +143,10 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: Callout
       setSearchQuery('');
       setShowErrors(false);
     } catch (error) {
-      notify(getMessageSendLimitMessage(error) ?? t('share.alkemio.errors.sendFailed'), 'error');
+      notify(
+        getMessageSendLimitMessage(error) ?? serverErrorMessage(error, t('share.alkemio.errors.sendFailed')),
+        'error'
+      );
     }
   };
 

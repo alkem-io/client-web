@@ -450,30 +450,47 @@ describe('useSpaceConversion', () => {
   });
 
   describe('error surface propagated', () => {
-    test('every conversion and move runs without the global error handler, since its failure toasts once here', () => {
+    test('every conversion leaves its failure to the global error handler', () => {
       renderHook(() => useSpaceConversion());
 
-      const names = ['convertL1ToL0', 'convertL1ToL2', 'convertL2ToL1', 'moveL1ToL0', 'moveL1ToL2', 'moveL2ToL1'];
-      for (const name of names) {
+      for (const name of ['convertL1ToL0', 'convertL1ToL2', 'convertL2ToL1']) {
+        expect(mutationHookOptions[name]).toBeUndefined();
+      }
+    });
+
+    test('every move opts out, because the panel shows why it failed', () => {
+      renderHook(() => useSpaceConversion());
+
+      for (const name of ['moveL1ToL0', 'moveL1ToL2', 'moveL2ToL1']) {
         expect(mutationHookOptions[name]).toEqual({ context: { skipGlobalErrorHandler: true } });
       }
     });
 
-    test('move error is surfaced via notify', async () => {
-      const errorMsg = 'Server error: same-L0 lateral not supported';
-      mockMoveL2ToL1.mockRejectedValueOnce(new Error(errorMsg));
+    test('a failed move rejects and adds no message of its own', async () => {
+      const failure = new Error('Server error: same-L0 lateral not supported');
+      mockMoveL2ToL1.mockRejectedValueOnce(failure);
+      mockNotify.mockClear();
       mockResolveData = resolveL2('l2-id', 'l0-own');
       mockSpaceData = spaceDataFor('l2-id', SpaceLevel.L2);
 
       const { result } = renderHook(() => useSpaceConversion());
       await act(async () => {
-        try {
-          await result.current.moveL2ToL1('target-l1-id');
-        } catch {
-          // expected to throw
-        }
+        await expect(result.current.moveL2ToL1('target-l1-id')).rejects.toBe(failure);
       });
-      expect(mockNotify).toHaveBeenCalledWith(errorMsg, 'error');
+      expect(mockNotify).not.toHaveBeenCalled();
+    });
+
+    test('a failed conversion resolves and adds no message of its own', async () => {
+      mockPromoteL2ToL1.mockRejectedValueOnce(new Error('Server error'));
+      mockNotify.mockClear();
+      mockResolveData = resolveL2('l2-id', 'l0-own');
+      mockSpaceData = spaceDataFor('l2-id', SpaceLevel.L2);
+
+      const { result } = renderHook(() => useSpaceConversion());
+      await act(async () => {
+        await result.current.handlePromoteL2ToL1();
+      });
+      expect(mockNotify).not.toHaveBeenCalled();
     });
   });
 });

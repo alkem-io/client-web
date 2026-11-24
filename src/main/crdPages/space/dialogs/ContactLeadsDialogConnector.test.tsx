@@ -7,6 +7,7 @@ vi.mock('react-i18next', async importOriginal => ({
   ...(await importOriginal<typeof import('react-i18next')>()),
   useTranslation: () => ({
     t: (key: string, opts?: Record<string, unknown>) => (opts ? `${key}:${JSON.stringify(opts)}` : key),
+    i18n: { exists: () => false },
   }),
 }));
 
@@ -56,11 +57,6 @@ describe('ContactLeadsDialog (US3 — Contact the leads → individual chats)', 
   test('renders the exact explanatory copy key', () => {
     render(<ContactLeadsDialogConnector open={true} onOpenChange={vi.fn()} recipients={recipients} />);
     expect(screen.getByText('contactLeads.explanation')).toBeTruthy();
-  });
-
-  test('a refused send shows only its own sendFailed message', () => {
-    render(<ContactLeadsDialogConnector open={true} onOpenChange={vi.fn()} recipients={recipients} />);
-    expect(sendDirectMessageOptions).toHaveBeenCalledWith({ context: { skipGlobalErrorHandler: true } });
   });
 
   test('fans out to all lead ids in a single mutation call', async () => {
@@ -195,12 +191,21 @@ describe('ContactLeadsDialogConnector — hourly message allowance used up', () 
     );
   });
 
-  test('another failure raises exactly one notification, with the send-failed text', async () => {
+  test("another refusal raises exactly one notification, with the server's reason", async () => {
     sendDirectMessageMock.mockRejectedValue(
       new ApolloError({
-        graphQLErrors: [new GraphQLError('Something failed', { extensions: { code: 'UNSPECIFIED' } })],
+        graphQLErrors: [new GraphQLError('Something failed', { extensions: { code: 'OPERATION_NOT_ALLOWED' } })],
       })
     );
+
+    await send();
+
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(notifyMock).toHaveBeenCalledWith(expect.stringContaining('Something failed'), 'error');
+  });
+
+  test('a failure without a server answer raises exactly one notification, with the send-failed text', async () => {
+    sendDirectMessageMock.mockRejectedValue(new ApolloError({ networkError: new Error('Failed to fetch') }));
 
     await send();
 

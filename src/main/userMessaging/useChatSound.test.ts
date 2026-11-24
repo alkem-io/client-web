@@ -113,7 +113,8 @@ describe('useChatSound', () => {
     expect(options.variables).toEqual({
       settingsData: { userID: 'toggle', settings: { notification: { sound: { chatMessage: false } } } },
     });
-    expect(options.context).toEqual({ skipGlobalErrorHandler: true });
+    // A failed save is reported by the global error handler, with the server's reason.
+    expect(options.context).toBeUndefined();
     expect(harness.query).not.toHaveBeenCalled();
 
     await act(async () => {

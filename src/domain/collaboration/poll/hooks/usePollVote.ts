@@ -18,13 +18,9 @@ export const usePollVote = ({ pollId, poll }: UsePollVoteParams) => {
   const [voteRemoved, setVoteRemoved] = useState(false);
   const apolloClient = useApolloClient();
 
-  // A failed vote is shown inline from the returned `error`.
-  const [castPollVoteMutation, { loading: mutationLoading, error }] = useCastPollVoteMutation({
-    context: { skipGlobalErrorHandler: true },
-  });
-  const [removePollVoteMutation, { loading: removeLoading, error: removeError }] = useRemovePollVoteMutation({
-    context: { skipGlobalErrorHandler: true },
-  });
+  // A failed vote is reported by the global error handler, with the server's reason.
+  const [castPollVoteMutation, { loading: mutationLoading, error }] = useCastPollVoteMutation();
+  const [removePollVoteMutation, { loading: removeLoading, error: removeError }] = useRemovePollVoteMutation();
 
   const castVote = (selectedOptionIds: string[]) => {
     const newTotalVotes = (poll.totalVotes ?? 0) + (poll.myVote ? 0 : 1);

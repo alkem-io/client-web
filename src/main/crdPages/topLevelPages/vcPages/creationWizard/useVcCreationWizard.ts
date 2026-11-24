@@ -112,8 +112,8 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
     setExistingSpaces(result);
   };
 
+  // A failed create or community add is reported by the global error handler, with the server's reason.
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
-    context: { skipGlobalErrorHandler: true },
     refetchQueries: ['MyAccount', 'AccountInformation', refetchMyResourcesQuery({ accountId: myAccountId ?? '' })],
   });
 
@@ -147,10 +147,8 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
       }
       return vc;
     } catch {
-      // Surface the failure instead of swallowing it — each caller is
-      // responsible for keeping the user on a recoverable, input-preserving
-      // step (never closing the dialog or stranding the spinner).
-      notify(t('wizard.createdVirtualContributor.errorMessage'), 'error');
+      // Each caller keeps the user on a recoverable, input-preserving step
+      // (never closing the dialog or stranding the spinner).
       return undefined;
     }
   };
@@ -160,7 +158,7 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
 
   const [createLinkOnCallout] = useCreateLinkOnCalloutMutation();
   const [getSpaceCommunity] = useSubspaceCommunityAndRoleSetIdLazyQuery();
-  const [assignRole] = useAssignRoleToVirtualContributorMutation({ context: { skipGlobalErrorHandler: true } });
+  const [assignRole] = useAssignRoleToVirtualContributorMutation();
 
   const addVcToCommunity = async (vcId: string, spaceId: string) => {
     const community = await getSpaceCommunity({ variables: { spaceId } });
@@ -296,9 +294,8 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
       else setStep('tryVcInfo');
     } catch {
       // A failed role-set lookup / assignment must not strand the user on the
-      // loading spinner — surface the error and fall back to the success step
-      // (the VC was created; only the community add failed).
-      notify(t('wizard.chooseCommunity.errorMessage'), 'error');
+      // loading spinner — fall back to the success step (the VC was created;
+      // only the community add failed).
       setStep('tryVcInfo');
     }
   };

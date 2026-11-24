@@ -13,6 +13,7 @@ import {
   useUpdateUserSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ActivityEventType, ActivityFeedRoles, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import useNavigate from '@/core/routing/useNavigate';
 import { ActivityDialog } from '@/crd/components/dashboard/ActivityDialog';
 import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
@@ -93,7 +94,7 @@ export default function DashboardWithMemberships({
 
   const [updateUserSettings] = useUpdateUserSettingsMutation();
 
-  const persistActivityView = (enabled: boolean, context?: { skipGlobalErrorHandler: boolean }) => {
+  const persistActivityView = (enabled: boolean, context?: typeof OWN_ERROR_HANDLING) => {
     if (!userId) return;
     updateUserSettings({
       variables: { settingsData: { userID: userId, settings: { dashboard: { activityView: enabled } } } },
@@ -121,7 +122,7 @@ export default function DashboardWithMemberships({
     if (shouldSeedFromLegacy(legacy, settingActivityView)) {
       setActivityOverride(false);
       // Nobody asked for this write, so a refusal must not raise a toast.
-      persistActivityView(false, { skipGlobalErrorHandler: true });
+      persistActivityView(false, OWN_ERROR_HANDLING);
     }
     localStorage.setItem(SEED_FLAG_KEY, '1');
   }, [userId, settingActivityView]);

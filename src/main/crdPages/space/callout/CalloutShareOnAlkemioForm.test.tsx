@@ -5,7 +5,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('react-i18next', async importOriginal => ({
   ...(await importOriginal<typeof import('react-i18next')>()),
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({ t: (key: string) => key, i18n: { exists: () => false } }),
 }));
 
 const sendDirectMessageMock = vi.fn();
@@ -129,11 +129,6 @@ describe('CalloutShareOnAlkemioForm (US2 — Share on Alkemio → individual cha
     expect(screen.getByTestId('confirmation').textContent).not.toContain('Bob');
   });
 
-  test('a refused send shows only its own sendFailed message', () => {
-    render(<CalloutShareOnAlkemioForm url="https://alkem.io/x" entityLabel="post" />);
-    expect(sendDirectMessageOptions).toHaveBeenCalledWith({ context: { skipGlobalErrorHandler: true } });
-  });
-
   test('partial failure lists the not-reached recipients', async () => {
     sendDirectMessageMock.mockResolvedValue({
       data: {
@@ -236,12 +231,22 @@ describe('CalloutShareOnAlkemioForm — hourly message allowance used up', () =>
     );
   });
 
-  test('another failure raises exactly one notification, with the send-failed text', async () => {
+  test("another refusal raises exactly one notification, with the server's reason", async () => {
     sendDirectMessageMock.mockRejectedValue(
       new ApolloError({
-        graphQLErrors: [new GraphQLError('Something failed', { extensions: { code: 'UNSPECIFIED' } })],
+        graphQLErrors: [new GraphQLError('Something failed', { extensions: { code: 'OPERATION_NOT_ALLOWED' } })],
       })
     );
+
+    await send();
+
+    await vi.waitFor(() => expect(notifyMock).toHaveBeenCalled());
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(notifyMock).toHaveBeenCalledWith('apollo.errors.generic-with-code Something failed', 'error');
+  });
+
+  test('a failure without a server answer raises exactly one notification, with the send-failed text', async () => {
+    sendDirectMessageMock.mockRejectedValue(new ApolloError({ networkError: new Error('Failed to fetch') }));
 
     await send();
 

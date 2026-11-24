@@ -1,13 +1,9 @@
 import { useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
 import { formDefinitionChanged } from '@/main/crdPages/space/callout/calloutFormDefinitionMapper';
-import {
-  translateFormDefinitionError,
-  useCalloutFormDefinitionSave,
-} from '@/main/crdPages/space/callout/useCalloutFormDefinitionSave';
+import { useCalloutFormDefinitionSave } from '@/main/crdPages/space/callout/useCalloutFormDefinitionSave';
 import type { UseCrdCalloutFormResult } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import {
   applyPollOptionDiff,
@@ -19,18 +15,14 @@ import {
  * The parts of an edited Poll or Form callout template that `updateCallout` does not carry:
  * the Form definition (saved through `updateCalloutForm`) and the poll options (saved through
  * the poll-option mutations; `updateCallout` only takes the poll title). Same paths as the live
- * Post editor. Each step notifies the localized reason and rethrows on failure, so the template
- * dialog stays open.
+ * Post editor. Each step rethrows on failure, so the template dialog stays open; the one message
+ * is the Form's localized reason, or for the poll options the global error handler's.
  */
 export const useCalloutTemplateFramingSave = (form: UseCrdCalloutFormResult) => {
-  const { t } = useTranslation('crd-space');
   const notify = useNotification();
   const { save } = useCalloutFormDefinitionSave();
-  // savePollOptions reports a failed option save itself.
-  const pollMgmt = usePollOptionManagement({
-    pollId: form.values.editMeta?.pollId ?? '',
-    context: { skipGlobalErrorHandler: true },
-  });
+  // A failed option save is reported by the global error handler, with the server's reason.
+  const pollMgmt = usePollOptionManagement({ pollId: form.values.editMeta?.pollId ?? '' });
   // The poll as the server holds it after a save that failed part-way. The dialog stays open for a
   // retry, and `initialValues` is the stale pre-edit snapshot, so diffing against it would re-add
   // options that were added and re-remove ones already gone. Tied to the `initialValues` it was
@@ -58,7 +50,7 @@ export const useCalloutTemplateFramingSave = (form: UseCrdCalloutFormResult) => 
     );
     if (!outcome.ok) {
       logError(new Error('Callout template form definition save failed', { cause: outcome.error as Error }));
-      notify(translateFormDefinitionError(outcome.code, t), 'error');
+      notify(outcome.message, 'error');
       throw outcome.error;
     }
   };
@@ -83,7 +75,6 @@ export const useCalloutTemplateFramingSave = (form: UseCrdCalloutFormResult) => 
         form.setField('pollOptions', progress.after);
       }
       logError(new Error('Callout template poll option save failed', { cause: err as Error }));
-      notify(t('callout.pollOptionsSaveFailed'), 'error');
       throw err;
     }
   };

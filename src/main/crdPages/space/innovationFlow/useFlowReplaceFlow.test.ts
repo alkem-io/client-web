@@ -19,18 +19,16 @@ vi.mock('@/main/crdPages/templates/useTemplatePicker', () => ({
     openPicker: vi.fn(),
   }),
 }));
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
 vi.mock('@/core/logging/sentry/log', () => ({ error: vi.fn() }));
-vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 
 import { useFlowReplaceFlow } from './useFlowReplaceFlow';
 
 describe('useFlowReplaceFlow', () => {
-  it('leaves a refused replace to its own replaceFlow error message', () => {
+  it("leaves a refused replace to the global error handler, which shows the server's reason", () => {
     renderHook(() =>
       useFlowReplaceFlow({ collaborationId: 'collab-1', levelZeroSpaceId: 'space-1', accountId: 'account-1' })
     );
 
-    expect(replaceOptions.mock.calls[0][0].context).toEqual({ skipGlobalErrorHandler: true });
+    expect(replaceOptions.mock.calls[0][0]).toBeUndefined();
   });
 });

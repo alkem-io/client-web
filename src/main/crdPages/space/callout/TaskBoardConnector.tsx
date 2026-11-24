@@ -1,6 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 import {
   useMoveTaskToColumnMutation,
   useTaskBoardDataQuery,
@@ -100,9 +99,10 @@ function TaskBoardBody({
   onOpenTask?: (contributionId: string) => void;
 }) {
   const { t } = useTranslation('crd-taskBoard');
-  // A failed move or reorder shows its own moveError toast.
-  const [moveTask] = useMoveTaskToColumnMutation({ context: { skipGlobalErrorHandler: true } });
-  const [reorderTasks] = useUpdateContributionsSortOrderMutation({ context: { skipGlobalErrorHandler: true } });
+  // A failed move or reorder is reported by the global error handler, with the server's reason, and its
+  // optimistic change rolls back.
+  const [moveTask] = useMoveTaskToColumnMutation();
+  const [reorderTasks] = useUpdateContributionsSortOrderMutation();
   // Creation dialog state: closed when undefined. When open, `column` is the
   // per-column add's pre-targeted column. Using an explicit open flag keeps an
   // add with no column distinct from the closed state.
@@ -122,7 +122,7 @@ function TaskBoardBody({
   // position half of a cross-column move.
   const persistOrder = (orderedCardIds: string[]) => {
     if (orderedCardIds.length === 0) return;
-    void reorderTasks({
+    reorderTasks({
       variables: { calloutID: callout.id, contributionIds: orderedCardIds },
       optimisticResponse: {
         updateContributionsSortOrder: orderedCardIds.map((id, index) => ({
@@ -131,9 +131,8 @@ function TaskBoardBody({
           sortOrder: index,
         })),
       },
-      onError: () => {
-        toast.error(t('moveError'));
-      },
+    }).catch(() => {
+      // Reported by the global error handler.
     });
   };
 
@@ -179,9 +178,6 @@ function TaskBoardBody({
           },
         });
       },
-      onError: () => {
-        toast.error(t('moveError'));
-      },
     })
       // Persist the dropped position within the destination column, but only
       // AFTER the column move has settled on the server. moveTaskToColumn assigns
@@ -194,7 +190,7 @@ function TaskBoardBody({
       // moment later.
       .then(() => persistOrder(orderedCardIds))
       .catch(() => {
-        // A failed move already surfaced its toast; do not reorder on top of it.
+        // A failed move is reported by the global error handler; do not reorder on top of it.
       });
   };
 

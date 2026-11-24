@@ -11,23 +11,18 @@ vi.mock('@/domain/collaboration/poll/hooks/usePollOptionManagement', () => ({
   },
 }));
 vi.mock('@/main/crdPages/space/callout/useCalloutFormDefinitionSave', () => ({
-  translateFormDefinitionError: vi.fn(),
   useCalloutFormDefinitionSave: () => ({ save: vi.fn() }),
 }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
 vi.mock('@/core/logging/sentry/log', () => ({ error: vi.fn() }));
-vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 
 import { useCalloutTemplateFramingSave } from '../useCalloutTemplateFramingSave';
 
 describe('useCalloutTemplateFramingSave', () => {
-  it('leaves a refused poll option save to its own pollOptionsSaveFailed message', () => {
+  it("leaves a refused poll option save to the global error handler, which shows the server's reason", () => {
     const form = { values: { editMeta: { pollId: 'poll-1' } } } as unknown as UseCrdCalloutFormResult;
     renderHook(() => useCalloutTemplateFramingSave(form));
 
-    expect(pollOptionManagementParams).toHaveBeenCalledWith({
-      pollId: 'poll-1',
-      context: { skipGlobalErrorHandler: true },
-    });
+    expect(pollOptionManagementParams).toHaveBeenCalledWith({ pollId: 'poll-1' });
   });
 });

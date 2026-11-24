@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   RESEND_FEEDBACK_TRANSLATION_KEY,
@@ -19,12 +20,14 @@ export const RESEND_FEEDBACK_SEVERITY = {
 
 /**
  * Shared resend action for pending email invitations (Space community tab and organization
- * Associates tab): runs the supplied resend request, toasts the mapped outcome, and tracks which
- * invitations are in flight so that each row resends independently of the others.
+ * Associates tab): runs the supplied resend request, toasts the mapped outcome (the server's reason
+ * for a failure other than the cool-down), and tracks which invitations are in flight so that each
+ * row resends independently of the others.
  */
 export const useResendPlatformInvitationAction = (resend: (invitationId: string) => Promise<unknown>) => {
   const { t } = useTranslation('crd-spaceSettings');
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const [resendingIds, setResendingIds] = useState<ReadonlySet<string>>(new Set());
 
   const setInFlight = (id: string, inFlight: boolean) =>
@@ -40,12 +43,16 @@ export const useResendPlatformInvitationAction = (resend: (invitationId: string)
     setInFlight(id, true);
     resend(id)
       .then(
-        () => resolveResendFeedback(),
-        error => resolveResendFeedback(error)
+        () => notify(t(RESEND_FEEDBACK_TRANSLATION_KEY.success), RESEND_FEEDBACK_SEVERITY.success),
+        error => {
+          const feedback = resolveResendFeedback(error);
+          const message = t(RESEND_FEEDBACK_TRANSLATION_KEY[feedback]);
+          notify(
+            feedback === 'error' ? serverErrorMessage(error, message) : message,
+            RESEND_FEEDBACK_SEVERITY[feedback]
+          );
+        }
       )
-      .then(feedback => {
-        notify(t(RESEND_FEEDBACK_TRANSLATION_KEY[feedback]), RESEND_FEEDBACK_SEVERITY[feedback]);
-      })
       .finally(() => setInFlight(id, false));
   };
 

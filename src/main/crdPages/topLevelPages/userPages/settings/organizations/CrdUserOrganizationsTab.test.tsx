@@ -28,11 +28,10 @@ vi.mock('./useOrganizationEnrichment', () => ({ default: () => new Map() }));
 import CrdUserOrganizationsTab from './CrdUserOrganizationsTab';
 
 describe('CrdUserOrganizationsTab', () => {
-  it('reports its own disassociate failure, so the disassociate opts out of the global error handler', () => {
+  it("leaves a failed disassociate to the global error handler, so the server's reason is the one message", () => {
     render(<CrdUserOrganizationsTab />);
 
-    expect(useRemoveRoleFromUserMutation).toHaveBeenCalledWith(
-      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
-    );
+    expect(useRemoveRoleFromUserMutation).toHaveBeenCalled();
+    expect(useRemoveRoleFromUserMutation.mock.calls[0][0]).toBeUndefined();
   });
 });

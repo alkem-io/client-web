@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('react-i18next', () => ({
@@ -34,17 +34,21 @@ vi.mock('./orgInvitationsMapper', () => ({
 import { useOrgInvitationsTabData } from './useOrgInvitationsTabData';
 
 /**
- * A revoked invitation (or an admin demoted between render and click) fails
- * with FORBIDDEN / FORBIDDEN_POLICY, both of which sit in
- * EXCLUDE_FROM_GLOBAL_HANDLER_ERRORS — so the global Apollo error link shows
- * nothing. Without the local catch these rejections were dropped on the floor:
- * the row stayed put and the user got no feedback at all.
+ * A revoked invitation (or an admin demoted between render and click) fails with a not-available
+ * error. The global error handler reports a failed accept or decline, with the server's reason;
+ * the tab only swallows the rejection so the confirmation flow ends cleanly.
  */
-describe('useOrgInvitationsTabData — mutation failures are surfaced', () => {
+describe('useOrgInvitationsTabData — mutation failures are reported once, by the global handler', () => {
   afterEach(() => vi.clearAllMocks());
 
-  it('toasts when declining fails', async () => {
-    rejectInvitationMock.mockRejectedValue(new Error('FORBIDDEN_POLICY'));
+  it('leaves accept and decline to the global error handler', () => {
+    renderHook(() => useOrgInvitationsTabData('org-1'));
+
+    expect(useInvitationActionsMock.mock.calls[0][0]).not.toHaveProperty('mutationContext');
+  });
+
+  it('adds no message of its own when declining fails', async () => {
+    rejectInvitationMock.mockRejectedValue(new Error('refused'));
     const { result } = renderHook(() => useOrgInvitationsTabData('org-1'));
 
     act(() => result.current.onRequestDecline('inv-1'));
@@ -53,19 +57,12 @@ describe('useOrgInvitationsTabData — mutation failures are surfaced', () => {
     });
 
     expect(rejectInvitationMock).toHaveBeenCalledWith('inv-1');
-    await waitFor(() => expect(notifyMock).toHaveBeenCalledWith('org.invitations.errorToast', 'error'));
+    expect(notifyMock).not.toHaveBeenCalled();
+    expect(result.current.declineConfirm.pendingId).toBeNull();
   });
 
-  it('runs accept and decline without the global error handler, so a failure toasts once', () => {
-    renderHook(() => useOrgInvitationsTabData('org-1'));
-
-    expect(useInvitationActionsMock).toHaveBeenCalledWith(
-      expect.objectContaining({ mutationContext: { skipGlobalErrorHandler: true } })
-    );
-  });
-
-  it('toasts when accepting fails', async () => {
-    acceptInvitationMock.mockRejectedValue(new Error('FORBIDDEN_POLICY'));
+  it('adds no message of its own when accepting fails', async () => {
+    acceptInvitationMock.mockRejectedValue(new Error('refused'));
     const { result } = renderHook(() => useOrgInvitationsTabData('org-1'));
 
     act(() => result.current.onRequestAccept('inv-1'));
@@ -74,7 +71,8 @@ describe('useOrgInvitationsTabData — mutation failures are surfaced', () => {
     });
 
     expect(acceptInvitationMock).toHaveBeenCalledWith('inv-1', '');
-    await waitFor(() => expect(notifyMock).toHaveBeenCalledWith('org.invitations.errorToast', 'error'));
+    expect(notifyMock).not.toHaveBeenCalled();
+    expect(result.current.acceptConfirm.pendingId).toBeNull();
   });
 
   it('does not decline until the confirmation is confirmed (Golden Rule 9)', async () => {

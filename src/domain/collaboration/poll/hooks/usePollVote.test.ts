@@ -51,11 +51,11 @@ describe('usePollVote', () => {
     mockCastPollVoteMutation.mockClear();
   });
 
-  test('leaves a refused vote to the inline error it returns', () => {
+  test("leaves a refused vote to the global error handler, which shows the server's reason", () => {
     renderHook(() => usePollVote({ pollId: 'poll-1', poll: basePoll }));
 
-    expect(mutationHookOptions).toHaveBeenCalledWith('cast', { context: { skipGlobalErrorHandler: true } });
-    expect(mutationHookOptions).toHaveBeenCalledWith('remove', { context: { skipGlobalErrorHandler: true } });
+    expect(mutationHookOptions).toHaveBeenCalledWith('cast', undefined);
+    expect(mutationHookOptions).toHaveBeenCalledWith('remove', undefined);
   });
 
   test('castVote calls mutation with correct pollID and selectedOptionIDs', async () => {

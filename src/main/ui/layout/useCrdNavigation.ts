@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { refetchUserSettingsQuery, useUpdateUserSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
 import { supportedLngs } from '@/core/i18n/config';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ROUTE_HOME, ROUTE_USER_ME } from '@/domain/platform/routes/constants';
@@ -23,19 +22,11 @@ const STATIC_NAVIGATION_HREFS = {
 
 export function useCrdNavigation() {
   const { t, i18n } = useTranslation();
-  // crd-layout, not crd-contributorSettings: this hook backs the header, so
-  // it mounts on every page load. crd-layout is already eagerly loaded
-  // app-wide; a feature namespace is not — useTranslation triggers its fetch
-  // as soon as this hook mounts (not on every re-render, just once per page
-  // load), pulling in a whole unrelated namespace just to have one
-  // rarely-hit error string ready.
-  const { t: tLayout } = useTranslation('crd-layout');
   const { pathname, search } = useLocation();
   const { locations } = useConfig();
   const canonicalDomain = locations?.domain;
   const { userModel, isAuthenticated } = useCurrentUserContext();
-  const [updateUserSettings] = useUpdateUserSettingsMutation({ context: { skipGlobalErrorHandler: true } });
-  const notify = useNotification();
+  const [updateUserSettings] = useUpdateUserSettingsMutation();
 
   // When the visitor is on a hub subdomain (e.g. `acme.alkemio.org`), every
   // top-nav / platform link must hop them off the subdomain back to the main
@@ -86,7 +77,7 @@ export function useCrdNavigation() {
       });
       void i18n.changeLanguage(code);
     } catch {
-      notify(tLayout('header.changeLanguageError'), 'error');
+      // Reported by the global error handler, with the server's reason; the display language stays.
     }
   };
 

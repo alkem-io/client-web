@@ -36,10 +36,7 @@ const useTransferInnovationPack = () => {
   const currentAccountName = pack?.provider?.profile?.displayName;
 
   // Mutation
-  const [transferMutation, { loading: transferLoading }] = useTransferInnovationPackToAccountMutation({
-    // handleTransfer notifies its own failure.
-    context: { skipGlobalErrorHandler: true },
-  });
+  const [transferMutation, { loading: transferLoading }] = useTransferInnovationPackToAccountMutation();
 
   // Error derivation
   const isLoading = resolveLoading || packLoading;
@@ -66,9 +63,8 @@ const useTransferInnovationPack = () => {
       });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
       setMutationCompleted(true);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
-      notify(message, 'error');
+    } catch {
+      // Reported by the global error handler, with the server's reason.
     }
   };
 

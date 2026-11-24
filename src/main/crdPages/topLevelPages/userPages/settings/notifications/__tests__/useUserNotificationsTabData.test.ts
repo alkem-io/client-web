@@ -51,12 +51,11 @@ afterEach(() => vi.useRealTimers());
 // ─── Tests ────────────────────────────────────────────────────────────────
 
 describe('useUserNotificationsTabData — error reporting', () => {
-  it('hands its failures to the tab, which reports them, so its writes opt out of the global error handler', () => {
+  it("leaves a failed write to the global error handler, so the server's reason is the one message", () => {
     renderHook(() => useUserNotificationsTabData({ userId: 'user-1', serverSettings: baseServer }));
 
-    expect(mockUseUpdateUserSettingsMutation).toHaveBeenCalledWith(
-      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
-    );
+    expect(mockUseUpdateUserSettingsMutation).toHaveBeenCalled();
+    expect(mockUseUpdateUserSettingsMutation.mock.calls[0][0]).toBeUndefined();
   });
 });
 
@@ -90,7 +89,7 @@ describe('useUserNotificationsTabData — optimistic flip', () => {
 });
 
 describe('useUserNotificationsTabData — hard-failure revert (FR-064 / Q5)', () => {
-  it('rolls back the override AND re-throws so the integration layer can show a toast', async () => {
+  it('rolls back the override AND re-throws', async () => {
     mockUpdateUserSettings.mockRejectedValueOnce(new Error('Network down'));
     const { result } = renderHook(() => useUserNotificationsTabData({ userId: 'user-1', serverSettings: baseServer }));
 

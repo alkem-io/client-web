@@ -37,8 +37,6 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useUserSettingsQuery: (opts: unknown) => useUserSettingsQueryMock(opts),
 }));
 
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
-
 vi.mock('../../useUserPageRouteContext', () => ({ default: () => ({ userId: 'user-1' }) }));
 
 // Capture the onLanguageChange prop that CrdUserSettingsTab passes down so the
@@ -171,7 +169,7 @@ describe('CrdUserSettingsTab language row (T011)', () => {
     // Mutation was called
     expect(updateUserSettingsMock).toHaveBeenCalledTimes(1);
 
-    // On error the container calls notify and reverts — i18n.changeLanguage is NOT called
+    // On error the container reverts — i18n.changeLanguage is NOT called
     // (the optimistic override is rolled back, not applied)
     expect(mockI18nInstance.changeLanguage).not.toHaveBeenCalled();
 
@@ -181,13 +179,12 @@ describe('CrdUserSettingsTab language row (T011)', () => {
     expect(trigger.textContent).toBe('en');
   });
 
-  test('reports its own failures, so its settings writes opt out of the global error handler', () => {
+  test("leaves a failed settings write to the global error handler, so the server's reason is the one message", () => {
     useUserSettingsQueryMock.mockReturnValue({ data: settingsData(true, false), loading: false });
 
     render(<CrdUserSettingsTab />);
 
-    expect(useUpdateUserSettingsMutationMock).toHaveBeenCalledWith(
-      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
-    );
+    expect(useUpdateUserSettingsMutationMock).toHaveBeenCalled();
+    expect(useUpdateUserSettingsMutationMock.mock.calls[0][0]).toBeUndefined();
   });
 });

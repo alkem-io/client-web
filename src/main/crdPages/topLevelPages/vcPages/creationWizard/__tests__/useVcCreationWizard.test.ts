@@ -28,11 +28,9 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 import { useVcCreationWizard } from '../useVcCreationWizard';
 
 describe('useVcCreationWizard', () => {
-  it('shows its own message when creating the VC or adding it to a community fails, so those opt out of the global error handler', () => {
+  it("leaves a failed VC create or community add to the global error handler, so the server's reason is the one message", () => {
     renderHook(() => useVcCreationWizard({ onExit: vi.fn() }));
-    expect(mutationOptions.createVirtualContributor).toEqual(
-      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
-    );
-    expect(mutationOptions.assignRole).toEqual({ context: { skipGlobalErrorHandler: true } });
+    expect(mutationOptions.createVirtualContributor).not.toHaveProperty('context');
+    expect(mutationOptions).toHaveProperty('assignRole', undefined);
   });
 });

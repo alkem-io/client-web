@@ -65,9 +65,8 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
   const knowledgeBase = knowledgeBaseData?.virtualContributor?.knowledgeBase;
   const calloutsSetId = knowledgeBase?.calloutsSet?.id ?? '';
 
-  // `updateDescription`'s caller shows a failed save itself.
+  // A failed description save is reported by the global error handler, with the server's reason.
   const [updateVC] = useUpdateVirtualContributorMutation({
-    context: { skipGlobalErrorHandler: true },
     refetchQueries: ['VirtualContributorKnowledgeBase'],
   });
   const updateDescription = async ({ description }) => {

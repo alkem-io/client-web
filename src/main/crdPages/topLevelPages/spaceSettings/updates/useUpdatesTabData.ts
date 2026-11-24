@@ -15,7 +15,7 @@ export type UseUpdatesTabDataResult = {
   submitting: boolean;
   removing: boolean;
   onDraftChange: (next: string) => void;
-  /** A caller that shows its own failure passes `{ skipGlobalErrorHandler: true }` as the context. */
+  /** A caller that shows its own failure passes `OWN_ERROR_HANDLING` as the context. */
   onSubmit: (context?: DefaultContext) => Promise<void>;
   /** True when the composer has an unpublished, non-whitespace draft. */
   isDirty: boolean;

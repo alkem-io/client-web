@@ -181,9 +181,7 @@ export function CrdPostContributionDialog({
   }, [open, calloutId]);
   const isMoveTargetChanged = targetCalloutId !== baselineCalloutIdRef.current;
 
-  const [moveContributionToCallout] = useMoveContributionToCalloutMutation({
-    context: { skipGlobalErrorHandler: true },
-  });
+  const [moveContributionToCallout] = useMoveContributionToCalloutMutation();
 
   // Reset state on open / mode change.
   useEffect(() => {
@@ -236,9 +234,9 @@ export function CrdPostContributionDialog({
   const [createPost, { loading: creating }] = useCreatePostOnCalloutMutation();
   const [updatePost, { loading: updating }] = useUpdatePostMutation();
   const [deleteContribution] = useDeleteContributionMutation();
-  // A failed reference change or move reports its own message.
-  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation({ context: { skipGlobalErrorHandler: true } });
-  const [deleteReference] = useDeleteReferenceMutation({ context: { skipGlobalErrorHandler: true } });
+  // A failed reference change or move is reported by the global error handler, with the server's reason.
+  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
 
   const validate = (): boolean => {
     try {
@@ -310,7 +308,6 @@ export function CrdPostContributionDialog({
             }
           } catch (err) {
             logError(new Error('Post reference creation failed', { cause: err as Error }));
-            notify(t('callout.referencesSaveFailed'), 'error');
           }
         }
         onCreated?.({ id: created.id });
@@ -362,7 +359,6 @@ export function CrdPostContributionDialog({
         }
       } catch (err) {
         logError(new Error('Post reference CRUD failed', { cause: err as Error }));
-        notify(t('callout.referencesSaveFailed'), 'error');
       }
 
       await updatePost({
@@ -398,7 +394,6 @@ export function CrdPostContributionDialog({
           notify(t('postLocation.moved'), 'success');
         } catch (err) {
           logError(new Error('Post move failed', { cause: err as Error }));
-          notify(t('postLocation.moveFailed'), 'error');
         }
       }
 

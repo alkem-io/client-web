@@ -12,6 +12,7 @@ import {
   useRemoveRoleFromVirtualContributorMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 
 type useRoleSetManagerRolesAssignmentParams = {
@@ -19,9 +20,9 @@ type useRoleSetManagerRolesAssignmentParams = {
   refetchRoleSetOnMutation?: boolean;
   /**
    * Apollo link context attached to every mutation this hook runs — e.g.
-   * `{ skipGlobalErrorHandler: true }` for a caller that renders every failure itself
-   * and must not get a second, generic toast from the global error link. Omitted by
-   * default, so existing callers keep the global handler.
+   * `OWN_ERROR_HANDLING` for a caller that shows its own message for every failure, so
+   * the global error link does not add a second one. Omitted by default, so callers keep
+   * the global handler.
    */
   context?: DefaultContext;
 };
@@ -54,13 +55,12 @@ const useRoleSetManagerRolesAssignment = ({
     }
   };
 
-  // Platform Roles: the five assignment rules (contracts/graphql-contract.md) reject with
-  // distinct, rule-naming messages that the UI surfaces verbatim (FR-012) — skip the global
-  // error toast so the caller's own inline handling isn't shadowed by a generic translation.
+  // Platform Roles: the assignment rules reject with distinct, rule-naming messages that the
+  // admin page shows inline for every failure, so the global error link stays silent for them.
   const [runAssignPlatformRoleToUser, { loading: assignPlatformRoleToUserLoading }] =
-    useAssignPlatformRoleToUserMutation({ context: { skipGlobalErrorHandler: true } });
+    useAssignPlatformRoleToUserMutation({ context: OWN_ERROR_HANDLING });
   const [runRemovePlatformRoleFromUser, { loading: removePlatformRoleFromUserLoading }] =
-    useRemovePlatformRoleFromUserMutation({ context: { skipGlobalErrorHandler: true } });
+    useRemovePlatformRoleFromUserMutation({ context: OWN_ERROR_HANDLING });
   const assignPlatformRoleToUser = (userId: string, role: RoleName) => {
     return runAssignPlatformRoleToUser({
       variables: {
@@ -84,9 +84,9 @@ const useRoleSetManagerRolesAssignment = ({
   };
 
   const [runAssignPlatformRoleToOrganization, { loading: assignPlatformRoleToOrganizationLoading }] =
-    useAssignPlatformRoleToOrganizationMutation({ context: { skipGlobalErrorHandler: true } });
+    useAssignPlatformRoleToOrganizationMutation({ context: OWN_ERROR_HANDLING });
   const [runRemovePlatformRoleFromOrganization, { loading: removePlatformRoleFromOrganizationLoading }] =
-    useRemovePlatformRoleFromOrganizationMutation({ context: { skipGlobalErrorHandler: true } });
+    useRemovePlatformRoleFromOrganizationMutation({ context: OWN_ERROR_HANDLING });
   const assignPlatformRoleToOrganization = (organizationId: string, role: RoleName) => {
     return runAssignPlatformRoleToOrganization({
       variables: {

@@ -8,7 +8,7 @@ import {
 
 type UsePollOptionManagementParams = {
   pollId: string;
-  /** Apollo context for every option mutation — a caller that reports failures itself passes `skipGlobalErrorHandler`. */
+  /** Apollo context for every option mutation — a caller that reports failures itself passes `OWN_ERROR_HANDLING`. */
   context?: DefaultContext;
 };
 

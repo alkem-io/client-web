@@ -10,6 +10,7 @@ import {
   useRevokeLicensePlanFromAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   OrgVerificationLifecycleEvents,
@@ -111,7 +112,7 @@ export const usePlatformAdminOrganizationsList = () => {
               organizationVerificationID: orgFullData.verification.id,
             },
           },
-          context: { skipGlobalErrorHandler: true },
+          context: OWN_ERROR_HANDLING,
         });
       } catch (_error) {
         // ignore errors if the verification_request fails we still try to manually verify

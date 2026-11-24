@@ -65,8 +65,6 @@ export const useChatSound = () => {
           // The mutation's own response has no sound fields, so writing it to the cache would
           // drop them from the cached settings. The read-back below writes the complete settings.
           fetchPolicy: 'no-cache',
-          // The caller reports the failure, so the global handler must not report it too.
-          context: { skipGlobalErrorHandler: true },
         });
       } catch (error) {
         // Leave a newer change alone, whether made here or in another tab.

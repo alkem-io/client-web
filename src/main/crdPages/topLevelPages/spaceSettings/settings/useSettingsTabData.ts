@@ -6,6 +6,8 @@ import {
   type SpacePrivacyMode,
   type UserInformationVisibility,
 } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import type {
   AllowedActionKey,
   AllowedActionToggle,
@@ -79,8 +81,9 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
 
   const hostOrganizationTrusted = (!!hostId && settings?.membership?.trustedOrganizations?.includes(hostId)) ?? false;
 
-  // Save failures show in the unsaved-changes bar.
-  const [updateSpaceSettings] = useUpdateSpaceSettingsMutation({ context: { skipGlobalErrorHandler: true } });
+  // Save failures show in the unsaved-changes bar, with the server's reason.
+  const serverErrorMessage = useServerErrorMessage();
+  const [updateSpaceSettings] = useUpdateSpaceSettingsMutation({ context: OWN_ERROR_HANDLING });
   const [draft, setDraft] = useState<SettingsDraft>({});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -247,7 +250,7 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
       setSaving(false);
       return true;
     } catch (err) {
-      setError(errorMessage(err));
+      setError(serverErrorMessage(err, errorMessage(err)));
       setSaving(false);
       return false;
     }

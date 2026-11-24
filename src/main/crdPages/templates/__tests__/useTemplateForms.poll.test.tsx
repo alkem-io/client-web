@@ -1,5 +1,5 @@
 /** @vitest-environment jsdom */
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({
@@ -164,15 +164,17 @@ describe('useTemplateForms — editing a Poll template', () => {
     expect(harness.reorderPollOptions).not.toHaveBeenCalled();
   });
 
-  it('reports a failed option save and keeps the dialog open', async () => {
+  it('leaves a failed option save to the global error handler and keeps the dialog open', async () => {
     harness.removePollOption.mockRejectedValue(new Error('nope'));
     render(<Harness />);
     fireEvent.click(screen.getByRole('button', { name: 'Open poll template' }));
     fireEvent.click(screen.getByRole('button', { name: 'Edit options' }));
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-    await waitFor(() => expect(harness.notify).toHaveBeenCalledWith('callout.pollOptionsSaveFailed', 'error'));
+    await waitFor(() => expect(harness.removePollOption).toHaveBeenCalled());
+    await act(async () => {});
     expect(screen.getByTestId('dialog-open')).toHaveTextContent('true');
+    expect(harness.notify).not.toHaveBeenCalledWith(expect.anything(), 'error');
   });
 
   it('retries after a failed reorder without re-adding or re-removing what already succeeded', async () => {
@@ -182,7 +184,8 @@ describe('useTemplateForms — editing a Poll template', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Edit options' }));
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-    await waitFor(() => expect(harness.notify).toHaveBeenCalledWith('callout.pollOptionsSaveFailed', 'error'));
+    await waitFor(() => expect(harness.reorderPollOptions).toHaveBeenCalled());
+    await act(async () => {});
     expect(screen.getByTestId('dialog-open')).toHaveTextContent('true');
 
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
@@ -204,7 +207,8 @@ describe('useTemplateForms — editing a Poll template', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Edit options' }));
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-    await waitFor(() => expect(harness.notify).toHaveBeenCalledWith('callout.pollOptionsSaveFailed', 'error'));
+    await waitFor(() => expect(harness.updatePollOption).toHaveBeenCalled());
+    await act(async () => {});
 
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
     await waitFor(() => expect(screen.getByTestId('dialog-open')).toHaveTextContent('false'));
@@ -225,7 +229,8 @@ describe('useTemplateForms — editing a Poll template', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Edit options' }));
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-    await waitFor(() => expect(harness.notify).toHaveBeenCalledWith('callout.pollOptionsSaveFailed', 'error'));
+    await waitFor(() => expect(harness.reorderPollOptions).toHaveBeenCalled());
+    await act(async () => {});
     expect(screen.getByTestId('dialog-open')).toHaveTextContent('true');
     // The option save runs before the reference work, so a failure there leaves references untouched.
     expect(harness.createReference).not.toHaveBeenCalled();

@@ -158,12 +158,11 @@ describe('CrdUserAssistantTab — persist (updateUserSettings assistant)', () =>
     expect(mockRefetch).toHaveBeenCalledWith({ userId: 'user-1' });
   });
 
-  it('reports its own toggle failure, so the write opts out of the global error handler', async () => {
+  it("leaves a failed toggle to the global error handler, so the server's reason is the one message", async () => {
     render(<CrdUserAssistantTab />);
     await screen.findByText('Create whiteboard');
 
-    expect(mockUseUpdateUserAssistantSettingsMutation).toHaveBeenCalledWith(
-      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
-    );
+    expect(mockUseUpdateUserAssistantSettingsMutation).toHaveBeenCalled();
+    expect(mockUseUpdateUserAssistantSettingsMutation.mock.calls[0][0]).toBeUndefined();
   });
 });

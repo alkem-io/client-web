@@ -41,7 +41,7 @@ vi.mock('./TaskBoardColumnsConnector', () => ({ TaskBoardColumnsConnector: () =>
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
 
 describe('CalloutSettingsConnector', () => {
-  it('leaves a refused contribution sort to its own saveFailed message', () => {
+  it("leaves a refused contribution sort to the global error handler, which shows the server's reason", () => {
     const callout = {
       id: 'callout-1',
       framing: { profile: { displayName: 'Callout' } },
@@ -50,6 +50,6 @@ describe('CalloutSettingsConnector', () => {
     };
     render(<CalloutSettingsConnector callout={callout as never} />);
 
-    expect(sortOrderOptions.mock.calls[0][0].context).toEqual({ skipGlobalErrorHandler: true });
+    expect(sortOrderOptions.mock.calls[0][0]).toBeUndefined();
   });
 });

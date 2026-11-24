@@ -36,10 +36,7 @@ const useTransferVirtualContributor = () => {
   const currentAccountName = vc?.account?.host?.profile?.displayName;
 
   // Mutation
-  const [transferMutation, { loading: transferLoading }] = useTransferVirtualContributorToAccountMutation({
-    // handleTransfer notifies its own failure.
-    context: { skipGlobalErrorHandler: true },
-  });
+  const [transferMutation, { loading: transferLoading }] = useTransferVirtualContributorToAccountMutation();
 
   // Error derivation
   const isLoading = resolveLoading || vcLoading;
@@ -66,9 +63,8 @@ const useTransferVirtualContributor = () => {
       });
       notify(t(`${T_PREFIX}.successMessage`), 'success');
       setMutationCompleted(true);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : t(`${T_PREFIX}.errorMessage`);
-      notify(message, 'error');
+    } catch {
+      // Reported by the global error handler, with the server's reason.
     }
   };
 

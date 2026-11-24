@@ -510,7 +510,8 @@ export const UnifiedChatPanelConnector = ({
         onToggleSound={
           view === 'list' && chatSound.setEnabled
             ? () => {
-                chatSound.setEnabled?.(!chatSound.enabled).catch(() => notify(t('panel.soundToggleError'), 'error'));
+                // A failed save is reported by the global error handler; the toggle stays as it was.
+                chatSound.setEnabled?.(!chatSound.enabled).catch(() => undefined);
               }
             : undefined
         }

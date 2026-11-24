@@ -69,9 +69,9 @@ describe('useCreateInnovationHub', () => {
     expect(lastOptions).toMatchObject({ refetchQueries: ['AdminInnovationHubsList', 'AccountInformation'] });
   });
 
-  test('its dialog toasts a failed create, so the mutation opts out of the global error handler', () => {
+  test("leaves a failed create to the global error handler, so the server's reason is the one message", () => {
     renderHook(() => useCreateInnovationHub({ accountId: 'acc-1' }));
-    expect(lastOptions).toMatchObject({ context: { skipGlobalErrorHandler: true } });
+    expect(lastOptions).not.toHaveProperty('context');
   });
 
   test('sends List-type hub with empty space-list filter and trimmed profile, calls onCreated', async () => {

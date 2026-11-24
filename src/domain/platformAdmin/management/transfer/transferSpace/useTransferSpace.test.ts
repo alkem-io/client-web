@@ -68,14 +68,14 @@ describe('useTransferSpace', () => {
     expect(mockNotify).toHaveBeenCalledWith('pages.admin.transferSpace.successMessage', 'success');
   });
 
-  // client-1: a rejected mutation (e.g. FORBIDDEN_POLICY) must resolve, not
-  // reject — the caller has nowhere to catch a thrown error.
-  test('a rejected transfer (FORBIDDEN_POLICY) resolves and notifies the error', async () => {
+  // The page has nowhere to catch a thrown error, so a rejected transfer must resolve.
+  test("a rejected transfer resolves and is left to the global error handler, so the server's reason is the one message", async () => {
     mockSpaceResolveData = { urlResolver: { state: 'Resolved', space: { id: 'space-1', level: 'L0' } } };
     mockSpaceData = { lookup: { space: { id: 'space-1', account: { authorization: { myPrivileges: [] } } } } };
     mockAccountOwner = { name: 'Alice', accountId: 'acc-1' };
+    mockNotify.mockClear();
     mockTransferMutation.mockRejectedValueOnce(
-      new ApolloError({ graphQLErrors: [{ message: 'Not authorized', extensions: { code: 'FORBIDDEN_POLICY' } }] })
+      new ApolloError({ graphQLErrors: [{ message: 'Not available', extensions: { code: 'FORBIDDEN_POLICY' } }] })
     );
 
     const { result } = renderHook(() => useTransferSpace());
@@ -85,12 +85,7 @@ describe('useTransferSpace', () => {
       })
     ).resolves.not.toThrow();
 
-    expect(mockNotify).toHaveBeenCalledWith(expect.any(String), 'error');
-  });
-
-  test('runs the transfer without the global error handler, so a failure toasts once', () => {
-    renderHook(() => useTransferSpace());
-
-    expect(mockTransferMutationOptions).toHaveBeenCalledWith({ context: { skipGlobalErrorHandler: true } });
+    expect(mockTransferMutationOptions).toHaveBeenCalledWith(undefined);
+    expect(mockNotify).not.toHaveBeenCalled();
   });
 });

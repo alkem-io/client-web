@@ -209,14 +209,14 @@ describe('CalloutFormConnector — admin-only framing chips follow the current l
 });
 
 describe('CalloutFormConnector — edit-path failures', () => {
-  test('are left to the connector, which shows its own message for each', () => {
+  test("are left to the global error handler, which shows the server's reason", () => {
     openCreate();
     for (const name of ['updateCalloutContent', 'createReferenceOnProfile', 'deleteReference', 'updatePollStatus']) {
-      expect(mocks.mutationHookOptions).toHaveBeenCalledWith(name, { context: { skipGlobalErrorHandler: true } });
+      expect(mocks.mutationHookOptions).toHaveBeenCalledWith(name, undefined);
     }
     expect(mocks.mutationHookOptions).toHaveBeenCalledWith(
       'pollOptionManagement',
-      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+      expect.not.objectContaining({ context: expect.anything() })
     );
   });
 });

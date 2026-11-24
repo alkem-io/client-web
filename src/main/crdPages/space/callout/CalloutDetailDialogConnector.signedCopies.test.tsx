@@ -195,7 +195,7 @@ vi.mock('@/crd/components/contribution/ContributionLinkList', () => ({ Contribut
 vi.mock('@/crd/components/dialogs/ConfirmationDialog', () => ({ ConfirmationDialog: () => null }));
 
 describe('CalloutDetailDialogConnector framing signed copies', () => {
-  it('leaves a refused contribution delete to its own saveFailed message', () => {
+  it("leaves a refused contribution delete to the global error handler, which shows the server's reason", () => {
     const callout = {
       id: 'callout-1',
       draft: false,
@@ -208,9 +208,7 @@ describe('CalloutDetailDialogConnector framing signed copies', () => {
     };
     render(<CalloutDetailDialogConnector open={true} onOpenChange={vi.fn()} callout={callout as never} />);
 
-    expect(contributionQueryState.deleteContributionOptions).toHaveBeenCalledWith({
-      context: { skipGlobalErrorHandler: true },
-    });
+    expect(contributionQueryState.deleteContributionOptions).toHaveBeenCalledWith(undefined);
   });
 
   it('opens one sibling history dialog for the framing memo and leaves the memo editor closed', async () => {

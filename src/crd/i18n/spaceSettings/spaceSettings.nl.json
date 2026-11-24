@@ -183,7 +183,6 @@
     "replaceFlow": {
       "button": "Innovation Flow vervangen",
       "loading": "Nieuwe flow laden…",
-      "error": "Het vervangen van de innovation flow is mislukt. De flow is ongewijzigd — probeer het opnieuw.",
       "applyDialog": {
         "title": "Nieuwe template toepassen",
         "description": "Je staat op het punt een nieuwe template toe te passen. Deze actie verwijdert je huidige innovation flow permanent. De bestaande Posts die aan verschillende fasen zijn gekoppeld, blijven echter behouden en worden gegroepeerd onder de eerste fase van de nieuwe opzet.<br/><br/>Kies een van de volgende opties:",

@@ -22,9 +22,7 @@ export const useHubSpacesTabData = (
   refetch: () => Promise<unknown>
 ): UseHubSpacesTabDataResult => {
   const { t } = useTranslation('crd-innovationHub');
-  const [updateInnovationHub, { loading: mutating }] = useUpdateInnovationHubMutation({
-    context: { skipGlobalErrorHandler: true },
-  });
+  const [updateInnovationHub, { loading: mutating }] = useUpdateInnovationHubMutation();
   // `busy` must span mutation + refetch: if controls re-enable between the
   // two, a second edit computed from the stale rows races the in-flight
   // refetch and can clobber the list.
@@ -91,9 +89,8 @@ export const useHubSpacesTabData = (
               ? t('settings.spaces.toast.removed')
               : t('settings.spaces.toast.reordered');
         toast.success(successMessage);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        toast.error(`${t('settings.spaces.toast.error')} ${message}`);
+      } catch {
+        // The global error handler reports the failure, with the server's reason.
       }
     },
     [hub, updateInnovationHub, refetch, t]

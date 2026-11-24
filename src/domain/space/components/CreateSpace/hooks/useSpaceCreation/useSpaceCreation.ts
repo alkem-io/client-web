@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import {
   type CreateSpaceMutationOptions,
   refetchCurrentUserLightQuery,
@@ -31,8 +30,7 @@ interface SpaceCreationInput {
 }
 
 export const useSpaceCreation = (mutationOptions: CreateSpaceMutationOptions = {}) => {
-  const { t } = useTranslation();
-  const { uploadVisuals } = useUploadVisualsOnCreate({ entityName: t('common.space') });
+  const { uploadVisuals } = useUploadVisualsOnCreate();
 
   const {
     refetchQueries = [refetchCurrentUserLightQuery()], // default to refetching user provider

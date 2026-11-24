@@ -20,7 +20,7 @@ type UseInvitationActionsReturn = {
   updating: boolean;
   // Both return the underlying promise, which REJECTS when the mutation
   // fails. A caller that surfaces the failure itself must await and catch it,
-  // and pass `mutationContext: { skipGlobalErrorHandler: true }` so the global
+  // and pass `mutationContext: OWN_ERROR_HANDLING` so the global
   // handler does not report it a second time; callers that don't care may keep
   // ignoring the result.
   acceptInvitation: (invitationId: string, spaceUrl: string) => Promise<void>;

@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useEffect } from 'react';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { isAppMode } from '@/core/appMode/isAppMode';
 import { DEVICE_PUSH_TOKEN_KEY } from '@/main/pushNotifications/constants';
 import {
@@ -41,11 +42,11 @@ export const useNativePushRegistration = () => {
   // Bound from a native event, not a gesture; a failure is logged below.
   const [registerDevicePushToken] = useMutation<{ registerDevicePushToken: boolean }, RegisterDevicePushTokenVariables>(
     RegisterDevicePushTokenDocument,
-    { context: { skipGlobalErrorHandler: true } }
+    { context: OWN_ERROR_HANDLING }
   );
   // A background call repeated on every return to the app must never raise a toast.
   const [resetPushBadgeCount] = useMutation(ResetPushBadgeCountDocument, {
-    context: { skipGlobalErrorHandler: true },
+    context: OWN_ERROR_HANDLING,
   });
 
   useEffect(() => {

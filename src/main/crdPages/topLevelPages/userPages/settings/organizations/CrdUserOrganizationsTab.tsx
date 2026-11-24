@@ -44,9 +44,8 @@ const CrdUserOrganizationsTab = () => {
 
   const [search, setSearch] = useState('');
   const [pendingDisassociate, setPendingDisassociate] = useState<PendingDisassociate | null>(null);
-  const [disassociate, { loading: isDisassociating }] = useRemoveRoleFromUserMutation({
-    context: { skipGlobalErrorHandler: true },
-  });
+  // A failed disassociate is reported by the global error handler, with the server's reason.
+  const [disassociate, { loading: isDisassociating }] = useRemoveRoleFromUserMutation();
 
   const allRows: OrgRow[] = mapUserOrganizations(organizationIds, enrichment);
   const visible = filterOrganizations(allRows, search);
@@ -77,7 +76,7 @@ const CrdUserOrganizationsTab = () => {
       });
       notify(t('user.organizations.disassociate.success'), 'success');
     } catch {
-      notify(t('user.organizations.disassociate.error'), 'error');
+      // Reported by the global error handler.
     } finally {
       setPendingDisassociate(null);
     }

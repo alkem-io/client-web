@@ -5,8 +5,8 @@ import type {
   CollaboraServiceAvailableQuery,
   CollaboraServiceAvailableQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import type { CollaboraSaveStatus } from '@/crd/components/collabora/CollaboraCollabFooter';
-import { SILENT_QUERY_CONTEXT } from './collaboraEditorSession';
 
 /**
  * How long the document may stay unsaved before we suspect the save path is broken and start
@@ -79,7 +79,7 @@ export function useCollaboraSaveHealth(
           variables: { collaboraDocumentId },
           fetchPolicy: 'network-only',
           // Silent background health check — failures drive our own UI, never the global toast.
-          context: SILENT_QUERY_CONTEXT,
+          context: OWN_ERROR_HANDLING,
         });
         // A reachable-but-false result, or a failed query, both mean a service is down.
         down = Boolean(error) || data?.collaboraServiceAvailable === false;

@@ -22,7 +22,8 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 }));
 
 vi.mock('@/core/routing/useNavigate', () => ({ default: () => vi.fn() }));
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+const notify = vi.hoisted(() => vi.fn());
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 vi.mock('@/domain/community/organization/hooks/useOrganizationContext', () => ({
   useOrganizationContext: () => ({ organizationId: 'org-1' }),
 }));
@@ -43,13 +44,14 @@ vi.mock('./orgAccountMapper', () => ({ mapOrgAccountToViewProps: () => ({}) }));
 import CrdOrgAccountTab from './CrdOrgAccountTab';
 
 describe('CrdOrgAccountTab', () => {
-  it('reports its own delete outcomes, so every delete opts out of the global error handler', () => {
+  it("leaves a failed delete to the global error handler, so the server's reason is the one message", () => {
     render(<CrdOrgAccountTab />);
 
     for (const useDeleteMutation of Object.values(deleteMutationHooks)) {
-      expect(useDeleteMutation).toHaveBeenCalledWith(
-        expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
-      );
+      const options = useDeleteMutation.mock.calls[0]?.[0] as { context?: unknown; onError?: () => void };
+      expect(options.context).toBeUndefined();
+      options.onError?.();
     }
+    expect(notify).not.toHaveBeenCalled();
   });
 });

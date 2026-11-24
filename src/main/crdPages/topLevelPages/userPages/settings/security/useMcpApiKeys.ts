@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -8,6 +7,8 @@ import {
   useRevokeMcpApiKeyMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { McpApiKeyOperation, McpApiKeyStatus } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import type { McpApiKeyCreateInput } from '@/crd/components/user/settings/McpApiKeyCreateDialog';
 import type {
   McpApiKeyOperationOption,
@@ -88,6 +89,7 @@ export type UseMcpApiKeysResult = {
  */
 export function useMcpApiKeys(): UseMcpApiKeysResult {
   const { t } = useTranslation(NS);
+  const serverErrorMessage = useServerErrorMessage();
   const { data, loading, error: loadError, refetch } = useMyMcpApiKeysQuery();
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -97,11 +99,13 @@ export function useMcpApiKeys(): UseMcpApiKeysResult {
   const [revokingId, setRevokingId] = useState<string | undefined>(undefined);
   const [interruptedRevealKeyId, setInterruptedRevealKeyId] = useState<string | undefined>(undefined);
 
+  // A failed create shows inside the create dialog; a failed revoke is reported by the global
+  // error handler, with the server's reason.
   const [mintMutation, { loading: creating }] = useMintMcpApiKeyMutation({
     fetchPolicy: 'no-cache',
-    context: { skipGlobalErrorHandler: true },
+    context: OWN_ERROR_HANDLING,
   });
-  const [revokeMutation] = useRevokeMcpApiKeyMutation({ context: { skipGlobalErrorHandler: true } });
+  const [revokeMutation] = useRevokeMcpApiKeyMutation();
 
   const keys = (data?.me.mcpApiKeys ?? []).map(mapKey);
 
@@ -137,7 +141,7 @@ export function useMcpApiKeys(): UseMcpApiKeysResult {
       setRevealData({ apiKey: mintResult.apiKey, key: mapKey(mintResult.key) });
       await refetch();
     } catch (err) {
-      setCreateError(err instanceof ApolloError ? err.message : t('user.security.mcpApiKeys.create.genericError'));
+      setCreateError(serverErrorMessage(err, t('user.security.mcpApiKeys.create.genericError')));
     }
   };
 
@@ -167,7 +171,7 @@ export function useMcpApiKeys(): UseMcpApiKeysResult {
       // creating a replacement while the compromised key is still live.
       if (options?.recreate) setCreateDialogOpen(true);
     } catch {
-      toast.error(t('user.security.mcpApiKeys.revoke.error'));
+      // Reported by the global error handler.
     } finally {
       setRevokingId(undefined);
     }

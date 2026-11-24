@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUnsubscribeFromPushNotificationsMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import {
   _AUTH_LOGIN_PATH,
   PARAM_NAME_LOGOUT_SIGN_IN_AGAIN,
@@ -72,12 +73,12 @@ const LogoutPage = () => {
   const { clearReturnUrl } = useReturnUrl();
   const { clearArmed } = useSignUpRoundTrip();
   const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation({
-    context: { skipGlobalErrorHandler: true },
+    context: OWN_ERROR_HANDLING,
   });
   const [unregisterDeviceToken] = useMutation<
     { unregisterDevicePushToken: boolean },
     UnregisterDevicePushTokenVariables
-  >(UnregisterDevicePushTokenDocument, { context: { skipGlobalErrorHandler: true } });
+  >(UnregisterDevicePushTokenDocument, { context: OWN_ERROR_HANDLING });
 
   const clearSessionState = () => {
     clearReturnUrl();

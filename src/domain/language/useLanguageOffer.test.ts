@@ -11,6 +11,7 @@
  *
  * FR-020a: authenticated user that saw the offer but never clicked → decline on unmount.
  */
+import { ApolloError } from '@apollo/client';
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -291,8 +292,8 @@ describe('useLanguageOffer FR-020a: ignored banner recorded as decline on unmoun
 });
 
 describe('useLanguageOffer — authenticated onAccept/onDecline error handling (item-3 fix)', () => {
-  it('onAccept: mutation failure reverts optimistic language change, un-dismisses banner, and notifies', async () => {
-    mockUpdateUserSettings.mockRejectedValueOnce(new Error('network error'));
+  it('onAccept: mutation failure reverts optimistic language change and un-dismisses banner, leaving the message to the global error handler', async () => {
+    mockUpdateUserSettings.mockRejectedValueOnce(new ApolloError({ errorMessage: 'refused' }));
     const { useLanguageOffer } = await import('./useLanguageOffer');
 
     const { result } = renderHook(() =>
@@ -316,16 +317,16 @@ describe('useLanguageOffer — authenticated onAccept/onDecline error handling (
       result.current.onAccept();
     });
 
-    // Notification must have fired
-    expect(mockNotify).toHaveBeenCalledWith('settings.languageSaveError', 'error');
+    // The global error handler reports the failure; the hook adds no message of its own
+    expect(mockNotify).not.toHaveBeenCalled();
     // Banner must be un-dismissed (back to visible) so user can retry
     expect(result.current.offeredLanguage).toBe('nl');
     // changeLanguage was called optimistically then a revert was attempted
     expect(mockChangeLanguage).toHaveBeenCalledWith('nl');
   });
 
-  it('onDecline: mutation failure un-dismisses banner and notifies', async () => {
-    mockUpdateUserSettings.mockRejectedValueOnce(new Error('network error'));
+  it('onDecline: mutation failure un-dismisses banner, leaving the message to the global error handler', async () => {
+    mockUpdateUserSettings.mockRejectedValueOnce(new ApolloError({ errorMessage: 'refused' }));
     const { useLanguageOffer } = await import('./useLanguageOffer');
 
     const { result } = renderHook(() =>
@@ -348,15 +349,15 @@ describe('useLanguageOffer — authenticated onAccept/onDecline error handling (
       result.current.onDecline();
     });
 
-    expect(mockNotify).toHaveBeenCalledWith('settings.languageSaveError', 'error');
+    expect(mockNotify).not.toHaveBeenCalled();
     // Banner must be un-dismissed (back to visible) so user can retry
     expect(result.current.offeredLanguage).toBe('nl');
   });
 
-  it('reports its own failures and records an ignored offer unasked, so its writes opt out of the global error handler', async () => {
+  it('leaves accept/decline failures to the global error handler, and records an ignored offer without any message', async () => {
     const { useLanguageOffer } = await import('./useLanguageOffer');
 
-    renderHook(() =>
+    const { unmount } = renderHook(() =>
       useLanguageOffer({
         consentResolved: true,
         isAuthenticated: true,
@@ -369,8 +370,10 @@ describe('useLanguageOffer — authenticated onAccept/onDecline error handling (
         preBannerActionsComplete: true,
       })
     );
+    unmount();
 
-    expect(mockUseUpdateUserSettingsMutation).toHaveBeenCalledWith(
+    expect(mockUseUpdateUserSettingsMutation).toHaveBeenCalledWith(undefined);
+    expect(mockUpdateUserSettings).toHaveBeenCalledWith(
       expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
     );
   });

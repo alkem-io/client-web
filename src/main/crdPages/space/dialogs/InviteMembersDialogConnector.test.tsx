@@ -1,6 +1,8 @@
-import { act, render } from '@testing-library/react';
+import { ApolloError } from '@apollo/client';
+import { act, render, waitFor } from '@testing-library/react';
+import { GraphQLError } from 'graphql';
 import type { ReactElement } from 'react';
-import { describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import {
   RoleSetInvitationResultNotice,
   RoleSetInvitationResultType,
@@ -16,7 +18,8 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { t: (key: string) => key } }),
 }));
 
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+const notifyMock = vi.fn();
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notifyMock }));
 
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { id: 'viewer-1' } }),
@@ -29,9 +32,10 @@ type RoleSetHookParams = {
   includeApplications?: boolean;
   mutationContext?: Record<string, unknown>;
 };
+const inviteContributorsOnRoleSetMock = vi.fn();
 const useRoleSetApplicationsAndInvitationsMock = vi.fn((_params: RoleSetHookParams) => ({
   invitations: [],
-  inviteContributorsOnRoleSet: vi.fn(),
+  inviteContributorsOnRoleSet: inviteContributorsOnRoleSetMock,
   loading: false,
 }));
 vi.mock('@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations', () => ({
@@ -54,8 +58,14 @@ vi.mock('@/domain/community/inviteContributors/components/FormikContributorsSele
 // A VC already in the community — proves `currentMembers` reaches
 // `useVirtualContributorsAdmin` non-empty once the community query resolves.
 const existingVcMember = { id: 'vc-existing' };
+const vcOnAddMock = vi.fn();
+const vcInviteContributorsMock = vi.fn();
 const useCommunityAdminMock = vi.fn((_params: { roleSetId: string; mutationContext?: Record<string, unknown> }) => ({
-  virtualContributorAdmin: { members: [existingVcMember], onAdd: vi.fn(), inviteContributors: vi.fn() },
+  virtualContributorAdmin: {
+    members: [existingVcMember],
+    onAdd: vcOnAddMock,
+    inviteContributors: vcInviteContributorsMock,
+  },
 }));
 vi.mock('@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin', () => ({
   default: (params: { roleSetId: string; mutationContext?: Record<string, unknown> }) => useCommunityAdminMock(params),
@@ -406,8 +416,17 @@ describe('InviteMembersDialogConnector — the invitation dedupe never selects a
   });
 });
 
-describe('InviteMembersDialogConnector — a refused invite or VC add shows only the dialog toast', () => {
-  test('runs the invite and the VC add/invite mutations without the global error handler', async () => {
+describe("InviteMembersDialogConnector — a refused invite or VC add shows the server's reason, once", () => {
+  const refusal = () =>
+    new ApolloError({
+      graphQLErrors: [new GraphQLError('Role combination not allowed', { extensions: { code: 'BAD_USER_INPUT' } })],
+    });
+  const latestDialogProps = () => {
+    const calls = inviteMembersDialogMock.mock.calls;
+    return calls[calls.length - 1][0] as Record<string, (...args: never[]) => unknown>;
+  };
+
+  beforeEach(() => {
     inviteUsersDialogQueryReturn = {
       data: {
         lookup: {
@@ -419,19 +438,48 @@ describe('InviteMembersDialogConnector — a refused invite or VC add shows only
       },
       loading: false,
     };
+    notifyMock.mockClear();
     useRoleSetApplicationsAndInvitationsMock.mockClear();
     useCommunityAdminMock.mockClear();
+  });
 
+  test('a refused invite is left to the global error handler, with no dialog toast on top', async () => {
+    inviteContributorsOnRoleSetMock.mockRejectedValueOnce(refusal());
+    await act(async () => {
+      render(<InviteMembersDialogConnector open={true} kind="user" spaceId="space-1" onClose={vi.fn()} />);
+    });
+
+    await act(async () => {
+      (latestDialogProps().onAddEmails as (text: string) => void)('new.person@example.com');
+    });
+    await act(async () => {
+      (latestDialogProps().onSend as () => void)();
+    });
+
+    await waitFor(() => expect(inviteContributorsOnRoleSetMock).toHaveBeenCalledTimes(1));
+    const inviteCalls = useRoleSetApplicationsAndInvitationsMock.mock.calls;
+    expect(inviteCalls[inviteCalls.length - 1][0].mutationContext).toBeUndefined();
+    expect(notifyMock).not.toHaveBeenCalledWith(expect.anything(), 'error');
+  });
+
+  test.each([
+    ['adding an account VC', 'onAddAccountVc', vcOnAddMock],
+    ['inviting a library VC', 'onInviteLibraryVc', vcInviteContributorsMock],
+  ])('%s that is refused is left to the global error handler, with no dialog toast on top', async (_case, prop, mutation) => {
+    mutation.mockRejectedValueOnce(refusal());
     await act(async () => {
       render(
         <InviteMembersDialogConnector open={true} kind="virtualContributor" spaceId="space-1" onClose={vi.fn()} />
       );
     });
 
-    const own = { skipGlobalErrorHandler: true };
-    const inviteCalls = useRoleSetApplicationsAndInvitationsMock.mock.calls;
-    expect(inviteCalls[inviteCalls.length - 1][0].mutationContext).toEqual(own);
+    await act(async () => {
+      await (latestDialogProps()[prop] as (id: string, message: string) => Promise<void>)('vc-1', 'Welcome');
+    });
+
+    expect(mutation).toHaveBeenCalledTimes(1);
     const vcCalls = useCommunityAdminMock.mock.calls;
-    expect(vcCalls[vcCalls.length - 1][0].mutationContext).toEqual(own);
+    expect(vcCalls[vcCalls.length - 1][0].mutationContext).toBeUndefined();
+    expect(notifyMock).not.toHaveBeenCalledWith(expect.anything(), 'error');
   });
 });

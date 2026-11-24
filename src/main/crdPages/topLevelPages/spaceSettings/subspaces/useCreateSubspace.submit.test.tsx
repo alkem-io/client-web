@@ -147,7 +147,7 @@ describe('useCreateSubspace submit', () => {
     expect(result.current.submitting).toBe(false);
   });
 
-  it('closes the dialog and still lands on the new subspace when the visual upload fails', async () => {
+  it('closes the dialog and still lands on the new subspace, adding no message, when the visual upload fails', async () => {
     mockUploadVisual.mockRejectedValueOnce(new Error('upload failed'));
     const { result } = renderFilledForm({ navigateOnCreate: true }, { withAvatar: true });
 
@@ -156,8 +156,8 @@ describe('useCreateSubspace submit', () => {
     });
 
     expect(mockCreateSubspaceMutation).toHaveBeenCalledTimes(1);
-    expect(mockNotify).toHaveBeenCalledTimes(1);
-    expect(mockNotify).toHaveBeenCalledWith(expect.any(String), 'error');
+    // The failed upload is reported by the global error handler, with its reason.
+    expect(mockNotify).not.toHaveBeenCalled();
     expect(result.current.open).toBe(false);
     expect(mockNavigate).toHaveBeenCalledWith(NEW_SUBSPACE_URL);
   });
@@ -183,8 +183,8 @@ describe('useCreateSubspace submit', () => {
       cardUpload.resolve({});
       await first;
     });
-    expect(mockNotify).toHaveBeenCalledTimes(1);
-    expect(mockNotify).toHaveBeenCalledWith(expect.any(String), 'error');
+    // The failed upload is reported by the global error handler, with its reason.
+    expect(mockNotify).not.toHaveBeenCalled();
     expect(result.current.open).toBe(false);
     expect(mockNavigate).toHaveBeenCalledWith(NEW_SUBSPACE_URL);
   });

@@ -2,6 +2,7 @@ import { ApolloError } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAccountDeletionPreflightLazyQuery, useDeleteUserMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import {
   AUTH_LOGOUT_PATH,
   DELETE_ACCOUNT_REAUTH_ATTEMPTED_KEY,
@@ -130,7 +131,7 @@ const useDeleteAccount = (userId: string | undefined, returnTabUrl: string): Use
   const [dialog, setDialog] = useState<DeleteAccountDialogState>({ kind: 'closed' });
 
   const [runPreflight] = useAccountDeletionPreflightLazyQuery({ fetchPolicy: 'network-only' });
-  const [deleteUserMutation] = useDeleteUserMutation({ context: { skipGlobalErrorHandler: true } });
+  const [deleteUserMutation] = useDeleteUserMutation({ context: OWN_ERROR_HANDLING });
   const { endKratosSsoSession } = useKratosLogout();
 
   const redirectToReauth = async (): Promise<void> => {

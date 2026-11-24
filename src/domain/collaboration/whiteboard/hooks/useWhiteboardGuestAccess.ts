@@ -1,4 +1,3 @@
-import type { ApolloError } from '@apollo/client';
 import { useState } from 'react';
 import {
   trackGuestAccessToggleAttempt,
@@ -7,7 +6,6 @@ import {
 } from '@/core/analytics/events/collaborationGuestAccess';
 import { useUpdateWhiteboardGuestAccessMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import buildGuestShareUrl from '../utils/buildGuestShareUrl';
 
 export interface UseWhiteboardGuestAccessOptions {
@@ -46,11 +44,9 @@ const buildGuestLink = (guestShareUrl?: string, enabled?: boolean) => {
 
 const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGuestAccessOptions) => {
   const [hasError, setHasError] = useState(false);
-  // Failures are reported below through the error handler, once.
-  const [updateGuestAccess, { loading }] = useUpdateWhiteboardGuestAccessMutation({
-    context: { skipGlobalErrorHandler: true },
-  });
-  const handleApolloError = useApolloErrorHandler();
+  // A failed request is reported by the global error handler, with the server's reason; the inline
+  // error is for an answer that reports no success.
+  const [updateGuestAccess, { loading }] = useUpdateWhiteboardGuestAccessMutation();
 
   const resolvedGuestShareUrl = (() => {
     if (guestShareUrl) {
@@ -101,8 +97,6 @@ const useWhiteboardGuestAccess = ({ whiteboard, guestShareUrl }: UseWhiteboardGu
 
       trackGuestAccessToggleSuccess({ whiteboardId: whiteboard.id, nextState });
     } catch (error) {
-      handleApolloError(error as ApolloError);
-      setHasError(true);
       if (whiteboard.id) {
         trackGuestAccessToggleFailure({
           whiteboardId: whiteboard.id,

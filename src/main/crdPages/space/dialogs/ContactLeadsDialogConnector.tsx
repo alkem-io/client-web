@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSendDirectMessageToUsersMutation } from '@/core/apollo/generated/apollo-hooks';
 import { DirectMessageDeliveryStatus } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { type ContactLeadRecipient, ContactLeadsDialog } from '@/crd/components/chat/ContactLeadsDialog';
@@ -23,11 +25,10 @@ export type ContactLeadsDialogConnectorProps = {
 export const ContactLeadsDialogConnector = ({ open, onOpenChange, recipients }: ContactLeadsDialogConnectorProps) => {
   const { t } = useTranslation('crd-chat');
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const { setIsOpen, setSelectedConversationId } = useUserMessagingContext();
 
-  const [sendDirectMessage, { loading: sending }] = useSendDirectMessageToUsersMutation({
-    context: { skipGlobalErrorHandler: true },
-  });
+  const [sendDirectMessage, { loading: sending }] = useSendDirectMessageToUsersMutation();
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [notReached, setNotReached] = useState<string[]>([]);
   const [sentConversationIds, setSentConversationIds] = useState<string[]>([]);
@@ -40,7 +41,7 @@ export const ContactLeadsDialogConnector = ({ open, onOpenChange, recipients }: 
           message,
         },
       },
-      context: { skipGlobalErrorHandler: true },
+      context: OWN_ERROR_HANDLING,
     });
 
     const results = data?.sendDirectMessageToUsers ?? [];
@@ -64,7 +65,10 @@ export const ContactLeadsDialogConnector = ({ open, onOpenChange, recipients }: 
     try {
       await handleSend(message);
     } catch (error) {
-      notify(getMessageSendLimitMessage(error) ?? t('contactLeads.errors.sendFailed'), 'error');
+      notify(
+        getMessageSendLimitMessage(error) ?? serverErrorMessage(error, t('contactLeads.errors.sendFailed')),
+        'error'
+      );
       // Re-throw so the dialog keeps the draft (does not close on failure).
       throw new Error('send-failed');
     }

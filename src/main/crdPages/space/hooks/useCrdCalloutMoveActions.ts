@@ -1,7 +1,5 @@
-import { useTranslation } from 'react-i18next';
 import { useUpdateCalloutsSortOrderMutation } from '@/core/apollo/generated/apollo-hooks';
 import { error as logError } from '@/core/logging/sentry/log';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 
 export type CalloutMoveActions = {
   /** True when the callout is the first in the list — hides Move Up / Move To Top. */
@@ -23,8 +21,8 @@ type UseCrdCalloutMoveActionsParams = {
 
 /**
  * Move-actions helper (plan D9 / T065). Given the ordered callout-id list plus
- * a callout id, returns `{ isTop, isBottom, onMove* }`. On mutation failure,
- * surfaces a localized toast via `useNotification` and leaves the cache
+ * a callout id, returns `{ isTop, isBottom, onMove* }`. A mutation failure is
+ * reported by the global error handler, with the server's reason, and leaves the cache
  * untouched — Apollo's normalized cache re-reads the original `sortOrder` on
  * the next list query.
  */
@@ -33,11 +31,7 @@ export function useCrdCalloutMoveActions({
   orderedCalloutIds,
   calloutId,
 }: UseCrdCalloutMoveActionsParams): CalloutMoveActions {
-  const { t } = useTranslation('crd-space');
-  const notify = useNotification();
-  const [updateSortOrder, { loading: submitting }] = useUpdateCalloutsSortOrderMutation({
-    context: { skipGlobalErrorHandler: true },
-  });
+  const [updateSortOrder, { loading: submitting }] = useUpdateCalloutsSortOrderMutation();
 
   const index = orderedCalloutIds.indexOf(calloutId);
   const isTop = index <= 0;
@@ -58,7 +52,6 @@ export function useCrdCalloutMoveActions({
       });
     } catch (err) {
       logError(new Error('Callout sort-order update failed', { cause: err as Error }));
-      notify(t('contextMenu.moveFailed'), 'error');
     }
   };
 

@@ -1,9 +1,13 @@
+import { ApolloError } from '@apollo/client';
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useRenameCollaboraDocument } from './useRenameCollaboraDocument';
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string) => key,
+    i18n: { exists: (key: string) => key.startsWith('apollo.errors.userMessages.') },
+  }),
 }));
 
 const updateMock = vi.fn();
@@ -89,6 +93,26 @@ describe('useRenameCollaboraDocument', () => {
     expect(result.current.error).toBe('collabora.rename.errors.saveFailed');
     // Still editing so the user can retry; persisted name unchanged.
     expect(result.current.editing).toBe(true);
+  });
+
+  test("a refused save shows the server's reason inline", async () => {
+    updateMock.mockRejectedValueOnce(
+      new ApolloError({
+        graphQLErrors: [
+          {
+            message: 'Not available',
+            extensions: { code: 'FORBIDDEN_POLICY', userMessage: 'userMessages.authorization.forbiddenPolicy' },
+          } as never,
+        ],
+      })
+    );
+    const { result } = setup('Budget');
+    act(() => result.current.startEdit());
+    act(() => result.current.changeDraft('New Title'));
+    await act(async () => {
+      await result.current.save();
+    });
+    expect(result.current.error).toBe('apollo.errors.userMessages.authorization.forbiddenPolicy');
   });
 
   test('cancel clears editing and error', () => {

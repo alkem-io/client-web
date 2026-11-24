@@ -20,7 +20,6 @@
     "pendingMemberships": "Adhésions en attente",
     "administration": "Administration",
     "changeLanguage": "Changer de langue",
-    "changeLanguageError": "Impossible d'enregistrer la préférence de langue — veuillez réessayer.",
     "getHelp": "Obtenir de l'aide",
     "refresh": "Actualiser",
     "showGrid": "Afficher la grille",

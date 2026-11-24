@@ -1,3 +1,4 @@
+import { ApolloError } from '@apollo/client';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { InnovationHubSettingsFragment } from '@/core/apollo/generated/graphql-schema';
@@ -21,7 +22,7 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 }));
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({ t: (key: string) => key, i18n: { exists: () => false } }),
 }));
 
 const { useHubAboutTabData } = await import('../hooks/useHubAboutTabData');
@@ -136,16 +137,31 @@ describe('useHubAboutTabData', () => {
     await waitFor(() => expect(result.current.saveStatus.tagline).toBe('idle'));
   });
 
-  test('mutation rejection surfaces an error and restores idle', async () => {
-    updateInnovationHubMock.mockRejectedValue(new Error('boom'));
+  test('a connection failure shows the generic save error inline and restores idle', async () => {
+    updateInnovationHubMock.mockRejectedValue(new ApolloError({ networkError: new Error('Failed to fetch') }));
     const { result } = renderHook(() => useHubAboutTabData(baseHub));
 
     act(() => result.current.onChange({ name: 'Different Name' }));
     await act(async () => {
       result.current.onSaveSection('name');
     });
-    await waitFor(() => expect(result.current.errors.name).toContain('boom'));
+    await waitFor(() => expect(result.current.errors.name).toBe('settings.about.save.errorPrefix'));
     expect(result.current.saveStatus.name).toBe('idle');
+  });
+
+  test("a refused save shows the server's reason inline", async () => {
+    updateInnovationHubMock.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [{ message: 'Display name is taken', extensions: { code: 'BAD_USER_INPUT' } }],
+      })
+    );
+    const { result } = renderHook(() => useHubAboutTabData(baseHub));
+
+    act(() => result.current.onChange({ name: 'Different Name' }));
+    await act(async () => {
+      result.current.onSaveSection('name');
+    });
+    await waitFor(() => expect(result.current.errors.name).toContain('Display name is taken'));
   });
 
   test('onBannerFileSelected stages a pending crop and does NOT fire upload immediately', async () => {

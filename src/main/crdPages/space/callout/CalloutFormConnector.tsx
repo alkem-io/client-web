@@ -102,7 +102,7 @@ import { type FormEditContext, FramingEditorConnector } from './FramingEditorCon
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
 import { useAccountSpaceCandidates } from './useAccountSpaceCandidates';
-import { translateFormDefinitionError, useCalloutFormDefinitionSave } from './useCalloutFormDefinitionSave';
+import { useCalloutFormDefinitionSave } from './useCalloutFormDefinitionSave';
 import { omitIneligibleIds, useSelectionCandidates } from './useSelectionCandidates';
 
 /**
@@ -132,9 +132,6 @@ const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces', 'fo
 
 /** Framing kinds that cannot be cleared once the callout exists (a Form's responses would be lost). */
 const FIXED_KIND_FRAMING_CHIPS: FramingChipId[] = ['form'];
-
-/** Edit-path mutations whose failure the connector reports with its own message. */
-const OWN_ERROR_HANDLING = { skipGlobalErrorHandler: true } as const;
 
 /** The title counter stays hidden until the value gets this close to `SMALL_TEXT_LENGTH`. */
 const TITLE_COUNTER_THRESHOLD = SMALL_TEXT_LENGTH - 10;
@@ -414,9 +411,8 @@ function CalloutFormConnectorInner({
   const referenceUpload = useReferenceFileUpload(ambientStorageConfig, { temporaryLocation: temporaryUpload });
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
-  const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation({
-    context: OWN_ERROR_HANDLING,
-  });
+  // Edit-path failures are reported by the global error handler, with the server's reason.
+  const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
 
   // Inline-rename state for the framing Collabora document, owned here (not in the
   // edit box) so the form's Save button commits any pending rename alongside the
@@ -428,8 +424,8 @@ function CalloutFormConnectorInner({
     displayName: editCollaboraDocument?.profile?.displayName ?? '',
     canRename: true,
   });
-  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation({ context: OWN_ERROR_HANDLING });
-  const [deleteReference] = useDeleteReferenceMutation({ context: OWN_ERROR_HANDLING });
+  const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
+  const [deleteReference] = useDeleteReferenceMutation();
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
   const { uploadMediaGalleryVisuals, uploading: mediaGalleryUploading } = useUploadMediaGalleryVisuals();
   const notify = useNotification();
@@ -660,7 +656,7 @@ function CalloutFormConnectorInner({
 
   // --- Edit path ---------------------------------------------------------
   const pollId = editData?.lookup.callout?.framing.poll?.id ?? values.editMeta?.pollId;
-  const pollMgmt = usePollOptionManagement({ pollId: pollId ?? '', context: OWN_ERROR_HANDLING });
+  const pollMgmt = usePollOptionManagement({ pollId: pollId ?? '' });
 
   // Poll open/closed status. Unlike the option edits (which are diffed and flushed
   // on save), the status toggle applies immediately on confirm — matching the
@@ -668,7 +664,7 @@ function CalloutFormConnectorInner({
   // cache updates `framing.poll.status` and the form re-renders from it; there is
   // no local status field to keep in sync.
   const pollStatus = editData?.lookup.callout?.framing.poll?.status;
-  const [updatePollStatus] = useUpdatePollStatusMutation({ context: OWN_ERROR_HANDLING });
+  const [updatePollStatus] = useUpdatePollStatusMutation();
 
   const handlePollStatusChange = async (status: 'open' | 'closed') => {
     if (!pollId) return;
@@ -681,7 +677,6 @@ function CalloutFormConnectorInner({
       );
     } catch (err) {
       logError(new Error('Poll status change failed', { cause: err as Error }));
-      notify(t('pollForm.statusChange.failed'), 'error');
     }
   };
 
@@ -749,7 +744,7 @@ function CalloutFormConnectorInner({
       );
       if (!outcome.ok) {
         logError(new Error('Form definition save failed', { cause: outcome.error as Error }));
-        notify(translateFormDefinitionError(outcome.code, t), 'error');
+        notify(outcome.message, 'error');
         void refetchFormResponses();
         return;
       }
@@ -791,7 +786,6 @@ function CalloutFormConnectorInner({
         }
       } catch (err) {
         logError(new Error('Callout reference creation failed', { cause: err as Error }));
-        notify(t('callout.referencesSaveFailed'), 'error');
         return;
       }
     }
@@ -810,7 +804,6 @@ function CalloutFormConnectorInner({
         }
       } catch (err) {
         logError(new Error('Callout reference deletion failed', { cause: err as Error }));
-        notify(t('callout.referencesSaveFailed'), 'error');
         return;
       }
     }
@@ -884,9 +877,7 @@ function CalloutFormConnectorInner({
       });
     } catch (err) {
       logError(new Error('Callout update mutation failed', { cause: err as Error }));
-      // Surface the failure so the admin knows the save did not go through (T005
-      // mid-race rejection recovery / spec Edge Case 'Concurrent churn').
-      notify(t('callout.updateFailed'), 'error');
+      // The global error handler tells the admin the save did not go through, with the server's reason.
       // Reload the candidate data so any concurrent change (e.g. a member who
       // left, or a space moved out of the account, between load and save) is
       // reflected.
@@ -948,7 +939,6 @@ function CalloutFormConnectorInner({
       await runPollOptionDiff();
     } catch (err) {
       logError(new Error('Poll option save failed', { cause: err as Error }));
-      notify(t('callout.pollOptionsSaveFailed'), 'error');
       return;
     }
 

@@ -35,9 +35,6 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   refetchUserSettingsQuery: (v: unknown) => refetchUserSettingsQueryMock(v),
 }));
 
-const notifyMock = vi.fn();
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notifyMock }));
-
 let mockCurrentUserContext: { userModel?: { id: string }; isAuthenticated: boolean };
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => mockCurrentUserContext,
@@ -81,24 +78,14 @@ describe('useCrdNavigation — handleLanguageChange', () => {
     expect(mockI18nInstance.changeLanguage).toHaveBeenCalledWith('bg');
   });
 
-  test('authenticated user, persistence fails: notifies and does not change the display language', async () => {
+  test('authenticated user, persistence fails: leaves the message to the global error handler and keeps the display language', async () => {
     mockCurrentUserContext = { userModel: { id: 'user-1' }, isAuthenticated: true };
     updateUserSettingsMock.mockRejectedValue(new Error('network down'));
     const { result } = renderHook(() => useCrdNavigation());
 
     await result.current.handleLanguageChange('bg');
 
-    expect(notifyMock).toHaveBeenCalledWith('header.changeLanguageError', 'error');
+    expect(useUpdateUserSettingsMutationMock).toHaveBeenCalledWith(undefined);
     expect(mockI18nInstance.changeLanguage).not.toHaveBeenCalled();
-  });
-
-  test('reports its own failure, so the language write opts out of the global error handler', () => {
-    mockCurrentUserContext = { userModel: { id: 'user-1' }, isAuthenticated: true };
-
-    renderHook(() => useCrdNavigation());
-
-    expect(useUpdateUserSettingsMutationMock).toHaveBeenCalledWith(
-      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
-    );
   });
 });

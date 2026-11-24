@@ -31,8 +31,8 @@ export type UseUserAssistantTabDataResult = {
  *    stored grant + the one toggled value) so previously-defaulted capabilities
  *    are materialised and nothing is lost.
  * 3. On success → refetch + clear that override (server now matches).
- * 4. On hard failure → rollback the override (UI snaps back) and re-throw so the
- *    integration page can surface an error toast.
+ * 4. On hard failure → rollback the override (UI snaps back) and re-throw. The
+ *    global error handler reports the failure, with the server's reason.
  */
 export const useUserAssistantTabData = ({
   userId,
@@ -40,9 +40,7 @@ export const useUserAssistantTabData = ({
   storedToggles,
 }: UseUserAssistantTabDataParams): UseUserAssistantTabDataResult => {
   const [overrides, setOverrides] = useState<Map<string, boolean>>(() => new Map());
-  const [updateUserAssistantSettings] = useUpdateUserAssistantSettingsMutation({
-    context: { skipGlobalErrorHandler: true },
-  });
+  const [updateUserAssistantSettings] = useUpdateUserAssistantSettingsMutation();
 
   const clearOverride = (name: string) => {
     setOverrides(prev => {
@@ -81,7 +79,7 @@ export const useUserAssistantTabData = ({
       // 2) Success → drop the override (server now matches what the user wanted).
       clearOverride(capabilityName);
     } catch (err) {
-      // 3) Hard failure → rollback + bubble for a toast.
+      // 3) Hard failure → rollback and rethrow.
       clearOverride(capabilityName);
       throw err;
     }

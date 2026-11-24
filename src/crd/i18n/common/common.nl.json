@@ -1033,9 +1033,6 @@
         "title": "We verwijzen je door..."
       }
     },
-    "visual-upload": {
-      "entityCreatedErrorUploading": "De {{entity}} is aangemaakt, maar er is een fout opgetreden bij het uploaden van sommige afbeeldingen. Probeer het opnieuw."
-    },
     "wysiwyg-editor": {
       "toolbar": {
         "blocktype": {},
@@ -1182,8 +1179,7 @@
       },
       "innovation-packs": {
         "notifications": {
-          "pack-created": "$t(common.innovationPack) succesvol aangemaakt.",
-          "pack-error": "Er is een fout opgetreden tijdens het aanmaken van $t(common.innovationPack)."
+          "pack-created": "$t(common.innovationPack) succesvol aangemaakt."
         }
       },
       "innovationHub": {
@@ -1224,7 +1220,6 @@
           "noTargets": "Er zijn geen andere subspaces binnen deze space die als parent kunnen dienen.",
           "targetLabel": "Verplaats onder subspace"
         },
-        "errorMessage": "Omzetten van de space is mislukt.",
         "move": "Verplaatsen",
         "moveError": "Verplaatsen van Space mislukt.",
         "moveL1ToL0": {
@@ -1285,7 +1280,6 @@
         "confirmTitle": "Transfer $t(common.customHomepage)?",
         "confirmWarning": "Dit zal de $t(common.customHomepage) overdragen aan het geselecteerde account. Zorg ervoor dat het target account de benodigde rechten heeft.",
         "currentAccount": "Huidig Account",
-        "errorMessage": "Transfer naar $t(common.customHomepage) mislukt.",
         "hubName": "Naam",
         "sectionDescription": "Verplaats een $t(common.customHomepage) naar een ander account. Alleen het eigenaarschap verandert — de content blijft ongewijzigd.",
         "sectionTitle": "Transfer $t(common.customHomepage)",
@@ -1302,7 +1296,6 @@
         "confirmTitle": "Transfer $t(common.innovationPack)?",
         "confirmWarning": "Dit zal de $t(common.innovationPack) overdragen aan het geselecteerde account. Zorg ervoor dat het target account de benodigde rechten heeft.",
         "currentAccount": "Huidig Account",
-        "errorMessage": "Transfer naar $t(common.innovationPack) mislukt.",
         "packName": "Naam",
         "sectionDescription": "Verplaats een $t(common.innovationPack) naar een ander account. Alleen het eigenaarschap verandert — templates blijven ongewijzigd.",
         "sectionTitle": "Transfer $t(common.innovationPack)",
@@ -1329,7 +1322,6 @@
         "confirmTitle": "Transfer Virtual Contributor?",
         "confirmWarning": "Dit zal de virtual contributor overdragen aan het geselecteerde account. Zorg ervoor dat het target account de benodigde rechten heeft.",
         "currentAccount": "Huidig Account",
-        "errorMessage": "Transfer van Virtual Contributor mislukt.",
         "sectionDescription": "Verplaats een virtual contributor naar een ander account. Alleen het eigenaarschap verandert — de configuratie blijft ongewijzigd.",
         "sectionTitle": "Transfer Virtual Contributor",
         "successMessage": "Virtual contributor succesvol overgedragen.",

@@ -21,6 +21,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { useUpdateUserSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import type { AnonymousLanguageChoice } from './LanguageOfferContext';
 
 /** sessionStorage marker that proves this tab came from a signup flow. */
@@ -90,7 +91,7 @@ export function useAnonymousLanguageCarry({
   anonymousChoice,
   discardAnonymousChoice,
 }: AnonymousLanguageCarryOpts): AnonymousLanguageCarryResult {
-  const [updateUserSettings] = useUpdateUserSettingsMutation({ context: { skipGlobalErrorHandler: true } });
+  const [updateUserSettings] = useUpdateUserSettingsMutation({ context: OWN_ERROR_HANDLING });
   const didRunRef = useRef(false);
   const [carryComplete, setCarryComplete] = useState(false);
 

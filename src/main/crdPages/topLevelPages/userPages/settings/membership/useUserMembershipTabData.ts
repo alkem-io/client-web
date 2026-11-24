@@ -51,10 +51,8 @@ export const useUserMembershipTabData = (
 
   const [updateUserSettings] = useUpdateUserSettingsMutation();
   const [fetchSpaceDetails] = useSpaceContributionDetailsLazyQuery();
-  // A failed leave is reported by the tab.
-  const [removeRoleFromUser, { loading: isLeaving }] = useRemoveRoleFromUserMutation({
-    context: { skipGlobalErrorHandler: true },
-  });
+  // A failed leave is reported by the global error handler, with the server's reason.
+  const [removeRoleFromUser, { loading: isLeaving }] = useRemoveRoleFromUserMutation();
 
   const onSearchChange = (term: string) => setSearch(term);
   const onFilterChange = (next: MembershipFilter) => setFilter(next);

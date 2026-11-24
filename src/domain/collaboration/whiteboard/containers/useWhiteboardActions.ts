@@ -5,6 +5,7 @@ import {
   WhiteboardDetailsFragmentDoc,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { CreateWhiteboardInput } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import useUploadWhiteboardVisuals from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
@@ -117,7 +118,7 @@ const useWhiteboardActions = () => {
         previewImages,
         { cardVisualId: whiteboard.profile.visual?.id, previewVisualId: whiteboard.profile.preview?.id },
         whiteboard.nameID,
-        { skipGlobalErrorHandler: true }
+        OWN_ERROR_HANDLING
       );
     }
     return {

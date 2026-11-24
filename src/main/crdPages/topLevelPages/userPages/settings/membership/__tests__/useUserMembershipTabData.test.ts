@@ -319,11 +319,10 @@ describe('useUserMembershipTabData — Leave confirmation flow (Rule #9)', () =>
     expect(result.current.pendingLeave).toBeNull();
   });
 
-  it('hands a failed leave to the tab, which reports it, so the leave opts out of the global error handler', () => {
+  it("leaves a failed leave to the global error handler, so the server's reason is the one message", () => {
     renderHook(() => useUserMembershipTabData('user-1'));
 
-    expect(mockUseRemoveRoleFromUserMutation).toHaveBeenCalledWith(
-      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
-    );
+    expect(mockUseRemoveRoleFromUserMutation).toHaveBeenCalled();
+    expect(mockUseRemoveRoleFromUserMutation.mock.calls[0][0]).toBeUndefined();
   });
 });

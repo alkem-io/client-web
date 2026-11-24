@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateCollaboraDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
 
@@ -33,9 +35,10 @@ export function useRenameCollaboraDocument({
   canRename,
 }: UseRenameCollaboraDocumentArgs) {
   const { t } = useTranslation('crd-space');
-  // A failed save is shown inline through `error`.
+  const serverErrorMessage = useServerErrorMessage();
+  // A failed save is shown inline through `error`, beside the validation messages.
   const [updateCollaboraDocument, { loading: saving }] = useUpdateCollaboraDocumentMutation({
-    context: { skipGlobalErrorHandler: true },
+    context: OWN_ERROR_HANDLING,
   });
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
@@ -103,9 +106,9 @@ export function useRenameCollaboraDocument({
       setEditing(false);
       setError(null);
       return true;
-    } catch {
-      // Keep the persisted name; surface a save error.
-      setError(t('collabora.rename.errors.saveFailed'));
+    } catch (saveError) {
+      // Keep the persisted name; surface the server's reason for the failed save.
+      setError(serverErrorMessage(saveError, t('collabora.rename.errors.saveFailed')));
       return false;
     } finally {
       savingRef.current = false;

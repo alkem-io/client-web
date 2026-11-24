@@ -15,6 +15,7 @@ import {
   LicenseEntitlementType,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
@@ -69,9 +70,6 @@ export const updateMemoMarkdownCache = (
   if (!editor || !hadLocalEdits) return Promise.resolve();
   return htmlToMarkdown(editor.getHTML()).then(writeMarkdown);
 };
-
-// A failed signing step is rendered as the signing dialog's error stage.
-const OWN_ERROR_STAGE = { skipGlobalErrorHandler: true } as const;
 
 export const canStartMemoSigning = (
   privileges: AuthorizationPrivilege[],
@@ -169,13 +167,14 @@ export function CrdMemoDialog({
     memoId,
     requestDurability: () => provider?.requestDurability() ?? Promise.reject(new Error('Memo is not connected')),
     prepare: async id => {
-      const result = (await prepareMemoSigning({ variables: { memoID: id }, context: OWN_ERROR_STAGE })).data
+      // A failed signing step is shown as the signing dialog's error stage, which names the next step.
+      const result = (await prepareMemoSigning({ variables: { memoID: id }, context: OWN_ERROR_HANDLING })).data
         ?.prepareMemoSigning;
       if (!result) throw new Error('Memo signing preparation returned no result');
       return result;
     },
     continueSigning: async attemptID => {
-      const result = (await continueMemoSigning({ variables: { attemptID }, context: OWN_ERROR_STAGE })).data
+      const result = (await continueMemoSigning({ variables: { attemptID }, context: OWN_ERROR_HANDLING })).data
         ?.continueMemoSigning;
       if (!result) throw new Error('Memo signing continuation returned no result');
       return result.authorizeUrl;

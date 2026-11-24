@@ -161,11 +161,11 @@ describe('CrdPostContributionDialog — save closes the dialog', () => {
     expect(state.notify).not.toHaveBeenCalled();
   });
 
-  test('edit mode: a refused reference change or move is reported once, by the dialog itself', () => {
+  test("edit mode: a refused reference change or move is left to the global error handler, which shows the server's reason", () => {
     render(<CrdPostContributionDialog {...editProps} open={true} onOpenChange={vi.fn()} />);
 
     for (const name of ['createReference', 'deleteReference', 'moveContribution']) {
-      expect(state.mutationHookOptions).toHaveBeenCalledWith(name, { context: { skipGlobalErrorHandler: true } });
+      expect(state.mutationHookOptions).toHaveBeenCalledWith(name, undefined);
     }
   });
 });
