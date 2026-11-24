@@ -16,6 +16,7 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, opts?: { returnObjects?: boolean }) => (opts?.returnObjects ? [] : key),
   }),
+  Trans: ({ i18nKey }: { i18nKey: string }) => i18nKey,
 }));
 
 vi.mock('@/core/routing/useNavigate', () => ({
@@ -93,7 +94,7 @@ vi.mock('@/crd/components/dashboard/MyMemberships/MyMembershipsPanel', () => ({
   MyMembershipsPanel: () => null,
 }));
 vi.mock('@/crd/components/dashboard/RecentSpaces', () => ({
-  RecentSpaces: () => null,
+  RecentSpaces: () => <div data-testid="recent-spaces" />,
 }));
 vi.mock('@/crd/components/dashboard/TipsAndTricksDialog', () => ({
   TipsAndTricksDialog: () => null,
@@ -106,6 +107,27 @@ vi.mock('@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog', () => 
 }));
 vi.mock('@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog', () => ({
   CrdVCCreationWizardDialog: () => null,
+}));
+
+let mockUnreadMessages = 0;
+let mockUnreadNotifications = 0;
+const setMessagingOpenMock = vi.fn();
+const setNotificationsOpenMock = vi.fn();
+const trackChatOpenMock = vi.fn();
+vi.mock('@/main/userMessaging/useUnreadConversationsCount', () => ({
+  useUnreadConversationsCount: () => mockUnreadMessages,
+}));
+vi.mock('@/main/inAppNotifications/useUnreadNotificationsCount', () => ({
+  useUnreadNotificationsCount: () => mockUnreadNotifications,
+}));
+vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
+  useUserMessagingContext: () => ({ setIsOpen: setMessagingOpenMock }),
+}));
+vi.mock('@/main/inAppNotifications/InAppNotificationsContext', () => ({
+  useInAppNotificationsContext: () => ({ setIsOpen: setNotificationsOpenMock }),
+}));
+vi.mock('@/core/analytics/events/unifiedChat', () => ({
+  trackChatOpen: (source: string) => trackChatOpenMock(source),
 }));
 
 // Re-import after mock setup.
@@ -226,5 +248,60 @@ describe('DashboardWithMemberships — own activity excluded from the spaces fee
       myActivity: true,
       excludeTypes: [ActivityEventType.CalloutWhiteboardContentModified],
     });
+  });
+});
+
+// 108: the phone-only unread rows come first on Home, whichever view is on, and open the
+// chat list / notifications panel the header badges open.
+describe('DashboardWithMemberships — phone unread rows (108)', () => {
+  const renderDashboard = (activityView: boolean) => {
+    mockUserModel = { id: 'user-1', settings: { dashboard: { activityView } } };
+    localStorage.setItem('dashboardViewSeeded', '1');
+    render(<DashboardWithMemberships dialogState={dialogState} onPendingMembershipsClick={vi.fn()} />);
+  };
+
+  const precedes = (a: Element, b: Element) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    mockUserModel = undefined;
+    mockUnreadMessages = 0;
+    mockUnreadNotifications = 0;
+    localStorage.clear();
+  });
+
+  test.each([
+    ['on', true, 'recent-spaces'],
+    ['off', false, 'non-activity-sections'],
+  ])('with Activity View %s, Messages then Notifications precede the existing content', (_, activityView, firstExisting) => {
+    mockUnreadMessages = 2;
+    mockUnreadNotifications = 3;
+    renderDashboard(activityView);
+
+    const messages = screen.getByRole('button', { name: 'unreadSummary.messages.ariaLabel' });
+    const notifications = screen.getByRole('button', { name: 'unreadSummary.notifications.ariaLabel' });
+    expect(precedes(messages, notifications)).toBe(true);
+    expect(precedes(notifications, screen.getByTestId(firstExisting))).toBe(true);
+  });
+
+  test('no row is rendered when both counts are 0', () => {
+    renderDashboard(true);
+
+    expect(screen.queryByRole('button', { name: /unreadSummary/ })).toBeNull();
+    expect(screen.queryByRole('heading', { name: /unreadSummary/ })).toBeNull();
+  });
+
+  test('the Messages row opens the chat list and tracks the open; the Notifications row opens the panel', () => {
+    mockUnreadMessages = 1;
+    mockUnreadNotifications = 1;
+    renderDashboard(true);
+
+    fireEvent.click(screen.getByRole('button', { name: 'unreadSummary.messages.ariaLabel' }));
+    expect(trackChatOpenMock).toHaveBeenCalledWith('homeUnreadRow');
+    expect(setMessagingOpenMock).toHaveBeenCalledWith(true);
+    expect(setNotificationsOpenMock).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'unreadSummary.notifications.ariaLabel' }));
+    expect(setNotificationsOpenMock).toHaveBeenCalledWith(true);
   });
 });

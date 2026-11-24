@@ -1,6 +1,8 @@
 import type { SettingsFlow } from '@ory/kratos-client';
+import { SECOND_FACTOR_PATH } from '@/core/auth/authentication/routeToSecondFactor';
 
-const SECURITY_SETTINGS_PATH_SUFFIX = '/settings/security';
+// The two pages that create settings flows of their own: the Security tab, and /second-factor.
+const RESUMABLE_PATH_SUFFIXES = ['/settings/security', SECOND_FACTOR_PATH];
 
 /**
  * The `return_to` a settings flow was created with. Kratos serialises it as
@@ -31,15 +33,20 @@ const returnToOf = (flow: SettingsFlow): string | undefined => {
  * password (FR-019 violation, observed live 2026-08-21).
  *
  * This resolves that seam: when the flow's own `return_to` targets a user
- * Security settings page (`…/settings/security`), return that page's path
- * with `?flow=<id>` appended so the section resumes the flow and renders its
+ * Security settings page (`…/settings/security`) or `/second-factor`, return
+ * that page with `?flow=<id>` appended so it resumes the flow and renders its
  * error with the settings-context copy. Recovery-issued flows carry no such
- * `return_to` and stay on the set-new-password card. Cross-origin or absent
- * `return_to` yields `null` (no redirect).
+ * `return_to` and stay on the set-new-password card.
+ *
+ * `/settings` is served on the identity origin wherever one is configured,
+ * while those pages live on the platform origin: a `return_to` on
+ * `platformOrigin` yields the absolute URL to leave for; one on `origin` yields
+ * the path. Any other origin, or an absent `return_to`, yields `null`.
  */
 export const securitySettingsResumeTarget = (
   flow: SettingsFlow,
-  origin: string = window.location.origin
+  origin: string = window.location.origin,
+  platformOrigin?: string
 ): string | null => {
   const returnTo = returnToOf(flow);
   if (!returnTo) return null;
@@ -49,8 +56,8 @@ export const securitySettingsResumeTarget = (
   } catch {
     return null;
   }
-  if (target.origin !== origin) return null;
-  if (!target.pathname.endsWith(SECURITY_SETTINGS_PATH_SUFFIX)) return null;
+  if (target.origin !== origin && target.origin !== platformOrigin) return null;
+  if (!RESUMABLE_PATH_SUFFIXES.some(suffix => target.pathname.endsWith(suffix))) return null;
   target.searchParams.set('flow', flow.id);
-  return `${target.pathname}${target.search}`;
+  return target.origin === origin ? `${target.pathname}${target.search}` : target.toString();
 };

@@ -58,7 +58,41 @@ export type KratosSubmitButtonNode = {
   value: string;
   label: string;
   disabled: boolean;
+  /** Kratos label interpolation context (e.g. a security key's `display_name`). */
+  labelContext?: Record<string, unknown>;
 };
+
+/** A read-only text node — e.g. the authenticator secret or the recovery codes. */
+export type KratosTextNode = {
+  id: string;
+  text: string;
+  context?: Record<string, unknown>;
+};
+
+/** An image node — e.g. the authenticator QR code (a data URL). */
+export type KratosImageNode = {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+};
+
+/** The nodes of one second-factor method (`totp`, `lookup_secret`, `webauthn`). */
+export type KratosSecondFactorGroup = {
+  inputs: KratosTextInputNode[];
+  submits: KratosSubmitButtonNode[];
+  texts: KratosTextNode[];
+  images: KratosImageNode[];
+  triggers: KratosPasskeyButtonNode[];
+};
+
+export const emptySecondFactorGroup = (): KratosSecondFactorGroup => ({
+  inputs: [],
+  submits: [],
+  texts: [],
+  images: [],
+  triggers: [],
+});
 
 export type KratosCheckboxNode = {
   name: string;
@@ -92,7 +126,9 @@ export type KratosPasskeyTrigger =
   | 'oryPasskeyLogin'
   | 'oryPasskeyLoginAutocompleteInit'
   | 'oryPasskeyRegistration'
-  | 'oryPasskeySettingsRegistration';
+  | 'oryPasskeySettingsRegistration'
+  | 'oryWebAuthnRegistration'
+  | 'oryWebAuthnLogin';
 
 export type KratosPasskeyButtonNode = {
   name: string;
@@ -138,6 +174,12 @@ export type KratosFlowDescriptor = {
     submit: KratosSubmitButtonNode[];
     oidc: KratosOidcButtonNode[];
     passkey: KratosPasskeyButtonNode[];
+    /** Second factor: authenticator app. */
+    totp: KratosSecondFactorGroup;
+    /** Second factor: recovery codes. */
+    lookupSecret: KratosSecondFactorGroup;
+    /** Second factor: security keys (not passkeys, which are the `passkey` group). */
+    webauthn: KratosSecondFactorGroup;
     /** Anchor links (e.g. the post-verification "Continue" button). */
     anchors: KratosAnchorNode[];
   };

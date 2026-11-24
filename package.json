@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.172.0",
+  "version": "0.174.0",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "type": "module",
   "repository": {
@@ -160,6 +160,7 @@
     "react-map-gl": "^8.0.0",
     "react-markdown": "^10.1.0",
     "react-mentions": "^4.4.7",
+    "react-remove-scroll": "2.7.2",
     "react-router-dom": "^7.4.0",
     "rehype-parse": "^9.0.1",
     "rehype-raw": "^7.0.0",

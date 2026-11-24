@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
 import { type SpaceAboutData, SpaceAboutView } from '@/crd/components/space/SpaceAboutView';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/crd/primitives/dialog';
@@ -27,6 +28,8 @@ type SpaceAboutDialogProps = {
   onEditReferences?: () => void;
   onEditMembers?: () => void;
   onEditClassifications?: () => void;
+  /** Message action on a lead's profile preview; without it the button hides. */
+  onMessageContributor?: (contributor: ContributorPreviewData) => void;
 
   className?: string;
 };
@@ -50,6 +53,7 @@ export function SpaceAboutDialog({
   onEditReferences,
   onEditMembers,
   onEditClassifications,
+  onMessageContributor,
 }: SpaceAboutDialogProps) {
   const { t } = useTranslation('crd-space');
 
@@ -107,6 +111,7 @@ export function SpaceAboutDialog({
             onEditReferences={onEditReferences}
             onEditMembers={onEditMembers}
             onEditClassifications={onEditClassifications}
+            onMessageContributor={onMessageContributor}
           />
         </div>
       </DialogContent>

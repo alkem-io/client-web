@@ -139,7 +139,7 @@
       "aboutYou": {
         "title": "About You",
         "tagline": {
-          "label": "Tagline",
+          "label": "Headline",
           "hint": "A short line shown on your profile."
         },
         "location": {
@@ -149,7 +149,7 @@
           "countryPlaceholder": "Select a country"
         },
         "bio": {
-          "label": "Bio",
+          "label": "About",
           "hint": "Markdown supported."
         },
         "skills": {
@@ -248,6 +248,9 @@
       "sessionExpired": {
         "description": "Your session with our sign-in provider has expired, so these settings can't be loaded. Refreshing won't help — sign out and sign in again to restore it. The rest of Alkemio keeps working in the meantime.",
         "action": "Sign out and sign in again"
+      },
+      "manageInBrowser": {
+        "description": "Your password, passkeys, two-step verification and connected accounts are managed in a web browser, not in the app. Open {{address}} in any web browser, sign in, and go to Settings › Security. The rest of Alkemio keeps working in the app."
       },
       "password": {
         "title": "Change password",
@@ -384,7 +387,8 @@
             "label": "Passkey",
             "set": "Set",
             "notSet": "Not set",
-            "manage": "Manage passkeys"
+            "manage": "Manage passkeys",
+            "explanation": "Signs you in without a password. It is not a second step."
           }
         }
       },
@@ -424,6 +428,60 @@
             "SOLE_ORGANIZATION_OWNER": "Organization (sole owner)"
           }
         }
+      },
+      "twoStep": {
+        "authenticator": {
+          "active": "Your authenticator app is active.",
+          "codeLabel": "Code from the app",
+          "confirm": "Confirm",
+          "explanation": "An app on your phone, such as Google Authenticator, Microsoft Authenticator or 1Password, shows a new six-digit code every 30 seconds.",
+          "qrAlt": "QR code for your authenticator app",
+          "removeDescription": "You will no longer be able to sign in with codes from this app.",
+          "removeTitle": "Remove the authenticator app?",
+          "secretLabel": "Key:",
+          "setUp": "Set up an authenticator app: scan the QR code with the app, or enter the key by hand, then type the code it shows.",
+          "title": "Authenticator app"
+        },
+        "description": "Add a second step to signing in: after your password, you also confirm with your phone or a security key.",
+        "lastFactorWarning": "This is your last second factor. Two-step verification is required for you, so you will have to set one up again the next time you sign in.",
+        "neverShare": "A code is never read out or sent to anyone, and Alkemio will never ask you for one. Do not share your codes.",
+        "recoveryCodes": {
+          "active": "You have recovery codes.",
+          "confirm": "I have saved these codes",
+          "copied": "Copied",
+          "copy": "Copy codes",
+          "copyFailed": "Couldn't copy. Select the codes and copy them yourself.",
+          "download": "Download codes",
+          "explanation": "One-time codes for when you cannot use your app or key. Each code works once.",
+          "generate": "Generate recovery codes",
+          "needsFactor": "Set up an authenticator app or a security key first.",
+          "regenerate": "Regenerate",
+          "regenerateDescription": "Your current recovery codes will stop working.",
+          "regenerateTitle": "Generate new recovery codes?",
+          "remove": "Remove recovery codes",
+          "removeDescription": "You will no longer be able to sign in with a recovery code.",
+          "removeTitle": "Remove your recovery codes?",
+          "shownOnce": "Save these codes somewhere safe now. They will not be shown again.",
+          "title": "Recovery codes"
+        },
+        "remove": "Remove",
+        "secondWay": {
+          "added": "Your second way to pass the second step is set up. Sign in again so it counts.",
+          "needed": "Your account needs a second way to pass the second step: an authenticator app, another security key, or recovery codes. Add one below, then sign in again.",
+          "suggested": "Two-step verification is on. Now add a second way to pass the second step (an authenticator app, another security key, or recovery codes), so you can still sign in if you lose this one."
+        },
+        "securityKeys": {
+          "add": "Add a security key",
+          "empty": "No security keys added yet.",
+          "explanation": "Use a passkey saved in your password manager or on this device (Face ID, Touch ID, Windows Hello), or a physical key such as a YubiKey. Your browser asks which one to use.",
+          "nameLabel": "Name of the key",
+          "nameRequired": "Enter a name for the key.",
+          "removeDescription": "You will no longer be able to sign in with this key.",
+          "removeNamed": "Remove {{name}}",
+          "removeTitle": "Remove the security key \"{{name}}\"?",
+          "title": "Passkeys and security keys"
+        },
+        "title": "Two-step verification"
       }
     },
     "settings": {
@@ -483,7 +541,7 @@
           "description": "Personalise alerts for interactions like replies, mentions, and invites."
         },
         "platform": {
-          "title": "Platform Notifications",
+          "title": "Forum Notifications",
           "description": "Stay updated on platform-level discussions, new features, and announcements."
         },
         "platformAdmin": {
@@ -538,8 +596,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Receive a notification when an organisation decides on my application to associate"
         },
         "platform": {
-          "forumDiscussionComment": "Receive a notification when someone comments on a discussion I created",
-          "forumDiscussionCreated": "Receive a notification when a new platform discussion is created"
+          "forumDiscussionComment": "Receive a notification when someone comments on a discussion I created in the forum",
+          "forumDiscussionCreated": "Receive a notification when a new forum discussion is created"
         },
         "platformAdmin": {
           "userProfileCreated": "Receive a notification when a new user profile is created",
@@ -825,7 +883,15 @@
         "contributionRolesLabel": "Show contribution roles publicly",
         "contributionRolesCaption": "When enabled, the organisation's role assignments (Admin, Owner, Associate) are visible on its public profile."
       },
-      "errorToast": "Couldn't save preference — try again"
+      "errorToast": "Couldn't save preference — try again",
+      "security": {
+        "requireSecondFactorCaption": "Owners, admins and associates of this organisation must use a second factor when they sign in. They have 14 days to set one up.",
+        "requireSecondFactorLabel": "Require two-step verification for members",
+        "title": "Security",
+        "turnOffTitle": "Stop requiring two-step verification?",
+        "turnOffDescription": "Members will no longer need a second factor to sign in. If you switch the requirement back on, they get a new 14 days to set one up.",
+        "turnOffConfirm": "Stop requiring"
+      }
     },
     "invitations": {
       "title": "Space Invitations",

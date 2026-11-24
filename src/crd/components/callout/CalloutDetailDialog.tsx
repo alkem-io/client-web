@@ -46,6 +46,10 @@ type CalloutDetailDialogProps = {
   contributionsSlot?: ReactNode;
   hasContributions?: boolean;
   contributionsCount?: number;
+  /** Replaces the default "Contributions" heading (e.g. "Tasks (3)" for a board). */
+  contributionsTitle?: string;
+  /** Control rendered at the end of the contributions heading (e.g. a fullscreen toggle for a board). */
+  contributionsActionSlot?: ReactNode;
   /**
    * Inline preview of the currently-selected contribution (e.g. CalloutPostPreview).
    * Rendered BELOW the contributions grid so the user keeps the full list in view
@@ -106,6 +110,13 @@ type CalloutDetailDialogProps = {
    * Used to present a single task (post) on top of the Tasks board.
    */
   focusedPost?: boolean;
+  /** Fires before the dialog takes focus on open, while focus is still on whatever opened it. */
+  onOpenAutoFocus?: (event: Event) => void;
+  /**
+   * Where focus goes when the dialog closes. It has no trigger of its own, so
+   * without this focus is left on the page body.
+   */
+  onCloseAutoFocus?: (event: Event) => void;
 };
 
 export function CalloutDetailDialog({
@@ -117,6 +128,8 @@ export function CalloutDetailDialog({
   contributionsSlot,
   hasContributions,
   contributionsCount,
+  contributionsTitle,
+  contributionsActionSlot,
   selectedContributionSlot,
   pollSlot,
   formFramingSlot,
@@ -135,6 +148,8 @@ export function CalloutDetailDialog({
   overlayClassName,
   contentClassName,
   focusedPost = false,
+  onOpenAutoFocus,
+  onCloseAutoFocus,
 }: CalloutDetailDialogProps) {
   const { t } = useTranslation('crd-space');
   const { isSmallScreen } = useScreenSize();
@@ -188,6 +203,8 @@ export function CalloutDetailDialog({
           contentClassName
         )}
         aria-describedby="callout-dialog-description"
+        onOpenAutoFocus={onOpenAutoFocus}
+        onCloseAutoFocus={onCloseAutoFocus}
       >
         {/* In focused mode the selected contribution's own card carries the
             title + actions (including close), so the callout-level header is
@@ -320,12 +337,15 @@ export function CalloutDetailDialog({
                     {contributionsSlot && (
                       <>
                         <div className="flex items-center gap-2 mb-6">
-                          <h2 className="text-section-title text-foreground">{t('calloutDialog.contributions')}</h2>
+                          <h2 className="text-section-title text-foreground">
+                            {contributionsTitle ?? t('calloutDialog.contributions')}
+                          </h2>
                           {contributionsCount !== undefined && (
                             <Badge variant="secondary" className="rounded-full px-2">
                               {contributionsCount}
                             </Badge>
                           )}
+                          {contributionsActionSlot && <div className="ml-auto">{contributionsActionSlot}</div>}
                         </div>
                         {contributionsSlot}
                       </>

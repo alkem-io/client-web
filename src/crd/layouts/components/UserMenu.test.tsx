@@ -128,3 +128,32 @@ describe('UserMenu apps items', () => {
     });
   });
 });
+
+/** The single-pointer alternative to pull to refresh; the layout passes the callback only in the store app. */
+describe('UserMenu refresh item', () => {
+  const renderWithRefresh = (onRefreshClick?: () => void) =>
+    render(
+      <Header
+        authenticated={true}
+        user={{ name: 'Ada Lovelace', initials: 'AL' }}
+        navigationHrefs={navigationHrefs}
+        onRefreshClick={onRefreshClick}
+        onLogout={() => undefined}
+      />
+    );
+
+  test('is absent without a refresh callback', () => {
+    renderWithRefresh();
+
+    expect(within(openProfileMenu()).queryByRole('menuitem', { name: /refresh/i })).not.toBeInTheDocument();
+  });
+
+  test('calls the callback when chosen', () => {
+    const onRefreshClick = vi.fn();
+    renderWithRefresh(onRefreshClick);
+
+    fireEvent.click(within(openProfileMenu()).getByRole('menuitem', { name: /refresh/i }));
+
+    expect(onRefreshClick).toHaveBeenCalledTimes(1);
+  });
+});

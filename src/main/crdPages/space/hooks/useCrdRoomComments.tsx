@@ -39,8 +39,7 @@ type UseCrdRoomCommentsParams = {
    *  behind it and block the UI. */
   confirmOverlayClassName?: string;
   confirmContentClassName?: string;
-  /** Message action on the author hover card. Passed only by non-modal hosts: the chat
-   *  panel opens behind a modal dialog, so dialog hosts leave it out and the button hides. */
+  /** Message action on the author hover card; without it the button hides. */
   onMessageContributor?: (contributor: ContributorPreviewData) => void;
 };
 

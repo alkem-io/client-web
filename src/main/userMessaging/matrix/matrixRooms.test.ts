@@ -1,6 +1,6 @@
-import type { MatrixClient } from 'matrix-js-sdk';
+import type { MatrixClient, Room } from 'matrix-js-sdk';
 import { describe, expect, it, vi } from 'vitest';
-import { resolveMatrixRoomId } from './matrixRooms';
+import { isFavourite, resolveMatrixRoomId } from './matrixRooms';
 
 const makeClient = (lookup: (alias: string) => Promise<{ room_id: string }>) => {
   const getRoomIdForAlias = vi.fn(lookup);
@@ -36,5 +36,12 @@ describe('resolveMatrixRoomId', () => {
     await expect(resolveMatrixRoomId(client, 'unlisted')).resolves.toBeNull();
 
     expect(getRoomIdForAlias).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('isFavourite', () => {
+  it('is true only for a room carrying the favourite tag', () => {
+    expect(isFavourite({ tags: { 'm.favourite': {} } } as unknown as Room)).toBe(true);
+    expect(isFavourite({ tags: { 'm.lowpriority': {} } } as unknown as Room)).toBe(false);
   });
 });

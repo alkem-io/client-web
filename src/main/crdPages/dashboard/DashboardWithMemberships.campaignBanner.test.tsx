@@ -60,6 +60,15 @@ vi.mock('@/crd/components/dashboard/MyMemberships/MyMembershipsPanel', () => ({ 
 vi.mock('@/crd/components/dashboard/RecentSpaces', () => ({ RecentSpaces: () => null }));
 vi.mock('@/crd/components/dashboard/TipsAndTricksDialog', () => ({ TipsAndTricksDialog: () => null }));
 vi.mock('./NonActivityHomeSections', () => ({ NonActivityHomeSections: () => null }));
+vi.mock('@/main/userMessaging/useUnreadConversationsCount', () => ({ useUnreadConversationsCount: () => 0 }));
+vi.mock('@/main/inAppNotifications/useUnreadNotificationsCount', () => ({ useUnreadNotificationsCount: () => 0 }));
+vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
+  useUserMessagingContext: () => ({ setIsOpen: vi.fn() }),
+}));
+vi.mock('@/main/inAppNotifications/InAppNotificationsContext', () => ({
+  useInAppNotificationsContext: () => ({ setIsOpen: vi.fn() }),
+}));
+vi.mock('@/crd/components/dashboard/UnreadSummaryRow', () => ({ UnreadSummaryRow: () => null }));
 vi.mock('@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog', () => ({
   CrdCreateSpaceDialog: () => null,
 }));

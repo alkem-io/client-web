@@ -1,4 +1,4 @@
-import { Info, KeyRound, Link2, Plug, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { Info, KeyRound, Link2, Plug, ShieldAlert, ShieldCheck, Smartphone } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '@/crd/components/common/SettingsSection';
@@ -25,6 +25,15 @@ export type UserSecurityViewState =
    * too, which forces the next sign-in to be a real one.
    */
   | { kind: 'sessionExpired'; reauthHref: string }
+  /**
+   * The store app. Its WebView never holds an identity-provider session — the
+   * app's sign-in handoff mints only the platform session — so this tab cannot
+   * load there, and signing out and in again would re-enter the same handoff.
+   * The way out is a web browser at `address`. There is no action on purpose:
+   * the card only says where to go. Connected Accounts is not rendered, since
+   * without a settings flow it has nothing to show.
+   */
+  | { kind: 'manageInBrowser'; address: string }
   | { kind: 'error' }
   | { kind: 'ready'; hasPassword: boolean; hasWebauthn: boolean };
 
@@ -43,6 +52,8 @@ export type UserSecurityTabViewProps = {
    * `state.hasWebauthn === true`.
    */
   webauthnForm: ReactNode;
+  /** Slot for the two-step verification section; rendered when `state.kind === 'ready'` and it is provided. */
+  twoStepVerificationSection: ReactNode;
   /**
    * Slot for the MCP API Keys card (038). Provided by the integration page
    * so the CRD view stays free of Apollo/GraphQL imports; rendered whenever
@@ -53,8 +64,8 @@ export type UserSecurityTabViewProps = {
    * Slot for the Connected Accounts section — every way to sign in: each
    * identity provider plus password/passkey state rows. Provided by the
    * integration page; carries its own loading/unavailable/lapsed-session
-   * states, so it renders in every view state rather than waiting for the
-   * Kratos settings flow the rest of this tab gates on.
+   * states, so it renders in every view state except `manageInBrowser` rather
+   * than waiting for the Kratos settings flow the rest of this tab gates on.
    */
   connectedAccountsSection: ReactNode;
 };
@@ -70,6 +81,7 @@ export function UserSecurityTabView({
   state,
   passwordForm,
   webauthnForm,
+  twoStepVerificationSection,
   mcpApiKeysCard,
   connectedAccountsSection,
 }: UserSecurityTabViewProps) {
@@ -78,21 +90,22 @@ export function UserSecurityTabView({
   // Only the middle of this tab varies by state. Connected Accounts is self-contained — it owns its
   // own read, status/skeleton and dialogs, and does not depend on the Kratos settings flow the rest
   // of the tab gates on — so it renders from the single site at the bottom of this component, in
-  // every state. It holds the Kratos outcome live region: a link/unlink redirect can land while this
-  // tab is still on its own loading gate, and a live region only announces mutations that happen
-  // after it exists in the DOM, so a state that dropped the section would insert the region already
-  // populated and announce nothing. It also fails closed on its own terms: its unavailable state
+  // every view state except `manageInBrowser`, where no settings flow exists, so no link/unlink can
+  // start and there is no outcome to announce. It holds the Kratos outcome live region: a
+  // link/unlink redirect can land while this tab is still on its own loading gate, and a live
+  // region only announces mutations that happen after it exists in the DOM, so a state that dropped
+  // the section would insert the region already populated and announce nothing. It also fails closed on its own terms: its unavailable state
   // carries the reason and the retry that re-initializes the flow, the only recovery path this tab
   // offers for a flow-load failure.
   //
   // Delete account is not here: it lives in the Account tab's Danger Zone (spec 054 FR-001,
   // amended 2026-10-23), which never touches the Kratos settings flow, so it stays reachable in
-  // the mobile app shell where this tab is always in the lapsed-session state.
+  // the store app, where this tab cannot load.
   let stateBody: ReactNode;
 
   if (state.kind === 'loading') {
     stateBody = <Skeleton className="h-64 w-full" />;
-  } else if (state.kind === 'sessionExpired') {
+  } else if (state.kind === 'sessionExpired' || state.kind === 'manageInBrowser') {
     // Same shape as the generic error state below, but this card names the actual cause and offers
     // the only action that resolves it. Sending someone to refresh here would strand them: the
     // platform session that keeps every other page working renews itself without ever consulting
@@ -101,15 +114,26 @@ export function UserSecurityTabView({
     // its unavailable state offers for the same reason and points at the action here instead of
     // repeating it.
     stateBody = (
-      <SettingsSection title={t('user.security.title')} icon={<ShieldAlert className="size-4" />} iconColor="rose">
+      <SettingsSection
+        title={t('user.security.title')}
+        icon={<ShieldAlert className="size-4" />}
+        iconColor="rose"
+        collapsible={state.kind !== 'manageInBrowser'}
+      >
         <div className="flex flex-col gap-3">
           <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
             <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-            <p>{t('user.security.sessionExpired.description')}</p>
+            <p>
+              {state.kind === 'manageInBrowser'
+                ? t('user.security.manageInBrowser.description', { address: state.address })
+                : t('user.security.sessionExpired.description')}
+            </p>
           </div>
-          <Button asChild={true} className="self-start">
-            <a href={state.reauthHref}>{t('user.security.sessionExpired.action')}</a>
-          </Button>
+          {state.kind === 'sessionExpired' && (
+            <Button asChild={true} className="self-start">
+              <a href={state.reauthHref}>{t('user.security.sessionExpired.action')}</a>
+            </Button>
+          )}
         </div>
       </SettingsSection>
     );
@@ -163,6 +187,17 @@ export function UserSecurityTabView({
             )}
           </SettingsSection>
         </div>
+        {twoStepVerificationSection ? (
+          <SettingsSection
+            id="two-step-verification"
+            className="scroll-mt-60"
+            title={t('user.security.twoStep.title')}
+            icon={<Smartphone className="size-4" />}
+            iconColor="blue"
+          >
+            {twoStepVerificationSection}
+          </SettingsSection>
+        ) : null}
         <SettingsSection
           title={t('user.security.mcpApiKeys.title')}
           description={t('user.security.mcpApiKeys.description')}
@@ -177,14 +212,16 @@ export function UserSecurityTabView({
 
   return (
     <div className="space-y-6">
-      <SettingsSection
-        title={t('user.security.connectedAccounts.title')}
-        description={t('user.security.connectedAccounts.description')}
-        icon={<Link2 className="size-4" />}
-        iconColor="blue"
-      >
-        {connectedAccountsSection}
-      </SettingsSection>
+      {state.kind !== 'manageInBrowser' && (
+        <SettingsSection
+          title={t('user.security.connectedAccounts.title')}
+          description={t('user.security.connectedAccounts.description')}
+          icon={<Link2 className="size-4" />}
+          iconColor="blue"
+        >
+          {connectedAccountsSection}
+        </SettingsSection>
+      )}
       {stateBody}
     </div>
   );

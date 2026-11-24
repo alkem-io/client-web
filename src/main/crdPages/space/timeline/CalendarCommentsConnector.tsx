@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
+import { useMessageContributor } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { useCrdRoomComments } from '../hooks/useCrdRoomComments';
 
 type CalendarCommentsConnectorProps = {
@@ -15,6 +16,7 @@ type CalendarCommentsConnectorProps = {
  * always subscribe (skipSubscription defaults to false).
  */
 export function CalendarCommentsConnector({ roomId, room, children }: CalendarCommentsConnectorProps) {
-  const slots = useCrdRoomComments({ roomId, room });
+  const onMessageContributor = useMessageContributor();
+  const slots = useCrdRoomComments({ roomId, room, onMessageContributor });
   return <>{children(slots)}</>;
 }

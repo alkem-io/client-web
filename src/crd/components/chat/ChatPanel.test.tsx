@@ -9,6 +9,7 @@ import { TooltipProvider } from '@/crd/primitives/tooltip';
 import { CallControls } from './CallControls';
 import { ChatOptionsMenu } from './ChatOptionsMenu';
 import { ChatPanel } from './ChatPanel';
+import { ChatSettingsMenu } from './ChatSettingsMenu';
 
 const screenSize = { isSmallScreen: false, isMediumScreen: false, isLargeScreen: true };
 vi.mock('@/crd/hooks/useMediaQuery', () => ({ useScreenSize: () => screenSize }));
@@ -19,7 +20,6 @@ const baseProps: ComponentProps<typeof ChatPanel> = {
   onClose: () => {},
   closeLabel: 'Close chat',
   backLabel: 'Back to conversations',
-  settingsLabel: 'Notification settings',
   muteSoundLabel: 'Mute chat sound',
   unmuteSoundLabel: 'Unmute chat sound',
   expandLabel: 'Expand chat',
@@ -83,7 +83,15 @@ describe('ChatPanel', () => {
     test('every header control is enlarged on phones and keeps its compact size from the sm breakpoint', () => {
       renderPanel({
         onBack: vi.fn(),
-        onGoToSettings: vi.fn(),
+        settingsMenu: (
+          <ChatSettingsMenu
+            label="Notification settings"
+            statusLabel="Set status"
+            onEditStatus={vi.fn()}
+            notificationSettingsLabel="Notification settings"
+            onOpenNotificationSettings={vi.fn()}
+          />
+        ),
         headerActions: (
           <TooltipProvider>
             <CallControls
@@ -126,11 +134,24 @@ describe('ChatPanel', () => {
       }
     });
 
-    test('shows the notification-settings gear only when the consumer passes onGoToSettings', () => {
+    test('shows the settings control only when the consumer passes one, just before close', () => {
       const { rerender } = renderPanel();
-      expect(screen.queryByRole('button', { name: 'Notification settings' })).not.toBeInTheDocument();
-      rerender(<ChatPanel {...baseProps} onGoToSettings={() => {}} />);
-      expect(screen.getByRole('button', { name: 'Notification settings' })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Settings' })).not.toBeInTheDocument();
+      rerender(<ChatPanel {...baseProps} settingsMenu={<button type="button">Settings</button>} />);
+      const buttons = within(screen.getByRole('banner')).getAllByRole('button');
+      expect(buttons.slice(-2).map(button => button.textContent || button.getAttribute('aria-label'))).toEqual([
+        'Settings',
+        'Close chat',
+      ]);
+    });
+
+    test('shows a line under the title only when the consumer passes one', () => {
+      const { rerender } = renderPanel();
+      const header = screen.getByRole('banner');
+      expect(header).toHaveTextContent(/^Design team$/);
+      rerender(<ChatPanel {...baseProps} subtitle={<button type="button">In a workshop</button>} />);
+      expect(within(header).getByRole('button', { name: 'In a workshop' })).toBeInTheDocument();
+      expect(within(header).getByText('Design team')).toBeInTheDocument();
     });
 
     test('the title is plain text when there is no title action', () => {
@@ -177,20 +198,20 @@ describe('ChatPanel', () => {
 
     test('dims the page behind the expanded panel, like other dialogs, and a click on it collapses the panel', async () => {
       const user = userEvent.setup();
-      const { container } = renderPanel();
-      expect(container.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
+      renderPanel();
+      expect(document.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
       await user.click(screen.getByRole('button', { name: 'Expand chat' }));
-      const backdrop = container.querySelector('[data-slot="chat-backdrop"]');
+      const backdrop = document.querySelector('[data-slot="chat-backdrop"]');
       expect(backdrop).toHaveClass('bg-black/50');
       await user.click(backdrop as Element);
       expect(screen.getByRole('dialog', { name: 'Design team' })).toHaveAttribute('data-expanded', 'false');
-      expect(container.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
+      expect(document.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
     });
 
     test('has no backdrop full-screen on a small screen', () => {
       screenSize.isSmallScreen = true;
-      const { container } = renderPanel();
-      expect(container.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
+      renderPanel();
+      expect(document.querySelector('[data-slot="chat-backdrop"]')).not.toBeInTheDocument();
     });
 
     test('tells assistive technology whether the panel is expanded', async () => {
@@ -339,6 +360,44 @@ describe('ChatPanel', () => {
       rerender(<ChatPanel {...baseProps} onClose={onClose} open={false} />);
       expect(back()).toBe(false);
       expect(onClose).not.toHaveBeenCalled();
+    });
+  });
+
+  // The on-screen keyboard shrinks the visual viewport, not the layout viewport
+  // a fixed panel is pinned to, so the composer at the bottom would sit behind it.
+  describe('on-screen keyboard', () => {
+    const stubVisualViewport = (offsetTop: number, height: number) => {
+      const viewport = Object.assign(new EventTarget(), { offsetTop, height });
+      vi.stubGlobal('visualViewport', viewport);
+      return viewport;
+    };
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    test('on a small screen the panel follows the visible area above the keyboard', () => {
+      screenSize.isSmallScreen = true;
+      const viewport = stubVisualViewport(0, 844);
+      renderPanel();
+
+      const panel = screen.getByRole('dialog');
+      expect(panel).toHaveStyle({ top: '0px', height: '844px', bottom: 'auto' });
+
+      Object.assign(viewport, { offsetTop: 24, height: 460 });
+      act(() => {
+        viewport.dispatchEvent(new Event('resize'));
+      });
+      expect(panel).toHaveStyle({ top: '24px', height: '460px', bottom: 'auto' });
+    });
+
+    test('the floating desktop card is left where its classes put it', () => {
+      const viewport = stubVisualViewport(0, 500);
+      const addEventListener = vi.spyOn(viewport, 'addEventListener');
+      renderPanel();
+
+      expect(screen.getByRole('dialog').getAttribute('style')).toBeNull();
+      expect(addEventListener).not.toHaveBeenCalled();
     });
   });
 });

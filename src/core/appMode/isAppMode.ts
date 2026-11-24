@@ -56,6 +56,26 @@
  * the notifications tab offers. It is noted here so the count is honest: 091's
  * mint is the **fourth ruling and the fifth call site**.
  *
+ * **Telemetry consumers, ruled in (118).** Sentry's `bootstrap` and APM's
+ * `useApmInit` read the predicate, through `appPlatform` below, to tag every
+ * event with `app_mode` and `app_platform` so operators can tell app traffic
+ * from browser traffic. They are **not** on an authorization path: the tags are
+ * written into the page's own outgoing telemetry and nothing reads them back to
+ * decide anything. Forging the predicate in a browser only mislabels the
+ * forger's own Sentry events and APM transactions.
+ *
+ * **The census, recounted (118).** The count above was wrong again: a grep for
+ * calls to `isAppMode` outside tests finds fifteen call sites, not five. Ruled:
+ * the four consumers above, the two telemetry consumers (`bootstrap.ts`,
+ * `useApmInit.ts`) and `appPlatform` in this file, through which they read it.
+ * Not yet ruled, each deciding UI or client behaviour (what to render, how links
+ * open, whether to offer a reload or pull-to-refresh, whether to show a
+ * catching-up state on resume) and none deciding identity or entitlement:
+ * `CrdUserNotificationsTab.tsx`, `CrdLayoutWrapper.tsx`, `AppPullToRefresh.tsx`,
+ * `CallOverlayHost.tsx`, `useMatrixCatchingUp.ts`, `SecondFactorCrdRoute.tsx`,
+ * `ConversationThread.tsx` and `CrdUserSecurityTab.tsx`. A new call site still
+ * needs a ruling here.
+ *
  * **The tap event is also forgeable on Android, and confinement is the control.**
  * Correcting the paragraph above, which only considered browser forgery: the
  * feature's own working path is FCM relaunching the exported `MainActivity`
@@ -90,3 +110,9 @@ declare global {
 }
 
 export const isAppMode = (): boolean => window.Capacitor?.isNativePlatform?.() === true;
+
+export const appPlatform = (): 'ios' | 'android' | 'web' => {
+  if (!isAppMode()) return 'web';
+  const platform = window.Capacitor?.getPlatform?.();
+  return platform === 'ios' || platform === 'android' ? platform : 'web';
+};

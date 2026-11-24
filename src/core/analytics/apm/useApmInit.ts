@@ -3,6 +3,7 @@ import { init as initApm, type UserObject } from '@elastic/apm-rum';
 import { useCookies } from 'react-cookie';
 import { v4 as uuidv4 } from 'uuid';
 import { useUserGeo } from '@/core/analytics/geo';
+import { appPlatform, isAppMode } from '@/core/appMode/isAppMode';
 import { error as logError } from '@/core/logging/sentry/log';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
@@ -64,6 +65,7 @@ export const useApmInit = (user: CurrentUserModel | undefined) => {
 
     apmInit.setUserContext(userObject);
     apmInit.setCustomContext(customContext);
+    apmInit.addLabels({ app_mode: isAppMode(), app_platform: appPlatform() });
 
     return apmInit;
   };

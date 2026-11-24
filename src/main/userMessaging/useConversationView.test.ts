@@ -218,8 +218,10 @@ describe('useConversationView — read receipts are gated on real presence (FR-0
 const dm = (counterpartType: ActorType | null): UserConversation => ({
   ...conversation,
   members: [
-    { id: 'me', type: ActorType.User, displayName: 'Me' },
-    ...(counterpartType ? [{ id: 'other', type: counterpartType, displayName: 'Other' }] : []),
+    { id: 'me', type: ActorType.User, displayName: 'Me', presence: 'unknown' },
+    ...(counterpartType
+      ? [{ id: 'other', type: counterpartType, displayName: 'Other', presence: 'unknown' as const }]
+      : []),
   ],
 });
 const contactable = (isContactable: boolean) => ({

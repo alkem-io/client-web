@@ -1,4 +1,16 @@
-import { Check, CircleEllipsis, Globe, Grid3X3, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
+import {
+  Check,
+  CircleEllipsis,
+  Globe,
+  Grid3X3,
+  HelpCircle,
+  Home,
+  LogOut,
+  RefreshCw,
+  Settings,
+  Shield,
+  User,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useGridOverlay } from '@/crd/hooks/useGridOverlay';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
@@ -37,6 +49,8 @@ type UserMenuProps = {
   onLogout?: () => void;
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
+  /** Reloads the data of the current view. Passed only in the store app, where the browser has no reload. */
+  onRefreshClick?: () => void;
   onLanguageChange?: (code: string) => void;
   showGridToggle?: boolean;
   showBetaBadge?: boolean;
@@ -57,6 +71,7 @@ export function UserMenu({
   onLogout,
   onPendingMembershipsClick,
   onHelpClick,
+  onRefreshClick,
   onLanguageChange,
   showGridToggle,
   showBetaBadge,
@@ -194,9 +209,19 @@ export function UserMenu({
           </DropdownMenuItem>
         )}
 
-        {(isAdmin || onHelpClick || showGridToggle || (languages && languages.length > 0 && onLanguageChange)) && (
-          <DropdownMenuSeparator />
+        {/* Refresh — the single-pointer alternative to pull to refresh */}
+        {onRefreshClick && (
+          <DropdownMenuItem onClick={onRefreshClick} className="cursor-pointer">
+            <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4" />
+            <span>{t('header.refresh')}</span>
+          </DropdownMenuItem>
         )}
+
+        {(isAdmin ||
+          onHelpClick ||
+          onRefreshClick ||
+          showGridToggle ||
+          (languages && languages.length > 0 && onLanguageChange)) && <DropdownMenuSeparator />}
 
         {/* Apps menu items — phones only; not rendered on desktop so hidden rows can't catch Radix's typeahead */}
         {!isDesktop && platformNavigationItems && platformNavigationItems.length > 0 && (
