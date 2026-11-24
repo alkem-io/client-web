@@ -54,12 +54,17 @@ vi.mock('./ssoLogin', () => ({
 /** One lock manager for every tab: callbacks per name run one after another. */
 const stubLocks = () => {
   const tails = new Map<string, Promise<unknown>>();
+  const waiting = new Map<string, number>();
   Object.defineProperty(navigator, 'locks', {
     configurable: true,
     value: {
       request: (name: string, optionsOrTask: unknown, maybeTask?: () => Promise<unknown>) => {
         const task = (typeof optionsOrTask === 'function' ? optionsOrTask : maybeTask) as () => Promise<unknown>;
-        const run = (tails.get(name) ?? Promise.resolve()).then(task);
+        waiting.set(name, (waiting.get(name) ?? 0) + 1);
+        const run = (tails.get(name) ?? Promise.resolve()).then(() => {
+          waiting.set(name, (waiting.get(name) ?? 1) - 1);
+          return task();
+        });
         tails.set(
           name,
           run.catch(() => undefined)
@@ -68,7 +73,14 @@ const stubLocks = () => {
       },
     },
   });
+  return {
+    /** Requests for `name` queued behind the current holder. */
+    waiting: (name: string) => waiting.get(name) ?? 0,
+  };
 };
+
+/** Lets queued BroadcastChannel deliveries and their synchronous handlers run. */
+const deliverMessages = () => new Promise(resolve => setTimeout(resolve, 0));
 
 /** One BroadcastChannel bus for every tab: a message reaches every other open channel of the name. */
 const stubBroadcastChannel = () => {
@@ -172,6 +184,7 @@ const recordOf = (deviceId: string) => ({
 
 describe('tabs of one browser share one chat device', () => {
   let tabs: Awaited<ReturnType<typeof openTab>>[] = [];
+  let locks: ReturnType<typeof stubLocks>;
   const tab = async () => {
     const opened = await openTab();
     tabs.push(opened);
@@ -180,7 +193,7 @@ describe('tabs of one browser share one chat device', () => {
 
   beforeEach(() => {
     sdk.createClient.mockClear();
-    stubLocks();
+    locks = stubLocks();
     stubBroadcastChannel();
   });
 
@@ -309,14 +322,31 @@ describe('tabs of one browser share one chat device', () => {
     const a = await tab();
     await a.boot();
 
-    // Another tab replaced the device twice; the second announcement lands while the first move is under way.
-    await storeCredentials(recordOf('DEV3'));
-    announceDeviceChanged(recordOf('DEV2'));
-    announceDeviceChanged(recordOf('DEV3'));
-    await vi.waitFor(() => expect(a.client()?.opts.deviceId).toBe('DEV3'));
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // The move to DEV2 holds in startClient until released.
+    const build = sdk.createClient.getMockImplementation() as (opts: FakeClient['opts']) => FakeClient;
+    let finishDev2: () => void = () => undefined;
+    sdk.createClient.mockImplementationOnce(opts => {
+      const client = build(opts);
+      client.startClient = vi.fn(
+        () =>
+          new Promise<undefined>(resolve => {
+            finishDev2 = () => resolve(undefined);
+          })
+      );
+      return client;
+    });
 
-    expect(a.client()?.opts.deviceId).toBe('DEV3');
+    // Another tab replaced the device twice; the second change lands after this tab read the first.
+    await storeCredentials(recordOf('DEV2'));
+    announceDeviceChanged(recordOf('DEV2'));
+    await vi.waitFor(() => expect(a.client()?.opts.deviceId).toBe('DEV2'));
+    await storeCredentials(recordOf('DEV3'));
+    announceDeviceChanged(recordOf('DEV3'));
+    await deliverMessages();
+    finishDev2();
+    await vi.waitFor(() => expect(a.client()?.opts.deviceId).toBe('DEV3'));
+
+    expect(sdk.createClient.mock.calls.map(([opts]) => opts.deviceId)).toEqual(['DEV1', 'DEV2', 'DEV3']);
   });
 
   it('a sign-out that lands while a tab is reading the changed device keeps that tab stopped', async () => {
@@ -337,11 +367,13 @@ describe('tabs of one browser share one chat device', () => {
     );
 
     announceDeviceChanged(recordOf('DEV2'));
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await vi.waitFor(() => expect(locks.waiting(`alkemio-matrix/${ACTOR}`)).toBe(1));
     announceSignedOut(['DEV2']);
     await vi.waitFor(() => expect(a.client()).toBeNull());
     release();
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // A's read has run once a later request for the lock is granted; then let what follows it settle.
+    await navigator.locks.request(`alkemio-matrix/${ACTOR}`, async () => undefined);
+    await deliverMessages();
 
     expect(a.client()).toBeNull();
     expect(sdk.createClient.mock.calls.map(([opts]) => opts.deviceId)).toEqual(['DEV1']);
