@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const notificationsDispatch = vi.fn();
@@ -41,12 +41,16 @@ describe('CrdNotificationHandler', () => {
     // fireEvent rather than userEvent: sonner's swipe handler calls setPointerCapture on
     // pointerdown, which jsdom does not implement. The close button's own handler is a plain
     // onClick, so a click event exercises exactly the path under test.
-    fireEvent.click(await screen.findByRole('button', { name: 'notification.close' }));
+    const closeButton = await screen.findByRole('button', { name: 'notification.close' });
+    fireEvent.click(closeButton);
 
     expect(notificationsDispatch).toHaveBeenCalledWith({
       type: CLEAR_NOTIFICATION,
       payload: { id: 'n-dismiss' },
     });
+    // sonner removes a closed toast on a 200ms timer. Wait for it, or the timer outlives
+    // this file's test environment and its state update throws once `window` is gone.
+    await waitForElementToBeRemoved(closeButton);
   });
 
   it('positions the close button at the top right rather than sonner default top left', async () => {
