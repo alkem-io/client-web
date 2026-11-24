@@ -7,8 +7,12 @@
   "panel": {
     "title": "Chat",
     "settings": "Meldingsinstellingen",
+    "muteSound": "Chatgeluid dempen",
+    "unmuteSound": "Chatgeluid aanzetten",
+    "soundToggleError": "We konden de instelling voor het chatgeluid niet opslaan. Probeer het opnieuw.",
     "expand": "Chat vergroten",
-    "collapse": "Chat verkleinen"
+    "collapse": "Chat verkleinen",
+    "reconnecting": "Opnieuw verbinden… Nieuwe berichten kunnen vertraagd zijn."
   },
   "actions": {
     "cancel": "Annuleren"
@@ -59,7 +63,12 @@
     "loading": "Gesprekken laden",
     "draft": "Concept:",
     "attachmentPreview_one": "{{count}} bijlage",
-    "attachmentPreview_other": "{{count}} bijlagen"
+    "attachmentPreview_other": "{{count}} bijlagen",
+    "pin": "Vastzetten",
+    "unpin": "Losmaken",
+    "pinned": "Vastgezet",
+    "rowOptions": "Opties voor {{name}}",
+    "pinError": "Kon het vastzetten niet bijwerken. Probeer het opnieuw."
   },
   "guidance": {
     "beta": "Bèta",
@@ -80,6 +89,7 @@
   "thread": {
     "back": "Terug naar gesprekken",
     "loading": "Berichten laden",
+    "jumpToLatest": "Naar de nieuwste berichten",
     "addReaction": "Reactie toevoegen",
     "options": "Chatopties"
   },
@@ -114,6 +124,8 @@
     "joinVideo": "Deelnemen met video",
     "joinAudio": "Alleen met audio deelnemen",
     "joinedOnThisDevice": "Al deelgenomen op dit apparaat",
+    "preparing": "Gesprek wordt voorbereid… Het start zo meteen.",
+    "dropped": "Kon het gesprek niet starten. Probeer het opnieuw.",
     "overlayLabel": "Gesprek",
     "close": "Gesprek sluiten",
     "license": "Opensourcelicentie",
@@ -128,5 +140,21 @@
     "listBadge": "Gesprek actief",
     "callingYou": "{{name}} belt je",
     "groupCall": "Gesprek in {{name}}"
+  },
+  "presence": {
+    "online": "Online",
+    "away": "Afwezig",
+    "offline": "Offline"
+  },
+  "status": {
+    "set": "Status instellen",
+    "change": "Status bewerken",
+    "label": "Je status",
+    "placeholder": "Waar ben je mee bezig?",
+    "edit": "Je status bewerken: {{status}}",
+    "save": "Status opslaan",
+    "clear": "Status wissen",
+    "hint": "Mensen met wie je chat zien dit bij je avatar.",
+    "saveError": "We konden je status niet opslaan. Probeer het opnieuw."
   }
 }

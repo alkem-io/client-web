@@ -76,6 +76,7 @@ type HeaderProps = {
   onSearchClick?: () => void;
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
+  onRefreshClick?: () => void;
   onLanguageChange?: (code: string) => void;
   showGridToggle?: boolean;
   /**
@@ -120,6 +121,7 @@ export function Header({
   onSearchClick,
   onPendingMembershipsClick,
   onHelpClick,
+  onRefreshClick,
   onLanguageChange,
   showGridToggle,
   fullWidth = false,
@@ -261,6 +263,7 @@ export function Header({
                 onLogout={onLogout}
                 onPendingMembershipsClick={onPendingMembershipsClick}
                 onHelpClick={onHelpClick}
+                onRefreshClick={onRefreshClick}
                 onLanguageChange={onLanguageChange}
                 showGridToggle={showGridToggle}
               />

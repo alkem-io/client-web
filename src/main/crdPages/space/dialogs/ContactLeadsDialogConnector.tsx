@@ -6,6 +6,7 @@ import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { type ContactLeadRecipient, ContactLeadsDialog } from '@/crd/components/chat/ContactLeadsDialog';
 import { SendConfirmationDialog } from '@/crd/components/chat/SendConfirmationDialog';
+import { getMessageSendLimitMessage } from '@/main/constants/messageSendLimit';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
 export type ContactLeadsDialogConnectorProps = {
@@ -37,6 +38,7 @@ export const ContactLeadsDialogConnector = ({ open, onOpenChange, recipients }: 
           message,
         },
       },
+      context: { skipGlobalErrorHandler: true },
     });
 
     const results = data?.sendDirectMessageToUsers ?? [];
@@ -59,8 +61,8 @@ export const ContactLeadsDialogConnector = ({ open, onOpenChange, recipients }: 
   const handleSendWithErrorBoundary = async (message: string) => {
     try {
       await handleSend(message);
-    } catch {
-      notify(t('contactLeads.errors.sendFailed'), 'error');
+    } catch (error) {
+      notify(getMessageSendLimitMessage(error) ?? t('contactLeads.errors.sendFailed'), 'error');
       // Re-throw so the dialog keeps the draft (does not close on failure).
       throw new Error('send-failed');
     }

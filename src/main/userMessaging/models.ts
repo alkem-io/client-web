@@ -3,12 +3,19 @@ import type { MessageAttachment } from '@/crd/components/comment/types';
 /**
  * Shared types and utilities for user messaging
  */
+
+/** Matrix presence; 'unknown' when the homeserver has sent none for the user. */
+export type UserPresence = 'online' | 'away' | 'offline' | 'unknown';
+
 export interface ConversationMember {
   id: string;
   type: ActorType;
   displayName: string;
   avatarUri?: string;
   url?: string;
+  presence: UserPresence;
+  /** The Matrix presence status message the member set, if any. */
+  statusMessage?: string;
 }
 
 export interface UserConversation {
@@ -31,6 +38,8 @@ export interface MessageSender {
   id: string;
   displayName: string;
   avatarUri?: string;
+  presence: UserPresence;
+  statusMessage?: string;
 }
 
 export interface MessageReaction {
@@ -114,6 +123,7 @@ export const mapMessageSender = (sender: GraphQLSender): MessageSender | undefin
     id: sender.id,
     displayName: sender.profile?.displayName ?? '',
     avatarUri: sender.profile?.avatar?.uri,
+    presence: 'unknown',
   };
 };
 

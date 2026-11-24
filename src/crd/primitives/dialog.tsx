@@ -16,11 +16,27 @@ export const DIALOG_DISMISS_IGNORE_ATTR = 'data-dialog-dismiss-ignore';
 
 type InteractOutsideHandler = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>['onInteractOutside'];
 
+const isInDismissIgnored = (node: EventTarget | null) =>
+  node instanceof Element && node.closest(`[${DIALOG_DISMISS_IGNORE_ATTR}]`) !== null;
+
+// A press is judged by where it started. On touch, Radix runs its outside check on the
+// click that follows the tap, when the pressed element may already be gone (a Back
+// button that removes itself) and no longer sits inside its marked overlay.
+const pressesStartedInIgnored = new WeakSet<Event>();
+if (typeof document !== 'undefined') {
+  document.addEventListener(
+    'pointerdown',
+    event => {
+      if (isInDismissIgnored(event.target)) pressesStartedInIgnored.add(event);
+    },
+    true
+  );
+}
+
 const guardInteractOutside =
   (userHandler: InteractOutsideHandler): NonNullable<InteractOutsideHandler> =>
   event => {
-    const target = event.target as Element | null;
-    if (target?.closest?.(`[${DIALOG_DISMISS_IGNORE_ATTR}]`)) {
+    if (pressesStartedInIgnored.has(event.detail.originalEvent) || isInDismissIgnored(event.target)) {
       event.preventDefault();
       return;
     }

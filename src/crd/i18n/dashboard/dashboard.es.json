@@ -14,6 +14,22 @@
     "navigation": "Navegación del panel",
     "pendingCount": "{{count}} pendiente(s)"
   },
+  "unreadSummary": {
+    "messages": {
+      "heading": "Mensajes",
+      "text_one": "Tienes <b>{{count}} mensaje sin leer</b>",
+      "text_other": "Tienes <b>{{count}} mensajes sin leer</b>",
+      "ariaLabel_one": "Tienes {{count}} mensaje sin leer. Abrir Mensajes",
+      "ariaLabel_other": "Tienes {{count}} mensajes sin leer. Abrir Mensajes"
+    },
+    "notifications": {
+      "heading": "Notificaciones",
+      "text_one": "Tienes <b>{{count}} notificación nueva</b>",
+      "text_other": "Tienes <b>{{count}} notificaciones nuevas</b>",
+      "ariaLabel_one": "Tienes {{count}} notificación nueva. Abrir Notificaciones",
+      "ariaLabel_other": "Tienes {{count}} notificaciones nuevas. Abrir Notificaciones"
+    }
+  },
   "recentSpaces": {
     "title": "Espacios Recientes",
     "exploreAll": "Explorar todos tus Espacios",

@@ -235,7 +235,9 @@ describe('useCrdRoomComments composers', () => {
     expect(topLevel().getByText('comments.attachments.uploadFailed')).toBeInTheDocument();
   });
 
-  test('the field and the image button are disabled while a send is in flight', async () => {
+  // The field is only marked busy: natively disabling it would blur it and drop
+  // the on-screen keyboard on a phone.
+  test('the field is marked busy without being natively disabled, and the image button is disabled, while a send is in flight', async () => {
     mockBucketQuery.mockReturnValue(readableBucket);
     const upload = deferred<ReturnType<typeof uploadOk>>();
     mockFetch.mockReturnValue(upload.promise);
@@ -245,13 +247,14 @@ describe('useCrdRoomComments composers', () => {
     await act(async () => {
       fireEvent.click(topLevel().getByRole('button', { name: 'comments.send' }));
     });
-    expect(topLevel().getByRole('textbox')).toBeDisabled();
+    expect(topLevel().getByRole('textbox')).not.toHaveAttribute('disabled');
+    expect(topLevel().getByRole('textbox')).toHaveAttribute('aria-disabled', 'true');
     expect(topLevel().getByRole('button', { name: 'comments.attachments.addImage' })).toBeDisabled();
     await act(async () => {
       upload.resolve(uploadOk('media-1'));
       await upload.promise;
     });
-    expect(topLevel().getByRole('textbox')).not.toBeDisabled();
+    expect(topLevel().getByRole('textbox')).not.toHaveAttribute('aria-disabled');
   });
 
   test('opening a reply keys a separate draft: files staged in the reply are not in the top-level list, and the reply posts with its threadId', async () => {

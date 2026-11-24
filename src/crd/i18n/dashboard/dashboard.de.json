@@ -14,6 +14,22 @@
     "navigation": "Dashboard-Navigation",
     "pendingCount": "{{count}} ausstehend"
   },
+  "unreadSummary": {
+    "messages": {
+      "heading": "Nachrichten",
+      "text_one": "Du hast <b>{{count}} ungelesene Nachricht</b>",
+      "text_other": "Du hast <b>{{count}} ungelesene Nachrichten</b>",
+      "ariaLabel_one": "Du hast {{count}} ungelesene Nachricht. Nachrichten öffnen",
+      "ariaLabel_other": "Du hast {{count}} ungelesene Nachrichten. Nachrichten öffnen"
+    },
+    "notifications": {
+      "heading": "Benachrichtigungen",
+      "text_one": "Du hast <b>{{count}} neue Benachrichtigung</b>",
+      "text_other": "Du hast <b>{{count}} neue Benachrichtigungen</b>",
+      "ariaLabel_one": "Du hast {{count}} neue Benachrichtigung. Benachrichtigungen öffnen",
+      "ariaLabel_other": "Du hast {{count}} neue Benachrichtigungen. Benachrichtigungen öffnen"
+    }
+  },
   "recentSpaces": {
     "title": "Letzte Spaces",
     "exploreAll": "Alle deine Spaces erkunden",

@@ -8,6 +8,7 @@ import { InvitationsBlock } from '@/crd/components/dashboard/InvitationsBlock';
 import { MyMembershipsPanel } from '@/crd/components/dashboard/MyMemberships/MyMembershipsPanel';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
+import { UnreadSummaryRow } from '@/crd/components/dashboard/UnreadSummaryRow';
 import {
   MOCK_INVITATIONS,
   MOCK_MEMBERSHIPS_PANEL,
@@ -88,6 +89,8 @@ export function DashboardPage({ onPendingMembershipsClick }: DashboardPageProps)
   return (
     <>
       <DashboardLayout sidebar={sidebar}>
+        <UnreadSummaryRow kind="messages" count={2} onOpen={() => {}} />
+        <UnreadSummaryRow kind="notifications" count={3} onOpen={() => {}} />
         <RecentSpaces
           spaces={MOCK_RECENT_SPACES}
           hasHomeSpace={hasHomeSpace}

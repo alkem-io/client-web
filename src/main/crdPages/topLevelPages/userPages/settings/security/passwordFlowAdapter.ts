@@ -8,6 +8,8 @@ const isPasswordInputNode = (node: UiNode): node is UiNode & { attributes: UiNod
 const isPasswordSubmitNode = (node: UiNode): node is UiNode & { attributes: UiNodeInputAttributes } =>
   isSubmitButton(node) && node.attributes.name === 'method' && node.attributes.value === 'password';
 
+const PASSWORD_FORM_GROUPS = new Set(['default', 'password']);
+
 const toMessageType = (type: string | undefined): 'info' | 'error' | 'success' => {
   if (type === 'error') return 'error';
   if (type === 'success') return 'success';
@@ -23,8 +25,8 @@ const asString = (value: unknown): string => (value == null ? '' : String(value)
  * card stays free of it.
  *
  * Preserves the native form POST exactly: the form `action`/`method` come from
- * `flow.ui.action`/`method`; every hidden node (CSRF token) is forwarded
- * verbatim; the password input keeps its real `name`; the submit keeps the
+ * `flow.ui.action`/`method`; the hidden nodes of the `default` and `password`
+ * groups (CSRF token) are forwarded verbatim; the password input keeps its real `name`; the submit keeps the
  * method node's `name`/`value` (`method`/`password`).
  */
 export const adaptPasswordFlow = (ui: UiContainer): CrdKratosPasswordFlow | null => {
@@ -32,10 +34,16 @@ export const adaptPasswordFlow = (ui: UiContainer): CrdKratosPasswordFlow | null
   const submitNode = ui.nodes.find(isPasswordSubmitNode);
   if (!passwordNode || !submitNode) return null;
 
-  const hidden = ui.nodes.filter(isHiddenInput).map(node => ({
-    name: node.attributes.name,
-    value: asString(node.attributes.value),
-  }));
+  // Only the password method's own hidden fields (the CSRF token sits in `default`): the shared flow
+  // also carries other methods' hidden inputs, and a copy here would shadow the one Ory's WebAuthn
+  // script looks up by name in the document.
+  const hidden = ui.nodes
+    .filter(isHiddenInput)
+    .filter(node => PASSWORD_FORM_GROUPS.has(node.group))
+    .map(node => ({
+      name: node.attributes.name,
+      value: asString(node.attributes.value),
+    }));
 
   const passwordAttrs = passwordNode.attributes;
   const passwordErrorMessage = passwordNode.messages?.find(message => message.type === 'error')?.text;

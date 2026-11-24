@@ -22,10 +22,10 @@ const oidcSubmitNode = (name: 'link' | 'unlink', providerId: string): UiNode =>
     meta: { label: { id: name === 'link' ? 1050002 : 1050003, text: `${name} ${providerId}` } },
   }) as unknown as UiNode;
 
-const passkeyRemoveNode = (name: 'webauthn_remove' | 'passkey_remove' = 'webauthn_remove'): UiNode =>
+const passkeyRemoveNode = (name: 'webauthn_remove' | 'passkey_remove' = 'passkey_remove'): UiNode =>
   ({
     type: 'input',
-    group: 'webauthn',
+    group: name === 'webauthn_remove' ? 'webauthn' : 'passkey',
     attributes: { node_type: 'input', type: 'submit', name, value: 'cred-1', disabled: false },
     messages: [],
     meta: {},
@@ -251,12 +251,14 @@ describe('adaptConnectedAccountsFlow', () => {
       });
     });
 
-    it.each([
-      'webauthn_remove',
-      'passkey_remove',
-    ] as const)('passkey present when a %s node exists in the flow', removeNodeName => {
-      const flow = buildFlow([hiddenNode('csrf_token', 'x'), passkeyRemoveNode(removeNodeName)]);
+    it('passkey present when a passkey_remove node exists in the flow', () => {
+      const flow = buildFlow([hiddenNode('csrf_token', 'x'), passkeyRemoveNode('passkey_remove')]);
       expect(adaptConnectedAccountsFlow(flow, []).credentials).toContainEqual({ kind: 'passkey', present: true });
+    });
+
+    it('a security key (webauthn_remove, a second factor) is not a passkey sign-in', () => {
+      const flow = buildFlow([hiddenNode('csrf_token', 'x'), passkeyRemoveNode('webauthn_remove')]);
+      expect(adaptConnectedAccountsFlow(flow, []).credentials).toContainEqual({ kind: 'passkey', present: false });
     });
 
     it('passkey absent when no remove node exists', () => {

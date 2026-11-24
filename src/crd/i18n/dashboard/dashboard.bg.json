@@ -14,6 +14,22 @@
     "navigation": "Навигация в таблото",
     "pendingCount": "{{count}} чакащи"
   },
+  "unreadSummary": {
+    "messages": {
+      "heading": "Съобщения",
+      "text_one": "Имате <b>{{count}} непрочетено съобщение</b>",
+      "text_other": "Имате <b>{{count}} непрочетени съобщения</b>",
+      "ariaLabel_one": "Имате {{count}} непрочетено съобщение. Отвори Съобщения",
+      "ariaLabel_other": "Имате {{count}} непрочетени съобщения. Отвори Съобщения"
+    },
+    "notifications": {
+      "heading": "Известия",
+      "text_one": "Имате <b>{{count}} ново известие</b>",
+      "text_other": "Имате <b>{{count}} нови известия</b>",
+      "ariaLabel_one": "Имате {{count}} ново известие. Отвори Известия",
+      "ariaLabel_other": "Имате {{count}} нови известия. Отвори Известия"
+    }
+  },
   "recentSpaces": {
     "title": "Скорошни пространства",
     "exploreAll": "Разгледай всички свои пространства",

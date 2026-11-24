@@ -14,6 +14,22 @@
     "navigation": "Dashboard navigation",
     "pendingCount": "{{count}} pending"
   },
+  "unreadSummary": {
+    "messages": {
+      "heading": "Messages",
+      "text_one": "You have <b>{{count}} unread message</b>",
+      "text_other": "You have <b>{{count}} unread messages</b>",
+      "ariaLabel_one": "You have {{count}} unread message. Open Messages",
+      "ariaLabel_other": "You have {{count}} unread messages. Open Messages"
+    },
+    "notifications": {
+      "heading": "Notifications",
+      "text_one": "You have <b>{{count}} new notification</b>",
+      "text_other": "You have <b>{{count}} new notifications</b>",
+      "ariaLabel_one": "You have {{count}} new notification. Open Notifications",
+      "ariaLabel_other": "You have {{count}} new notifications. Open Notifications"
+    }
+  },
   "recentSpaces": {
     "title": "Recent Spaces",
     "exploreAll": "Explore all your Spaces",

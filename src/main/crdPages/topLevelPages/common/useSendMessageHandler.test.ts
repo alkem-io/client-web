@@ -19,14 +19,23 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useSendMessageToOrganizationMutation: () => [sendMessageToOrganizationMock, { loading: false }],
 }));
 
-vi.mock('react-i18next', () => ({
+vi.mock('react-i18next', async importOriginal => ({
+  ...(await importOriginal<typeof import('react-i18next')>()),
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
 const toastErrorMock = vi.fn();
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: (...args: unknown[]) => toastErrorMock(...args) } }));
 
-import { useMessageContributor, useOpenDirectChatHandler } from './useSendMessageHandler';
+import i18next from 'i18next';
+import '@/core/i18n/config';
+import commonEN from '@/crd/i18n/common/common.en.json';
+import commonNL from '@/crd/i18n/common/common.nl.json';
+import {
+  useMessageContributor,
+  useOpenDirectChatHandler,
+  useSendMessageToOrganizationHandler,
+} from './useSendMessageHandler';
 
 describe('useOpenDirectChatHandler (US1 — profile Message → open 1:1 chat)', () => {
   afterEach(() => {
@@ -103,5 +112,60 @@ describe('useMessageContributor (hover card Message action)', () => {
     result.current({ id: 'user-3' });
 
     await vi.waitFor(() => expect(startDirectChatMock).toHaveBeenCalledWith('user-3'));
+  });
+});
+
+describe('useSendMessageToOrganizationHandler — hourly message allowance used up', () => {
+  const limitError = () =>
+    new ApolloError({
+      graphQLErrors: [new GraphQLError('refused', { extensions: { code: 'MESSAGE_SEND_LIMIT_REACHED' } })],
+    });
+
+  afterEach(async () => {
+    vi.clearAllMocks();
+    await i18next.changeLanguage('en');
+  });
+
+  test('sends without the global error handler', async () => {
+    sendMessageToOrganizationMock.mockResolvedValue({ data: { sendMessageToOrganization: true } });
+
+    const { result } = renderHook(() => useSendMessageToOrganizationHandler({ recipientOrganizationId: 'org-1' }));
+    await result.current.onSendMessage('hello');
+
+    expect(sendMessageToOrganizationMock).toHaveBeenCalledWith(
+      expect.objectContaining({ context: { skipGlobalErrorHandler: true } })
+    );
+  });
+
+  test('rejects with an Error whose message is the limit text', async () => {
+    sendMessageToOrganizationMock.mockRejectedValue(limitError());
+
+    const { result } = renderHook(() => useSendMessageToOrganizationHandler({ recipientOrganizationId: 'org-1' }));
+    const rejection = result.current.onSendMessage('hello');
+
+    await expect(rejection).rejects.toBeInstanceOf(Error);
+    await expect(rejection).rejects.toThrow(commonEN.apollo.errors.userMessages.operations.messageSendLimitReached);
+  });
+
+  test('the limit text follows the active language', async () => {
+    await i18next.changeLanguage('nl');
+    sendMessageToOrganizationMock.mockRejectedValue(limitError());
+
+    const { result } = renderHook(() => useSendMessageToOrganizationHandler({ recipientOrganizationId: 'org-1' }));
+
+    await expect(result.current.onSendMessage('hello')).rejects.toThrow(
+      commonNL.apollo.errors.userMessages.operations.messageSendLimitReached
+    );
+  });
+
+  test('any other failure is passed on unchanged', async () => {
+    const otherError = new ApolloError({
+      graphQLErrors: [new GraphQLError('Something failed', { extensions: { code: 'UNSPECIFIED' } })],
+    });
+    sendMessageToOrganizationMock.mockRejectedValue(otherError);
+
+    const { result } = renderHook(() => useSendMessageToOrganizationHandler({ recipientOrganizationId: 'org-1' }));
+
+    await expect(result.current.onSendMessage('hello')).rejects.toBe(otherError);
   });
 });
