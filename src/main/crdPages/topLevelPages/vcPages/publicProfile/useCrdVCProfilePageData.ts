@@ -4,7 +4,7 @@ import {
   useVirtualContributorProfileWithModelCardQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, VirtualContributorBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
-import { isApolloForbiddenPolicyError, isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import useKnowledgeBase from '@/domain/community/virtualContributor/knowledgeBase/useKnowledgeBase';
@@ -86,7 +86,8 @@ export const useCrdVCProfilePageData = () => {
     vc,
     myPrivileges,
     error,
-    isNotFoundError: error ? isApolloNotFoundError(error) || isApolloForbiddenPolicyError(error) : false,
+    // A profile that is not available (FORBIDDEN_POLICY) is handled by the restricted redirect above.
+    isNotFoundError: error ? isApolloNotFoundError(error) : false,
     bokSpaceProfile,
     hasSpaceProfileReadAccess,
     knowledgeBaseDescription: knowledgeBaseDescription ?? undefined,

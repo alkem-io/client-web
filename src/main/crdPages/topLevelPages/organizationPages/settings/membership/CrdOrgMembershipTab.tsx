@@ -2,7 +2,7 @@ import type { ApolloError } from '@apollo/client';
 import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOrganizationSettingsMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { isApolloAuthorizationError } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { isApolloAuthorizationError, useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { MembershipsSectionLabels } from '@/crd/components/contributor/settings/MembershipsSection.types';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -23,6 +23,7 @@ import useOrgMembershipTabData from './useOrgMembershipTabData';
 const CrdOrgMembershipTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   // Until the organization is resolved, organizationId is '' and the roles
   // query is skipped (loading:false, no data). The context's loading flag can
   // read false during that beat (the URL resolver may hand back a stale settled
@@ -74,11 +75,9 @@ const CrdOrgMembershipTab = () => {
       // The Space may be gone, or only the organization's own admins and owners
       // (or the Space's admins) may remove it; retrying fixes neither, so say so.
       notify(
-        t(
-          isApolloAuthorizationError(error as ApolloError)
-            ? 'org.membership.leave.forbidden'
-            : 'org.membership.leave.error'
-        ),
+        isApolloAuthorizationError(error as ApolloError)
+          ? t('org.membership.leave.forbidden')
+          : serverErrorMessage(error, t('org.membership.leave.error')),
         'error'
       );
     }

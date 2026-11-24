@@ -196,14 +196,6 @@ export const isApolloNotFoundError = (error: ApolloError | undefined) => {
   return false;
 };
 
-export const isApolloForbiddenPolicyError = (error: ApolloError | undefined) => {
-  if (error?.graphQLErrors) {
-    const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
-    return extensions.some(extension => extension?.code === AlkemioGraphqlErrorCode.FORBIDDEN_POLICY);
-  }
-  return false;
-};
-
 export const isApolloAuthorizationError = (error: ApolloError | undefined) =>
   Boolean(error?.graphQLErrors?.some(isNotAvailableError));
 

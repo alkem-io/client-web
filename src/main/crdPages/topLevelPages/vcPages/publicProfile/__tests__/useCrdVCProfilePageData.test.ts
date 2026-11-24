@@ -31,16 +31,16 @@ describe('useCrdVCProfilePageData — not-available state', () => {
     vcProfileQuery.mockReset();
   });
 
-  it.each(['FORBIDDEN_POLICY', 'ENTITY_NOT_FOUND'])('shows the not-found view for %s', code => {
-    vcProfileQuery.mockReturnValue({ data: undefined, loading: false, error: failedWith(code) });
+  it('shows the not-found view for ENTITY_NOT_FOUND', () => {
+    vcProfileQuery.mockReturnValue({ data: undefined, loading: false, error: failedWith('ENTITY_NOT_FOUND') });
 
     const { result } = renderHook(() => useCrdVCProfilePageData());
 
     expect(result.current.isNotFoundError).toBe(true);
   });
 
-  it('does not for another failure', () => {
-    vcProfileQuery.mockReturnValue({ data: undefined, loading: false, error: failedWith('UNSPECIFIED') });
+  it.each(['FORBIDDEN_POLICY', 'UNSPECIFIED'])('does not for %s', code => {
+    vcProfileQuery.mockReturnValue({ data: undefined, loading: false, error: failedWith(code) });
 
     const { result } = renderHook(() => useCrdVCProfilePageData());
 
