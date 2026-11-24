@@ -3,7 +3,7 @@ import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
 import { useMatrixConnectionLost } from '@/core/matrix/useMatrixConnectionLost';
 import { FloatingChatLauncher } from '@/crd/components/chat/FloatingChatLauncher';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
-import { useIncomingCallRooms } from '@/main/userMessaging/calls/incomingCallStore';
+import { useIncomingCallLabel } from '@/main/userMessaging/calls/useIncomingCallLabel';
 import { useMatrixCatchingUp } from '@/main/userMessaging/matrix/useMatrixCatchingUp';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
@@ -26,7 +26,7 @@ export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
   const { isSmallScreen } = useScreenSize();
   const unreadCount = useUnreadConversationsCount();
   // A call not dealt with yet turns the launcher into a ringing phone, named as the tab title names it.
-  const incomingCall = [...useIncomingCallRooms().values()].find(incoming => incoming !== null);
+  const incomingCallLabel = useIncomingCallLabel();
   // `?chat={conversationID}` deep link (contract C-6 / US1) — opens the panel
   // on a cold load; this is the always-mounted spot that can do so (the panel
   // connector below only renders once `isOpen`).
@@ -54,9 +54,7 @@ export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
         openLabel={t('launcher.open')}
         closeLabel={t('launcher.close')}
         unreadLabel={t('launcher.unreadLabel')}
-        incomingCallLabel={
-          incomingCall && t(incomingCall.isGroup ? 'call.groupCall' : 'call.callingYou', { name: incomingCall.name })
-        }
+        incomingCallLabel={incomingCallLabel}
       />
       {/* A new mount per open request brings the panel back above a dialog opened over it since (e.g. Message from that dialog). */}
       {isOpen && (
