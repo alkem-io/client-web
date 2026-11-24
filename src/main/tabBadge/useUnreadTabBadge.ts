@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { setTitleOverride, setTitlePrefix } from '@/core/routing/documentTitle';
 import { useUnreadNotificationsCount } from '@/main/inAppNotifications/useUnreadNotificationsCount';
-import { useIncomingCallRooms } from '@/main/userMessaging/calls/incomingCallStore';
+import { useIncomingCallLabel } from '@/main/userMessaging/calls/useIncomingCallLabel';
 import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 import { clearFaviconBadge, setFaviconBadge } from './faviconBadge';
 
@@ -21,14 +20,11 @@ const CALL_TITLE_INTERVAL_MS = 1500;
  * reintroduce a read of `settings.notification.sound` here.
  */
 export const useUnreadTabBadge = (): void => {
-  const { t } = useTranslation('crd-chat');
   const conversationsCount = useUnreadConversationsCount();
   const notificationsCount = useUnreadNotificationsCount();
-  const incomingCallRooms = useIncomingCallRooms();
 
   const count = conversationsCount + notificationsCount;
-  const call = [...incomingCallRooms.values()].find(incoming => incoming !== null);
-  const callTitle = call ? t(call.isGroup ? 'call.groupCall' : 'call.callingYou', { name: call.name }) : '';
+  const callTitle = useIncomingCallLabel() ?? '';
 
   useEffect(() => {
     if (count > 0) {

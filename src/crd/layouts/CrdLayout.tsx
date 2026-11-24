@@ -23,6 +23,7 @@ type CrdLayoutProps = {
   currentPath?: string;
   unreadNotificationsCount?: number;
   unreadMessagesCount?: number;
+  incomingCallLabel?: string;
   languages: CrdLanguageOption[];
   currentLanguage: string;
   breadcrumbs?: ReactNode;
@@ -55,6 +56,7 @@ export function CrdLayout({
   currentPath,
   unreadNotificationsCount,
   unreadMessagesCount,
+  incomingCallLabel,
   languages,
   currentLanguage,
   breadcrumbs,
@@ -92,6 +94,7 @@ export function CrdLayout({
         currentPath={currentPath}
         unreadNotificationsCount={unreadNotificationsCount}
         unreadMessagesCount={unreadMessagesCount}
+        incomingCallLabel={incomingCallLabel}
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbs}

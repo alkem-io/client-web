@@ -14,6 +14,7 @@ vi.mock('./matrix/useActorProfiles', () => ({ useActorProfiles: () => new Map() 
 const conversation = {
   id: 'conversation',
   roomId: 'room',
+  isGroup: false,
   attachmentBucketId: 'bucket-A',
   members: [{ id: 'alice', type: ActorType.User, displayName: 'Alice', presence: 'unknown' as const }],
 };

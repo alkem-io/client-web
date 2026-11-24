@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { useCallOverlay } from './callOverlayStore';
-import { type MembershipLike, watchLiveMemberships } from './matrixRtc';
+import { isThisDevice, type MembershipLike, watchLiveMemberships } from './matrixRtc';
 
 type RoomCallSession = {
   /** Distinct users with at least one unexpired membership — people, not devices. */
@@ -25,9 +25,7 @@ const summarize = (live: MembershipLike[], userId: string | null, deviceId: stri
   return {
     participants,
     participantCount: participants.length,
-    // The embedded call UI joins with the session's own user and device, so its
-    // membership is the one carrying both.
-    isJoinedOnThisDevice: live.some(membership => membership.sender === userId && membership.deviceId === deviceId),
+    isJoinedOnThisDevice: live.some(membership => isThisDevice(membership, userId, deviceId)),
   };
 };
 

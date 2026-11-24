@@ -118,11 +118,19 @@
   "call": {
     "startAudio": "Start audio call",
     "startVideo": "Start video call",
-    "active": "Call active",
     "join": "Join",
     "joinVideo": "Join with video",
     "joinAudio": "Join with audio only",
     "joinedOnThisDevice": "Already joined on this device",
+    "banner": {
+      "inProgress": "Call in progress",
+      "participantsTwo": "{{first}} and {{second}}",
+      "participantsMore_one": "{{first}}, {{second}} and {{count}} more",
+      "participantsMore_other": "{{first}}, {{second}} and {{count}} more",
+      "calling": "{{name}} is calling you",
+      "answer": "Answer",
+      "decline": "Decline call"
+    },
     "preparing": "Preparing your call… It will start in a moment.",
     "dropped": "Couldn't start the call. Please try again.",
     "overlayLabel": "Call",
@@ -136,9 +144,17 @@
       "confirm": "Leave call",
       "cancel": "Stay in call"
     },
-    "listBadge": "Call active",
+    "listJoin": "Join call: {{name}}",
     "callingYou": "{{name}} is calling you",
-    "groupCall": "Call in {{name}}"
+    "groupCall": "Call in {{name}}",
+    "row": {
+      "missed": "Missed call",
+      "noAnswer": "No answer",
+      "declined": "Declined",
+      "call": "Call",
+      "minutes": "{{count}} min",
+      "callBack": "Call back"
+    }
   },
   "presence": {
     "online": "Online",

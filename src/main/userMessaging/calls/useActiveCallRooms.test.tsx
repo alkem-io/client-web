@@ -27,11 +27,11 @@ import type { CallableConversation } from './useCallEligibility';
 const useActiveCallRooms = (conversations: readonly CallableConversation[]) =>
   new Set(useLiveCalls(conversations).keys());
 
-const membership = (sender: string, ttlMs: number, createdTs = 0) => {
+const membership = (sender: string, ttlMs: number, createdTs = 0, deviceId = 'D') => {
   const expiresAt = Date.now() + ttlMs;
   return {
     sender,
-    deviceId: 'D',
+    deviceId,
     createdTs: () => createdTs,
     isExpired: () => Date.now() >= expiresAt,
     getMsUntilExpiry: () => expiresAt - Date.now(),
@@ -51,6 +51,7 @@ const makeClient = (sessions: Record<string, FakeSession>) =>
     }),
     getRoom: (roomId: string) => ({ roomId }),
     getUserId: () => '@me:hs',
+    getDeviceId: () => 'MINE',
     syncState: 'SYNCING' as string,
     getSyncState() {
       return this.syncState;
@@ -138,16 +139,36 @@ describe('useLiveCalls', () => {
     await waitFor(() => expect([...result.current]).toEqual(['g1']));
   });
 
-  it('describes each running call by its memberships, and whether the user is in it on any device', async () => {
+  it('describes each running call by its memberships, and whether the user is in it on any device or on this one', async () => {
     harness.client = makeClient({
-      '!g1:hs': new FakeSession([membership('@ann:hs', 60_000, 300), membership('@me:hs', 60_000, 100)]),
-      '!g2:hs': new FakeSession([membership('@ann:hs', 60_000, 500)]),
+      '!g1:hs': new FakeSession([membership('@ann:hs', 60_000, 300), membership('@me:hs', 60_000, 100, 'PHONE')]),
+      '!g2:hs': new FakeSession([membership('@ann:hs', 60_000, 500), membership('@me:hs', 60_000, 600, 'MINE')]),
     });
     const { result } = renderHook(() => useLiveCalls(conversations));
     await waitFor(() =>
       expect([...result.current]).toEqual([
-        ['g1', { startedTs: 100, latestTs: 300, withMe: true, participants: ['ann', 'me'] }],
-        ['g2', { startedTs: 500, latestTs: 500, withMe: false, participants: ['ann'] }],
+        [
+          'g1',
+          {
+            matrixRoomId: '!g1:hs',
+            startedTs: 100,
+            latestTs: 300,
+            withMe: true,
+            withMyDevice: false,
+            participants: ['ann', 'me'],
+          },
+        ],
+        [
+          'g2',
+          {
+            matrixRoomId: '!g2:hs',
+            startedTs: 500,
+            latestTs: 600,
+            withMe: true,
+            withMyDevice: true,
+            participants: ['ann', 'me'],
+          },
+        ],
       ])
     );
   });

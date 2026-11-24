@@ -118,11 +118,19 @@
   "call": {
     "startAudio": "Démarrer un appel audio",
     "startVideo": "Démarrer un appel vidéo",
-    "active": "Appel en cours",
     "join": "Rejoindre",
     "joinVideo": "Rejoindre avec la vidéo",
     "joinAudio": "Rejoindre en audio uniquement",
     "joinedOnThisDevice": "Déjà rejoint sur cet appareil",
+    "banner": {
+      "inProgress": "Appel en cours",
+      "participantsTwo": "{{first}} et {{second}}",
+      "participantsMore_one": "{{first}}, {{second}} et {{count}} autre",
+      "participantsMore_other": "{{first}}, {{second}} et {{count}} autres",
+      "calling": "{{name}} vous appelle",
+      "answer": "Répondre",
+      "decline": "Refuser l’appel"
+    },
     "preparing": "Préparation de l’appel… Il commence dans un instant.",
     "dropped": "Impossible de démarrer l’appel. Veuillez réessayer.",
     "overlayLabel": "Appel",
@@ -136,9 +144,17 @@
       "confirm": "Quitter l’appel",
       "cancel": "Rester dans l’appel"
     },
-    "listBadge": "Appel en cours",
+    "listJoin": "Rejoindre l'appel : {{name}}",
     "callingYou": "{{name}} vous appelle",
-    "groupCall": "Appel dans {{name}}"
+    "groupCall": "Appel dans {{name}}",
+    "row": {
+      "missed": "Appel manqué",
+      "noAnswer": "Pas de réponse",
+      "declined": "Refusé",
+      "call": "Appel",
+      "minutes": "{{count}} min",
+      "callBack": "Rappeler"
+    }
   },
   "presence": {
     "online": "En ligne",

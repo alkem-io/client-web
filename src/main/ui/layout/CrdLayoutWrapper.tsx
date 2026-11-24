@@ -32,6 +32,7 @@ import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useSecondFactorReminder } from '@/main/ui/layout/useSecondFactorReminder';
+import { useIncomingCallLabel } from '@/main/userMessaging/calls/useIncomingCallLabel';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 
@@ -58,6 +59,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { unreadCount: notificationsUnreadCount } = useInAppNotifications();
   const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
   const unreadMessagesCount = useUnreadConversationsCount();
+  const incomingCallLabel = useIncomingCallLabel();
   const { setOpenDialog } = usePendingMembershipsDialog();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { openSearch } = useSearch();
@@ -105,6 +107,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         currentPath={currentPath}
         unreadNotificationsCount={notificationsUnreadCount}
         unreadMessagesCount={unreadMessagesCount}
+        incomingCallLabel={incomingCallLabel}
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={

@@ -118,11 +118,19 @@
   "call": {
     "startAudio": "Audiogesprek starten",
     "startVideo": "Videogesprek starten",
-    "active": "Gesprek actief",
     "join": "Deelnemen",
     "joinVideo": "Deelnemen met video",
     "joinAudio": "Alleen met audio deelnemen",
     "joinedOnThisDevice": "Al deelgenomen op dit apparaat",
+    "banner": {
+      "inProgress": "Gesprek bezig",
+      "participantsTwo": "{{first}} en {{second}}",
+      "participantsMore_one": "{{first}}, {{second}} en {{count}} andere",
+      "participantsMore_other": "{{first}}, {{second}} en {{count}} anderen",
+      "calling": "{{name}} belt je",
+      "answer": "Opnemen",
+      "decline": "Gesprek weigeren"
+    },
     "preparing": "Gesprek wordt voorbereid… Het start zo meteen.",
     "dropped": "Kon het gesprek niet starten. Probeer het opnieuw.",
     "overlayLabel": "Gesprek",
@@ -136,9 +144,17 @@
       "confirm": "Gesprek verlaten",
       "cancel": "In gesprek blijven"
     },
-    "listBadge": "Gesprek actief",
+    "listJoin": "Deelnemen aan gesprek: {{name}}",
     "callingYou": "{{name}} belt je",
-    "groupCall": "Gesprek in {{name}}"
+    "groupCall": "Gesprek in {{name}}",
+    "row": {
+      "missed": "Gemiste oproep",
+      "noAnswer": "Geen antwoord",
+      "declined": "Geweigerd",
+      "call": "Gesprek",
+      "minutes": "{{count}} min",
+      "callBack": "Terugbellen"
+    }
   },
   "presence": {
     "online": "Online",

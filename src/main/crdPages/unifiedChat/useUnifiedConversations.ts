@@ -101,6 +101,7 @@ export const useUnifiedConversations = () => {
           isGuidance,
           pinned: isGuidance,
           userPinned: summary?.pinned ?? false,
+          ringing: summary?.ringing,
         } satisfies UnifiedConversation;
       });
 

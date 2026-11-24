@@ -7,18 +7,24 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 // Matrix client, GraphQL and the context around them faked. Each "tab" gets fresh module
 // instances, as a browser tab would, and shares only the window and its localStorage.
 
-const harness = vi.hoisted(() => ({ client: null as unknown }));
+const harness = vi.hoisted(() => ({ client: null as unknown, conversation: null as unknown }));
 
 const me = { id: 'me', type: 'USER', profile: { displayName: 'Me' } };
 const ana = { id: 'ana', type: 'USER', profile: { displayName: 'Ana' } };
-const directConversation = { id: 'c1', room: { id: 'direct', type: 'CONVERSATION_DIRECT' }, members: [me, ana] };
+// Opening a group conversation counts as seeing its call; a 1:1 call rings until answered or declined.
+const groupConversation = {
+  id: 'c1',
+  room: { id: 'room', type: 'CONVERSATION_GROUP', displayName: 'Team' },
+  members: [me, ana],
+};
+const directConversation = { id: 'c1', room: { id: 'room', type: 'CONVERSATION_DIRECT' }, members: [me, ana] };
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useUserConversationsQuery: ({ skip }: { skip: boolean }) => ({
-    data: skip ? undefined : { me: { conversations: { conversations: [directConversation] } } },
+    data: skip ? undefined : { me: { conversations: { conversations: [harness.conversation] } } },
   }),
   useUserConversationsUnreadCountQuery: ({ skip }: { skip: boolean }) => ({
-    data: skip ? undefined : { me: { conversations: { conversations: [directConversation] } } },
+    data: skip ? undefined : { me: { conversations: { conversations: [harness.conversation] } } },
   }),
 }));
 vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => harness.client }));
@@ -35,6 +41,7 @@ vi.mock('@/main/userMessaging/matrix/matrixRooms', () => ({
 vi.mock('@/main/userMessaging/matrix/conversationSummaryStore', () => ({
   useConversationSummaries: () => null,
   displayedUnreadCount: () => 0,
+  storeFor: () => ({ setRingRooms: () => {} }),
 }));
 vi.mock('@/main/inAppNotifications/useUnreadNotificationsCount', () => ({ useUnreadNotificationsCount: () => 0 }));
 vi.mock('@/main/tabBadge/faviconBadge', () => ({ setFaviconBadge: vi.fn(), clearFaviconBadge: vi.fn() }));
@@ -93,6 +100,7 @@ const makeClient = () =>
     matrixRTC: Object.assign(new EventEmitter(), { getRoomSession: () => session }),
     getRoom: (roomId: string) => ({ roomId }),
     getUserId: () => '@me:hs',
+    getDeviceId: () => 'MINE',
     getSyncState: () => 'SYNCING',
   });
 
@@ -102,7 +110,7 @@ const setMemberships = (memberships: FakeMembership[]) =>
     session.emit('memberships_changed');
   });
 
-const CALL_TITLE = 'call.callingYou:Ana';
+const callTitle = () => (harness.conversation === directConversation ? 'call.callingYou:Ana' : 'call.groupCall:Team');
 
 /** Mounts one tab: its own module instances, with the conversation open in it under its control. */
 const openTab = async () => {
@@ -113,6 +121,7 @@ const openTab = async () => {
   const { useUnreadTabBadge } = await import('@/main/tabBadge/useUnreadTabBadge');
   const { useUnreadConversationsCount } = await import('@/main/userMessaging/useUnreadConversationsCount');
   const { getIncomingCallRooms } = await import('./incomingCallStore');
+  const { dismissCall } = await import('./callDismissalStore');
   const { tabTitle } = documentTitle;
   const { TabContext } = (await import('@/main/userMessaging/UserMessagingContext')) as unknown as {
     TabContext: React.Context<string | null>;
@@ -138,12 +147,12 @@ const openTab = async () => {
     alerting: () => {
       // The title alternates, so it is checked over one full switch.
       act(() => {});
-      let inTitle = tabTitle().includes(CALL_TITLE);
+      let inTitle = tabTitle().includes(callTitle());
       act(() => {
         vi.advanceTimersByTime(1500);
       });
-      inTitle ||= tabTitle().includes(CALL_TITLE);
-      const inStore = getIncomingCallRooms().has('direct');
+      inTitle ||= tabTitle().includes(callTitle());
+      const inStore = getIncomingCallRooms().has('room');
       const inCount = view.result.current > 0;
       expect(new Set([inTitle, inStore, inCount]).size, 'title, store and header count disagree').toBe(1);
       return inStore;
@@ -153,6 +162,8 @@ const openTab = async () => {
         selectedRoomId = roomId;
         view.rerender();
       }),
+    /** What the ringing banner's Decline does. */
+    decline: (latestTs: number) => act(() => dismissCall('room', latestTs)),
     unmount: view.unmount,
   };
 };
@@ -186,6 +197,7 @@ describe('the incoming-call alert', () => {
     vi.useFakeTimers();
     window.localStorage.clear();
     harness.client = makeClient();
+    harness.conversation = groupConversation;
     session.memberships = [membership('@ana:hs', 1_000)];
     documentActive = true;
     vi.spyOn(document, 'hasFocus').mockImplementation(() => documentActive);
@@ -209,7 +221,7 @@ describe('the incoming-call alert', () => {
     const tabA = await tab();
     expect(tabB.alerting()).toBe(true);
 
-    tabA.select('direct');
+    tabA.select('room');
     expect(tabA.alerting()).toBe(false);
     // Another tab hears of the change through the storage event, which the browser fires there.
     act(() => {
@@ -225,7 +237,7 @@ describe('the incoming-call alert', () => {
     const tabB = await tab();
     const tabA = await tab();
     setDocumentActive(false);
-    tabA.select('direct');
+    tabA.select('room');
     act(() => {
       window.dispatchEvent(new StorageEvent('storage', { key: null }));
     });
@@ -235,6 +247,22 @@ describe('the incoming-call alert', () => {
     setDocumentActive(true);
     act(() => {
       window.dispatchEvent(new StorageEvent('storage', { key: null }));
+    });
+    expect(tabB.alerting()).toBe(false);
+  });
+
+  it('keeps ringing a 1:1 call while its conversation is open, until it is declined in one tab', async () => {
+    harness.conversation = directConversation;
+    const tabB = await tab();
+    const tabA = await tab();
+    tabA.select('room');
+    expect(tabA.alerting()).toBe(true);
+    expect(tabB.alerting()).toBe(true);
+
+    tabA.decline(1_000);
+    expect(tabA.alerting()).toBe(false);
+    act(() => {
+      window.dispatchEvent(new StorageEvent('storage', { key: window.localStorage.key(0) }));
     });
     expect(tabB.alerting()).toBe(false);
   });
@@ -250,7 +278,7 @@ describe('the incoming-call alert', () => {
 
   it('still knows the call once everyone who was in it back then has left', async () => {
     const tabA = await tab();
-    tabA.select('direct');
+    tabA.select('room');
     tabA.select(null);
     setMemberships([membership('@ana:hs', 1_000), membership('@bo:hs', 3_000)]);
     setMemberships([membership('@bo:hs', 3_000)]);
@@ -259,7 +287,7 @@ describe('the incoming-call alert', () => {
 
   it('alerts again for a new call in the same conversation', async () => {
     const tabA = await tab();
-    tabA.select('direct');
+    tabA.select('room');
     tabA.select(null);
     setMemberships([]);
     expect(tabA.alerting()).toBe(false);
@@ -284,7 +312,7 @@ describe('the incoming-call alert', () => {
 
     setMemberships([membership('@ana:hs', 9_000)]);
     expect(tabA.alerting()).toBe(true);
-    tabA.select('direct');
+    tabA.select('room');
     tabA.select(null);
     expect(tabA.alerting()).toBe(false);
   });
