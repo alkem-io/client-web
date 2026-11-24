@@ -8,6 +8,7 @@ const harness = vi.hoisted(() => ({
   platformRoles: ['FEATURE_BETA_TESTER'] as string[],
   guidanceVcId: null as string | null,
   querySkip: undefined as boolean | undefined,
+  selectedRoomId: null as string | null,
 }));
 
 const vc = { id: 'vc', type: 'VIRTUAL_CONTRIBUTOR' };
@@ -39,7 +40,9 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
 vi.mock('@/main/guidance/chatWidget/useGuidanceVcId', () => ({
   useGuidanceVcId: ({ skip }: { skip: boolean }) => ({ guidanceVcId: skip ? null : harness.guidanceVcId }),
 }));
-vi.mock('../UserMessagingContext', () => ({ useUserMessagingContext: () => ({ isEnabled: true }) }));
+vi.mock('../UserMessagingContext', () => ({
+  useUserMessagingContext: () => ({ isEnabled: true, selectedRoomId: harness.selectedRoomId }),
+}));
 vi.mock('./callConfig', () => ({ isCallsConfigured: () => true }));
 vi.mock('./useActiveCallRooms', () => ({
   useLiveCalls: (conversations: unknown[]) => {
@@ -60,6 +63,7 @@ describe('useIncomingCallsWatcher', () => {
     harness.platformRoles = ['FEATURE_BETA_TESTER'];
     harness.guidanceVcId = 'vc';
     harness.active = new Map();
+    harness.selectedRoomId = null;
   });
   afterEach(() => {
     vi.useRealTimers();
@@ -104,7 +108,7 @@ describe('useIncomingCallsWatcher', () => {
     expect(harness.conversations).toEqual([]);
   });
 
-  // Last: the call joined here stays dealt with for the rest of the file.
+  // From here on: a call dealt with stays dealt with for the rest of the file.
   it('leaves out a call the user is in on any device', () => {
     harness.active = new Map([
       ['direct', { startedTs: 1, latestTs: 2, withMe: true, participants: ['ann', 'me'] }],
@@ -115,5 +119,26 @@ describe('useIncomingCallsWatcher', () => {
       vi.advanceTimersByTime(2000);
     });
     expect([...getIncomingCallRooms()]).toEqual([['group', { name: 'Team', isGroup: true }]]);
+  });
+
+  it('keeps ringing a 1:1 call while its conversation is open, but counts an open group call as seen', () => {
+    // Later than the direct call dealt with above, so a new call.
+    harness.active = new Map([
+      ['direct', { startedTs: 10, latestTs: 10, withMe: false, participants: ['ann'] }],
+      ['group', othersCall],
+    ]);
+    harness.selectedRoomId = 'direct';
+    const { rerender } = renderHook(() => useIncomingCallsWatcher());
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    expect([...getIncomingCallRooms()]).toEqual([
+      ['direct', { name: 'Ana', isGroup: false }],
+      ['group', { name: 'Team', isGroup: true }],
+    ]);
+
+    harness.selectedRoomId = 'group';
+    rerender();
+    expect([...getIncomingCallRooms()]).toEqual([['direct', { name: 'Ana', isGroup: false }]]);
   });
 });

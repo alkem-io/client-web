@@ -118,7 +118,6 @@
   "call": {
     "startAudio": "Iniciar llamada de audio",
     "startVideo": "Iniciar videollamada",
-    "active": "Llamada activa",
     "join": "Unirse",
     "joinVideo": "Unirse con vídeo",
     "joinAudio": "Unirse solo con audio",

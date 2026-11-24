@@ -118,7 +118,6 @@
   "call": {
     "startAudio": "Audiogesprek starten",
     "startVideo": "Videogesprek starten",
-    "active": "Gesprek actief",
     "join": "Deelnemen",
     "joinVideo": "Deelnemen met video",
     "joinAudio": "Alleen met audio deelnemen",

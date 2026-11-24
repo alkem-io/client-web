@@ -118,7 +118,6 @@
   "call": {
     "startAudio": "Start audio call",
     "startVideo": "Start video call",
-    "active": "Call active",
     "join": "Join",
     "joinVideo": "Join with video",
     "joinAudio": "Join with audio only",
