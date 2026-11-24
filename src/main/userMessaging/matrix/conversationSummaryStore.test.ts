@@ -324,4 +324,29 @@ describe('ConversationSummaryStore', () => {
 
     expect(setRoomTag).not.toHaveBeenCalled();
   });
+
+  it('makes a missed call the preview and counts it unread only once calls show', async () => {
+    const ring = {
+      eventId: '$ring',
+      type: 'org.matrix.msc4075.rtc.notification',
+      sender: `@other:${HS}`,
+      ts: 2,
+      content: { notification_type: 'ring', lifetime: 30_000 },
+    };
+    const room: FakeRoom = { roomId: '!alk-1', events: [text('$1', 'hello'), ring], marker: '$1', notifications: 0 };
+    const { client } = makeClient([room]);
+    const store = new ConversationSummaryStore(client);
+
+    store.watch(['alk-1']);
+    await vi.waitFor(() => expect(store.getSnapshot().get('alk-1')).toBeDefined());
+    expect(store.getSnapshot().get('alk-1')).toMatchObject({ lastMessage: { body: 'hello' }, unreadCount: 0 });
+
+    store.setWithCalls(true);
+    await vi.waitFor(() =>
+      expect(store.getSnapshot().get('alk-1')).toMatchObject({
+        lastMessage: { eventId: '$ring', call: { outcome: 'unanswered' } },
+        unreadCount: 1,
+      })
+    );
+  });
 });

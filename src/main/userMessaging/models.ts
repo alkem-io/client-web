@@ -1,5 +1,6 @@
 import type { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { MessageAttachment } from '@/crd/components/comment/types';
+import type { ParsedCall } from './matrix/matrixEvents';
 /**
  * Shared types and utilities for user messaging
  */
@@ -69,6 +70,8 @@ export interface ConversationMessage {
   sender?: MessageSender;
   reactions: MessageReaction[];
   attachments: MessageAttachmentModel[];
+  /** Set when this entry is a 1:1 ring rather than a message. */
+  call?: ParsedCall;
 }
 
 // GraphQL sender type (from generated types)

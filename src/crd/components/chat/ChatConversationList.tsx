@@ -154,6 +154,10 @@ export function ChatConversationList({
                           <>
                             <span className="text-primary">{t('list.draft')}</span> {item.draftPreview}
                           </>
+                        ) : item.lastMessageCall ? (
+                          <span className={cn(item.lastMessageCall === 'missed' && 'text-destructive')}>
+                            {t(`call.row.${item.lastMessageCall}` as 'call.row.missed')}
+                          </span>
                         ) : item.lastMessagePreview?.trim() ? (
                           item.lastMessagePreview
                         ) : item.lastMessageAttachmentCount ? (

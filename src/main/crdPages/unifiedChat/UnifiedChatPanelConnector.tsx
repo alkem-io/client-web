@@ -406,6 +406,8 @@ export const UnifiedChatPanelConnector = ({
 
   let headerActions: ReactNode;
   let callBanner: ReactNode;
+  // A missed call's row offers a call back while a call could be started from the header.
+  let callBack: (() => void) | undefined;
   if (isGuidanceThread) {
     headerActions = (
       <>
@@ -437,6 +439,7 @@ export const UnifiedChatPanelConnector = ({
     };
     let callActions: ReactNode = null;
     if (callEligibility.eligible && callSession.participantCount === 0) {
+      callBack = () => openSelectedCall('start', 'video');
       callActions = (
         <CallControls
           startAudioLabel={t('call.startAudio')}
@@ -654,6 +657,7 @@ export const UnifiedChatPanelConnector = ({
             onRestoreDraft={text => setDraft(selectedConversationId, text)}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
+            onCallBack={callBack}
           />
         ) : (
           <ChatConversationList

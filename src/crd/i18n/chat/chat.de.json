@@ -146,7 +146,15 @@
     },
     "listJoin": "Anruf beitreten: {{name}}",
     "callingYou": "{{name}} ruft dich an",
-    "groupCall": "Anruf in {{name}}"
+    "groupCall": "Anruf in {{name}}",
+    "row": {
+      "missed": "Verpasster Anruf",
+      "noAnswer": "Keine Antwort",
+      "declined": "Abgelehnt",
+      "call": "Anruf",
+      "minutes": "{{count}} Min.",
+      "callBack": "Zurückrufen"
+    }
   },
   "presence": {
     "online": "Online",

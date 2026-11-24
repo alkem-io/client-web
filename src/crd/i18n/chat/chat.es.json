@@ -146,7 +146,15 @@
     },
     "listJoin": "Unirse a la llamada: {{name}}",
     "callingYou": "{{name}} te está llamando",
-    "groupCall": "Llamada en {{name}}"
+    "groupCall": "Llamada en {{name}}",
+    "row": {
+      "missed": "Llamada perdida",
+      "noAnswer": "Sin respuesta",
+      "declined": "Rechazada",
+      "call": "Llamada",
+      "minutes": "{{count}} min",
+      "callBack": "Devolver la llamada"
+    }
   },
   "presence": {
     "online": "En línea",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { lastMessageOf, projectMessages, type RawEvent } from './matrixEvents';
+import { lastMessageOf, newestEntryId, projectMessages, type RawEvent } from './matrixEvents';
 
 const HS = 'matrix.alkem.io';
 const ALICE = `@alice-id:${HS}`;
@@ -164,5 +164,109 @@ describe('lastMessageOf', () => {
       HS
     );
     expect(last?.body).toBe('latest');
+  });
+});
+
+describe('calls', () => {
+  const RING = 'org.matrix.msc4075.rtc.notification';
+  const at = (timestamp: number, type: string, content: Record<string, unknown>, sender = ALICE): RawEvent =>
+    event(type, content, { timestamp, sender });
+  const ring = (timestamp: number, content: Record<string, unknown> = {}) =>
+    at(timestamp, RING, { notification_type: 'ring', lifetime: 30_000, ...content });
+  // The older membership is a state event, empty once the device has left.
+  const callMember = (timestamp: number, sender: string, joined: boolean) =>
+    at(timestamp, 'org.matrix.msc3401.call.member', joined ? { application: 'm.call', device_id: 'D' } : {}, sender);
+  // The newer one says whether its member joined or left.
+  const rtcMember = (timestamp: number, sender: string, membership: 'join' | 'leave') =>
+    at(timestamp, 'org.matrix.msc4143.rtc.member', { slot_id: 's', member: { id: 'm', membership } }, sender);
+  const text = (timestamp: number, body: string) => at(timestamp, 'm.room.message', { msgtype: 'm.text', body });
+  const callOf = (events: RawEvent[], now = 1_000_000) =>
+    projectMessages(events, HS, { withCalls: true, now }).find(message => message.call)?.call;
+
+  it('places a ring at its time between the messages around it, without a body', () => {
+    const before = text(1_000, 'before');
+    const call = ring(2_000);
+    const after = text(100_000, 'after');
+    const messages = projectMessages([before, call, after], HS, { withCalls: true, now: 200_000 });
+    expect(messages.map(message => message.eventId)).toEqual([before.eventId, call.eventId, after.eventId]);
+    expect(messages[1]).toMatchObject({ body: '', timestamp: 2_000, sender: ALICE, call: { outcome: 'unanswered' } });
+    expect(messages[0].call).toBeUndefined();
+  });
+
+  it('is answered when the other person joins while it rings, lasting until either leaves', () => {
+    expect(callOf([ring(1_000), callMember(5_000, BOB, true), callMember(725_000, ALICE, false)])).toEqual({
+      outcome: 'answered',
+      durationMs: 720_000,
+    });
+    expect(callOf([ring(1_000), rtcMember(5_000, BOB, 'join'), rtcMember(65_000, BOB, 'leave')])).toEqual({
+      outcome: 'answered',
+      durationMs: 60_000,
+    });
+  });
+
+  it('has no length while the leave that ended an answered call is not loaded', () => {
+    expect(callOf([ring(1_000), rtcMember(5_000, BOB, 'join')])).toEqual({ outcome: 'answered' });
+  });
+
+  it('is declined when the person rung turns it down', () => {
+    const call = ring(1_000);
+    const decline = at(3_000, 'org.matrix.msc4310.rtc.decline', { 'm.relates_to': { event_id: call.eventId } }, BOB);
+    expect(callOf([call, decline, callMember(4_000, ALICE, false)])).toEqual({ outcome: 'declined' });
+  });
+
+  it('is not declined by a decline of another ring', () => {
+    const decline = at(3_000, 'org.matrix.msc4310.rtc.decline', { 'm.relates_to': { event_id: '$other' } }, BOB);
+    expect(callOf([ring(1_000), decline], 20_000)).toEqual({ outcome: 'ringing' });
+  });
+
+  it('is unanswered once the ringer leaves or the ring lifetime passes, and not answered by a later join', () => {
+    expect(callOf([ring(1_000), rtcMember(3_000, ALICE, 'leave')], 4_000)).toEqual({ outcome: 'unanswered' });
+    expect(callOf([ring(1_000)], 31_000)).toEqual({ outcome: 'unanswered' });
+    expect(callOf([ring(1_000), callMember(40_000, BOB, true)])).toEqual({ outcome: 'unanswered' });
+    expect(callOf([ring(1_000), callMember(2_000, ALICE, true)])).toEqual({ outcome: 'unanswered' });
+  });
+
+  it('is ringing while the lifetime runs and nobody joined or left', () => {
+    expect(callOf([ring(1_000)], 20_000)).toEqual({ outcome: 'ringing' });
+  });
+
+  it('caps the lifetime at 90 seconds and defaults it to 30 seconds', () => {
+    expect(callOf([ring(0, { lifetime: 600_000 })], 89_000)?.outcome).toBe('ringing');
+    expect(callOf([ring(0, { lifetime: 600_000 })], 90_000)?.outcome).toBe('unanswered');
+    expect(callOf([ring(0, { lifetime: undefined })], 29_000)?.outcome).toBe('ringing');
+    expect(callOf([ring(0, { lifetime: undefined })], 30_000)?.outcome).toBe('unanswered');
+  });
+
+  it('takes the older call notify ring too, and no group notification or withdrawn ring', () => {
+    const notify = at(3_000, 'org.matrix.msc4075.call.notify', { notify_type: 'ring', application: 'm.call' });
+    const messages = projectMessages(
+      [
+        at(1_000, RING, { notification_type: 'notification', lifetime: 30_000 }),
+        at(2_000, RING, { msc4354_sticky_key: 's' }),
+        notify,
+        at(4_000, 'org.matrix.msc4075.call.notify', { notify_type: 'notify', application: 'm.call' }),
+      ],
+      HS,
+      { withCalls: true, now: 100_000 }
+    );
+    expect(messages.map(message => message.eventId)).toEqual([notify.eventId]);
+  });
+
+  it('makes a ring newer than the last message the preview, and moves the read marker to it', () => {
+    const call = ring(5_000);
+    const events = [text(1_000, 'hello'), call, rtcMember(6_000, BOB, 'join')];
+    expect(lastMessageOf(events, HS, { withCalls: true, now: 100_000 })).toMatchObject({
+      eventId: call.eventId,
+      call: { outcome: 'answered' },
+    });
+    expect(newestEntryId(events, true)).toBe(call.eventId);
+  });
+
+  it('makes no entry, preview or read marker from a ring where calls are not shown', () => {
+    const hello = text(1_000, 'hello');
+    const events = [hello, ring(2_000), rtcMember(6_000, BOB, 'join')];
+    expect(projectMessages(events, HS, { now: 100_000 }).map(message => message.eventId)).toEqual([hello.eventId]);
+    expect(lastMessageOf(events, HS, { now: 100_000 })?.eventId).toBe(hello.eventId);
+    expect(newestEntryId(events)).toBe(hello.eventId);
   });
 });

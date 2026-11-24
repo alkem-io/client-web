@@ -59,6 +59,12 @@ describe('ChatConversationList draft preview', () => {
     expect(screen.queryByText('list.attachmentPreview')).not.toBeInTheDocument();
   });
 
+  test('a call as the last entry previews what became of it', () => {
+    renderList([conversation({ lastMessagePreview: '', lastMessageCall: 'missed' })]);
+
+    expect(screen.getByText('call.row.missed')).toHaveClass('text-destructive');
+  });
+
   test('a draft does not change the order of the list', () => {
     renderList([
       conversation({ id: 'conv-1', displayName: 'Ada Lovelace' }),

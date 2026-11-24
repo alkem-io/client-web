@@ -1,4 +1,4 @@
-import { ChevronDown, Loader2 } from 'lucide-react';
+import { ChevronDown, Loader2, Phone, PhoneMissed } from 'lucide-react';
 import { type PointerEvent, type ReactElement, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
@@ -37,6 +37,8 @@ type ChatThreadViewProps = {
   onFollowingChange?: (following: boolean) => void;
   onAddReaction?: (messageId: string, emoji: string) => void;
   onRemoveReaction?: (messageId: string, emoji: string) => void;
+  /** Starts a call back from a missed call's row; the row offers it only when set. */
+  onCallBack?: () => void;
   /** Attachments (feature 013): when enabled the composer shows the attach
    *  affordance + preview chips. Owned by the integration layer. */
   attachmentsEnabled?: boolean;
@@ -78,6 +80,7 @@ export function ChatThreadView({
   onFollowingChange,
   onAddReaction,
   onRemoveReaction,
+  onCallBack,
   attachmentsEnabled,
   attachments,
   onAttachFiles,
@@ -228,7 +231,45 @@ export function ChatThreadView({
                       {time.clock(ms)}
                     </div>
                   )}
-                  {hasTime ? (
+                  {message.call ? (
+                    <div
+                      data-chat-message={true}
+                      data-testid="chat-call-row"
+                      className={cn(
+                        'mt-3 flex items-center gap-1.5 self-center rounded-full border px-2.5 py-0.5 text-caption',
+                        message.call.kind === 'missed'
+                          ? 'border-destructive text-destructive'
+                          : 'border-border text-muted-foreground'
+                      )}
+                    >
+                      {message.call.kind === 'missed' ? (
+                        <PhoneMissed aria-hidden="true" className="size-3.5 shrink-0" />
+                      ) : (
+                        <Phone aria-hidden="true" className="size-3.5 shrink-0" />
+                      )}
+                      <span>
+                        {[
+                          t(`call.row.${message.call.kind}` as 'call.row.missed'),
+                          message.call.minutes && t('call.row.minutes', { count: message.call.minutes }),
+                          time.clock(ms),
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}
+                      </span>
+                      {message.call.kind === 'missed' && onCallBack && (
+                        <>
+                          <span aria-hidden="true">·</span>
+                          <button
+                            type="button"
+                            onClick={onCallBack}
+                            className="rounded-sm font-medium hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          >
+                            {t('call.row.callBack')}
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  ) : hasTime ? (
                     <div
                       data-chat-message={true}
                       onPointerUp={toggleRevealedOnTap(message.id)}

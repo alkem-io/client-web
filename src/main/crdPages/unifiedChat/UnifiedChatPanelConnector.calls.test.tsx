@@ -94,7 +94,14 @@ vi.mock('./useUnifiedConversationView', () => ({
     clearGuidance: vi.fn(),
   }),
 }));
-vi.mock('./ConversationThread', () => ({ ConversationThread: () => null }));
+vi.mock('./ConversationThread', () => ({
+  ConversationThread: ({ onCallBack }: { onCallBack?: () => void }) =>
+    onCallBack ? (
+      <button type="button" onClick={onCallBack}>
+        call.row.callBack
+      </button>
+    ) : null,
+}));
 type ListProps = { conversations: { id: string; hasActiveCall?: boolean; onJoinCall?: () => void }[] };
 let listProps: ListProps | undefined;
 vi.mock('@/crd/components/chat/ChatConversationList', () => ({
@@ -217,6 +224,20 @@ describe('UnifiedChatPanelConnector calls', () => {
       intent: 'start_call_voice',
     });
     expect(menuProps).toBeDefined();
+  });
+
+  it('calls back from a missed call while no call runs, and offers no call back while one does', async () => {
+    eligible();
+    state.selectedConversationId = 'direct';
+    const user = userEvent.setup({ pointerEventsCheck: 0 });
+    const { rerender } = render(<UnifiedChatPanelConnector />);
+
+    await user.click(screen.getByRole('button', { name: 'call.row.callBack' }));
+    expect(calls.openCall).toHaveBeenLastCalledWith({ matrixRoomId: '!group:hs', intent: 'start_call_dm' });
+
+    calls.session = { participants: ['@u1:hs'], participantCount: 1, isJoinedOnThisDevice: false, isJoinedHere: false };
+    rerender(<UnifiedChatPanelConnector />);
+    expect(screen.queryByRole('button', { name: 'call.row.callBack' })).not.toBeInTheDocument();
   });
 
   it('opens the call when the chat session has nothing to rotate', async () => {

@@ -146,7 +146,15 @@
     },
     "listJoin": "Включване в разговора: {{name}}",
     "callingYou": "{{name}} ви се обажда",
-    "groupCall": "Разговор в {{name}}"
+    "groupCall": "Разговор в {{name}}",
+    "row": {
+      "missed": "Пропуснат разговор",
+      "noAnswer": "Няма отговор",
+      "declined": "Отказан",
+      "call": "Разговор",
+      "minutes": "{{count}} мин",
+      "callBack": "Обади се"
+    }
   },
   "presence": {
     "online": "На линия",

@@ -9,6 +9,17 @@ import { mapMatrixMessageAttachments } from '../models';
 const EVENT_MESSAGE = 'm.room.message';
 const EVENT_STICKER = 'm.sticker';
 const EVENT_REACTION = 'm.reaction';
+// Sent once by whoever starts a call; only a 1:1 call rings (`ring`), a group call notifies.
+const EVENT_RTC_NOTIFICATION = 'org.matrix.msc4075.rtc.notification';
+const EVENT_CALL_NOTIFY = 'org.matrix.msc4075.call.notify';
+// One per device in a call: the older state event is empty once the device left, the newer one says so.
+const EVENT_CALL_MEMBER = 'org.matrix.msc3401.call.member';
+const EVENT_RTC_MEMBER = 'org.matrix.msc4143.rtc.member';
+// The person rung turns the call down; it references the ring.
+const EVENT_RTC_DECLINE = 'org.matrix.msc4310.rtc.decline';
+// The call SDK's own default and cap for how long a ring rings.
+const DEFAULT_RING_LIFETIME_MS = 30_000;
+const MAX_RING_LIFETIME_MS = 90_000;
 const MEDIA_MSGTYPES = new Set(['m.image', 'm.file', 'm.video', 'm.audio']);
 
 type RawEvent = {
@@ -37,6 +48,15 @@ type ParsedReaction = {
   readonly sender: string;
 };
 
+/** What became of a 1:1 ring, as far as the loaded events tell. */
+type CallOutcome = 'ringing' | 'unanswered' | 'declined' | 'answered';
+
+type ParsedCall = {
+  readonly outcome: CallOutcome;
+  /** An answered call's length, when the leave that ended it is loaded. */
+  readonly durationMs?: number;
+};
+
 type ParsedMessage = {
   readonly eventId: string;
   readonly body: string;
@@ -44,9 +64,97 @@ type ParsedMessage = {
   readonly sender: string;
   readonly media?: MediaRef;
   readonly reactions: ParsedReaction[];
+  /** Set only on the entry a 1:1 ring makes in the timeline. */
+  readonly call?: ParsedCall;
+};
+
+/**
+ * Calls are a beta: where call controls do not show (`withCalls` off), a ring
+ * is no entry either, so a call the user never heard ring is never missed.
+ */
+type EntryOptions = {
+  readonly withCalls?: boolean;
+  /** The time a ring's outcome is judged at. */
+  readonly now?: number;
 };
 
 const isMessageLike = (type: string): boolean => type === EVENT_MESSAGE || type === EVENT_STICKER;
+
+const isRing = (event: RawEvent): boolean =>
+  (event.type === EVENT_RTC_NOTIFICATION && event.content.notification_type === 'ring') ||
+  (event.type === EVENT_CALL_NOTIFY && event.content.notify_type === 'ring');
+
+const callMembershipOf = (event: RawEvent): 'join' | 'leave' | undefined => {
+  if (event.type === EVENT_CALL_MEMBER) {
+    return Object.keys(event.content).length > 0 ? 'join' : 'leave';
+  }
+  if (event.type === EVENT_RTC_MEMBER) {
+    const membership = (event.content.member as Record<string, unknown> | undefined)?.membership;
+    return membership === 'join' || membership === 'leave' ? membership : undefined;
+  }
+  return undefined;
+};
+
+const ringEndOf = (ring: RawEvent): number => {
+  const { lifetime } = ring.content;
+  const ms =
+    typeof lifetime === 'number' && lifetime > 0 ? Math.min(lifetime, MAX_RING_LIFETIME_MS) : DEFAULT_RING_LIFETIME_MS;
+  return ring.timestamp + ms;
+};
+
+const isDeclineOf = (event: RawEvent, ring: RawEvent): boolean =>
+  event.type === EVENT_RTC_DECLINE &&
+  event.sender !== ring.sender &&
+  (event.content['m.relates_to'] as Record<string, unknown> | undefined)?.event_id === ring.eventId;
+
+/**
+ * What became of `ring`, judged by the events after it (oldest first): answered
+ * once someone else joins while it rings, lasting until either of the two
+ * leaves; declined when the person rung turns it down; unanswered once the
+ * ringer has left or the ring's lifetime has passed; ringing until then.
+ */
+const callOf = (ring: RawEvent, newer: readonly RawEvent[], now: number): ParsedCall => {
+  const end = ringEndOf(ring);
+  let answer: RawEvent | undefined;
+  let declined = false;
+  let ringerLeft = false;
+  for (const event of newer) {
+    const membership = callMembershipOf(event);
+    if (answer) {
+      if (membership === 'leave' && (event.sender === ring.sender || event.sender === answer.sender)) {
+        return { outcome: 'answered', durationMs: event.timestamp - answer.timestamp };
+      }
+    } else if (
+      membership === 'join' &&
+      event.sender !== ring.sender &&
+      event.timestamp <= end &&
+      !declined &&
+      !ringerLeft
+    ) {
+      answer = event;
+    } else if (membership === 'leave' && event.sender === ring.sender) {
+      ringerLeft = true;
+    } else if (isDeclineOf(event, ring)) {
+      declined = true;
+    }
+  }
+  if (answer) {
+    return { outcome: 'answered' };
+  }
+  if (declined) {
+    return { outcome: 'declined' };
+  }
+  return { outcome: ringerLeft || now >= end ? 'unanswered' : 'ringing' };
+};
+
+const parseRing = (ring: RawEvent, newer: readonly RawEvent[], now: number): ParsedMessage => ({
+  eventId: ring.eventId,
+  body: '',
+  timestamp: ring.timestamp,
+  sender: ring.sender,
+  reactions: [],
+  call: callOf(ring, newer, now),
+});
 
 const serverNameOf = (userId: string): string => userId.slice(userId.indexOf(':') + 1);
 
@@ -81,13 +189,21 @@ const extractMedia = (event: RawEvent, homeserver: string): MediaRef | undefined
 /**
  * Message-like events become messages carrying their body verbatim; blank ones
  * (no body, no attachment — e.g. redacted) are skipped, and reactions attach to
- * the message they annotate.
+ * the message they annotate. A 1:1 ring becomes a call entry at its time.
  */
-const projectMessages = (events: RawEvent[], homeserver: string): ParsedMessage[] => {
+const projectMessages = (
+  events: RawEvent[],
+  homeserver: string,
+  { withCalls = false, now = Date.now() }: EntryOptions = {}
+): ParsedMessage[] => {
   const messages: ParsedMessage[] = [];
   const byId = new Map<string, ParsedMessage>();
 
-  for (const event of events) {
+  for (const [index, event] of events.entries()) {
+    if (withCalls && isRing(event)) {
+      messages.push(parseRing(event, events.slice(index + 1), now));
+      continue;
+    }
     if (!isMessageLike(event.type)) {
       continue;
     }
@@ -128,10 +244,17 @@ const parseMessage = (event: RawEvent, homeserver: string): ParsedMessage | unde
   return { eventId: event.eventId, body, timestamp: event.timestamp, sender: event.sender, media, reactions: [] };
 };
 
-/** The newest non-blank message among `events` (oldest first), if any. */
-const lastMessageOf = (events: RawEvent[], homeserver: string): ParsedMessage | undefined => {
+/** The newest non-blank message or call entry among `events` (oldest first), if any. */
+const lastMessageOf = (
+  events: RawEvent[],
+  homeserver: string,
+  { withCalls = false, now = Date.now() }: EntryOptions = {}
+): ParsedMessage | undefined => {
   for (let index = events.length - 1; index >= 0; index--) {
     const event = events[index];
+    if (withCalls && isRing(event)) {
+      return parseRing(event, events.slice(index + 1), now);
+    }
     if (isMessageLike(event.type)) {
       const message = parseMessage(event, homeserver);
       if (message) {
@@ -143,13 +266,14 @@ const lastMessageOf = (events: RawEvent[], homeserver: string): ParsedMessage | 
 };
 
 /**
- * The newest message-like event among `events` (oldest first), rendered or
- * not: the read marker must reach every event the unread count would count.
+ * The newest entry among `events` (oldest first), rendered or not: the read
+ * marker must reach every event the unread count would count.
  */
-const newestMessageLikeId = (events: RawEvent[]): string | null => {
+const newestEntryId = (events: RawEvent[], withCalls = false): string | null => {
   for (let index = events.length - 1; index >= 0; index--) {
-    if (isMessageLike(events[index].type)) {
-      return events[index].eventId;
+    const event = events[index];
+    if (isMessageLike(event.type) || (withCalls && isRing(event))) {
+      return event.eventId;
     }
   }
   return null;
@@ -157,13 +281,15 @@ const newestMessageLikeId = (events: RawEvent[]): string | null => {
 
 export {
   actorIdOf,
+  callOf,
   isMessageLike,
+  isRing,
   lastMessageOf,
-  newestMessageLikeId,
+  newestEntryId,
   projectMessages,
   serverNameOf,
   EVENT_MESSAGE,
   EVENT_REACTION,
   EVENT_STICKER,
 };
-export type { MediaRef, ParsedMessage, ParsedReaction, RawEvent };
+export type { CallOutcome, EntryOptions, MediaRef, ParsedCall, ParsedMessage, ParsedReaction, RawEvent };

@@ -130,9 +130,13 @@ describe('useConversationTimeline', () => {
       computeUnreadCount({
         markerEventId,
         ownUserId: `@me:${HS}`,
-        loadedNewestFirst: [...events]
-          .reverse()
-          .map(e => ({ eventId: e.getId(), type: e.getType(), sender: e.getSender() })),
+        loadedNewestFirst: [...events].reverse().map(e => ({
+          eventId: e.getId(),
+          type: e.getType(),
+          sender: e.getSender(),
+          timestamp: e.getTs(),
+          content: e.getOriginalContent(),
+        })),
         fetchBatch: async () => ({ events: [] }),
         notificationCount: () => 99,
       });

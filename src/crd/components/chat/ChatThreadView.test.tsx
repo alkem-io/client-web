@@ -270,3 +270,51 @@ describe('ChatThreadView — loading bar', () => {
     expect(screen.queryByRole('status', { name: 'thread.loading' })).not.toBeInTheDocument();
   });
 });
+
+describe('ChatThreadView — calls', () => {
+  const call = (kind: NonNullable<ChatMessage['call']>['kind'], minutes?: number) =>
+    msg(at(14, 14, 2), { author: undefined, content: '', call: { kind, minutes } });
+  const renderCalls = (messages: ChatMessage[], onCallBack?: () => void) =>
+    render(
+      <ChatThreadView
+        conversation={direct}
+        messages={messages}
+        messagesLoading={false}
+        locale="en-GB"
+        onCallBack={onCallBack}
+      />
+    );
+
+  test('a missed call is a row with its time and a Call back action', () => {
+    const onCallBack = vi.fn();
+    renderCalls([call('missed')], onCallBack);
+    const row = screen.getByTestId('chat-call-row');
+    expect(row).toHaveTextContent('call.row.missed · 14:02');
+    fireEvent.click(within(row).getByRole('button', { name: 'call.row.callBack' }));
+    expect(onCallBack).toHaveBeenCalledOnce();
+  });
+
+  test('a missed call offers no Call back when no call can be started', () => {
+    renderCalls([call('missed')]);
+    expect(within(screen.getByTestId('chat-call-row')).queryByRole('button')).not.toBeInTheDocument();
+  });
+
+  test('the other calls read as no answer, declined, or a call with its length when known', () => {
+    renderCalls([call('noAnswer'), call('declined'), call('call', 12), call('call')], vi.fn());
+    expect(screen.getAllByTestId('chat-call-row').map(row => row.textContent)).toEqual([
+      'call.row.noAnswer · 14:02',
+      'call.row.declined · 14:02',
+      'call.row.call · call.row.minutes · 14:02',
+      'call.row.call · 14:02',
+    ]);
+    expect(screen.queryByRole('button', { name: 'call.row.callBack' })).not.toBeInTheDocument();
+  });
+
+  test('a call sits between the messages at its time, not in a bubble', () => {
+    renderCalls([msg(at(14, 14, 0), { content: 'before' }), call('missed'), msg(at(14, 14, 5), { content: 'after' })]);
+    const rows = document.querySelectorAll('[data-chat-message]');
+    expect(rows[0]).toHaveTextContent('before');
+    expect(rows[1]).toBe(screen.getByTestId('chat-call-row'));
+    expect(rows[2]).toHaveTextContent('after');
+  });
+});
