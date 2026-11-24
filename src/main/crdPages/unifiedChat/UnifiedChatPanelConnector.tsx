@@ -233,9 +233,10 @@ export const UnifiedChatPanelConnector = ({
   const listItems = withActiveCallsFirst(
     conversations.map(conversation => {
       const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
-      // A conversation with a call running shows as busy, a group included.
+      // A group with a call running shows as busy. A 1:1 keeps the counterpart's own
+      // dot, which is busy once they have joined: while you ring them they are not in a call.
       const item = liveCalls.has(conversation.roomId)
-        ? { ...mapped, hasActiveCall: true, presence: 'busy' as const }
+        ? { ...mapped, hasActiveCall: true, presence: conversation.isGroup ? ('busy' as const) : mapped.presence }
         : mapped;
       const draft = drafts[conversation.id];
       // A draft replaces the last-message preview but leaves the ordering and the
