@@ -19,10 +19,12 @@ const senderOf = (matrixUserId: string, context: MappingContext): MessageSender 
   const actorId = actorIdOf(matrixUserId);
   const member = context.members.find(candidate => candidate.id === actorId);
   if (member) {
-    return { id: actorId, displayName: member.displayName, avatarUri: member.avatarUri };
+    const { displayName, avatarUri, presence, statusMessage } = member;
+    return { id: actorId, displayName, avatarUri, presence, statusMessage };
   }
+  // A former member's presence and status message are not tracked.
   const profile = context.otherProfiles.get(actorId);
-  return { id: actorId, displayName: profile?.displayName ?? '', avatarUri: profile?.avatarUri };
+  return { id: actorId, displayName: profile?.displayName ?? '', avatarUri: profile?.avatarUri, presence: 'unknown' };
 };
 
 const toConversationMessage = (message: ParsedMessage, context: MappingContext): ConversationMessage => ({

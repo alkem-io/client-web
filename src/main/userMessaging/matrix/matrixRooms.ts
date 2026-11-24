@@ -7,11 +7,15 @@ const ROOM_TIMELINE = 'Room.timeline';
 const ROOM_REDACTION = 'Room.redaction';
 const ROOM_ACCOUNT_DATA = 'Room.accountData';
 const ROOM_LOCAL_ECHO_UPDATED = 'Room.localEchoUpdated';
+const ROOM_TAGS = 'Room.tags';
 const CLIENT_ROOM = 'Room';
 const CLIENT_SYNC = 'sync';
 const DIRECTION_BACKWARD = 'b';
 const NOTIFICATION_TOTAL = 'total';
 const FULLY_READ = 'm.fully_read';
+// A pin is the user's own favourite tag on the room, so every client of the
+// account sees it; other members of the room do not.
+const FAVOURITE_TAG = 'm.favourite';
 
 const toRawEvent = (event: MatrixEvent): RawEvent => ({
   eventId: event.getId() ?? '',
@@ -65,6 +69,8 @@ const fullyReadEventId = (room: Room): string | undefined => {
   return typeof eventId === 'string' ? eventId : undefined;
 };
 
+const isFavourite = (room: Room): boolean => FAVOURITE_TAG in room.tags;
+
 const fetchBackward =
   (client: MatrixClient, roomId: string) =>
   async (from: string | undefined, limit: number): Promise<{ events: RawEvent[]; end?: string }> => {
@@ -92,14 +98,17 @@ const notificationCount = (room: Room): number =>
 export {
   CLIENT_ROOM,
   CLIENT_SYNC,
+  FAVOURITE_TAG,
   FULLY_READ,
   ROOM_ACCOUNT_DATA,
   ROOM_LOCAL_ECHO_UPDATED,
   ROOM_REDACTION,
+  ROOM_TAGS,
   ROOM_TIMELINE,
   fetchBackward,
   fullyReadEventId,
   homeserverOf,
+  isFavourite,
   liveEvents,
   notificationCount,
   ownUserId,

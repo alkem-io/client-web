@@ -13,13 +13,17 @@ const sendEventMock = vi.fn((..._args: unknown[]) => Promise.resolve({ event_id:
 const redactEventMock = vi.fn((..._args: unknown[]) => Promise.resolve({ event_id: '$redaction' }));
 const cancelPendingEventMock = vi.fn();
 const pendingEvents: { getTxnId: () => string; status: string }[] = [];
+const roomState = { encrypted: false };
 const matrixClient = {
   setRoomReadMarkersHttpRequest: readMarkersMock,
   sendEvent: sendEventMock,
   redactEvent: redactEventMock,
   cancelPendingEvent: cancelPendingEventMock,
   makeTxnId: () => 'txn-1',
-  getRoom: () => ({ getLiveTimeline: () => ({ getEvents: () => pendingEvents }) }),
+  getRoom: () => ({
+    getLiveTimeline: () => ({ getEvents: () => pendingEvents }),
+    hasEncryptionStateEvent: () => roomState.encrypted,
+  }),
 };
 const session = vi.hoisted(() => ({ client: null as unknown }));
 const sendMessageMutationMock = vi.fn((..._args: unknown[]) => Promise.resolve({}));
@@ -87,6 +91,7 @@ beforeEach(() => {
   actorDetailsMock.mockResolvedValue({ data: { actor: null } });
   notifyMock.mockClear();
   pendingEvents.length = 0;
+  roomState.encrypted = false;
   session.client = matrixClient;
 
   Object.defineProperty(document, 'visibilityState', {
@@ -213,8 +218,10 @@ describe('useConversationView — read receipts are gated on real presence (FR-0
 const dm = (counterpartType: ActorType | null): UserConversation => ({
   ...conversation,
   members: [
-    { id: 'me', type: ActorType.User, displayName: 'Me' },
-    ...(counterpartType ? [{ id: 'other', type: counterpartType, displayName: 'Other' }] : []),
+    { id: 'me', type: ActorType.User, displayName: 'Me', presence: 'unknown' },
+    ...(counterpartType
+      ? [{ id: 'other', type: counterpartType, displayName: 'Other', presence: 'unknown' as const }]
+      : []),
   ],
 });
 const contactable = (isContactable: boolean) => ({
@@ -330,6 +337,23 @@ describe('useConversationView — writes go straight to Synapse', () => {
       'txn-1'
     );
     expect(sendMessageMutationMock).not.toHaveBeenCalled();
+  });
+
+  it('a text send into an end-to-end encrypted room goes through sendMessageToRoom, not Synapse', async () => {
+    // This client has no crypto, so matrix-js-sdk would refuse the direct send outright.
+    roomState.encrypted = true;
+    const { result } = renderHook(() => useConversationView(conversation, null));
+
+    let sent: boolean | undefined;
+    await act(async () => {
+      sent = await result.current.handleSendMessage('  hello  ');
+    });
+
+    expect(sent).toBe(true);
+    expect(sendMessageMutationMock).toHaveBeenCalledExactlyOnceWith({
+      variables: { messageData: { roomID: 'room-1', message: 'hello' } },
+    });
+    expect(sendEventMock).not.toHaveBeenCalled();
   });
 
   it('an uploaded reference goes to the existing destination-checked send without another byte upload', async () => {

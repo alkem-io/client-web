@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { initials } from './initials';
 import type { GroupPosition } from './messageRuns';
 import type { ChatMessage } from './types';
+import { UserPresencePopover } from './UserPresencePopover';
 
 /**
  * Bubble corners per position in a group. The tail corner (small, on the
@@ -213,10 +214,16 @@ export function ChatMessageBubble({
     <div className="flex items-start gap-2">
       <div className="flex w-8 shrink-0 justify-center">
         {showAvatar && author ? (
-          <Avatar className="size-8" aria-hidden="true">
-            {author.avatarUrl && <AvatarImage src={author.avatarUrl} alt="" />}
-            <AvatarFallback className="text-caption">{initials(author.name)}</AvatarFallback>
-          </Avatar>
+          <UserPresencePopover
+            displayName={author.name}
+            statusMessage={author.statusMessage}
+            presence={author.presence}
+          >
+            <Avatar className="size-8" aria-hidden="true">
+              {author.avatarUrl && <AvatarImage src={author.avatarUrl} alt="" />}
+              <AvatarFallback className="text-caption">{initials(author.name)}</AvatarFallback>
+            </Avatar>
+          </UserPresencePopover>
         ) : null}
       </div>
       {bubbleColumn}

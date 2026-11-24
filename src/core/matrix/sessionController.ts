@@ -21,14 +21,15 @@ const INITIAL_SYNC_LIMIT = 20;
 
 const RENEW_BEFORE_MS = 60_000;
 
-// Synapse session_lifetime (infra-ops/dev-orchestration synapse config); the homeserver does not report it.
-const SESSION_LIFETIME_MS = 48 * 60 * 60 * 1000;
+// Synapse nonrefreshable_access_token_lifetime (infra-ops/dev-orchestration synapse config): how long a
+// credential without a refresh token lives. /login reports no expiry for it, so it is copied here; keep in step.
+const NONREFRESHABLE_TOKEN_LIFETIME_MS = 48 * 60 * 60 * 1000;
 // Rotate this long before expiry, so no call shorter than this starts on a credential that expires mid-call.
 const ROTATE_MARGIN_MS = 8 * 60 * 60 * 1000;
 // A record the homeserver renews in place (renewIfDue below) is never rotated.
 const isRotationDue = (record: CredentialRecord, now: number): boolean =>
   !record.refreshToken &&
-  (record.issuedAt === undefined || now - record.issuedAt >= SESSION_LIFETIME_MS - ROTATE_MARGIN_MS);
+  (record.issuedAt === undefined || now - record.issuedAt >= NONREFRESHABLE_TOKEN_LIFETIME_MS - ROTATE_MARGIN_MS);
 
 type MatrixClientLike = {
   stopClient(): void;

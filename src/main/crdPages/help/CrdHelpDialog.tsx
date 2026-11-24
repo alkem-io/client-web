@@ -1,3 +1,4 @@
+import { appVersion } from '@/core/appMode/appVersion';
 import { HelpDialog } from '@/crd/components/common/HelpDialog';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
@@ -20,6 +21,7 @@ const CrdHelpDialog = ({ open, onClose }: CrdHelpDialogProps) => {
       onClose={onClose}
       version={import.meta.env.VITE_VERSION ?? 'N/A'}
       serverVersion={services?.[0]?.version ?? 'N/A'}
+      appVersion={appVersion()}
       docsHref={`/${TopLevelRoutePath.Docs}`}
       supportHref={locations?.support}
       welcomeSpaceHref={buildWelcomeSpaceUrl()}
