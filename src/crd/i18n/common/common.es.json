@@ -1033,6 +1033,9 @@
         "title": "Te estamos redirigiendo..."
       }
     },
+    "visual-upload": {
+      "entityCreatedErrorUploading": "Se creó el/la {{entity}}, pero hubo un error al subir algunas imágenes. Por favor, inténtalo de nuevo."
+    },
     "wysiwyg-editor": {
       "toolbar": {
         "blocktype": {},

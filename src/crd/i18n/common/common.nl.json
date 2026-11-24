@@ -1033,6 +1033,9 @@
         "title": "We verwijzen je door..."
       }
     },
+    "visual-upload": {
+      "entityCreatedErrorUploading": "De {{entity}} is aangemaakt, maar er is een fout opgetreden bij het uploaden van sommige afbeeldingen. Probeer het opnieuw."
+    },
     "wysiwyg-editor": {
       "toolbar": {
         "blocktype": {},

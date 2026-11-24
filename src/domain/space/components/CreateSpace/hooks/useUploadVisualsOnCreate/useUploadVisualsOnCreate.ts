@@ -1,5 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { error as logError } from '@/core/logging/sentry/log';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
 import type { Identifiable } from '@/core/utils/Identifiable';
 
@@ -21,14 +25,26 @@ interface UseUploadVisualsOnCreateProvided {
   uploadVisuals: (createResult: ProfileWithVisuals | undefined, data: VisualsForm | undefined) => Promise<void>;
 }
 
+interface UseUploadVisualsOnCreateProps {
+  /**
+   * The name of the entity just created (space/subspace...), to show in the error message to the user if the upload fails.
+   */
+  entityName?: string;
+}
 /**
  * Helper to upload visuals after creating an entity like a Space or Subspace.
  * It handles the upload of visuals like avatar, cardBanner, and banner.
  * The form data needs to be compatible, use the VisualUploadModel for visuals
  * And the response from the mutation should include the created visuals with their IDs.
  */
-const useUploadVisualsOnCreate = (): UseUploadVisualsOnCreateProvided => {
-  const [uploadVisual] = useUploadVisualMutation();
+const useUploadVisualsOnCreate = ({
+  entityName,
+}: UseUploadVisualsOnCreateProps = {}): UseUploadVisualsOnCreateProvided => {
+  const { t } = useTranslation();
+  const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
+  // The failure is reported below, in one message that also says the entity was created.
+  const [uploadVisual] = useUploadVisualMutation({ context: OWN_ERROR_HANDLING });
 
   const uploadVisuals = async (createResult: ProfileWithVisuals | undefined, data: VisualsForm | undefined) => {
     try {
@@ -60,8 +76,11 @@ const useUploadVisualsOnCreate = (): UseUploadVisualsOnCreateProvided => {
         throw failure.reason;
       }
     } catch (error) {
-      // Space/Subspace is created anyway, just the images failed. Each failed upload is reported by
-      // the global error handler, with the server's reason; log the error and continue.
+      // Space/Subspace is created anyway, just the images failed: say so, with the server's reason
+      // when there is one, then log the error and continue.
+      const created = t('components.visual-upload.entityCreatedErrorUploading', { entity: entityName });
+      const reason = serverErrorMessage(error, '');
+      notify(reason ? `${created} ${reason}` : created, 'error');
       if (error instanceof Error) {
         logError(error);
       } else {

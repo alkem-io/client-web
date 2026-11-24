@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   type CreateSubspaceMutationOptions,
   refetchCurrentUserLightQuery,
@@ -42,7 +43,8 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
   const { spaceId } = useUrlResolver();
   const { isFeatureEnabled } = useConfig();
 
-  const { uploadVisuals } = useUploadVisualsOnCreate();
+  const { t } = useTranslation();
+  const { uploadVisuals } = useUploadVisualsOnCreate({ entityName: t('common.subspace') });
 
   const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
   const {

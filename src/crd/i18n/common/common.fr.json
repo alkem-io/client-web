@@ -1033,6 +1033,9 @@
         "title": "We are redirecting you..."
       }
     },
+    "visual-upload": {
+      "entityCreatedErrorUploading": "The {{entity}} was created, but there was an error uploading some images. Please try again."
+    },
     "wysiwyg-editor": {
       "toolbar": {
         "blocktype": {},

@@ -1033,6 +1033,9 @@
         "title": "Пренасочваме ви..."
       }
     },
+    "visual-upload": {
+      "entityCreatedErrorUploading": "{{entity}} е създаден, но възникна грешка при качването на някои изображения. Моля, опитайте отново."
+    },
     "wysiwyg-editor": {
       "toolbar": {
         "blocktype": {},
