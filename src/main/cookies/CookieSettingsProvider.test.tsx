@@ -5,7 +5,6 @@ import { CookieSettingsProvider, useCookieSettings } from './CookieSettingsProvi
 let mockAgent: object | undefined;
 const notify = vi.fn();
 const saveConsent = vi.fn(() => true);
-const reload = vi.fn();
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/core/analytics/apm/context', () => ({ useApm: () => mockAgent }));
@@ -21,13 +20,10 @@ const mount = () => renderHook(() => useCookieSettings(), { wrapper: CookieSetti
 beforeEach(() => {
   mockAgent = undefined;
   notify.mockReset();
-  reload.mockReset();
   window.sessionStorage.clear();
-  vi.stubGlobal('location', { ...window.location, reload });
 });
 
 afterEach(() => {
-  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
@@ -42,8 +38,8 @@ describe('CookieSettingsProvider in a browser that blocks site data', () => {
   });
 });
 
-describe('CookieSettingsProvider reload on withdrawal', () => {
-  it('reloads when consent is withdrawn while the RUM agent runs, and confirms after the reload', () => {
+describe('CookieSettingsProvider confirmation', () => {
+  it('carries the confirmation across the reload when consent is withdrawn while the RUM agent runs', () => {
     mockAgent = {};
     const before = mount();
 
@@ -51,10 +47,9 @@ describe('CookieSettingsProvider reload on withdrawal', () => {
       before.result.current.saveCookieSettings(false);
     });
 
-    expect(reload).toHaveBeenCalledTimes(1);
+    // ApmProvider reloads the page; the toast would be lost with it, so it waits for the remount.
     expect(notify).not.toHaveBeenCalled();
 
-    // The reloaded page mounts the provider afresh and shows the confirmation once.
     before.unmount();
     mount();
     expect(notify).toHaveBeenCalledExactlyOnceWith('cookieConsent.saved', 'success');
@@ -62,18 +57,33 @@ describe('CookieSettingsProvider reload on withdrawal', () => {
     expect(notify).toHaveBeenCalledTimes(1);
   });
 
-  it('does not reload a withdrawal when the agent never started (no consent before, or RUM off)', () => {
+  it('still saves a withdrawal when the marker cannot be written', () => {
+    mockAgent = {};
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('blocked', 'SecurityError');
+    });
+    const { result } = mount();
+
+    let saved = false;
+    expect(() =>
+      act(() => {
+        saved = result.current.saveCookieSettings(false);
+      })
+    ).not.toThrow();
+    expect(saved).toBe(true);
+  });
+
+  it('confirms a withdrawal at once when the agent never started (no consent before, or RUM off)', () => {
     const { result } = mount();
 
     act(() => {
       result.current.saveCookieSettings(false);
     });
 
-    expect(reload).not.toHaveBeenCalled();
     expect(notify).toHaveBeenCalledExactlyOnceWith('cookieConsent.saved', 'success');
   });
 
-  it('never reloads on accepting', () => {
+  it('confirms an acceptance at once', () => {
     mockAgent = {};
     const { result } = mount();
 
@@ -81,7 +91,6 @@ describe('CookieSettingsProvider reload on withdrawal', () => {
       result.current.saveCookieSettings(true);
     });
 
-    expect(reload).not.toHaveBeenCalled();
     expect(notify).toHaveBeenCalledExactlyOnceWith('cookieConsent.saved', 'success');
   });
 });

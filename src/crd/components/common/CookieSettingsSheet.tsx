@@ -14,9 +14,11 @@ type CookieSettingsSheetProps = {
   error?: string;
   cookiePolicyHref: string;
   privacyPolicyHref?: string;
+  /** The sheet has no trigger of its own, so the consumer decides where focus goes when it closes. */
+  onCloseAutoFocus?: (event: Event) => void;
 };
 
-type SheetBodyProps = Omit<CookieSettingsSheetProps, 'open' | 'onOpenChange'>;
+type SheetBodyProps = Omit<CookieSettingsSheetProps, 'open' | 'onOpenChange' | 'onCloseAutoFocus'>;
 
 // Mounted only while the sheet is open, so the unsaved switch state starts over on every open.
 function SheetBody({ initialAnalysis, onSave, error, cookiePolicyHref, privacyPolicyHref }: SheetBodyProps) {
@@ -47,7 +49,7 @@ function SheetBody({ initialAnalysis, onSave, error, cookiePolicyHref, privacyPo
  * Cookie settings as a bottom sheet at every width. Layered above the cookie banner
  * (z-[1500]) and the bottom menu bars, so it can open from the banner or the footer.
  */
-export function CookieSettingsSheet({ open, onOpenChange, ...bodyProps }: CookieSettingsSheetProps) {
+export function CookieSettingsSheet({ open, onOpenChange, onCloseAutoFocus, ...bodyProps }: CookieSettingsSheetProps) {
   const { t } = useTranslation('crd-layout');
 
   return (
@@ -56,6 +58,7 @@ export function CookieSettingsSheet({ open, onOpenChange, ...bodyProps }: Cookie
         side="bottom"
         closeLabel={t('cookieConsent.close')}
         aria-describedby={undefined}
+        onCloseAutoFocus={onCloseAutoFocus}
         overlayClassName="z-[1600]"
         className="z-[1600] mx-auto max-h-[76dvh] max-w-2xl gap-0 rounded-t-2xl pb-[env(safe-area-inset-bottom)]"
       >

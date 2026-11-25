@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApm } from '@/core/analytics/apm/context';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -32,6 +32,7 @@ export const CookieSettingsProvider = ({ children }: { children: ReactNode }) =>
   const apm = useApm();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string>();
+  const openerRef = useRef<Element | null>(null);
 
   useEffect(() => {
     // Browsers that block site data throw on any sessionStorage access.
@@ -52,14 +53,32 @@ export const CookieSettingsProvider = ({ children }: { children: ReactNode }) =>
   const saveCookieSettings = (analysis: boolean) => {
     const saved = saveConsent(analysis);
     if (!saved) return false;
-    // The RUM agent cannot be stopped once it runs, so withdrawing reloads the page without it.
+    // A running RUM agent cannot be stopped, so ApmProvider reloads the page once consent is gone.
+    // The marker carries the confirmation across that reload.
     if (!analysis && apm) {
-      window.sessionStorage.setItem(SAVED_AFTER_RELOAD_KEY, '1');
-      window.location.reload();
+      try {
+        window.sessionStorage.setItem(SAVED_AFTER_RELOAD_KEY, '1');
+      } catch {
+        // Storage is blocked: the choice is saved and the page still reloads, without the toast.
+      }
     } else {
       notify(t('cookieConsent.saved'), 'success');
     }
     return true;
+  };
+
+  const openCookieSettings = () => {
+    openerRef.current = document.activeElement;
+    handleOpenChange(true);
+  };
+
+  // The sheet has no Radix trigger, so focus goes back to whatever opened it, if that is still there.
+  const restoreFocus = (event: Event) => {
+    const opener = openerRef.current;
+    if (opener instanceof HTMLElement && opener.isConnected) {
+      event.preventDefault();
+      opener.focus();
+    }
   };
 
   const handleSave = (analysis: boolean) => {
@@ -71,11 +90,12 @@ export const CookieSettingsProvider = ({ children }: { children: ReactNode }) =>
   };
 
   return (
-    <CookieSettingsContext value={{ openCookieSettings: () => handleOpenChange(true), saveCookieSettings }}>
+    <CookieSettingsContext value={{ openCookieSettings, saveCookieSettings }}>
       {children}
       <CookieSettingsSheet
         open={open}
         onOpenChange={handleOpenChange}
+        onCloseAutoFocus={restoreFocus}
         initialAnalysis={consent.analysis}
         onSave={handleSave}
         error={error}

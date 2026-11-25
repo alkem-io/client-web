@@ -167,6 +167,23 @@ describe('sentry bootstrap consent gate', () => {
     expect(events[0]).not.toContain('visited /space/secret');
   });
 
+  it('drops a transaction that finishes after consent was withdrawn, and sends it with consent', async () => {
+    writeConsent(ACCEPTED);
+    bootstrap(true, DSN, 'test');
+    const transport = Sentry.getClient()?.getTransport();
+    type Envelope = Parameters<NonNullable<typeof transport>['send']>[0];
+    const transaction = [{}, [[{ type: 'transaction' }, {}]]] as unknown as Envelope;
+    sent.mockClear();
+
+    await transport?.send(transaction);
+    expect(sent).toHaveBeenCalledTimes(1);
+
+    // Sampled while consent was given, finished after the withdrawal.
+    writeConsent(ONLY_NECESSARY);
+    await transport?.send(transaction);
+    expect(sent).toHaveBeenCalledTimes(1);
+  });
+
   it('sends error events without consent', async () => {
     bootstrap(true, DSN, 'test');
 

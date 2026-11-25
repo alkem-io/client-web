@@ -26,12 +26,20 @@ export const ApmProvider = ({ children }: PropsWithChildren) => {
 
   const initFn = useApmInit(user);
 
-  // Accepting mid-session starts the agent. It cannot be stopped: withdrawing reloads the page.
+  // Accepting mid-session starts the agent.
   useEffect(() => {
     if (consent.analysis && !isAuthPage) {
       setApm(initFn);
     }
   }, [initFn, isAuthPage, consent.analysis]);
+
+  // A running agent cannot be stopped. When consent goes away, in this tab, in another tab or on
+  // the welcome site (the cookie is shared), the page reloads without it.
+  useEffect(() => {
+    if (apm && !consent.analysis) {
+      window.location.reload();
+    }
+  }, [apm, consent.analysis]);
 
   const value = { apm, setUser };
 
