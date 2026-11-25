@@ -78,6 +78,9 @@ export function Footer({
               {t('footer.about')}
             </a>
           )}
+          <a href="/third-party-licenses.html" className={linkClassName}>
+            {t('footer.acknowledgements')}
+          </a>
         </nav>
 
         {/* Language selector */}

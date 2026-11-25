@@ -31,7 +31,8 @@
     "privacy": "Поверителност",
     "security": "Сигурност",
     "support": "Поддръжка",
-    "about": "За нас"
+    "about": "За нас",
+    "acknowledgements": "Признания"
   },
   "appVersion": {
     "message": "Налична е нова версия на приложението.",

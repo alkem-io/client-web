@@ -31,7 +31,8 @@
     "privacy": "Privacidad",
     "security": "Seguridad",
     "support": "Soporte",
-    "about": "Acerca de"
+    "about": "Acerca de",
+    "acknowledgements": "Reconocimientos"
   },
   "appVersion": {
     "message": "Hay una nueva versión de la aplicación disponible.",
