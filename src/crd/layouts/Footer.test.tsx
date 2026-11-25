@@ -58,12 +58,12 @@ describe('Footer (#10057 — platform attribution logo)', () => {
     expect(screen.getByRole('link', { name: 'footer.about' })).toHaveAttribute('href', '/about');
   });
 
-  test('links Acknowledgements to the static third-party licence notices page', () => {
+  test('opens the static third-party licence notices page in a new tab', () => {
     render(<Footer {...baseProps} />);
 
-    expect(screen.getByRole('link', { name: 'footer.acknowledgements' })).toHaveAttribute(
-      'href',
-      '/third-party-licenses.html'
-    );
+    const link = screen.getByRole('link', { name: 'footer.acknowledgements (footer.opensInNewTab)' });
+    expect(link).toHaveAttribute('href', '/third-party-licenses.html');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 });

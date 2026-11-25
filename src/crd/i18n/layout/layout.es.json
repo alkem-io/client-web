@@ -32,7 +32,8 @@
     "security": "Seguridad",
     "support": "Soporte",
     "about": "Acerca de",
-    "acknowledgements": "Reconocimientos"
+    "acknowledgements": "Reconocimientos",
+    "opensInNewTab": "se abre en una pestaña nueva"
   },
   "appVersion": {
     "message": "Hay una nueva versión de la aplicación disponible.",

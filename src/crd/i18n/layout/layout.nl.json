@@ -32,7 +32,8 @@
     "security": "Beveiliging",
     "support": "Ondersteuning",
     "about": "Over ons",
-    "acknowledgements": "Verantwoording"
+    "acknowledgements": "Verantwoording",
+    "opensInNewTab": "opent in een nieuw tabblad"
   },
   "appVersion": {
     "message": "Er is een nieuwe versie van de app beschikbaar.",

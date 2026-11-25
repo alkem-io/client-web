@@ -107,6 +107,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.8rem; padding
 </style>
 </head>
 <body>
+<main>
+<p><a href="/">Alkemio</a></p>
 <h1>Third-party licenses</h1>
 <p>Alkemio is built with the open-source software listed below. Each package is distributed under its own license.</p>
 <section>
@@ -118,6 +120,7 @@ Its prebuilt package carries no notices for the components it bundles; they are 
 element-call source at v${escapeHtml(ELEMENT_CALL_VERSION)}</a>.</p>
 </section>
 ${[...dependencies, ...cssOnlyDependencies()].map(renderDependency).join('\n')}
+</main>
 </body>
 </html>
 `;

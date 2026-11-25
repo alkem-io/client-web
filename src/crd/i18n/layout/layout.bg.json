@@ -32,7 +32,8 @@
     "security": "Сигурност",
     "support": "Поддръжка",
     "about": "За нас",
-    "acknowledgements": "Признания"
+    "acknowledgements": "Признания",
+    "opensInNewTab": "отваря се в нов раздел"
   },
   "appVersion": {
     "message": "Налична е нова версия на приложението.",
