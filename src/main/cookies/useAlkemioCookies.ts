@@ -62,12 +62,16 @@ export const useMigrateConsentCookieToApex = () => {
 export type CookieConsent = { decided: boolean; analysis: boolean };
 
 // react-cookie updates its in-memory copy even when the browser refuses the write (cookies
-// blocked, domain rejected), so only `document.cookie` proves the choice was kept.
+// blocked, domain rejected), so only `document.cookie` proves the choice was kept. Readers
+// pass this to re-read `document.cookie` on every change, so a refused write never shows as
+// a choice (and never closes the banner).
+export const READ_FROM_BROWSER = { doNotUpdate: false };
+
 const isStoredInBrowser = (value: string) =>
   document.cookie.split('; ').includes(`${ALKEMIO_COOKIE_NAME}=${encodeURIComponent(value)}`);
 
 export const useAlkemioCookies = () => {
-  const [cookies, setCookie] = useCookies([ALKEMIO_COOKIE_NAME]);
+  const [cookies, setCookie] = useCookies([ALKEMIO_COOKIE_NAME], READ_FROM_BROWSER);
   const stored: unknown = cookies[ALKEMIO_COOKIE_NAME];
   const consent: CookieConsent = Array.isArray(stored)
     ? { decided: true, analysis: stored.includes(AlkemioCookieTypes.analysis) }

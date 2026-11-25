@@ -1,17 +1,21 @@
-import type { Ref } from 'react';
+import { type Ref, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import { CookieConsentBanner } from '@/crd/components/common/CookieConsentBanner';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import { useAlkemioCookies } from './useAlkemioCookies';
+import { useCookieSettings } from './CookieSettingsProvider';
 
 /**
- * Connector for the CRD cookie consent banner. Owns cookie persistence (and, through it,
- * the analysis/APM opt-in) and forwards a ref up so the app shell can measure the banner
- * height and pad the page content accordingly.
+ * Connector for the CRD cookie consent banner. Stores the choice through the shared cookie
+ * settings (which toast on success), opens the shared sheet for Settings, and forwards a ref
+ * up so the app shell can measure the banner height and pad the page content accordingly.
+ * The banner unmounts once the consent cookie exists.
  */
-const CrdCookieConsent = ({ ref }: { ref?: Ref<HTMLDivElement> }) => {
-  const { saveConsent } = useAlkemioCookies();
-  const containerRef = useCombinedRefs<HTMLDivElement | null>(null, ref);
+const CrdCookieConsent = ({ ref }: { ref?: Ref<HTMLElement> }) => {
+  const { t } = useTranslation('crd-layout');
+  const { openCookieSettings, saveCookieSettings } = useCookieSettings();
+  const [error, setError] = useState<string>();
+  const containerRef = useCombinedRefs<HTMLElement | null>(null, ref);
 
   useResizeObserver({
     targetRef: containerRef,
@@ -20,7 +24,19 @@ const CrdCookieConsent = ({ ref }: { ref?: Ref<HTMLDivElement> }) => {
     },
   });
 
-  return <CookieConsentBanner ref={containerRef} onAcceptAll={() => saveConsent(true)} onConfirm={saveConsent} />;
+  const choose = (analysis: boolean) => {
+    setError(saveCookieSettings(analysis) ? undefined : t('cookieConsent.saveFailed'));
+  };
+
+  return (
+    <CookieConsentBanner
+      ref={containerRef}
+      onAcceptAll={() => choose(true)}
+      onOnlyNecessary={() => choose(false)}
+      onOpenSettings={openCookieSettings}
+      error={error}
+    />
+  );
 };
 
 export default CrdCookieConsent;
