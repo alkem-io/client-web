@@ -7,9 +7,9 @@ import { useApmInit, useGetOrSetApmCookie } from './useApmInit';
 // NOT an array (e.g. `true`, `42`, `{"a":1}`) used to crash the whole app into its error
 // boundary via `s.includes is not a function`. react-cookie JSON-parses cookie values, so a
 // valid consent cookie is a string[] but a wrong-shape value comes back as a non-array with no
-// `.includes`. `useGetOrSetApmCookie` now shape-guards with `Array.isArray` before calling
-// `.includes`, so a bad cookie must degrade to "not tracked" (return undefined, no throw) while
-// a proper array with `analysis` consent still provisions the apm cookie exactly as before.
+// `.includes`. The consent read treats anything but an array as no choice, so a bad cookie must
+// degrade to "not tracked" (return undefined, no throw) while a proper array with `analysis`
+// consent still provisions the apm cookie.
 
 const APM_CLIENT_TRACK_COOKIE = 'apm';
 
@@ -83,8 +83,37 @@ describe('useGetOrSetApmCookie shape-guarding (#10123)', () => {
     expect(setCookie).toHaveBeenCalledWith(APM_CLIENT_TRACK_COOKIE, result.current, expect.any(Object));
   });
 
-  it('early-returns an already-provisioned apm cookie without touching consent', () => {
-    mockCookies = { [APM_CLIENT_TRACK_COOKIE]: 'apm-existing', [ALKEMIO_COOKIE_NAME]: true };
+  it('writes a new apm cookie that expires 13 months from now, not in 2038', () => {
+    mockCookies = { [ALKEMIO_COOKIE_NAME]: [AlkemioCookieTypes.technical, AlkemioCookieTypes.analysis] };
+
+    renderHook(() => useGetOrSetApmCookie());
+
+    const expected = new Date();
+    expected.setMonth(expected.getMonth() + 13);
+    const { expires } = setCookie.mock.calls[0][2] as { expires: Date };
+    expect(Math.abs(expires.getTime() - expected.getTime())).toBeLessThan(60_000);
+  });
+});
+
+describe('useGetOrSetApmCookie with an existing apm cookie', () => {
+  it.each([
+    ['no consent cookie', undefined],
+    ['only necessary', [AlkemioCookieTypes.technical]],
+    ['a malformed consent cookie', true],
+  ])('never uses it for a visitor with %s', (_label, consent) => {
+    mockCookies = { [APM_CLIENT_TRACK_COOKIE]: 'apm-existing', [ALKEMIO_COOKIE_NAME]: consent };
+
+    const { result } = renderHook(() => useGetOrSetApmCookie());
+
+    expect(result.current).toBeUndefined();
+    expect(setCookie).not.toHaveBeenCalled();
+  });
+
+  it('returns it unchanged with analysis consent', () => {
+    mockCookies = {
+      [APM_CLIENT_TRACK_COOKIE]: 'apm-existing',
+      [ALKEMIO_COOKIE_NAME]: [AlkemioCookieTypes.technical, AlkemioCookieTypes.analysis],
+    };
 
     const { result } = renderHook(() => useGetOrSetApmCookie());
 

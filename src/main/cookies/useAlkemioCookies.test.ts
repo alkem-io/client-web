@@ -4,6 +4,7 @@ import {
   ALKEMIO_COOKIE_NAME,
   APM_COOKIE_NAME,
   useAlkemioCookies,
+  useCleanUpApmCookie,
   useMigrateConsentCookieToApex,
 } from './useAlkemioCookies';
 
@@ -233,5 +234,55 @@ describe('useMigrateConsentCookieToApex', () => {
 
     expect(removeCookie).not.toHaveBeenCalled();
     expect(setCookie).not.toHaveBeenCalled();
+  });
+});
+
+describe('useCleanUpApmCookie', () => {
+  const ACCEPTED = ['technical', 'analysis'];
+
+  it.each([
+    ['no consent cookie', undefined],
+    ['only necessary', ['technical']],
+    ['a malformed consent cookie', 'not-a-list'],
+  ])('removes an existing apm cookie with %s', (_label, consent) => {
+    mockCookies = { [APM_COOKIE_NAME]: 'apm-existing', [ALKEMIO_COOKIE_NAME]: consent };
+
+    renderHook(() => useCleanUpApmCookie());
+
+    expect(removeCookie).toHaveBeenCalledWith(APM_COOKIE_NAME, { path: '/' });
+    expect(setCookie).not.toHaveBeenCalled();
+  });
+
+  it('rewrites the same id with a 13-month expiry with analysis consent', () => {
+    mockCookies = { [APM_COOKIE_NAME]: 'apm-existing', [ALKEMIO_COOKIE_NAME]: ACCEPTED };
+
+    renderHook(() => useCleanUpApmCookie());
+
+    expect(setCookie).toHaveBeenCalledWith(APM_COOKIE_NAME, 'apm-existing', expect.any(Object));
+    const expected = new Date();
+    expected.setMonth(expected.getMonth() + 13);
+    const { expires } = lastCall(setCookie)?.[2] as { expires: Date };
+    expect(Math.abs(expires.getTime() - expected.getTime())).toBeLessThan(60_000);
+    expect(removeCookie).not.toHaveBeenCalled();
+  });
+
+  it('runs once per browser', () => {
+    mockCookies = { [APM_COOKIE_NAME]: 'apm-existing', [ALKEMIO_COOKIE_NAME]: ACCEPTED };
+    renderHook(() => useCleanUpApmCookie());
+    setCookie.mockReset();
+
+    mockCookies = { [APM_COOKIE_NAME]: 'apm-existing' };
+    renderHook(() => useCleanUpApmCookie());
+
+    expect(setCookie).not.toHaveBeenCalled();
+    expect(removeCookie).not.toHaveBeenCalled();
+  });
+
+  it('marks the browser done when there is no apm cookie to clean', () => {
+    renderHook(() => useCleanUpApmCookie());
+
+    expect(removeCookie).not.toHaveBeenCalled();
+    expect(setCookie).not.toHaveBeenCalled();
+    expect(window.localStorage.getItem('alkemio.apmCookieCleaned')).toBe('1');
   });
 });

@@ -8,9 +8,8 @@ import { error as logError } from '@/core/logging/sentry/log';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes, APM_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
+import { APM_COOKIE_NAME, apmCookieOptions, useAlkemioCookies } from '@/main/cookies/useAlkemioCookies';
 
-const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07
 const APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX = 'apm';
 const APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED = 'not-tracked';
 const APM_CLIENT_SERVICE_NAME = 'alkemio-client-web';
@@ -72,29 +71,22 @@ export const useApmInit = (user: CurrentUserModel | undefined) => {
 
 export const useGetOrSetApmCookie = (): string | undefined => {
   // TODO Refactor to store data in localStorage, remove react-cookie npm
-  const [cookies, setCookie] = useCookies([APM_COOKIE_NAME, ALKEMIO_COOKIE_NAME]);
+  const [cookies, setCookie] = useCookies([APM_COOKIE_NAME]);
+  // Consent first: an existing id is never used for a visitor without analysis consent.
+  const { consent } = useAlkemioCookies();
+
+  if (!consent.analysis) {
+    return undefined;
+  }
 
   const cookieId = cookies[APM_COOKIE_NAME];
 
   if (cookieId) {
     return cookieId;
   }
-  // react-cookie JSON-parses cookie values, so a valid consent cookie comes back as a
-  // string[] (it is written as JSON.stringify(['technical','analysis'])). A wrong-shape but
-  // still-valid-JSON value (true, 42, {…}) parses to a non-array with no .includes, which
-  // previously threw a TypeError into the app-wide error boundary (#10123). Guard the shape
-  // before calling .includes so a bad cookie degrades to "not tracked" instead of crashing.
-  const acceptedCookies: unknown = cookies[ALKEMIO_COOKIE_NAME];
-  if (!Array.isArray(acceptedCookies) || !acceptedCookies.includes(AlkemioCookieTypes.analysis)) {
-    return undefined;
-  }
 
   const userApmId = `${APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX}-${uuidv4()}`;
-  setCookie(APM_COOKIE_NAME, userApmId, {
-    expires: new Date(APM_CLIENT_TRACK_COOKIE_EXPIRY),
-    path: '/',
-    sameSite: 'strict',
-  });
+  setCookie(APM_COOKIE_NAME, userApmId, apmCookieOptions());
 
   return userApmId;
 };
