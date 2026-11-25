@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, realpathSync } from 'node:fs';
 import { join } from 'node:path';
 import license from 'rollup-plugin-license';
 import satisfies from 'spdx-satisfies';
@@ -43,24 +43,57 @@ const isAllowed = dependency => {
 };
 
 /**
- * Direct dependencies that reach the build only as CSS. The plugin scans rendered JS modules, so
- * it never sees them; they are read here and held to the same allow-list.
+ * The plugin lists a package when one of its own modules is rendered into a chunk, so it misses
+ * two kinds. Both are read here and held to the same allow-list.
  */
+// direct dependencies that reach the build only as CSS
 const CSS_ONLY_PACKAGES = ['tailwindcss', 'tw-animate-css'];
+// direct dependencies shipped as one prebuilt file with their own dependencies inlined: the
+// plugin lists the package itself, and its dependency tree is added here
+const PREBUNDLED_PACKAGES = ['maplibre-gl'];
 
-const cssOnlyDependencies = () =>
-  CSS_ONLY_PACKAGES.map(name => {
-    const directory = join('node_modules', name);
-    const licenseFile = readdirSync(directory).find(file => /^licen[cs]e/i.test(file));
-    const dependency = {
-      ...JSON.parse(readFileSync(join(directory, 'package.json'), 'utf8')),
-      licenseText: licenseFile && readFileSync(join(directory, licenseFile), 'utf8'),
-    };
-    if (!isAllowed(dependency)) {
-      throw new Error(`Dependency "${name}" has a license (${dependency.license}) which is not on the allow-list`);
-    }
-    return dependency;
-  });
+const readDependency = directory => {
+  const licenseFile = readdirSync(directory).find(file => /^licen[cs]e/i.test(file));
+  const dependency = {
+    ...JSON.parse(readFileSync(join(directory, 'package.json'), 'utf8')),
+    licenseText: licenseFile && readFileSync(join(directory, licenseFile), 'utf8'),
+  };
+  if (!isAllowed(dependency)) {
+    throw new Error(
+      `Dependency "${dependency.name}" has a license (${dependency.license}) which is not on the allow-list`
+    );
+  }
+  return dependency;
+};
+
+// pnpm installs a package's dependencies beside it, in the node_modules directory holding its real path
+const dependencyTree = (directory, found = new Map()) => {
+  const { name, dependencies = {} } = JSON.parse(readFileSync(join(directory, 'package.json'), 'utf8'));
+  const siblings = join(realpathSync(directory), ...name.split('/').map(() => '..'));
+  for (const dependencyName of Object.keys(dependencies)) {
+    // type declarations are never bundled
+    if (dependencyName.startsWith('@types/')) continue;
+    const dependency = readDependency(join(siblings, dependencyName));
+    const key = `${dependency.name}@${dependency.version}`;
+    if (found.has(key)) continue;
+    found.set(key, dependency);
+    dependencyTree(join(siblings, dependencyName), found);
+  }
+  return found;
+};
+
+const withUnscannedDependencies = scanned => {
+  const all = new Map(scanned.map(dependency => [`${dependency.name}@${dependency.version}`, dependency]));
+  const unscanned = [
+    ...CSS_ONLY_PACKAGES.map(name => readDependency(join('node_modules', name))),
+    ...PREBUNDLED_PACKAGES.flatMap(name => [...dependencyTree(join('node_modules', name)).values()]),
+  ];
+  for (const dependency of unscanned) {
+    const key = `${dependency.name}@${dependency.version}`;
+    if (!all.has(key)) all.set(key, dependency);
+  }
+  return [...all.values()];
+};
 
 const ELEMENT_CALL_VERSION = packageJson.dependencies['@element-hq/element-call-embedded'];
 
@@ -128,7 +161,7 @@ Its prebuilt package carries no notices for the components it bundles; they are 
 <a href="https://github.com/element-hq/element-call/tree/v${escapeHtml(ELEMENT_CALL_VERSION)}" rel="noopener noreferrer">upstream
 element-call source at v${escapeHtml(ELEMENT_CALL_VERSION)}</a>.</p>
 </section>
-${[...dependencies, ...cssOnlyDependencies()].map(renderDependency).join('\n')}
+${withUnscannedDependencies(dependencies).map(renderDependency).join('\n')}
 </main>
 </body>
 </html>

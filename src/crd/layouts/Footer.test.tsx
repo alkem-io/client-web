@@ -20,6 +20,7 @@ const baseProps = {
     privacy: '/privacy',
     security: '/security',
     about: '/about',
+    acknowledgements: '/third-party-licenses.html',
   },
 };
 

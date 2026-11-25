@@ -78,10 +78,12 @@ export function Footer({
               {t('footer.about')}
             </a>
           )}
-          <a href="/third-party-licenses.html" target="_blank" rel="noopener noreferrer" className={linkClassName}>
-            {t('footer.acknowledgements')}
-            <span className="sr-only"> ({t('footer.opensInNewTab')})</span>
-          </a>
+          {links?.acknowledgements && (
+            <a href={links.acknowledgements} target="_blank" rel="noopener noreferrer" className={linkClassName}>
+              {t('footer.acknowledgements')}
+              <span className="sr-only"> ({t('footer.opensInNewTab')})</span>
+            </a>
+          )}
         </nav>
 
         {/* Language selector */}
