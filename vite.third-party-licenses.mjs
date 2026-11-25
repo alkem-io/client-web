@@ -99,16 +99,25 @@ const renderPage = dependencies => `<!doctype html>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Third-party licenses</title>
+<link rel="icon" href="/favicon.ico" />
 <style>
-:root { color-scheme: light dark; }
-body { font-family: system-ui, sans-serif; max-width: 60rem; margin: 0 auto; padding: 1rem; line-height: 1.5; }
+/* The platform's light theme (src/crd/styles/theme.css), inlined so the page stays self-contained. */
+:root { color-scheme: light; }
+body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: #fcfdfe; color: #1d384a; margin: 0; line-height: 1.5; }
+main { max-width: 60rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+a { color: inherit; text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid rgba(29, 56, 74, 0.5); outline-offset: 2px; border-radius: 2px; }
+.home { display: inline-block; }
+.home img { height: 1.5rem; display: block; }
+h1 { font-size: 1.5rem; }
 h2 { font-size: 1.1rem; margin-top: 2rem; }
-pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.8rem; padding: 0.75rem; border: 1px solid; border-radius: 4px; }
+p { color: #64748b; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.8rem; padding: 0.75rem; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; }
 </style>
 </head>
 <body>
 <main>
-<p><a href="/">Alkemio</a></p>
+<a class="home" href="/"><img src="/alkemio-logo.svg" alt="Alkemio" /></a>
 <h1>Third-party licenses</h1>
 <p>Alkemio is built with the open-source software listed below. Each package is distributed under its own license.</p>
 <section>
