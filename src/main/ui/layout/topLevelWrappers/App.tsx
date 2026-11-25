@@ -6,7 +6,6 @@ import { CrdNotificationHandler } from '@/core/ui/notifications/CrdNotificationH
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { LanguageOfferProvider } from '@/domain/language/LanguageOfferContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { CookieSettingsProvider } from '@/main/cookies/CookieSettingsProvider';
 import {
   useAlkemioCookies,
   useCleanUpApmCookie,
@@ -50,26 +49,23 @@ const App = () => {
     // so in-memory anonymous choice survives client-side navigation between route groups
     // without requiring localStorage (corr-client-4 / SC-004 / FR-013b-i).
     <LanguageOfferProvider>
-      {/* Wraps every route and the banner: the footer, the banner and the Security tab all open its one sheet. */}
-      <CookieSettingsProvider>
-        <div
-          className="flex flex-col flex-grow"
-          style={cookieConsentHeight ? { paddingBottom: `${cookieConsentHeight}px` } : undefined}
-        >
-          {/* position: relative so the space layout's absolutely-positioned navigation bar
-              anchors below the banner instead of overlapping it at the viewport top. */}
-          <div className="relative flex flex-col flex-grow">
-            <Outlet />
-          </div>
+      <div
+        className="flex flex-col flex-grow"
+        style={cookieConsentHeight ? { paddingBottom: `${cookieConsentHeight}px` } : undefined}
+      >
+        {/* position: relative so the space layout's absolutely-positioned navigation bar
+            anchors below the banner instead of overlapping it at the viewport top. */}
+        <div className="relative flex flex-col flex-grow">
+          <Outlet />
         </div>
-        {/* A malformed consent cookie is no choice, so the banner asks again. */}
-        {!consent.decided && (
-          <Suspense fallback={null}>
-            <CookieConsent ref={cookieConsentRef} />
-          </Suspense>
-        )}
-        <CrdNotificationHandler />
-      </CookieSettingsProvider>
+      </div>
+      {/* A malformed consent cookie is no choice, so the banner asks again. */}
+      {!consent.decided && (
+        <Suspense fallback={null}>
+          <CookieConsent ref={cookieConsentRef} />
+        </Suspense>
+      )}
+      <CrdNotificationHandler />
     </LanguageOfferProvider>
   );
 };

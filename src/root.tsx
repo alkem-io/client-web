@@ -22,6 +22,7 @@ import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMemb
 import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
+import { CookieSettingsProvider } from '@/main/cookies/CookieSettingsProvider';
 import { CrdAwareErrorComponent } from '@/main/crdPages/error/CrdAwareErrorComponent';
 import { UnifiedChatLauncher } from '@/main/crdPages/unifiedChat/UnifiedChatLauncher';
 import { UnifiedChatProvider } from '@/main/crdPages/unifiedChat/UnifiedChatProvider';
@@ -152,12 +153,16 @@ const Root: FC = () => {
                                       <VersionHandling />
                                       <OnlineStatusNotification />
                                       <AppPullToRefresh />
-                                      <Error40XBoundary
-                                        errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
-                                      >
-                                        <TopLevelRoutes />
-                                        <GlobalErrorDialogGate />
-                                      </Error40XBoundary>
+                                      {/* Above the error boundary, so the footer's Cookie settings entry
+                                          also opens the one sheet on the 403, 404 and error pages. */}
+                                      <CookieSettingsProvider>
+                                        <Error40XBoundary
+                                          errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
+                                        >
+                                          <TopLevelRoutes />
+                                          <GlobalErrorDialogGate />
+                                        </Error40XBoundary>
+                                      </CookieSettingsProvider>
                                       {/* Rendered after TopLevelRoutes so the full-screen mobile chat
                                           panel (z-50) paints above the app header (also z-50). */}
                                       <UnifiedChatGate />

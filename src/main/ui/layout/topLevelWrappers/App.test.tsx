@@ -14,7 +14,6 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
 }));
 vi.mock('@/domain/language/LanguageOfferContext', () => ({ LanguageOfferProvider: passThrough }));
 vi.mock('@/domain/platform/config/useConfig', () => ({ useConfig: () => ({ serverMetadata: { services: [] } }) }));
-vi.mock('@/main/cookies/CookieSettingsProvider', () => ({ CookieSettingsProvider: passThrough }));
 vi.mock('@/main/cookies/CrdCookieConsent', () => ({ default: () => <div>cookie banner</div> }));
 
 const renderApp = (consentCookie?: string) => {
