@@ -17,6 +17,8 @@ export type AuthShellProps = {
   footerLinks?: CrdFooterLinks;
   /** Footer "Support" entry handler. */
   onSupportClick?: () => void;
+  /** Footer "Cookie settings" entry handler. */
+  onCookieSettingsClick?: () => void;
 
   /**
    * Widens the content slot at `lg+` so the children can lay out as two columns
@@ -46,6 +48,7 @@ export function AuthShell({
   onLanguageChange,
   footerLinks,
   onSupportClick,
+  onCookieSettingsClick,
   wide,
   plain,
 }: AuthShellProps) {
@@ -71,6 +74,7 @@ export function AuthShell({
           currentLanguage={currentLanguage}
           onLanguageChange={onLanguageChange}
           onSupportClick={onSupportClick}
+          onCookieSettingsClick={onCookieSettingsClick}
           className="border-t-0 bg-transparent"
         />
       </div>

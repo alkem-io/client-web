@@ -72,9 +72,16 @@
  * open, whether to offer a reload or pull-to-refresh, whether to show a
  * catching-up state on resume) and none deciding identity or entitlement:
  * `CrdUserNotificationsTab.tsx`, `CrdLayoutWrapper.tsx`, `AppPullToRefresh.tsx`,
- * `CallOverlayHost.tsx`, `useMatrixCatchingUp.ts`, `SecondFactorCrdRoute.tsx`,
- * `ConversationThread.tsx` and `CrdUserSecurityTab.tsx`. A new call site still
- * needs a ruling here.
+ * `CallOverlayHost.tsx`, `useMatrixCatchingUp.ts`, `SecondFactorCrdRoute.tsx`
+ * and `ConversationThread.tsx`. A new call site still needs a ruling here.
+ *
+ * **Security tab, ruled in (122).** `CrdUserSecurityTab.tsx` reads the
+ * predicate only to choose what the Security tab offers: in the app, the
+ * "manage in a web browser" card instead of a sign-out that re-enters the SSO
+ * handoff. It decides no identity or entitlement; the Kratos settings flow
+ * behind the tab is authorized by the identity provider either way. The cookie
+ * section on that tab does not read the predicate and renders in every state.
+ * Forging it in a browser only swaps the forger's own lapsed-session card.
  *
  * **The tap event is also forgeable on Android, and confinement is the control.**
  * Correcting the paragraph above, which only considered browser forgery: the

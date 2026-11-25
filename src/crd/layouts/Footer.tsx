@@ -16,6 +16,8 @@ type FooterProps = {
   currentLanguage: string;
   onLanguageChange: (code: string) => void;
   onSupportClick?: () => void;
+  /** Opens the Cookie settings sheet; the entry is left out when not given. */
+  onCookieSettingsClick?: () => void;
   className?: string;
 };
 
@@ -27,6 +29,7 @@ export function Footer({
   currentLanguage,
   onLanguageChange,
   onSupportClick,
+  onCookieSettingsClick,
   className,
 }: FooterProps) {
   const { t } = useTranslation('crd-layout');
@@ -83,6 +86,15 @@ export function Footer({
               {t('footer.thirdPartyLicenses')}
               <span className="sr-only"> ({t('footer.opensInNewTab')})</span>
             </a>
+          )}
+          {onCookieSettingsClick && (
+            <button
+              type="button"
+              onClick={onCookieSettingsClick}
+              className={cn(linkClassName, 'cursor-pointer bg-transparent border-none p-0 font-inherit text-body')}
+            >
+              {t('cookieConsent.settingsTitle')}
+            </button>
           )}
         </nav>
 

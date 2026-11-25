@@ -1,4 +1,5 @@
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { Footer } from './Footer';
 
@@ -66,5 +67,19 @@ describe('Footer (#10057 — platform attribution logo)', () => {
     expect(link).toHaveAttribute('href', '/third-party-licenses.html');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  test('places the Cookie settings entry after About and before the language picker, and opens the settings', async () => {
+    const onCookieSettingsClick = vi.fn();
+    render(<Footer {...baseProps} onCookieSettingsClick={onCookieSettingsClick} />);
+
+    const about = screen.getByRole('link', { name: 'footer.about' });
+    const cookieSettings = screen.getByRole('button', { name: 'cookieConsent.settingsTitle' });
+    const languagePicker = screen.getByRole('button', { name: 'English' });
+    expect(about.compareDocumentPosition(cookieSettings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(cookieSettings.compareDocumentPosition(languagePicker) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+    await userEvent.click(cookieSettings);
+    expect(onCookieSettingsClick).toHaveBeenCalledTimes(1);
   });
 });

@@ -7,7 +7,7 @@ import { useAlkemioCookies } from './useAlkemioCookies';
 
 // The platform config has no cookie policy location; the welcome site, which reads the same
 // consent cookie, publishes the policy.
-const COOKIE_POLICY_URL = 'https://welcome.alkem.io/legal/cookies';
+export const COOKIE_POLICY_URL = 'https://welcome.alkem.io/legal/cookies';
 
 type CookieSettingsContextValue = {
   /** Opens the one Cookie settings sheet, showing the stored choice. */

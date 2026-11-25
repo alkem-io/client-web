@@ -58,6 +58,7 @@
     "acceptAll": "Accept all",
     "onlyNecessary": "Only necessary",
     "settingsTitle": "Cookie settings",
+    "sectionDescription": "What Alkemio may store and measure on this device.",
     "close": "Close",
     "necessary": "Necessary",
     "necessaryDescription": "Keeps you signed in and secure, reports errors so we can fix them, and remembers your cookie settings.",
