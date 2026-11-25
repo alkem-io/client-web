@@ -123,7 +123,7 @@ export function CrdApp() {
         onNotificationsClick={() => setShowNotifications(true)}
         onPendingMembershipsClick={() => setShowPendingDialog(true)}
         onHelpClick={() => console.log('Help clicked')}
-        footerLinks={{ terms: '/terms', privacy: '/privacy', security: '/security', about: '/about', acknowledgements: '/third-party-licenses.html' }}
+        footerLinks={{ terms: '/terms', privacy: '/privacy', security: '/security', about: '/about', thirdPartyLicenses: '/third-party-licenses.html' }}
         showGridToggle={true}
       >
         <Routes>

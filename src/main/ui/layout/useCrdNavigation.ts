@@ -48,7 +48,7 @@ export function useCrdNavigation() {
 
   const footerLinks = {
     // a static file every build writes (vite.third-party-licenses.mjs), not a platform-configured location
-    acknowledgements: '/third-party-licenses.html',
+    thirdPartyLicenses: '/third-party-licenses.html',
     ...(locations && {
       terms: locations.terms,
       privacy: locations.privacy,

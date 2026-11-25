@@ -78,9 +78,9 @@ export function Footer({
               {t('footer.about')}
             </a>
           )}
-          {links?.acknowledgements && (
-            <a href={links.acknowledgements} target="_blank" rel="noopener noreferrer" className={linkClassName}>
-              {t('footer.acknowledgements')}
+          {links?.thirdPartyLicenses && (
+            <a href={links.thirdPartyLicenses} target="_blank" rel="noopener noreferrer" className={linkClassName}>
+              {t('footer.thirdPartyLicenses')}
               <span className="sr-only"> ({t('footer.opensInNewTab')})</span>
             </a>
           )}

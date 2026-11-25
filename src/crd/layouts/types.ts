@@ -27,7 +27,7 @@ export type CrdFooterLinks = {
   security?: string;
   about?: string;
   /** The third-party licence notices page; opens in a new tab. */
-  acknowledgements?: string;
+  thirdPartyLicenses?: string;
 };
 
 export type CrdLanguageOption = {

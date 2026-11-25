@@ -20,7 +20,7 @@ const baseProps = {
     privacy: '/privacy',
     security: '/security',
     about: '/about',
-    acknowledgements: '/third-party-licenses.html',
+    thirdPartyLicenses: '/third-party-licenses.html',
   },
 };
 
@@ -62,7 +62,7 @@ describe('Footer (#10057 — platform attribution logo)', () => {
   test('opens the static third-party licence notices page in a new tab', () => {
     render(<Footer {...baseProps} />);
 
-    const link = screen.getByRole('link', { name: 'footer.acknowledgements (footer.opensInNewTab)' });
+    const link = screen.getByRole('link', { name: 'footer.thirdPartyLicenses (footer.opensInNewTab)' });
     expect(link).toHaveAttribute('href', '/third-party-licenses.html');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
