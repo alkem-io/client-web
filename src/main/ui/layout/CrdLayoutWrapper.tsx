@@ -3,6 +3,7 @@ import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
 import { isAppMode } from '@/core/appMode/isAppMode';
+import { isStandaloneDisplay } from '@/core/appMode/isStandaloneDisplay';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
@@ -147,8 +148,12 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         onPendingMembershipsClick={isAuthenticated ? handlePendingMembershipsClick : undefined}
         onHelpClick={() => setIsHelpDialogOpen(true)}
         // A full reload, like the new-version banner: it also picks up a newer client build.
+        // Offered where there is no browser reload button: the store app and the installed PWA.
         onRefreshClick={
-          isAppMode() ? () => window.location.replace(window.location.pathname + window.location.search) : undefined
+          isAppMode() || isStandaloneDisplay()
+            ? // The origin is pinned: a pathname starting with '//' alone would be a protocol-relative URL.
+              () => window.location.replace(window.location.origin + window.location.pathname + window.location.search)
+            : undefined
         }
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
