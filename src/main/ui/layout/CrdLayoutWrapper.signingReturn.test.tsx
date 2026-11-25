@@ -984,6 +984,20 @@ describe('CrdLayoutWrapper user-menu Refresh', () => {
     expect(screen.getByRole('button', { name: 'refresh' })).toBeInTheDocument();
   });
 
+  it('reloads on the same origin even when the path starts with two slashes', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation(
+      query => ({ matches: query === '(display-mode: standalone)', media: query }) as MediaQueryList
+    );
+    renderPlainRoute();
+    const replace = vi.fn();
+    vi.stubGlobal('location', { origin: 'https://alkem.io', pathname: '//evil.example/x', search: '?a=1', replace });
+
+    await userEvent.click(screen.getByRole('button', { name: 'refresh' }));
+
+    expect(replace).toHaveBeenCalledWith('https://alkem.io//evil.example/x?a=1');
+    vi.unstubAllGlobals();
+  });
+
   it('offers no Refresh in a plain browser tab', () => {
     renderPlainRoute();
 

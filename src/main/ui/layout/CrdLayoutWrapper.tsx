@@ -151,7 +151,8 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         // Offered where there is no browser reload button: the store app and the installed PWA.
         onRefreshClick={
           isAppMode() || isStandaloneDisplay()
-            ? () => window.location.replace(window.location.pathname + window.location.search)
+            ? // The origin is pinned: a pathname starting with '//' alone would be a protocol-relative URL.
+              () => window.location.replace(window.location.origin + window.location.pathname + window.location.search)
             : undefined
         }
         onSearchClick={() => openSearch()}
