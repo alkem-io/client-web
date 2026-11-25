@@ -58,7 +58,19 @@
     "analysis": "Les cookies d'analyse : nous permettent de déterminer comment les visiteurs interagissent avec nos services afin d'améliorer l'expérience utilisateur.",
     "settings": "paramètres",
     "acceptAll": "Accepter tous les Cookies",
-    "confirmChoice": "Confirmer votre choix"
+    "confirmChoice": "Confirmer votre choix",
+    "settingsTitle": "Paramètres des cookies",
+    "close": "Fermer",
+    "necessary": "Nécessaires",
+    "necessaryDescription": "Vous gardent connecté et en sécurité, signalent les erreurs pour que nous puissions les corriger et mémorisent vos paramètres de cookies.",
+    "alwaysOn": "Toujours activés",
+    "analytics": "Mesure d'audience",
+    "analyticsDescription": "Mesure la vitesse des pages et l'utilisation de l'application. Désactivée sauf si vous l'activez.",
+    "cookiePolicy": "Politique relative aux cookies",
+    "privacyPolicy": "Politique de confidentialité",
+    "saveSettings": "Enregistrer les paramètres",
+    "saved": "Paramètres des cookies enregistrés.",
+    "saveFailed": "Nous n'avons pas pu enregistrer vos paramètres de cookies. Votre navigateur bloque peut-être les cookies pour ce site."
   },
   "secondFactorReminder": {
     "action": "Configurer",

@@ -58,7 +58,19 @@
     "analysis": "Analysis cookies: enable us to determine how visitors interact with our services in order to improve user experience.",
     "settings": "settings",
     "acceptAll": "Accept All Cookies",
-    "confirmChoice": "Confirm Choice"
+    "confirmChoice": "Confirm Choice",
+    "settingsTitle": "Cookie settings",
+    "close": "Close",
+    "necessary": "Necessary",
+    "necessaryDescription": "Keeps you signed in and secure, reports errors so we can fix them, and remembers your cookie settings.",
+    "alwaysOn": "Always on",
+    "analytics": "Analytics",
+    "analyticsDescription": "Measures page speed and app usage. Off unless you turn it on.",
+    "cookiePolicy": "Cookie policy",
+    "privacyPolicy": "Privacy policy",
+    "saveSettings": "Save settings",
+    "saved": "Cookie settings saved.",
+    "saveFailed": "We couldn't save your cookie settings. Your browser may be blocking cookies for this site."
   },
   "secondFactorReminder": {
     "action": "Set it up",

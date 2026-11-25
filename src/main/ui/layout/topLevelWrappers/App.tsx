@@ -7,6 +7,7 @@ import { CrdNotificationHandler } from '@/core/ui/notifications/CrdNotificationH
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { LanguageOfferProvider } from '@/domain/language/LanguageOfferContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import { CookieSettingsProvider } from '@/main/cookies/CookieSettingsProvider';
 import { ALKEMIO_COOKIE_NAME, useMigrateConsentCookieToApex } from '@/main/cookies/useAlkemioCookies';
 
 const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CrdCookieConsent'));
@@ -42,22 +43,25 @@ const App = () => {
     // so in-memory anonymous choice survives client-side navigation between route groups
     // without requiring localStorage (corr-client-4 / SC-004 / FR-013b-i).
     <LanguageOfferProvider>
-      <div
-        className="flex flex-col flex-grow"
-        style={cookieConsentHeight ? { paddingBottom: `${cookieConsentHeight}px` } : undefined}
-      >
-        {/* position: relative so the space layout's absolutely-positioned navigation bar
-            anchors below the banner instead of overlapping it at the viewport top. */}
-        <div className="relative flex flex-col flex-grow">
-          <Outlet />
+      {/* Wraps every route and the banner: the footer, the banner and the Security tab all open its one sheet. */}
+      <CookieSettingsProvider>
+        <div
+          className="flex flex-col flex-grow"
+          style={cookieConsentHeight ? { paddingBottom: `${cookieConsentHeight}px` } : undefined}
+        >
+          {/* position: relative so the space layout's absolutely-positioned navigation bar
+              anchors below the banner instead of overlapping it at the viewport top. */}
+          <div className="relative flex flex-col flex-grow">
+            <Outlet />
+          </div>
         </div>
-      </div>
-      {!cookies.accepted_cookies && (
-        <Suspense fallback={null}>
-          <CookieConsent ref={cookieConsentRef} />
-        </Suspense>
-      )}
-      <CrdNotificationHandler />
+        {!cookies.accepted_cookies && (
+          <Suspense fallback={null}>
+            <CookieConsent ref={cookieConsentRef} />
+          </Suspense>
+        )}
+        <CrdNotificationHandler />
+      </CookieSettingsProvider>
     </LanguageOfferProvider>
   );
 };

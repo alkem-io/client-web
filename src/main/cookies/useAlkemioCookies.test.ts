@@ -32,12 +32,27 @@ afterEach(() => {
 
 describe('useAlkemioCookies', () => {
   const domainOf = () => lastCall(setCookie)?.[2]?.domain;
+  const storedCategories = () => JSON.parse(lastCall(setCookie)?.[1] as string) as string[];
+  // What the browser holds: the hook must trust this, not react-cookie's in-memory copy.
+  let browserCookies = '';
+  const holdInBrowser = (value: string) => {
+    browserCookies = `other=1; ${ALKEMIO_COOKIE_NAME}=${encodeURIComponent(value)}`;
+  };
+
+  beforeEach(() => {
+    browserCookies = '';
+    vi.spyOn(document, 'cookie', 'get').mockImplementation(() => browserCookies);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
 
   it('writes the consent cookie at the apex on prod so welcome.alkem.io can read it', () => {
     stubHostname('app.alkem.io');
     const { result } = renderHook(() => useAlkemioCookies());
 
-    result.current.acceptAllCookies();
+    result.current.saveConsent(true);
 
     expect(setCookie).toHaveBeenCalledWith(ALKEMIO_COOKIE_NAME, expect.any(String), expect.any(Object));
     expect(domainOf()).toBe('.alkem.io');
@@ -47,7 +62,7 @@ describe('useAlkemioCookies', () => {
     stubHostname('app.acc-alkem.io');
     const { result } = renderHook(() => useAlkemioCookies());
 
-    result.current.acceptOnlySelected([]);
+    result.current.saveConsent(false);
 
     expect(domainOf()).toBe('.acc-alkem.io');
   });
@@ -56,7 +71,7 @@ describe('useAlkemioCookies', () => {
     stubHostname('app.dev-alkem.io');
     const { result } = renderHook(() => useAlkemioCookies());
 
-    result.current.acceptAllCookies();
+    result.current.saveConsent(true);
 
     expect(domainOf()).toBe('.dev-alkem.io');
   });
@@ -65,7 +80,7 @@ describe('useAlkemioCookies', () => {
     stubHostname('localhost');
     const { result } = renderHook(() => useAlkemioCookies());
 
-    result.current.acceptAllCookies();
+    result.current.saveConsent(true);
 
     expect(domainOf()).toBeUndefined();
   });
@@ -74,46 +89,80 @@ describe('useAlkemioCookies', () => {
     stubHostname('127.0.0.1');
     const { result } = renderHook(() => useAlkemioCookies());
 
-    result.current.acceptOnlySelected(['analysis']);
+    result.current.saveConsent(true);
 
     expect(domainOf()).toBeUndefined();
   });
 
-  it('still passes the persistence options (path + expiry) alongside the domain', () => {
+  it('still passes the persistence options (path + 150-day expiry) alongside the domain', () => {
     stubHostname('app.alkem.io');
     const { result } = renderHook(() => useAlkemioCookies());
 
-    result.current.acceptAllCookies();
+    result.current.saveConsent(true);
 
     const options = lastCall(setCookie)?.[2];
     expect(options.path).toBe('/');
-    expect(options.expires).toBeInstanceOf(Date);
+    const days = Math.round((options.expires.getTime() - Date.now()) / 86_400_000);
+    expect(days).toBe(150);
   });
 
-  it('acceptOnlySelected([analysis]) persists only technical + analysis (no preference category)', () => {
-    stubHostname('app.alkem.io');
+  it('Only necessary stores ["technical"]', () => {
     const { result } = renderHook(() => useAlkemioCookies());
 
-    result.current.acceptOnlySelected(['analysis']);
+    result.current.saveConsent(false);
 
-    const [, value] = lastCall(setCookie);
-    const categories = JSON.parse(value as string) as string[];
-    expect(categories).toContain('technical');
-    expect(categories).toContain('analysis');
-    expect(categories).not.toContain('preference');
+    expect(storedCategories()).toEqual(['technical']);
   });
 
-  it('acceptAllCookies persists technical + analysis (no preference category)', () => {
-    stubHostname('app.alkem.io');
+  it('Accept all stores ["technical","analysis"]', () => {
     const { result } = renderHook(() => useAlkemioCookies());
 
-    result.current.acceptAllCookies();
+    result.current.saveConsent(true);
 
-    const [, value] = lastCall(setCookie);
-    const categories = JSON.parse(value as string) as string[];
-    expect(categories).toContain('technical');
-    expect(categories).toContain('analysis');
-    expect(categories).not.toContain('preference');
+    expect(storedCategories()).toEqual(['technical', 'analysis']);
+  });
+
+  it('reports success when the browser kept the cookie', () => {
+    setCookie.mockImplementation((_name: string, value: string) => holdInBrowser(value));
+    const { result } = renderHook(() => useAlkemioCookies());
+
+    expect(result.current.saveConsent(false)).toBe(true);
+  });
+
+  it('reports failure when the write did not land in the browser', () => {
+    const { result } = renderHook(() => useAlkemioCookies());
+
+    expect(result.current.saveConsent(true)).toBe(false);
+  });
+
+  it('reports failure when the browser holds a different choice than the one just saved', () => {
+    holdInBrowser('["technical"]');
+    const { result } = renderHook(() => useAlkemioCookies());
+
+    expect(result.current.saveConsent(true)).toBe(false);
+  });
+
+  it('reads no stored choice as undecided with Analytics off', () => {
+    const { result } = renderHook(() => useAlkemioCookies());
+
+    expect(result.current.consent).toEqual({ decided: false, analysis: false });
+  });
+
+  it('reads a malformed cookie as undecided', () => {
+    mockCookies = { [ALKEMIO_COOKIE_NAME]: 'not-a-list' };
+    const { result } = renderHook(() => useAlkemioCookies());
+
+    expect(result.current.consent).toEqual({ decided: false, analysis: false });
+  });
+
+  it('reads the stored choice', () => {
+    mockCookies = { [ALKEMIO_COOKIE_NAME]: ['technical'] };
+    const { result, rerender } = renderHook(() => useAlkemioCookies());
+    expect(result.current.consent).toEqual({ decided: true, analysis: false });
+
+    mockCookies = { [ALKEMIO_COOKIE_NAME]: ['technical', 'analysis'] };
+    rerender();
+    expect(result.current.consent).toEqual({ decided: true, analysis: true });
   });
 });
 

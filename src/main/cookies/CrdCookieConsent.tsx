@@ -2,7 +2,7 @@ import type { Ref } from 'react';
 import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import { CookieConsentBanner } from '@/crd/components/common/CookieConsentBanner';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import { AlkemioCookieTypes, useAlkemioCookies } from './useAlkemioCookies';
+import { useAlkemioCookies } from './useAlkemioCookies';
 
 /**
  * Connector for the CRD cookie consent banner. Owns cookie persistence (and, through it,
@@ -10,7 +10,7 @@ import { AlkemioCookieTypes, useAlkemioCookies } from './useAlkemioCookies';
  * height and pad the page content accordingly.
  */
 const CrdCookieConsent = ({ ref }: { ref?: Ref<HTMLDivElement> }) => {
-  const { acceptAllCookies, acceptOnlySelected } = useAlkemioCookies();
+  const { saveConsent } = useAlkemioCookies();
   const containerRef = useCombinedRefs<HTMLDivElement | null>(null, ref);
 
   useResizeObserver({
@@ -20,13 +20,7 @@ const CrdCookieConsent = ({ ref }: { ref?: Ref<HTMLDivElement> }) => {
     },
   });
 
-  const handleConfirm = (analysisAccepted: boolean) => {
-    const selected: string[] = [];
-    if (analysisAccepted) selected.push(AlkemioCookieTypes.analysis);
-    acceptOnlySelected(selected);
-  };
-
-  return <CookieConsentBanner ref={containerRef} onAcceptAll={acceptAllCookies} onConfirm={handleConfirm} />;
+  return <CookieConsentBanner ref={containerRef} onAcceptAll={() => saveConsent(true)} onConfirm={saveConsent} />;
 };
 
 export default CrdCookieConsent;

@@ -59,19 +59,26 @@ export const useMigrateConsentCookieToApex = () => {
   }, [consent, removeCookie, setCookie]);
 };
 
+export type CookieConsent = { decided: boolean; analysis: boolean };
+
+// react-cookie updates its in-memory copy even when the browser refuses the write (cookies
+// blocked, domain rejected), so only `document.cookie` proves the choice was kept.
+const isStoredInBrowser = (value: string) =>
+  document.cookie.split('; ').includes(`${ALKEMIO_COOKIE_NAME}=${encodeURIComponent(value)}`);
+
 export const useAlkemioCookies = () => {
-  const [, setCookie] = useCookies([ALKEMIO_COOKIE_NAME]);
+  const [cookies, setCookie] = useCookies([ALKEMIO_COOKIE_NAME]);
+  const stored: unknown = cookies[ALKEMIO_COOKIE_NAME];
+  const consent: CookieConsent = Array.isArray(stored)
+    ? { decided: true, analysis: stored.includes(AlkemioCookieTypes.analysis) }
+    : { decided: false, analysis: false };
 
-  const acceptAllCookies = () => {
-    const options = createCookieOptions();
-    setCookie(ALKEMIO_COOKIE_NAME, JSON.stringify(ALL_COOKIES), options);
+  /** Stores the choice; returns false when the browser did not keep it. */
+  const saveConsent = (analysis: boolean): boolean => {
+    const value = JSON.stringify(analysis ? ALL_COOKIES : MANDATORY_COOKIES);
+    setCookie(ALKEMIO_COOKIE_NAME, value, createCookieOptions());
+    return isStoredInBrowser(value);
   };
 
-  const acceptOnlySelected = (selectedCookies: string[]) => {
-    const cookies = new Set([...MANDATORY_COOKIES, ...selectedCookies]);
-    const options = createCookieOptions();
-    setCookie(ALKEMIO_COOKIE_NAME, JSON.stringify([...cookies]), options);
-  };
-
-  return { acceptAllCookies, acceptOnlySelected };
+  return { consent, saveConsent };
 };

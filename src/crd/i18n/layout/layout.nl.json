@@ -58,7 +58,19 @@
     "analysis": "Analytische cookies: staan ons toe vast te stellen hoe gebruikers onze dienst gebruiken om de gebruikerservaring te verbeteren.",
     "settings": "instellingen",
     "acceptAll": "Accepteer Alle Cookies",
-    "confirmChoice": "Bevestig keuze"
+    "confirmChoice": "Bevestig keuze",
+    "settingsTitle": "Cookie-instellingen",
+    "close": "Sluiten",
+    "necessary": "Noodzakelijk",
+    "necessaryDescription": "Houdt u ingelogd en veilig, meldt fouten zodat wij ze kunnen oplossen, en onthoudt uw cookie-instellingen.",
+    "alwaysOn": "Altijd aan",
+    "analytics": "Analyse",
+    "analyticsDescription": "Meet de snelheid van pagina's en het gebruik van de app. Staat uit, tenzij u het aanzet.",
+    "cookiePolicy": "Cookiebeleid",
+    "privacyPolicy": "Privacybeleid",
+    "saveSettings": "Instellingen opslaan",
+    "saved": "Cookie-instellingen opgeslagen.",
+    "saveFailed": "We konden uw cookie-instellingen niet opslaan. Mogelijk blokkeert uw browser cookies voor deze site."
   },
   "secondFactorReminder": {
     "action": "Nu instellen",
