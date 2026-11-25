@@ -33,7 +33,8 @@
     "support": "Soporte",
     "about": "Acerca de",
     "thirdPartyLicenses": "Licencias de terceros",
-    "opensInNewTab": "se abre en una pestaña nueva"
+    "opensInNewTab": "se abre en una pestaña nueva",
+    "close": "Cerrar"
   },
   "appVersion": {
     "message": "Hay una nueva versión de la aplicación disponible.",

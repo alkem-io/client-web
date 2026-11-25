@@ -28,6 +28,8 @@ export type CrdFooterLinks = {
   about?: string;
   /** The third-party licence notices page; opens in a new tab. */
   thirdPartyLicenses?: string;
+  /** Show that page in a dialog instead: for the store app and the installed PWA, which have no tabs and no back control. */
+  thirdPartyLicensesInDialog?: boolean;
 };
 
 export type CrdLanguageOption = {

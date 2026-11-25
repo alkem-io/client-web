@@ -76,6 +76,11 @@
  * `ConversationThread.tsx` and `CrdUserSecurityTab.tsx`. A new call site still
  * needs a ruling here.
  *
+ * **Footer licences link, ruled in.** `useCrdNavigation` reads the predicate to
+ * show the third-party licences page in a dialog instead of a new tab, because
+ * the shell has no tabs and no back control. It is **not** on an authorization
+ * path: the page is public and the predicate only picks how it is presented.
+ *
  * **The tap event is also forgeable on Android, and confinement is the control.**
  * Correcting the paragraph above, which only considered browser forgery: the
  * feature's own working path is FCM relaunching the exported `MainActivity`

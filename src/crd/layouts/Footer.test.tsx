@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 import { Footer } from './Footer';
 
@@ -66,5 +66,16 @@ describe('Footer (#10057 — platform attribution logo)', () => {
     expect(link).toHaveAttribute('href', '/third-party-licenses.html');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  test('shows the notices page in a dialog where there are no tabs (store app, installed PWA)', () => {
+    render(<Footer {...baseProps} links={{ ...baseProps.links, thirdPartyLicensesInDialog: true }} />);
+
+    expect(screen.queryByRole('link', { name: /footer.thirdPartyLicenses/ })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'footer.thirdPartyLicenses' }));
+
+    const dialog = screen.getByRole('dialog', { name: 'footer.thirdPartyLicenses' });
+    expect(within(dialog).getByTitle('footer.thirdPartyLicenses')).toHaveAttribute('src', '/third-party-licenses.html');
+    expect(within(dialog).getByRole('button', { name: 'footer.close' })).toBeInTheDocument();
   });
 });

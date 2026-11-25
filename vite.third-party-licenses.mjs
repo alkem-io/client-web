@@ -130,6 +130,7 @@ const renderPage = dependencies => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
+<base target="_top" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Third-party licenses</title>
 <link rel="icon" href="/favicon.ico" />

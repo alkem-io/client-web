@@ -1,8 +1,10 @@
 import { Check, Globe } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import type { CrdFooterLinks, CrdLanguageOption } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
+import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +32,7 @@ export function Footer({
   className,
 }: FooterProps) {
   const { t } = useTranslation('crd-layout');
+  const [licensesOpen, setLicensesOpen] = useState(false);
 
   const currentLabel = languages.find(l => currentLanguage.startsWith(l.code))?.label ?? 'English';
 
@@ -78,12 +81,21 @@ export function Footer({
               {t('footer.about')}
             </a>
           )}
-          {links?.thirdPartyLicenses && (
-            <a href={links.thirdPartyLicenses} target="_blank" rel="noopener noreferrer" className={linkClassName}>
-              {t('footer.thirdPartyLicenses')}
-              <span className="sr-only"> ({t('footer.opensInNewTab')})</span>
-            </a>
-          )}
+          {links?.thirdPartyLicenses &&
+            (links.thirdPartyLicensesInDialog ? (
+              <button
+                type="button"
+                onClick={() => setLicensesOpen(true)}
+                className={cn(linkClassName, 'cursor-pointer bg-transparent border-none p-0 font-inherit text-body')}
+              >
+                {t('footer.thirdPartyLicenses')}
+              </button>
+            ) : (
+              <a href={links.thirdPartyLicenses} target="_blank" rel="noopener noreferrer" className={linkClassName}>
+                {t('footer.thirdPartyLicenses')}
+                <span className="sr-only"> ({t('footer.opensInNewTab')})</span>
+              </a>
+            ))}
         </nav>
 
         {/* Language selector */}
@@ -118,6 +130,22 @@ export function Footer({
           </DropdownMenu>
         </div>
       </div>
+      {links?.thirdPartyLicenses && (
+        <Dialog open={licensesOpen} onOpenChange={setLicensesOpen}>
+          <DialogContent
+            className="flex h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl"
+            closeLabel={t('footer.close')}
+            aria-describedby={undefined}
+          >
+            <DialogTitle className="border-b border-border px-6 py-4">{t('footer.thirdPartyLicenses')}</DialogTitle>
+            <iframe
+              src={links.thirdPartyLicenses}
+              title={t('footer.thirdPartyLicenses')}
+              className="w-full flex-1 border-0"
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </footer>
   );
 }
