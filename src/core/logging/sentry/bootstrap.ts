@@ -27,6 +27,8 @@ const bootstrap = (sentryEnabled?: boolean, sentryEndpoint?: string, environment
       // reads the cookie when it runs, so a changed choice applies without a reload.
       tracesSampler: () => (hasAnalysisConsent() ? CONSENTED_TRACES_SAMPLE_RATE : 0),
       beforeBreadcrumb: breadcrumb => (hasAnalysisConsent() ? breadcrumb : null),
+      // Breadcrumbs kept while consent was given stay on the scope after a withdrawal.
+      beforeSend: event => (hasAnalysisConsent() ? event : { ...event, breadcrumbs: undefined }),
       // Sentry 9 has no beforeSendSession, and every session envelope (on load, per navigation, on
       // an error) leaves through the transport, so the transport drops them without consent. A
       // session envelope carries the session as its only item.

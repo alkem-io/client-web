@@ -150,6 +150,23 @@ describe('sentry bootstrap consent gate', () => {
     expect(sessionsSent()).toBe(0);
   });
 
+  it('drops breadcrumbs kept before a withdrawal from later error events', async () => {
+    writeConsent(ACCEPTED);
+    bootstrap(true, DSN, 'test');
+    Sentry.addBreadcrumb({ message: 'visited /space/secret' });
+
+    writeConsent(ONLY_NECESSARY);
+    sent.mockClear();
+    Sentry.captureException(new Error('boom'));
+    await Sentry.flush(0);
+
+    const events = sent.mock.calls
+      .map(([envelope]) => JSON.stringify(envelope))
+      .filter(e => e.includes('"type":"event"'));
+    expect(events).toHaveLength(1);
+    expect(events[0]).not.toContain('visited /space/secret');
+  });
+
   it('sends error events without consent', async () => {
     bootstrap(true, DSN, 'test');
 
