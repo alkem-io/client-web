@@ -1,7 +1,7 @@
-import { AlertCircle, Cookie } from 'lucide-react';
+import { Cookie } from 'lucide-react';
 import type { ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CookieSettingsOptions } from '@/crd/components/common/CookieSettingsOptions';
+import { CookieSaveError, CookieSettingsOptions } from '@/crd/components/common/CookieSettingsOptions';
 import { SettingsSection } from '@/crd/components/common/SettingsSection';
 
 type CookieSettingsSectionProps = ComponentProps<typeof CookieSettingsOptions> & {
@@ -25,15 +25,7 @@ export function CookieSettingsSection({ error, ...options }: CookieSettingsSecti
     >
       <div className="flex flex-col gap-3">
         <CookieSettingsOptions {...options} />
-        {error && (
-          <p
-            role="alert"
-            className="flex items-start gap-2 rounded-md bg-destructive/10 p-3 text-body text-destructive"
-          >
-            <AlertCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-            {error}
-          </p>
-        )}
+        {error && <CookieSaveError message={error} />}
       </div>
     </SettingsSection>
   );

@@ -1,5 +1,7 @@
+import { AlertCircle } from 'lucide-react';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
+import { cn } from '@/crd/lib/utils';
 import { Switch } from '@/crd/primitives/switch';
 
 type CookieSettingsOptionsProps = {
@@ -90,5 +92,18 @@ export function CookieSettingsOptions({
         {privacyPolicyHref && <PolicyLink href={privacyPolicyHref} label={t('cookieConsent.privacyPolicy')} />}
       </div>
     </div>
+  );
+}
+
+/** The save-failed message, shown inline on the surface that made the attempt. */
+export function CookieSaveError({ message, className }: { message: string; className?: string }) {
+  return (
+    <p
+      role="alert"
+      className={cn('flex items-start gap-2 rounded-md bg-destructive/10 p-3 text-body text-destructive', className)}
+    >
+      <AlertCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+      {message}
+    </p>
   );
 }

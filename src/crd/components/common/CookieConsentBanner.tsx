@@ -1,6 +1,6 @@
-import { AlertCircle } from 'lucide-react';
 import type { Ref } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CookieSaveError } from '@/crd/components/common/CookieSettingsOptions';
 import { Button } from '@/crd/primitives/button';
 
 type CookieConsentBannerProps = {
@@ -50,15 +50,7 @@ export function CookieConsentBanner({
         <p className="text-body basis-full md:order-1 md:min-w-[300px] md:flex-1 md:basis-0">
           {t('cookieConsent.text')}
         </p>
-        {error && (
-          <p
-            role="alert"
-            className="flex basis-full items-start gap-2 rounded-md bg-destructive/10 p-3 text-body text-destructive md:order-first"
-          >
-            <AlertCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-            {error}
-          </p>
-        )}
+        {error && <CookieSaveError message={error} className="basis-full md:order-first" />}
         <div className="flex basis-full flex-wrap gap-2 md:order-3 md:basis-auto">
           <Button className={choiceClassName} onClick={onAcceptAll}>
             {t('cookieConsent.acceptAll')}

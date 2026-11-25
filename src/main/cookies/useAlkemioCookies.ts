@@ -59,7 +59,7 @@ export const useMigrateConsentCookieToApex = () => {
   }, [consent, removeCookie, setCookie]);
 };
 
-export type CookieConsent = { decided: boolean; analysis: boolean };
+type CookieConsent = { decided: boolean; analysis: boolean };
 
 // react-cookie updates its in-memory copy even when the browser refuses the write (cookies
 // blocked, domain rejected), so only `document.cookie` proves the choice was kept. Readers

@@ -1,7 +1,6 @@
-import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CookieSettingsOptions } from '@/crd/components/common/CookieSettingsOptions';
+import { CookieSaveError, CookieSettingsOptions } from '@/crd/components/common/CookieSettingsOptions';
 import { Button } from '@/crd/primitives/button';
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '@/crd/primitives/sheet';
 
@@ -35,15 +34,7 @@ function SheetBody({ initialAnalysis, onSave, error, cookiePolicyHref, privacyPo
         />
       </div>
       <SheetFooter className="border-t border-border">
-        {error && (
-          <p
-            role="alert"
-            className="flex items-start gap-2 rounded-md bg-destructive/10 p-3 text-body text-destructive"
-          >
-            <AlertCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-            {error}
-          </p>
-        )}
+        {error && <CookieSaveError message={error} />}
         <Button className="h-11 w-full" onClick={() => onSave(analysis)}>
           {t('cookieConsent.saveSettings')}
         </Button>
