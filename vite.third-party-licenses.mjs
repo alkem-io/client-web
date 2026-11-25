@@ -1,3 +1,5 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import license from 'rollup-plugin-license';
 import satisfies from 'spdx-satisfies';
 import packageJson from './package.json';
@@ -39,6 +41,26 @@ const isAllowed = dependency => {
     return false;
   }
 };
+
+/**
+ * Direct dependencies that reach the build only as CSS. The plugin scans rendered JS modules, so
+ * it never sees them; they are read here and held to the same allow-list.
+ */
+const CSS_ONLY_PACKAGES = ['tailwindcss', 'tw-animate-css'];
+
+const cssOnlyDependencies = () =>
+  CSS_ONLY_PACKAGES.map(name => {
+    const directory = join('node_modules', name);
+    const licenseFile = readdirSync(directory).find(file => /^licen[cs]e/i.test(file));
+    const dependency = {
+      ...JSON.parse(readFileSync(join(directory, 'package.json'), 'utf8')),
+      licenseText: licenseFile && readFileSync(join(directory, licenseFile), 'utf8'),
+    };
+    if (!isAllowed(dependency)) {
+      throw new Error(`Dependency "${name}" has a license (${dependency.license}) which is not on the allow-list`);
+    }
+    return dependency;
+  });
 
 const ELEMENT_CALL_VERSION = packageJson.dependencies['@element-hq/element-call-embedded'];
 
@@ -95,7 +117,7 @@ Its prebuilt package carries no notices for the components it bundles; they are 
 <a href="https://github.com/element-hq/element-call/tree/v${escapeHtml(ELEMENT_CALL_VERSION)}" rel="noopener noreferrer">upstream
 element-call source at v${escapeHtml(ELEMENT_CALL_VERSION)}</a>.</p>
 </section>
-${dependencies.map(renderDependency).join('\n')}
+${[...dependencies, ...cssOnlyDependencies()].map(renderDependency).join('\n')}
 </body>
 </html>
 `;
@@ -108,6 +130,8 @@ ${dependencies.map(renderDependency).join('\n')}
 export const thirdPartyLicenses = () => ({
   ...license({
     thirdParty: {
+      // without this the plugin keeps one version per package name: the others go unlisted and unchecked
+      multipleVersions: true,
       allow: {
         test: isAllowed,
         failOnUnlicensed: true,
