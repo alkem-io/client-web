@@ -1,5 +1,6 @@
-import { createContext, type ReactNode, useContext, useState } from 'react';
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useApm } from '@/core/analytics/apm/context';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CookieSettingsSheet } from '@/crd/components/common/CookieSettingsSheet';
 import { useConfig } from '@/domain/platform/config/useConfig';
@@ -8,6 +9,8 @@ import { useAlkemioCookies } from './useAlkemioCookies';
 // The platform config has no cookie policy location; the welcome site, which reads the same
 // consent cookie, publishes the policy.
 export const COOKIE_POLICY_URL = 'https://welcome.alkem.io/legal/cookies';
+// Carries the "saved" confirmation across the reload that a withdrawal triggers.
+const SAVED_AFTER_RELOAD_KEY = 'alkemio.cookieSettingsSaved';
 
 type CookieSettingsContextValue = {
   /** Opens the one Cookie settings sheet, showing the stored choice. */
@@ -26,8 +29,15 @@ export const CookieSettingsProvider = ({ children }: { children: ReactNode }) =>
   const { locations } = useConfig();
   const { consent, saveConsent } = useAlkemioCookies();
   const notify = useNotification();
+  const apm = useApm();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string>();
+
+  useEffect(() => {
+    if (!window.sessionStorage.getItem(SAVED_AFTER_RELOAD_KEY)) return;
+    window.sessionStorage.removeItem(SAVED_AFTER_RELOAD_KEY);
+    notify(t('cookieConsent.saved'), 'success');
+  }, []);
 
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
@@ -36,8 +46,15 @@ export const CookieSettingsProvider = ({ children }: { children: ReactNode }) =>
 
   const saveCookieSettings = (analysis: boolean) => {
     const saved = saveConsent(analysis);
-    if (saved) notify(t('cookieConsent.saved'), 'success');
-    return saved;
+    if (!saved) return false;
+    // The RUM agent cannot be stopped once it runs, so withdrawing reloads the page without it.
+    if (!analysis && apm) {
+      window.sessionStorage.setItem(SAVED_AFTER_RELOAD_KEY, '1');
+      window.location.reload();
+    } else {
+      notify(t('cookieConsent.saved'), 'success');
+    }
+    return true;
   };
 
   const handleSave = (analysis: boolean) => {
