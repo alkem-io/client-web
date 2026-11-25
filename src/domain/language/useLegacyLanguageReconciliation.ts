@@ -104,7 +104,7 @@ export function useLegacyLanguageReconciliation({
     }
 
     // Validate: must be a real supported language, not inContextTool, not the platform default.
-    const supportedSet = new Set<string>(supportedLngs.filter(l => l !== 'inContextTool'));
+    const supportedSet = new Set<string>(supportedLngs);
     if (!supportedSet.has(legacy) || legacy === platformDefault || legacy === 'inContextTool') {
       // Invalid / redundant → no-op.
       setReconcileComplete(true);

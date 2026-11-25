@@ -167,6 +167,16 @@ export function ChatPanel({
           onClick={() => setExpanded(false)}
         />
       )}
+      {/* Full screen on a phone the panel ends at the top of the on-screen keyboard and moves a
+          moment after the page does, so on its own it would let the page show through the
+          translucent keyboard and beside the panel. This sheet reaches well past every edge of the screen. */}
+      {isSmallScreen && (
+        <div
+          aria-hidden="true"
+          data-slot="chat-underlay"
+          className="pointer-events-auto fixed inset-x-0 -top-[100vh] -bottom-[100vh] z-50 bg-card"
+        />
+      )}
       <FocusScope asChild={true} onMountAutoFocus={event => event.preventDefault()}>
         <RemoveScroll forwardProps={true} noIsolation={true} removeScrollBar={false}>
           <div
