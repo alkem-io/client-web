@@ -36,7 +36,8 @@ const App = () => {
 
   // Keep useCallback: ref callback that calls setState. Without stable reference, React
   // re-invokes with null then element on every render → setCookieConsentHeight oscillates → infinite loop.
-  // The fixed bottom menu bars sit on --cookie-banner-height so the banner never covers them.
+  // The fixed bottom bars (menu bars, the unsaved-changes bar, the new-version card) sit on
+  // --cookie-banner-height so the banner never covers them.
   // Set on the root element because one of them is portalled to document.body.
   const cookieConsentRef = useCallback((element: HTMLElement | null) => {
     const height = element?.getBoundingClientRect().height ?? 0;
