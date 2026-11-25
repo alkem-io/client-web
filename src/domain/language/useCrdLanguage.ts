@@ -10,14 +10,13 @@
  * All three hooks gate on languageConfig being available (R-10): they return
  * early / return null when config is still loading.
  *
- * Cookie-consent resolved: `cookies.accepted_cookies !== undefined` (any value means
- * the user has seen and answered the cookie consent banner — FR-013b-ii).
+ * Cookie-consent resolved: `useAlkemioCookies().consent.decided`, the same reading that hides
+ * the cookie banner, so the two banners never show together (FR-013b-ii).
  */
-import { useCookies } from 'react-cookie';
 import type { CurrentUserLightQuery } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { ALKEMIO_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
+import { useAlkemioCookies } from '@/main/cookies/useAlkemioCookies';
 import { useLanguageOfferContext } from './LanguageOfferContext';
 import { useAnonymousLanguageCarry } from './useAnonymousLanguageCarry';
 import { useInvitationSuggestedLanguage } from './useInvitationSuggestedLanguage';
@@ -33,9 +32,8 @@ type CrdLanguageResult = {
 };
 
 export function useCrdLanguage(): CrdLanguageResult {
-  const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
-  // Consent is "resolved" when ANY value has been written (accept-all, accept-selected, accept-technical-only).
-  const consentResolved = cookies[ALKEMIO_COOKIE_NAME] !== undefined;
+  // Resolved once a valid choice is stored; a malformed cookie is no choice and the cookie banner asks again.
+  const consentResolved = useAlkemioCookies().consent.decided;
 
   const { isAuthenticated, loading: authLoading, userModel } = useCurrentUserContext();
   const { language: languageConfig } = useConfig();

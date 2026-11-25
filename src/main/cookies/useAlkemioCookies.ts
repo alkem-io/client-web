@@ -105,9 +105,10 @@ export const useAlkemioCookies = () => {
   return { consent, saveConsent };
 };
 
-// `apm` cookies written before the consent gate may outlive a missing consent and expire in
-// 2038. Once per browser, whether or not RUM is enabled: remove the cookie without analysis
-// consent, and rewrite the same id with the 13-month expiry with it.
+// An `apm` cookie never outlives analysis consent, whether or not RUM is enabled: without consent
+// (withdrawn on the welcome site, expired, never given) it is removed on every load, so a later
+// acceptance gets a new id. Cookies written before the consent gate expire in 2038, so once per
+// browser the id is rewritten with the 13-month expiry.
 export const useCleanUpApmCookie = () => {
   const [cookies, setCookie, removeCookie] = useCookies([ALKEMIO_COOKIE_NAME, APM_COOKIE_NAME]);
   const apmId: string | undefined = cookies[APM_COOKIE_NAME];
@@ -115,14 +116,17 @@ export const useCleanUpApmCookie = () => {
 
   useEffect(() => {
     if (!apmId) return;
-    // Browsers that block site data throw on any localStorage access; the clean-up then runs on
+    if (!analysis) {
+      removeCookie(APM_COOKIE_NAME, { path: '/' });
+      return;
+    }
+    // Browsers that block site data throw on any localStorage access; the rewrite then runs on
     // every load, which only rewrites the same cookie.
     try {
       if (window.localStorage.getItem(APM_COOKIE_CLEANED_KEY)) return;
     } catch {}
 
-    if (analysis) setCookie(APM_COOKIE_NAME, apmId, apmCookieOptions());
-    else removeCookie(APM_COOKIE_NAME, { path: '/' });
+    setCookie(APM_COOKIE_NAME, apmId, apmCookieOptions());
     try {
       window.localStorage.setItem(APM_COOKIE_CLEANED_KEY, '1');
     } catch {}

@@ -25,6 +25,8 @@ vi.mock('@/domain/platform/config/useConfig', () => ({
 }));
 
 const ACCEPTED = [AlkemioCookieTypes.technical, AlkemioCookieTypes.analysis];
+// Consent plus the stored apm id: the agent waits for the id, which is minted in an effect.
+const CONSENTED = { [ALKEMIO_COOKIE_NAME]: ACCEPTED, apm: 'apm-existing' };
 
 const AgentProbe = () => <span>{useApm() ? 'started' : 'not started'}</span>;
 
@@ -67,7 +69,7 @@ describe('ApmProvider consent gate', () => {
     const { rerender } = render(tree());
     expect(initApm).not.toHaveBeenCalled();
 
-    mockCookies = { [ALKEMIO_COOKIE_NAME]: ACCEPTED };
+    mockCookies = CONSENTED;
     rerender(tree());
 
     expect(initApm).toHaveBeenCalled();
@@ -75,7 +77,7 @@ describe('ApmProvider consent gate', () => {
   });
 
   it('does not start the agent on auth pages, even with consent', () => {
-    mockCookies = { [ALKEMIO_COOKIE_NAME]: ACCEPTED };
+    mockCookies = CONSENTED;
 
     render(tree(AUTH_SIGN_UP_PATH));
 
@@ -85,7 +87,7 @@ describe('ApmProvider consent gate', () => {
 
 describe('ApmProvider when consent goes away', () => {
   it('reloads the page when consent is withdrawn while the agent runs, wherever the cookie changed', () => {
-    mockCookies = { [ALKEMIO_COOKIE_NAME]: ACCEPTED };
+    mockCookies = CONSENTED;
     const { rerender } = render(tree());
     expect(screen.getByText('started')).toBeTruthy();
     expect(reload).not.toHaveBeenCalled();

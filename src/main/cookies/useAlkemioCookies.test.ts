@@ -267,16 +267,26 @@ describe('useCleanUpApmCookie', () => {
     expect(removeCookie).not.toHaveBeenCalled();
   });
 
-  it('runs once per browser', () => {
+  it('rewrites the expiry once per browser', () => {
     mockCookies = { [APM_COOKIE_NAME]: 'apm-existing', [ALKEMIO_COOKIE_NAME]: ACCEPTED };
     renderHook(() => useCleanUpApmCookie());
     setCookie.mockReset();
 
-    mockCookies = { [APM_COOKIE_NAME]: 'apm-existing' };
     renderHook(() => useCleanUpApmCookie());
 
     expect(setCookie).not.toHaveBeenCalled();
     expect(removeCookie).not.toHaveBeenCalled();
+  });
+
+  it('removes the cookie whenever consent is gone, also after the one-time rewrite', () => {
+    mockCookies = { [APM_COOKIE_NAME]: 'apm-existing', [ALKEMIO_COOKIE_NAME]: ACCEPTED };
+    renderHook(() => useCleanUpApmCookie());
+
+    // Withdrawn on the welcome site, or the consent cookie expired: this app saved nothing.
+    mockCookies = { [APM_COOKIE_NAME]: 'apm-existing' };
+    renderHook(() => useCleanUpApmCookie());
+
+    expect(removeCookie).toHaveBeenCalledWith(APM_COOKIE_NAME, { path: '/' });
   });
 
   it('touches neither cookies nor storage when there is no apm cookie', () => {

@@ -1,5 +1,6 @@
 import { init as initApm } from '@elastic/apm-rum';
 // TODO Refactor to store data in localStorage, remove react-cookie npm
+import { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { v4 as uuidv4 } from 'uuid';
 import { appPlatform, isAppMode } from '@/core/appMode/isAppMode';
@@ -39,7 +40,7 @@ export const useApmInit = (user: CurrentUserModel | undefined) => {
 
   // Returns the agent only when it starts, so "an agent exists" means "RUM runs in this page".
   return () => {
-    if (!rumEnabled || !endpoint || !environment || !isInitAllowed) {
+    if (!apmId || !rumEnabled || !endpoint || !environment || !isInitAllowed) {
       return undefined;
     }
 
@@ -64,20 +65,17 @@ export const useGetOrSetApmCookie = (): string | undefined => {
   // Consent first: an existing id is never used for a visitor without analysis consent.
   const { consent } = useAlkemioCookies();
 
-  if (!consent.analysis) {
-    return undefined;
-  }
+  const cookieId: string | undefined = cookies[APM_COOKIE_NAME];
 
-  const cookieId = cookies[APM_COOKIE_NAME];
+  // Minted in an effect: writing a cookie notifies every subscriber, which must not happen while
+  // rendering. The id arrives on the next render, and the agent waits for it.
+  useEffect(() => {
+    if (consent.analysis && !cookieId) {
+      setCookie(APM_COOKIE_NAME, `${APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX}-${uuidv4()}`, apmCookieOptions());
+    }
+  }, [consent.analysis, cookieId, setCookie]);
 
-  if (cookieId) {
-    return cookieId;
-  }
-
-  const userApmId = `${APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX}-${uuidv4()}`;
-  setCookie(APM_COOKIE_NAME, userApmId, apmCookieOptions());
-
-  return userApmId;
+  return consent.analysis ? cookieId : undefined;
 };
 
 const getCustomContext = (user: CurrentUserModel | undefined): ApmCustomContext => ({

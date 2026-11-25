@@ -36,13 +36,15 @@ export const CookieSettingsProvider = ({ children }: { children: ReactNode }) =>
 
   useEffect(() => {
     // Browsers that block site data throw on any sessionStorage access.
+    // The marker holds the message itself: right after a reload the account language is not applied yet.
+    let saved: string | null;
     try {
-      if (!window.sessionStorage.getItem(SAVED_AFTER_RELOAD_KEY)) return;
-      window.sessionStorage.removeItem(SAVED_AFTER_RELOAD_KEY);
+      saved = window.sessionStorage.getItem(SAVED_AFTER_RELOAD_KEY);
+      if (saved) window.sessionStorage.removeItem(SAVED_AFTER_RELOAD_KEY);
     } catch {
       return;
     }
-    notify(t('cookieConsent.saved'), 'success');
+    if (saved) notify(saved, 'success');
   }, []);
 
   const handleOpenChange = (next: boolean) => {
@@ -57,7 +59,7 @@ export const CookieSettingsProvider = ({ children }: { children: ReactNode }) =>
     // The marker carries the confirmation across that reload.
     if (!analysis && apm) {
       try {
-        window.sessionStorage.setItem(SAVED_AFTER_RELOAD_KEY, '1');
+        window.sessionStorage.setItem(SAVED_AFTER_RELOAD_KEY, t('cookieConsent.saved'));
       } catch {
         // Storage is blocked: the choice is saved and the page still reloads, without the toast.
       }

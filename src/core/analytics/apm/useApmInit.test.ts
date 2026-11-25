@@ -76,13 +76,30 @@ describe('useGetOrSetApmCookie shape-guarding (#10123)', () => {
     expect(setCookie).not.toHaveBeenCalled();
   });
 
-  it('provisions and returns an apm id when the array grants analysis consent', () => {
+  it('provisions an apm id after render when the array grants analysis consent, and returns it once stored', () => {
     mockCookies = { [ALKEMIO_COOKIE_NAME]: [AlkemioCookieTypes.technical, AlkemioCookieTypes.analysis] };
 
-    const { result } = renderHook(() => useGetOrSetApmCookie());
+    const { result, rerender } = renderHook(() => useGetOrSetApmCookie());
 
-    expect(result.current).toMatch(/^apm-/);
-    expect(setCookie).toHaveBeenCalledWith(APM_CLIENT_TRACK_COOKIE, result.current, expect.any(Object));
+    // Written in an effect, so the id is not there on the first render.
+    expect(result.current).toBeUndefined();
+    expect(setCookie).toHaveBeenCalledWith(APM_CLIENT_TRACK_COOKIE, expect.stringMatching(/^apm-/), expect.any(Object));
+
+    mockCookies = { ...mockCookies, [APM_CLIENT_TRACK_COOKIE]: setCookie.mock.calls[0][1] };
+    rerender();
+    expect(result.current).toBe(setCookie.mock.calls[0][1]);
+  });
+
+  it('does not start the agent before the apm id is stored', () => {
+    vi.stubEnv('MODE', 'production');
+    initApm.mockClear();
+    mockCookies = { [ALKEMIO_COOKIE_NAME]: [AlkemioCookieTypes.technical, AlkemioCookieTypes.analysis] };
+
+    const { result } = renderHook(() => useApmInit(undefined));
+
+    expect(result.current()).toBeUndefined();
+    expect(initApm).not.toHaveBeenCalled();
+    vi.unstubAllEnvs();
   });
 
   it('writes a new apm cookie that expires 13 months from now, not in 2038', () => {
@@ -128,6 +145,10 @@ describe('useApmInit app-mode labels', () => {
   beforeEach(() => {
     vi.stubEnv('MODE', 'production');
     addLabels.mockReset();
+    mockCookies = {
+      [ALKEMIO_COOKIE_NAME]: [AlkemioCookieTypes.technical, AlkemioCookieTypes.analysis],
+      [APM_CLIENT_TRACK_COOKIE]: 'apm-existing',
+    };
   });
 
   afterEach(() => {

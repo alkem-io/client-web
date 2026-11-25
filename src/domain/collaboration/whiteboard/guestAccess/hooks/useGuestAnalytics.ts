@@ -3,7 +3,7 @@ import { breadcrumb, info as logInfo, TagCategoryValues } from '@/core/logging/s
 
 /**
  * Analytics hook for guest whiteboard interactions. Usage events go to Elastic APM and onto the
- * Sentry breadcrumb trail, both only with `analysis` consent; the breadcrumbs carry no guest name.
+ * Sentry breadcrumb trail, both only with `analysis` consent. Neither carries the guest's name.
  * A failed load is reported to Sentry for everyone.
  */
 export const useGuestAnalytics = () => {
@@ -14,7 +14,6 @@ export const useGuestAnalytics = () => {
     if (apm) {
       const transaction = apm.startTransaction('guest_name_submitted', 'user-interaction');
       transaction?.addLabels({
-        guestName,
         isDerived: isDerived.toString(),
         source: isDerived ? 'derived' : 'manual',
       });
@@ -32,7 +31,6 @@ export const useGuestAnalytics = () => {
       const transaction = apm.startTransaction('whiteboard_load_success', 'page-load');
       transaction?.addLabels({
         whiteboardId,
-        guestName,
         accessType: 'guest',
       });
       transaction?.end();
@@ -82,7 +80,6 @@ export const useGuestAnalytics = () => {
       const transaction = apm.startTransaction('derived_name_used', 'user-interaction');
       transaction?.addLabels({
         whiteboardId,
-        derivedName,
         derivationMethod, // e.g., "full_name", "first_only", "last_only"
       });
       transaction?.end();

@@ -53,7 +53,7 @@
   },
   "cookieConsent": {
     "title": "Cookies",
-    "text": "Wij gebruiken noodzakelijke cookies. Met uw toestemming meten wij ook de snelheid van pagina's en het gebruik van de app. Dat staat uit, tenzij u akkoord gaat.",
+    "text": "We gebruiken noodzakelijke cookies. Met jouw toestemming meten we ook de snelheid van pagina's en het gebruik van de app. Dat staat uit, tenzij je akkoord gaat.",
     "settings": "Instellingen",
     "acceptAll": "Alles accepteren",
     "onlyNecessary": "Alleen noodzakelijke",
@@ -61,15 +61,15 @@
     "sectionDescription": "Wat Alkemio op dit apparaat mag opslaan en meten.",
     "close": "Sluiten",
     "necessary": "Noodzakelijk",
-    "necessaryDescription": "Houdt u ingelogd en veilig, meldt fouten zodat wij ze kunnen oplossen, en onthoudt uw cookie-instellingen.",
+    "necessaryDescription": "Houdt je ingelogd en veilig, meldt fouten zodat we ze kunnen oplossen, en onthoudt je cookie-instellingen.",
     "alwaysOn": "Altijd aan",
     "analytics": "Analyse",
-    "analyticsDescription": "Meet de snelheid van pagina's en het gebruik van de app. Staat uit, tenzij u het aanzet.",
+    "analyticsDescription": "Meet de snelheid van pagina's en het gebruik van de app. Staat uit, tenzij je het aanzet.",
     "cookiePolicy": "Cookiebeleid",
     "privacyPolicy": "Privacybeleid",
     "saveSettings": "Instellingen opslaan",
     "saved": "Cookie-instellingen opgeslagen.",
-    "saveFailed": "We konden uw cookie-instellingen niet opslaan. Mogelijk blokkeert uw browser cookies voor deze site."
+    "saveFailed": "We konden je cookie-instellingen niet opslaan. Mogelijk blokkeert je browser cookies voor deze site."
   },
   "secondFactorReminder": {
     "action": "Nu instellen",
