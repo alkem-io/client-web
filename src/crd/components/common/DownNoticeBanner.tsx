@@ -1,12 +1,12 @@
 import { AlertTriangle, Wrench, X } from 'lucide-react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { NoticeBand } from '@/crd/components/common/NoticeBand';
 
 type DownNoticeBannerProps = {
   kind: 'incident' | 'maintenanceScheduled' | 'maintenanceInProgress';
   /** The incident or maintenance title, shown as written. */
   name: string;
-  /** When a planned maintenance starts, already formatted for the reader's language. */
+  /** When a planned maintenance starts, already formatted for the reader's language. Shown as given: use non-breaking spaces to keep it on one line. */
   scheduledFor?: string;
   statusHref?: string;
   onDismiss: () => void;
@@ -28,17 +28,7 @@ export function DownNoticeBanner({
 }: DownNoticeBannerProps) {
   const { t } = useTranslation('crd-common');
   const Icon = kind === 'incident' ? AlertTriangle : Wrench;
-  const text =
-    kind === 'maintenanceScheduled' ? (
-      <Trans
-        t={t}
-        i18nKey="downNoticeBanner.maintenanceScheduled"
-        values={{ name, date: scheduledFor }}
-        components={{ date: <span className="whitespace-nowrap" /> }}
-      />
-    ) : (
-      t(`downNoticeBanner.${kind}`, { name })
-    );
+  const text = t(`downNoticeBanner.${kind}`, { name, date: scheduledFor });
 
   return (
     <NoticeBand className={className} aria-label={t('downNoticeBanner.a11yLabel')}>

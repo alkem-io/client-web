@@ -1061,7 +1061,7 @@
     "dismiss": "Fermer l'avis",
     "incident": "Incident en cours : {{name}}",
     "maintenanceInProgress": "Maintenance en cours : {{name}}",
-    "maintenanceScheduled": "Maintenance planifiée le <date>{{date}}</date> : {{name}}",
+    "maintenanceScheduled": "Maintenance planifiée le {{date}} : {{name}}",
     "viewStatus": "Voir l'état"
   },
   "edit": "Modifier",

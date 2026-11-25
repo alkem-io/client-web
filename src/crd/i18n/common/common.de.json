@@ -1061,7 +1061,7 @@
     "dismiss": "Hinweis schließen",
     "incident": "Aktuelle Störung: {{name}}",
     "maintenanceInProgress": "Wartung läuft: {{name}}",
-    "maintenanceScheduled": "Geplante Wartung am <date>{{date}}</date>: {{name}}",
+    "maintenanceScheduled": "Geplante Wartung am {{date}}: {{name}}",
     "viewStatus": "Status ansehen"
   },
   "edit": "Bearbeiten",

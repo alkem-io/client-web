@@ -1061,7 +1061,7 @@
     "dismiss": "Затвори съобщението",
     "incident": "Текущ инцидент: {{name}}",
     "maintenanceInProgress": "Поддръжката е в ход: {{name}}",
-    "maintenanceScheduled": "Планирана поддръжка на <date>{{date}}</date>: {{name}}",
+    "maintenanceScheduled": "Планирана поддръжка на {{date}}: {{name}}",
     "viewStatus": "Виж състоянието"
   },
   "edit": "Редактирай",

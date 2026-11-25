@@ -1061,7 +1061,7 @@
     "dismiss": "Dismiss notice",
     "incident": "Ongoing incident: {{name}}",
     "maintenanceInProgress": "Maintenance in progress: {{name}}",
-    "maintenanceScheduled": "Planned maintenance on <date>{{date}}</date>: {{name}}",
+    "maintenanceScheduled": "Planned maintenance on {{date}}: {{name}}",
     "viewStatus": "View status"
   },
   "edit": "Edit",

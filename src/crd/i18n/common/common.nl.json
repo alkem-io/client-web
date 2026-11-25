@@ -1061,7 +1061,7 @@
     "dismiss": "Melding sluiten",
     "incident": "Lopende storing: {{name}}",
     "maintenanceInProgress": "Onderhoud bezig: {{name}}",
-    "maintenanceScheduled": "Gepland onderhoud op <date>{{date}}</date>: {{name}}",
+    "maintenanceScheduled": "Gepland onderhoud op {{date}}: {{name}}",
     "viewStatus": "Status bekijken"
   },
   "edit": "Bewerken",

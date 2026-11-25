@@ -43,11 +43,15 @@ const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(
 const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/help/CrdHelpDialog'));
 const CrdSearchOverlay = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/search/CrdSearchOverlay'));
 
-// The viewer's zone at that date, e.g. "CET". en-GB names the European zones; others read "GMT-5".
-const timeZoneLabel = (date: Date) =>
-  new Intl.DateTimeFormat('en-GB', { timeZoneName: 'short' })
+// "27 Nov 2026, 13:00 CET", in the viewer's zone (en-GB names the European zones; others read
+// "GMT-5"). Non-breaking spaces keep it on one line in the notice.
+const formatNoticeDate = (date: Date, language: string) => {
+  const zone = new Intl.DateTimeFormat('en-GB', { timeZoneName: 'short' })
     .formatToParts(date)
-    .find(part => part.type === 'timeZoneName')?.value ?? '';
+    .find(part => part.type === 'timeZoneName')?.value;
+  const text = format(date, 'd MMM yyyy, HH:mm', { locale: resolveDateFnsLocale(language) });
+  return `${text} ${zone ?? ''}`.trim().replace(/ /g, '\u00a0');
+};
 
 function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { user, userModel, isAuthenticated, isAdmin } = useCrdUser();
@@ -133,12 +137,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
                 <DownNoticeBanner
                   kind={downNotice.kind}
                   name={downNotice.name}
-                  scheduledFor={
-                    downNotice.scheduledFor &&
-                    `${format(downNotice.scheduledFor, 'd MMM yyyy, HH:mm', {
-                      locale: resolveDateFnsLocale(currentLanguage),
-                    })} ${timeZoneLabel(downNotice.scheduledFor)}`
-                  }
+                  scheduledFor={downNotice.scheduledFor && formatNoticeDate(downNotice.scheduledFor, currentLanguage)}
                   statusHref={downNotice.href}
                   onDismiss={dismissDownNotice}
                 />
