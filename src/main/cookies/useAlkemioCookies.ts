@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useCookies } from 'react-cookie';
+import { Cookies, useCookies } from 'react-cookie';
 
 export const ALKEMIO_COOKIE_NAME = 'accepted_cookies';
 // The persistent APM tracking id, minted only with analysis consent and removed when it is withdrawn.
@@ -72,12 +72,18 @@ export const READ_FROM_BROWSER = { doNotUpdate: false };
 const isStoredInBrowser = (value: string) =>
   document.cookie.split('; ').includes(`${ALKEMIO_COOKIE_NAME}=${encodeURIComponent(value)}`);
 
-export const useAlkemioCookies = () => {
-  const [cookies, setCookie, removeCookie] = useCookies([ALKEMIO_COOKIE_NAME, APM_COOKIE_NAME], READ_FROM_BROWSER);
-  const stored: unknown = cookies[ALKEMIO_COOKIE_NAME];
-  const consent: CookieConsent = Array.isArray(stored)
+// A missing or malformed value (anything but an array) is no choice, so no consent.
+const toConsent = (stored: unknown): CookieConsent =>
+  Array.isArray(stored)
     ? { decided: true, analysis: stored.includes(AlkemioCookieTypes.analysis) }
     : { decided: false, analysis: false };
+
+/** Reads `document.cookie` on every call, for code outside React (Sentry's hooks). */
+export const hasAnalysisConsent = (): boolean => toConsent(new Cookies().get(ALKEMIO_COOKIE_NAME)).analysis;
+
+export const useAlkemioCookies = () => {
+  const [cookies, setCookie, removeCookie] = useCookies([ALKEMIO_COOKIE_NAME, APM_COOKIE_NAME], READ_FROM_BROWSER);
+  const consent = toConsent(cookies[ALKEMIO_COOKIE_NAME]);
 
   /** Stores the choice; returns false when the browser did not keep it. */
   const saveConsent = (analysis: boolean): boolean => {
