@@ -46,9 +46,16 @@ export function useCrdNavigation() {
     login: absolutise(buildLoginUrl(pathname, search)),
   };
 
-  const footerLinks = locations
-    ? { terms: locations.terms, privacy: locations.privacy, security: locations.security, about: locations.about }
-    : undefined;
+  const footerLinks = {
+    // a static file every build writes (vite.third-party-licenses.mjs), not a platform-configured location
+    thirdPartyLicenses: '/third-party-licenses.html',
+    ...(locations && {
+      terms: locations.terms,
+      privacy: locations.privacy,
+      security: locations.security,
+      about: locations.about,
+    }),
+  };
 
   const languages = supportedLngs
     .filter(lng => lng !== 'inContextTool')

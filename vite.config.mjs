@@ -7,6 +7,7 @@ import viteTsconfigPaths from 'vite-tsconfig-paths';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { generateMetaJson } from './build-utils.mjs';
 import { elementCallStaticCopy } from './vite.element-call.mjs';
+import { thirdPartyLicenses } from './vite.third-party-licenses.mjs';
 
 /**
  * Vite configuration for the Alkemio client-web project.
@@ -17,6 +18,8 @@ import { elementCallStaticCopy } from './vite.element-call.mjs';
  * - Adds a custom plugin (`generate-meta-json`) to generate `public/meta.json` with version info from `package.json` at build time.
  * - Serves the embedded call UI, its configuration and its licence files under `/element-call/` (shared with the
  *   Sentry build config, see `vite.element-call.mjs`).
+ * - Writes `build/third-party-licenses.html` and fails the build on a bundled package outside the licence
+ *   allow-list (shared with the Sentry build config, see `vite.third-party-licenses.mjs`).
  * - Sets up path aliasing for `@` to `./src`.
  * - Configures the dev server to run on `localhost:3001`.
  * - Customizes build output directory, sourcemaps, and Rollup output filenames.
@@ -136,6 +139,7 @@ export default defineConfig({
       },
     },
     elementCallStaticCopy(),
+    thirdPartyLicenses(),
     // Bundle analyzer - generates stats.html when ANALYZE=true
     process.env.ANALYZE === 'true' && visualizer({
       open: true,

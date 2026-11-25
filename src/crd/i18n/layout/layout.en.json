@@ -31,7 +31,9 @@
     "privacy": "Privacy",
     "security": "Security",
     "support": "Support",
-    "about": "About"
+    "about": "About",
+    "thirdPartyLicenses": "Third-party licenses",
+    "opensInNewTab": "opens in a new tab"
   },
   "appVersion": {
     "message": "A new version of the app is available.",
