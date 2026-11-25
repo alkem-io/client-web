@@ -83,6 +83,27 @@ describe('useAlkemioCookies', () => {
     expect(domainOf()).toBe('.dev-alkem.io');
   });
 
+  // Every host the platform is served on (infrastructure-operations and dev-orchestration ingress
+  // rules): the bare apex, and innovation-hub subdomains one level below it. None sits on a public
+  // suffix, so the apex is always a domain the browser lets the page set a cookie for.
+  it.each([
+    ['alkem.io', '.alkem.io'],
+    ['vng.alkem.io', '.alkem.io'],
+    ['steward-ownership.alkem.io', '.alkem.io'],
+    ['acc-alkem.io', '.acc-alkem.io'],
+    ['vih.acc-alkem.io', '.acc-alkem.io'],
+    ['synthetic-tenant.dev-alkem.io', '.dev-alkem.io'],
+    ['sandbox-alkem.io', '.sandbox-alkem.io'],
+    ['test-alkem.io', '.test-alkem.io'],
+  ])('shares the choice across the environment when served on %s', (hostname, apex) => {
+    stubHostname(hostname);
+    const { result } = renderHook(() => useAlkemioCookies());
+
+    result.current.saveConsent(false);
+
+    expect(domainOf()).toBe(apex);
+  });
+
   it('does not set a domain on localhost (would be rejected and break local consent)', () => {
     stubHostname('localhost');
     const { result } = renderHook(() => useAlkemioCookies());
