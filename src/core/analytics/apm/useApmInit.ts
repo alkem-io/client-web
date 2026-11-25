@@ -1,28 +1,18 @@
-import { init as initApm, type UserObject } from '@elastic/apm-rum';
+import { init as initApm } from '@elastic/apm-rum';
 // TODO Refactor to store data in localStorage, remove react-cookie npm
 import { useCookies } from 'react-cookie';
 import { v4 as uuidv4 } from 'uuid';
-import { useUserGeo } from '@/core/analytics/geo';
 import { appPlatform, isAppMode } from '@/core/appMode/isAppMode';
-import { error as logError } from '@/core/logging/sentry/log';
-import type { Identifiable } from '@/core/utils/Identifiable';
 import type { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { APM_COOKIE_NAME, apmCookieOptions, useAlkemioCookies } from '@/main/cookies/useAlkemioCookies';
 
 const APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX = 'apm';
-const APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED = 'not-tracked';
 const APM_CLIENT_SERVICE_NAME = 'alkemio-client-web';
 const APM_ORIENTATION_TYPE_NOT_SUPPORTED = 'orientation type not supported on this device';
 
 export interface ApmCustomContext {
   authenticated?: boolean;
-  ip?: string;
-  location?: {
-    lat?: number;
-    lon?: number;
-  };
-  domain?: string;
   screen?: {
     width: number;
     height: number;
@@ -35,9 +25,10 @@ export interface ApmCustomContext {
   language?: string;
 }
 
+// Only the fields we analyse: the user is the random `apm` id, never the platform user, their
+// email domain or their location.
 export const useApmInit = (user: CurrentUserModel | undefined) => {
-  const userObject = useUserObject(user?.userModel);
-  const customContext = useCustomContext(user);
+  const apmId = useGetOrSetApmCookie();
   const { apm: apmConfig, locations } = useConfig();
 
   const rumEnabled = apmConfig?.rumEnabled ?? false;
@@ -46,23 +37,21 @@ export const useApmInit = (user: CurrentUserModel | undefined) => {
   // prevent console errors in dev mode
   const isInitAllowed = import.meta.env.MODE === 'production';
 
+  // Returns the agent only when it starts, so "an agent exists" means "RUM runs in this page".
   return () => {
-    if (!endpoint || !environment || !isInitAllowed) {
+    if (!rumEnabled || !endpoint || !environment || !isInitAllowed) {
       return undefined;
     }
-
-    const enabled = (rumEnabled && !!endpoint) ?? false;
 
     const apmInit = initApm({
       serviceName: APM_CLIENT_SERVICE_NAME,
       serverUrl: endpoint,
       serviceVersion: import.meta.env.VITE_VERSION,
       environment,
-      active: enabled,
     });
 
-    apmInit.setUserContext(userObject);
-    apmInit.setCustomContext(customContext);
+    apmInit.setUserContext({ id: apmId });
+    apmInit.setCustomContext(getCustomContext(user));
     apmInit.addLabels({ app_mode: isAppMode(), app_platform: appPlatform() });
 
     return apmInit;
@@ -91,42 +80,12 @@ export const useGetOrSetApmCookie = (): string | undefined => {
   return userApmId;
 };
 
-const useUserObject = (user: Identifiable | undefined) => {
-  const cookieId = useGetOrSetApmCookie() ?? APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED;
-
-  if (user) {
-    return { id: user.id } satisfies UserObject;
-  }
-
-  return { id: cookieId } satisfies UserObject;
-};
-const useCustomContext = (user: CurrentUserModel | undefined) => {
-  const { data: userGeoData, loading: userGeoLoading, error: userGeoError } = useUserGeo();
-
-  const context: ApmCustomContext = {};
-
-  if (!userGeoLoading) {
-    context.location = {
-      lat: userGeoData?.latitude ?? 0,
-      lon: userGeoData?.longitude ?? 0,
-    };
-  }
-
-  if (userGeoError) {
-    logError(userGeoError);
-  }
-
-  if (user) {
-    context.authenticated = user.isAuthenticated;
-    context.domain = user.userModel?.email.split('@')?.[1];
-  }
-
-  context.screen = getScreenInfo();
-  context.window = getWindowSize();
-  context.language = getLanguage();
-
-  return context;
-};
+const getCustomContext = (user: CurrentUserModel | undefined): ApmCustomContext => ({
+  authenticated: user?.isAuthenticated,
+  screen: getScreenInfo(),
+  window: getWindowSize(),
+  language: getLanguage(),
+});
 
 const getWindowSize = () => {
   const body = document.getElementsByTagName('body')[0];

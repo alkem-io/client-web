@@ -1,5 +1,4 @@
 import { ApmProvider, ApmUserSetter } from '@/core/analytics/apm/context';
-import { UserGeoProvider } from '@/core/analytics/geo';
 import SentryErrorBoundaryProvider from '@/core/analytics/SentryErrorBoundaryProvider';
 import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
 import AlkemioApolloProvider from '@/core/apollo/context/ApolloProvider';
@@ -129,50 +128,48 @@ const Root: FC = () => {
                   <BrowserRouter>
                     <NativePushTapRouter />
                     <AppDownloadInterceptor />
-                    <UserGeoProvider>
-                      <ApmProvider>
-                        <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                          <UserProvider>
-                            <PendingMembershipsDialogProvider>
-                              <InAppNotificationsProvider>
-                                <PushNotificationProvider>
-                                  <UnifiedChatProvider>
-                                    <FullscreenEditorProvider>
-                                      <AssistantProvider>
-                                        <NavigationHistoryTracker />
-                                        <RefreshOnMembershipChange />
-                                        <ApmUserSetter />
-                                        <ScrollToTop />
-                                        <NotificationsGate />
-                                        <InAppNotificationCountSubscriber />
-                                        <ConversationEventsSubscriber />
-                                        <MatrixSession />
-                                        <UnreadTabBadge />
-                                        <Suspense fallback={null}>
-                                          <AssistantDialog />
-                                        </Suspense>
-                                        <VersionHandling />
-                                        <OnlineStatusNotification />
-                                        <AppPullToRefresh />
-                                        <Error40XBoundary
-                                          errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
-                                        >
-                                          <TopLevelRoutes />
-                                          <GlobalErrorDialogGate />
-                                        </Error40XBoundary>
-                                        {/* Rendered after TopLevelRoutes so the full-screen mobile chat
-                                            panel (z-50) paints above the app header (also z-50). */}
-                                        <UnifiedChatGate />
-                                      </AssistantProvider>
-                                    </FullscreenEditorProvider>
-                                  </UnifiedChatProvider>
-                                </PushNotificationProvider>
-                              </InAppNotificationsProvider>
-                            </PendingMembershipsDialogProvider>
-                          </UserProvider>
-                        </AlkemioApolloProvider>
-                      </ApmProvider>
-                    </UserGeoProvider>
+                    <ApmProvider>
+                      <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
+                        <UserProvider>
+                          <PendingMembershipsDialogProvider>
+                            <InAppNotificationsProvider>
+                              <PushNotificationProvider>
+                                <UnifiedChatProvider>
+                                  <FullscreenEditorProvider>
+                                    <AssistantProvider>
+                                      <NavigationHistoryTracker />
+                                      <RefreshOnMembershipChange />
+                                      <ApmUserSetter />
+                                      <ScrollToTop />
+                                      <NotificationsGate />
+                                      <InAppNotificationCountSubscriber />
+                                      <ConversationEventsSubscriber />
+                                      <MatrixSession />
+                                      <UnreadTabBadge />
+                                      <Suspense fallback={null}>
+                                        <AssistantDialog />
+                                      </Suspense>
+                                      <VersionHandling />
+                                      <OnlineStatusNotification />
+                                      <AppPullToRefresh />
+                                      <Error40XBoundary
+                                        errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
+                                      >
+                                        <TopLevelRoutes />
+                                        <GlobalErrorDialogGate />
+                                      </Error40XBoundary>
+                                      {/* Rendered after TopLevelRoutes so the full-screen mobile chat
+                                          panel (z-50) paints above the app header (also z-50). */}
+                                      <UnifiedChatGate />
+                                    </AssistantProvider>
+                                  </FullscreenEditorProvider>
+                                </UnifiedChatProvider>
+                              </PushNotificationProvider>
+                            </InAppNotificationsProvider>
+                          </PendingMembershipsDialogProvider>
+                        </UserProvider>
+                      </AlkemioApolloProvider>
+                    </ApmProvider>
                   </BrowserRouter>
                 </AuthenticationProvider>
               </GlobalErrorProvider>

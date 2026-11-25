@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '@/main/cookies/useAlkemioCookies';
 import { useApmInit, useGetOrSetApmCookie } from './useApmInit';
 
@@ -21,17 +22,18 @@ vi.mock('react-cookie', () => ({
 }));
 
 const addLabels = vi.fn();
+const setUserContext = vi.fn();
+const setCustomContext = vi.fn();
+const initApm = vi.fn(() => ({ setUserContext, setCustomContext, addLabels }));
 
 vi.mock('@elastic/apm-rum', () => ({
-  init: () => ({ setUserContext: vi.fn(), setCustomContext: vi.fn(), addLabels }),
+  init: () => initApm(),
 }));
+
+let rumEnabled = true;
 
 vi.mock('@/domain/platform/config/useConfig', () => ({
-  useConfig: () => ({ apm: { rumEnabled: true, endpoint: 'http://apm.test' }, locations: { environment: 'test' } }),
-}));
-
-vi.mock('@/core/analytics/geo', () => ({
-  useUserGeo: () => ({ data: undefined, loading: true, error: undefined }),
+  useConfig: () => ({ apm: { rumEnabled, endpoint: 'http://apm.test' }, locations: { environment: 'test' } }),
 }));
 
 beforeEach(() => {
@@ -148,5 +150,54 @@ describe('useApmInit app-mode labels', () => {
     result.current();
 
     expect(addLabels).toHaveBeenCalledWith({ app_mode: true, app_platform: 'ios' });
+  });
+});
+
+describe('useApmInit sends only the fields we analyse', () => {
+  const signedIn = {
+    isAuthenticated: true,
+    userModel: { id: 'platform-user-id', email: 'someone@example.org' },
+  } as CurrentUserModel;
+
+  beforeEach(() => {
+    vi.stubEnv('MODE', 'production');
+    rumEnabled = true;
+    initApm.mockClear();
+    setUserContext.mockReset();
+    setCustomContext.mockReset();
+    mockCookies = {
+      [APM_CLIENT_TRACK_COOKIE]: 'apm-existing',
+      [ALKEMIO_COOKIE_NAME]: [AlkemioCookieTypes.technical, AlkemioCookieTypes.analysis],
+    };
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('identifies a signed-in user by the random apm id only', () => {
+    const { result } = renderHook(() => useApmInit(signedIn));
+
+    result.current();
+
+    expect(setUserContext).toHaveBeenCalledWith({ id: 'apm-existing' });
+  });
+
+  it('sends no email domain and no location, and keeps signed-in, screen, window and language', () => {
+    const { result } = renderHook(() => useApmInit(signedIn));
+
+    result.current();
+
+    const context = setCustomContext.mock.calls[0][0];
+    expect(Object.keys(context).sort()).toEqual(['authenticated', 'language', 'screen', 'window']);
+    expect(context.authenticated).toBe(true);
+  });
+
+  it('does not start the agent when RUM is off in the configuration', () => {
+    rumEnabled = false;
+    const { result } = renderHook(() => useApmInit(signedIn));
+
+    expect(result.current()).toBeUndefined();
+    expect(initApm).not.toHaveBeenCalled();
   });
 });
