@@ -34,8 +34,13 @@ export const CookieSettingsProvider = ({ children }: { children: ReactNode }) =>
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    if (!window.sessionStorage.getItem(SAVED_AFTER_RELOAD_KEY)) return;
-    window.sessionStorage.removeItem(SAVED_AFTER_RELOAD_KEY);
+    // Browsers that block site data throw on any sessionStorage access.
+    try {
+      if (!window.sessionStorage.getItem(SAVED_AFTER_RELOAD_KEY)) return;
+      window.sessionStorage.removeItem(SAVED_AFTER_RELOAD_KEY);
+    } catch {
+      return;
+    }
     notify(t('cookieConsent.saved'), 'success');
   }, []);
 

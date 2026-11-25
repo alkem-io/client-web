@@ -34,6 +34,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 describe('useAlkemioCookies', () => {
@@ -278,11 +279,27 @@ describe('useCleanUpApmCookie', () => {
     expect(removeCookie).not.toHaveBeenCalled();
   });
 
-  it('marks the browser done when there is no apm cookie to clean', () => {
+  it('touches neither cookies nor storage when there is no apm cookie', () => {
+    const getItem = vi.spyOn(Storage.prototype, 'getItem');
+
     renderHook(() => useCleanUpApmCookie());
 
     expect(removeCookie).not.toHaveBeenCalled();
     expect(setCookie).not.toHaveBeenCalled();
-    expect(window.localStorage.getItem('alkemio.apmCookieCleaned')).toBe('1');
+    expect(getItem).not.toHaveBeenCalled();
+  });
+
+  it('still removes the cookie when the browser blocks localStorage', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new DOMException('blocked', 'SecurityError');
+    });
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('blocked', 'SecurityError');
+    });
+    mockCookies = { [APM_COOKIE_NAME]: 'apm-existing' };
+
+    renderHook(() => useCleanUpApmCookie());
+
+    expect(removeCookie).toHaveBeenCalledWith(APM_COOKIE_NAME, { path: '/' });
   });
 });

@@ -114,12 +114,17 @@ export const useCleanUpApmCookie = () => {
   const { analysis } = toConsent(cookies[ALKEMIO_COOKIE_NAME]);
 
   useEffect(() => {
-    if (window.localStorage.getItem(APM_COOKIE_CLEANED_KEY)) return;
+    if (!apmId) return;
+    // Browsers that block site data throw on any localStorage access; the clean-up then runs on
+    // every load, which only rewrites the same cookie.
+    try {
+      if (window.localStorage.getItem(APM_COOKIE_CLEANED_KEY)) return;
+    } catch {}
 
-    if (apmId) {
-      if (analysis) setCookie(APM_COOKIE_NAME, apmId, apmCookieOptions());
-      else removeCookie(APM_COOKIE_NAME, { path: '/' });
-    }
-    window.localStorage.setItem(APM_COOKIE_CLEANED_KEY, '1');
+    if (analysis) setCookie(APM_COOKIE_NAME, apmId, apmCookieOptions());
+    else removeCookie(APM_COOKIE_NAME, { path: '/' });
+    try {
+      window.localStorage.setItem(APM_COOKIE_CLEANED_KEY, '1');
+    } catch {}
   }, [apmId, analysis, setCookie, removeCookie]);
 };

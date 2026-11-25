@@ -28,6 +28,18 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
+
+describe('CookieSettingsProvider in a browser that blocks site data', () => {
+  it('mounts without a confirmation when sessionStorage throws', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new DOMException('blocked', 'SecurityError');
+    });
+
+    expect(() => mount()).not.toThrow();
+    expect(notify).not.toHaveBeenCalled();
+  });
 });
 
 describe('CookieSettingsProvider reload on withdrawal', () => {
