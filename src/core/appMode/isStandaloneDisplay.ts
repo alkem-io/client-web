@@ -13,4 +13,4 @@ declare global {
 }
 
 export const isStandaloneDisplay = (): boolean =>
-  window.matchMedia?.('(display-mode: standalone)').matches === true || navigator.standalone === true;
+  window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
