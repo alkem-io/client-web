@@ -265,3 +265,51 @@ describe('withActiveCallsFirst', () => {
     expect(withActiveCallsFirst(items, 'new').map(item => item.id)).toEqual(['guidance', 'user-pinned', 'new', 'call']);
   });
 });
+
+describe('calls', () => {
+  const ring = (call: ConversationMessage['call'], senderId = 'other'): ConversationMessage => ({
+    id: 'ring',
+    message: '',
+    timestamp: 2_000,
+    sender: { id: senderId, displayName: 'Ringer', presence: 'unknown' },
+    reactions: [],
+    attachments: [],
+    call,
+  });
+  const callFor = (message: ConversationMessage) => mapMessageToChatMessage(message, { currentUserId: ME }).call;
+
+  it('reads an unanswered ring as missed by the person rung and as no answer for the ringer', () => {
+    expect(callFor(ring({ outcome: 'unanswered' }))).toEqual({ kind: 'missed' });
+    expect(callFor(ring({ outcome: 'unanswered' }, ME))).toEqual({ kind: 'noAnswer' });
+  });
+
+  it('reads a declined ring as declined for both', () => {
+    expect(callFor(ring({ outcome: 'declined' }))).toEqual({ kind: 'declined' });
+    expect(callFor(ring({ outcome: 'declined' }, ME))).toEqual({ kind: 'declined' });
+  });
+
+  it('reads an answered call with its length in whole minutes, at least one, and without it when unknown', () => {
+    expect(callFor(ring({ outcome: 'answered', durationMs: 12 * 60_000 + 20_000 }))).toEqual({
+      kind: 'call',
+      minutes: 12,
+    });
+    expect(callFor(ring({ outcome: 'answered', durationMs: 15_000 }))).toEqual({ kind: 'call', minutes: 1 });
+    expect(callFor(ring({ outcome: 'answered' }))).toEqual({ kind: 'call', minutes: undefined });
+  });
+
+  it('gives a call no author, so it stands alone in the thread', () => {
+    expect(mapMessageToChatMessage(ring({ outcome: 'unanswered' }), { currentUserId: ME }).author).toBeUndefined();
+  });
+
+  it('makes a call the last message of the list row, which sorts the conversation by it', () => {
+    const options = { currentUserId: ME, formatTimestamp: String };
+    const called = makeConversation({ id: 'called', lastMessage: ring({ outcome: 'unanswered' }) });
+    const older = makeConversation({ id: 'older', lastMessage: { ...ring(undefined), id: 'm', timestamp: 1_000 } });
+    expect(mapConversationToListItem(called, options).lastMessageCall).toBe('missed');
+    expect(mapConversationToListItem(older, options).lastMessageCall).toBeUndefined();
+    expect(sortUnifiedConversations([older, called], null).map(conversation => conversation.id)).toEqual([
+      'called',
+      'older',
+    ]);
+  });
+});

@@ -2,7 +2,7 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { lazy, type ReactNode, Suspense, useEffect, useLayoutEffect, useState } from 'react';
 import { BrowserRouter, useLocation } from 'react-router-dom';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   CalloutContributionType,
   CalloutFramingType,
@@ -189,9 +189,22 @@ vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', () => ({
   lazyWithGlobalErrorHandler: () => () => null,
 }));
 vi.mock('@/crd/layouts/CrdLayout', () => ({
-  CrdLayout: ({ children, topBanner }: { children: ReactNode; topBanner?: ReactNode }) => (
+  CrdLayout: ({
+    children,
+    topBanner,
+    onRefreshClick,
+  }: {
+    children: ReactNode;
+    topBanner?: ReactNode;
+    onRefreshClick?: () => void;
+  }) => (
     <main>
       {topBanner}
+      {onRefreshClick && (
+        <button type="button" onClick={onRefreshClick}>
+          refresh
+        </button>
+      )}
       {children}
     </main>
   ),
@@ -949,5 +962,45 @@ describe('CrdLayoutWrapper top banners', () => {
     renderPlainRoute();
 
     expect(screen.queryByText(/secondFactorReminder\.text/)).not.toBeInTheDocument();
+  });
+});
+
+describe('CrdLayoutWrapper user-menu Refresh', () => {
+  beforeEach(() => {
+    globalThis.history.replaceState(null, '', '/dashboard');
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('offers Refresh in the installed PWA', () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation(
+      query => ({ matches: query === '(display-mode: standalone)', media: query }) as MediaQueryList
+    );
+
+    renderPlainRoute();
+
+    expect(screen.getByRole('button', { name: 'refresh' })).toBeInTheDocument();
+  });
+
+  it('reloads on the same origin even when the path starts with two slashes', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation(
+      query => ({ matches: query === '(display-mode: standalone)', media: query }) as MediaQueryList
+    );
+    renderPlainRoute();
+    const replace = vi.fn();
+    vi.stubGlobal('location', { origin: 'https://alkem.io', pathname: '//evil.example/x', search: '?a=1', replace });
+
+    await userEvent.click(screen.getByRole('button', { name: 'refresh' }));
+
+    expect(replace).toHaveBeenCalledWith('https://alkem.io//evil.example/x?a=1');
+    vi.unstubAllGlobals();
+  });
+
+  it('offers no Refresh in a plain browser tab', () => {
+    renderPlainRoute();
+
+    expect(screen.queryByRole('button', { name: 'refresh' })).not.toBeInTheDocument();
   });
 });

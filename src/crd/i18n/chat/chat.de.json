@@ -118,11 +118,19 @@
   "call": {
     "startAudio": "Audioanruf starten",
     "startVideo": "Videoanruf starten",
-    "active": "Anruf aktiv",
     "join": "Beitreten",
     "joinVideo": "Mit Video beitreten",
     "joinAudio": "Nur mit Audio beitreten",
     "joinedOnThisDevice": "Auf diesem Gerät bereits beigetreten",
+    "banner": {
+      "inProgress": "Anruf läuft",
+      "participantsTwo": "{{first}} und {{second}}",
+      "participantsMore_one": "{{first}}, {{second}} und {{count}} weitere Person",
+      "participantsMore_other": "{{first}}, {{second}} und {{count}} weitere Personen",
+      "calling": "{{name}} ruft dich an",
+      "answer": "Annehmen",
+      "decline": "Anruf ablehnen"
+    },
     "preparing": "Anruf wird vorbereitet… Er startet gleich.",
     "dropped": "Der Anruf konnte nicht gestartet werden. Bitte versuche es erneut.",
     "overlayLabel": "Anruf",
@@ -136,9 +144,17 @@
       "confirm": "Anruf verlassen",
       "cancel": "Im Anruf bleiben"
     },
-    "listBadge": "Anruf aktiv",
+    "listJoin": "Anruf beitreten: {{name}}",
     "callingYou": "{{name}} ruft dich an",
-    "groupCall": "Anruf in {{name}}"
+    "groupCall": "Anruf in {{name}}",
+    "row": {
+      "missed": "Verpasster Anruf",
+      "noAnswer": "Keine Antwort",
+      "declined": "Abgelehnt",
+      "call": "Anruf",
+      "minutes": "{{count}} Min.",
+      "callBack": "Zurückrufen"
+    }
   },
   "presence": {
     "online": "Online",

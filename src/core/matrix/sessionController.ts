@@ -5,8 +5,21 @@ import { registerActiveSession, unregisterActiveSession } from './activeSession'
 import { serverSideLogout } from './logoutCleanup';
 import { mintAndStore } from './mintSession';
 import { quietSdkLogging } from './sdkLogging';
+import {
+  announceDeviceChanged,
+  askOtherTabs,
+  canCoordinate,
+  listenToOtherTabs,
+  withCredentialLock,
+} from './sharedDevice';
 import { attemptSilentSso } from './ssoLogin';
-import { type CredentialRecord, clearNamespace, loadActorCredentials, loadCredentials } from './storage';
+import {
+  type CredentialRecord,
+  clearNamespace,
+  loadActorCredentials,
+  loadCredentials,
+  storeCredentials,
+} from './storage';
 import { renewTokens } from './tokenRefresh';
 
 // matrix-js-sdk's HttpApiEvent.SessionLoggedOut: emitted when the homeserver
@@ -61,6 +74,12 @@ type SessionOptions = {
  * restart is rejected before it has synced, the session stays stopped. A
  * restart that syncs earns a fresh recovery for the next expiry.
  * A call click first rotates a non-renewable credential near its expiry, on a new device.
+ *
+ * All tabs of the browser share one device: every acquisition, recovery and
+ * rotation runs under the user's credential lock and reuses a stored credential
+ * before creating a device; a tab with nothing stored first adopts the one a
+ * running tab holds. A sign-out or a replaced device in another tab reaches
+ * this one at once.
  */
 const establishSession = async (
   actorId: string,
@@ -76,6 +95,13 @@ const establishSession = async (
   // Cancels an in-flight silent SSO: its iframe would otherwise go on to
   // persist fresh credentials after this session has already been stopped.
   const abort = new AbortController();
+  // Ends this tab's acquisition in flight. Replaced when the browser signs out
+  // in another tab, so the session stays able to resume afterwards.
+  let attempt = new AbortController();
+  // Boot, recovery, rotation and following another tab, while in flight; a
+  // device change announced meanwhile is followed once they have finished.
+  let busy = 0;
+  let followPending = false;
 
   const stopClient = (): void => {
     activeClient?.stopClient();
@@ -93,22 +119,46 @@ const establishSession = async (
 
   const stop = (): void => {
     abort.abort();
+    attempt.abort();
     setSessionEstablishing(false);
     stopClient();
     unregisterActiveSession(stop);
+    stopListening();
   };
-  const loadOrAcquireRecord = async (replacing?: string): Promise<CredentialRecord | null> => {
+
+  // Runs under the credential lock. A device it creates is announced, so the other tabs move to it.
+  const loadOrAcquireRecord = async (
+    attemptSignal: AbortSignal,
+    replacing?: string
+  ): Promise<CredentialRecord | null> => {
     const record = await loadActorCredentials(actorId);
     if (record && record.deviceId !== replacing) {
       return record;
     }
+    // Nothing stored, yet another tab may still be running on a live device:
+    // that device is shared rather than a second one created. Only under the
+    // lock, so two tabs starting together cannot both miss it.
+    if (!record && replacing === undefined && canCoordinate()) {
+      const live = await askOtherTabs(actorId, attemptSignal);
+      if (live && !attemptSignal.aborted && (await storeCredentials(live))) {
+        return live;
+      }
+    }
+    const acquired = await acquireRecord(attemptSignal, replacing);
+    if (acquired) {
+      announceDeviceChanged(acquired);
+    }
+    return acquired;
+  };
+
+  const acquireRecord = async (attemptSignal: AbortSignal, replacing?: string): Promise<CredentialRecord | null> => {
     // The app skips silent SSO entirely: no identity-origin cookie exists in
     // this WebView's jar, so the iframe cannot complete — and on Android the
     // attempt is actively harmful, because the shell intercepts the iframe's
     // hop through identity.<host>/login and navigates the MAIN WebView to a
     // "Sign in to continue" landing. See workspace#091 spec FR-014.
     if (!isAppMode()) {
-      const outcome = await attemptSilentSso(actorId, { signal: abort.signal, platformOrigin, replacing });
+      const outcome = await attemptSilentSso(actorId, { signal: attemptSignal, platformOrigin, replacing });
       if (outcome === 'authenticated') {
         return loadActorCredentials(actorId);
       }
@@ -116,10 +166,47 @@ const establishSession = async (
     // M3 mandates this leg for the app; reached in a BROWSER only after SSO
     // fails, which is the one credential-issuance path this feature adds
     // there — spec R-7(b).
-    return mintAndStore(abort.signal);
+    return mintAndStore(attemptSignal);
   };
 
-  const start = async (record: CredentialRecord): Promise<void> => {
+  const transition = async <T>(task: () => Promise<T>): Promise<T> => {
+    busy++;
+    try {
+      return await task();
+    } finally {
+      busy--;
+      if (busy === 0 && followPending) {
+        followPending = false;
+        follow();
+      }
+    }
+  };
+
+  // Another tab changed the shared device (it signed in, rotated it, or
+  // recovered after the homeserver rejected it): this tab's device is retired
+  // or already dead, so it moves to whatever is stored now. Reading storage
+  // rather than the announcement keeps it on the latest of several changes.
+  const follow = (): void => {
+    if (abort.signal.aborted) {
+      return;
+    }
+    if (busy > 0) {
+      followPending = true;
+      return;
+    }
+    void transition(async () => {
+      const { signal: attemptSignal } = attempt;
+      const record = await withCredentialLock(actorId, () => loadActorCredentials(actorId));
+      if (!abort.signal.aborted && !attemptSignal.aborted && record && record.deviceId !== running?.deviceId) {
+        stopClient();
+        await start(record, attemptSignal);
+      }
+    }).catch(() => undefined);
+  };
+
+  // `attemptSignal` is the attempt current when the caller read `record`: a
+  // sign-out elsewhere since then means that record is being logged out.
+  const start = async (record: CredentialRecord, attemptSignal: AbortSignal): Promise<void> => {
     await quietSdkLogging();
     const sdk = (await import('matrix-js-sdk')) as unknown as {
       createClient(opts: {
@@ -149,6 +236,7 @@ const establishSession = async (
             }
             if (tokens) {
               current = { ...current, ...tokens };
+              running = current;
               client.setAccessToken(tokens.accessToken);
             } else {
               void recover(current);
@@ -192,7 +280,7 @@ const establishSession = async (
       accessToken: record.accessToken,
       fetchFn,
     });
-    if (abort.signal.aborted) {
+    if (abort.signal.aborted || attemptSignal.aborted) {
       client.stopClient();
       return;
     }
@@ -215,36 +303,46 @@ const establishSession = async (
     await client.startClient({ initialSyncLimit: INITIAL_SYNC_LIMIT, lazyLoadMembers: true });
   };
 
-  const recover = async (rejected: CredentialRecord): Promise<void> => {
+  const recover = (rejected: CredentialRecord): Promise<void> => transition(() => recoverNow(rejected));
+
+  const recoverNow = async (rejected: CredentialRecord): Promise<void> => {
+    const { signal: attemptSignal } = attempt;
     stopClient();
+    let establishing = false;
     try {
-      const stored = await loadCredentials(rejected.userId);
-      if (!stored || stored.deviceId === rejected.deviceId) {
-        // A refused renewal can mean a thief rotated this device's refresh
-        // chain. Logging out with the last access token ends that chain only
-        // if the thief has not yet refreshed again: a second rotation deletes
-        // this token on Synapse, and the logout fails (accepted residual R-5).
-        // Started first, so a failed local delete cannot skip it.
-        void serverSideLogout(rejected);
-        await clearNamespace(rejected.userId);
-      }
-    } catch {
-      // The record is unusable either way; a failed delete must not block recovery.
-    }
-    if (abort.signal.aborted || recoveryUsed) {
-      return;
-    }
-    recoveryUsed = true;
-    setSessionEstablishing(true);
-    try {
-      const record = await loadOrAcquireRecord();
+      const record = await withCredentialLock(actorId, async () => {
+        try {
+          const stored = await loadCredentials(rejected.userId);
+          if (!stored || stored.deviceId === rejected.deviceId) {
+            // A refused renewal can mean a thief rotated this device's refresh
+            // chain. Logging out with the last access token ends that chain only
+            // if the thief has not yet refreshed again: a second rotation deletes
+            // this token on Synapse, and the logout fails (accepted residual R-5).
+            // Started first, so a failed local delete cannot skip it.
+            void serverSideLogout(rejected);
+            await clearNamespace(rejected.userId);
+          }
+        } catch {
+          // The record is unusable either way; a failed delete must not block recovery.
+        }
+        if (abort.signal.aborted || recoveryUsed) {
+          return null;
+        }
+        recoveryUsed = true;
+        establishing = true;
+        setSessionEstablishing(true);
+        // The rejected device is never taken back, from storage or from another tab.
+        return loadOrAcquireRecord(attemptSignal, rejected.deviceId);
+      });
       if (!abort.signal.aborted && record) {
-        await start(record);
+        await start(record, attemptSignal);
       }
     } catch {
       // Fails closed: the session stays stopped until the next page load.
     } finally {
-      finishEstablishing();
+      if (establishing) {
+        finishEstablishing();
+      }
     }
   };
 
@@ -259,11 +357,12 @@ const establishSession = async (
       return Promise.resolve(false);
     }
     tried = old;
-    rotation = (async () => {
+    rotation = transition(async () => {
+      const { signal: attemptSignal } = attempt;
       let swapped = false;
       try {
         // A stored record of another device means another tab already rotated: it is taken over, not re-acquired.
-        const fresh = await loadOrAcquireRecord(old.deviceId);
+        const fresh = await withCredentialLock(actorId, () => loadOrAcquireRecord(attemptSignal, old.deviceId));
         // Overtaken by stop() or recover(), or nothing acquired: leave the session as it is.
         if (running === old && fresh) {
           swapped = true;
@@ -271,7 +370,7 @@ const establishSession = async (
           stopClient();
           // Best effort, so the replaced device is gone early rather than at its expiry.
           void serverSideLogout(old);
-          await start(fresh);
+          await start(fresh, attemptSignal);
         }
       } catch {
         // Before the swap nothing changed. After stopClient() chat fails closed until reload, like recover().
@@ -282,9 +381,30 @@ const establishSession = async (
         rotation = null;
       }
       return true;
-    })();
+    });
     return rotation;
   };
+
+  // The browser signed out in another tab: this tab drops its credential and
+  // ends any acquisition in flight, but stays able to follow the next sign-in.
+  // The device that tab logged out is this tab's own, unless the two had
+  // diverged; then this one is logged out here.
+  const signedOutElsewhere = (deviceIds: readonly string[]): void => {
+    const own = running;
+    attempt.abort();
+    attempt = new AbortController();
+    followPending = false;
+    stopClient();
+    if (own && !deviceIds.includes(own.deviceId)) {
+      void serverSideLogout(own);
+    }
+  };
+
+  const stopListening = listenToOtherTabs(actorId, {
+    running: () => running,
+    onDeviceChanged: follow,
+    onSignedOut: signedOutElsewhere,
+  });
 
   registerActiveSession(stop, rotateIfDue);
   if (signal?.aborted) {
@@ -296,10 +416,13 @@ const establishSession = async (
     setSessionEstablishing(true);
   }
   try {
-    const record = await loadOrAcquireRecord();
-    if (!abort.signal.aborted && record) {
-      await start(record);
-    }
+    await transition(async () => {
+      const { signal: attemptSignal } = attempt;
+      const record = await withCredentialLock(actorId, () => loadOrAcquireRecord(attemptSignal));
+      if (!abort.signal.aborted && record) {
+        await start(record, attemptSignal);
+      }
+    });
   } catch {
     // Establishment failure leaves nothing to stop; the next load retries.
   } finally {

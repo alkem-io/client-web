@@ -1,4 +1,4 @@
-import { Bell, LayoutGrid, MessageCircle, Search } from 'lucide-react';
+import { Bell, LayoutGrid, MessageCircle, PhoneCall, Search } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
@@ -67,6 +67,8 @@ type HeaderProps = {
   currentPath?: string;
   unreadNotificationsCount?: number;
   unreadMessagesCount?: number;
+  /** Someone is calling (e.g. "Maria is calling you"): the messages icon turns into a ringing phone named after it. */
+  incomingCallLabel?: string;
   languages?: CrdLanguageOption[];
   currentLanguage?: string;
   breadcrumbs?: ReactNode;
@@ -112,6 +114,7 @@ export function Header({
   currentPath,
   unreadNotificationsCount,
   unreadMessagesCount,
+  incomingCallLabel,
   languages,
   currentLanguage,
   breadcrumbs,
@@ -199,8 +202,18 @@ export function Header({
               {authenticated && (
                 <HeaderIconButton
                   onClick={onMessagesClick}
-                  ariaLabel={t('header.messages')}
-                  icon={<MessageCircle aria-hidden="true" className="w-5 h-5" />}
+                  ariaLabel={incomingCallLabel ? `${incomingCallLabel}. ${t('header.messages')}` : t('header.messages')}
+                  icon={
+                    incomingCallLabel ? (
+                      <PhoneCall
+                        aria-hidden="true"
+                        data-testid="header-call-ringing"
+                        className="w-5 h-5 text-success motion-safe:animate-[chatCallRing_2s_ease-in-out_infinite]"
+                      />
+                    ) : (
+                      <MessageCircle aria-hidden="true" className="w-5 h-5" />
+                    )
+                  }
                   badge={
                     typeof unreadMessagesCount === 'number' && unreadMessagesCount > 0 ? (
                       <>

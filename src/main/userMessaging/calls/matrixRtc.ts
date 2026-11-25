@@ -26,6 +26,14 @@ type SessionLike = RtcEmitter & {
   readonly memberships: MembershipLike[];
 };
 
+/**
+ * The membership is this browser's chat device. The embedded call UI joins with the session's own
+ * user and device, and every tab of a browser shares them: a join from another device writes its own
+ * membership, but a second join from this browser would write over this one.
+ */
+const isThisDevice = (membership: MembershipLike, userId: string | null, deviceId: string | null): boolean =>
+  membership.sender === userId && membership.deviceId === deviceId;
+
 /** The chat SDK's call session for a Matrix room, once the room is known to the client. */
 const sessionOf = (client: MatrixClient, matrixRoomId: string): SessionLike | undefined => {
   const room = client.getRoom(matrixRoomId);
@@ -107,5 +115,5 @@ const watchLiveMemberships = (
   };
 };
 
-export { watchLiveMemberships };
+export { isThisDevice, watchLiveMemberships };
 export type { MembershipLike };

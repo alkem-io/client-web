@@ -80,7 +80,7 @@ vi.mock('@/crd/components/chat/NewChatDialog', () => ({ NewChatDialog: () => nul
 vi.mock('@/crd/components/common/ImageCropDialog', () => ({ ImageCropDialog: () => null }));
 
 type PanelProps = {
-  settingsMenu?: ReactNode;
+  settingsMenu?: (toggles: object) => ReactNode;
   subtitle?: ReactNode;
   onToggleSound?: () => void;
   soundMuted?: boolean;
@@ -102,7 +102,7 @@ vi.mock('@/crd/components/chat/ChatPanel', () => ({
       <>
         {props.subtitle}
         {props.headerActions}
-        {props.settingsMenu}
+        {props.settingsMenu?.({})}
         {props.children}
       </>
     );
@@ -223,10 +223,11 @@ describe('UnifiedChatPanelConnector header', () => {
   it.each([
     ['a 1:1 chat', 'direct'],
     ['a group chat', 'group'],
-  ])('has no sound toggle inside %s, because the sound is muted for the whole chat', (_name, conversationId) => {
+  ])('offers the same whole-chat sound toggle inside %s', (_name, conversationId) => {
     state.selectedConversationId = conversationId;
     render(<UnifiedChatPanelConnector />);
-    expect(panelProps.onToggleSound).toBeUndefined();
+    panelProps.onToggleSound?.();
+    expect(chatSound.setEnabled).toHaveBeenCalledExactlyOnceWith(false);
   });
 
   it('unmutes when the sound is off, adding no message of its own when the save fails', async () => {
@@ -296,13 +297,21 @@ describe('UnifiedChatPanelConnector header', () => {
   it.each([
     ['a 1:1 chat', 'direct'],
     ['a group chat', 'group'],
-  ])('%s header shows neither your status nor the gear menu', (_name, conversationId) => {
+  ])('%s header does not show your status, and its gear menu still offers to change it', (_name, conversationId) => {
     ownStatus.statusMessage = 'Out for lunch';
     state.selectedConversationId = conversationId;
     render(<UnifiedChatPanelConnector />);
     expect(screen.queryByText('Out for lunch')).not.toBeInTheDocument();
-    expect(panelProps.settingsMenu).toBeUndefined();
     expect(screen.queryByRole('button', { name: 'status.edit' })).not.toBeInTheDocument();
+    expect(settingsMenuProps?.statusLabel).toBe('status.change');
+  });
+
+  it('hands the panel toggles it is given on to the gear menu', () => {
+    state.selectedConversationId = 'direct';
+    render(<UnifiedChatPanelConnector />);
+    const expand = { label: 'panel.expand', onSelect: vi.fn() };
+    render(<div>{panelProps.settingsMenu?.({ expand })}</div>);
+    expect(settingsMenuProps).toMatchObject({ expand, label: 'panel.settings' });
   });
 
   it('passes translated expand / collapse labels to the panel', () => {
@@ -311,10 +320,9 @@ describe('UnifiedChatPanelConnector header', () => {
     expect(panelProps.collapseLabel).toBe('panel.collapse');
   });
 
-  it('a 1:1 chat header has no gear, no options menu and no title action', () => {
+  it('a 1:1 chat header has no options menu and no title action', () => {
     state.selectedConversationId = 'direct';
     render(<UnifiedChatPanelConnector />);
-    expect(panelProps.settingsMenu).toBeUndefined();
     expect(menuProps).toBeUndefined();
     expect(panelProps.onTitleClick).toBeUndefined();
   });
@@ -337,10 +345,9 @@ describe('UnifiedChatPanelConnector header', () => {
     expect((panelProps.titleAvatar as ReactElement).type).not.toBe(UserPresencePopover);
   });
 
-  it('a group chat header has no gear; its options menu and its title both open the group settings', () => {
+  it('a group chat header options menu and its title both open the group settings', () => {
     state.selectedConversationId = 'group';
     render(<UnifiedChatPanelConnector />);
-    expect(panelProps.settingsMenu).toBeUndefined();
 
     expect(menuProps?.label).toBe('thread.options');
     menuProps?.onOpenSettings();

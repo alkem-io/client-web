@@ -40,12 +40,14 @@ export const usePageTitle = (title: string | undefined, options?: UsePageTitleOp
   useEffect(() => {
     // Write the base title through the documentTitle singleton so the unread
     // tab-badge prefix and the page title never race for `document.title`.
+    // The raw `title` is the page's name (e.g. the Space), which an open dialog
+    // shows after its own title.
     if (skipSuffix) {
       setBaseTitle(title || suffix);
     } else if (!title) {
       setBaseTitle(suffix);
     } else {
-      setBaseTitle(`${title}${separator}${suffix}`);
+      setBaseTitle(`${title}${separator}${suffix}`, title);
     }
   }, [title, suffix, skipSuffix, separator]);
 };

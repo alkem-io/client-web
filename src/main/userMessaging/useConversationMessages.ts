@@ -9,13 +9,18 @@ export type { ConversationMessage } from './models';
 type ConversationRef = {
   readonly id: string;
   readonly roomId: string;
+  readonly isGroup: boolean;
   readonly attachmentBucketId?: string | null;
   readonly members: readonly ConversationMember[];
 };
 
 /** The open conversation's messages, read from the browser's Matrix sync. */
 export const useConversationMessages = (conversation: ConversationRef | null) => {
-  const { messages: parsed, readUpToEventId, isLoading } = useConversationTimeline(conversation?.roomId ?? null);
+  const {
+    messages: parsed,
+    readUpToEventId,
+    isLoading,
+  } = useConversationTimeline(conversation?.roomId ?? null, conversation?.isGroup ?? false);
   const members = conversation?.members ?? [];
   const otherProfiles = useActorProfiles(nonMemberActorIds(parsed, members));
 

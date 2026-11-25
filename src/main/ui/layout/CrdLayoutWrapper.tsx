@@ -3,6 +3,7 @@ import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
 import { isAppMode } from '@/core/appMode/isAppMode';
+import { isStandaloneDisplay } from '@/core/appMode/isStandaloneDisplay';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
@@ -32,6 +33,7 @@ import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useSecondFactorReminder } from '@/main/ui/layout/useSecondFactorReminder';
+import { useIncomingCallLabel } from '@/main/userMessaging/calls/useIncomingCallLabel';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 
@@ -58,6 +60,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { unreadCount: notificationsUnreadCount } = useInAppNotifications();
   const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
   const unreadMessagesCount = useUnreadConversationsCount();
+  const incomingCallLabel = useIncomingCallLabel();
   const { setOpenDialog } = usePendingMembershipsDialog();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { openSearch } = useSearch();
@@ -105,6 +108,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         currentPath={currentPath}
         unreadNotificationsCount={notificationsUnreadCount}
         unreadMessagesCount={unreadMessagesCount}
+        incomingCallLabel={incomingCallLabel}
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={
@@ -144,8 +148,12 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         onPendingMembershipsClick={isAuthenticated ? handlePendingMembershipsClick : undefined}
         onHelpClick={() => setIsHelpDialogOpen(true)}
         // A full reload, like the new-version banner: it also picks up a newer client build.
+        // Offered where there is no browser reload button: the store app and the installed PWA.
         onRefreshClick={
-          isAppMode() ? () => window.location.replace(window.location.pathname + window.location.search) : undefined
+          isAppMode() || isStandaloneDisplay()
+            ? // The origin is pinned: a pathname starting with '//' alone would be a protocol-relative URL.
+              () => window.location.replace(window.location.origin + window.location.pathname + window.location.search)
+            : undefined
         }
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
