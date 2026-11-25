@@ -1057,9 +1057,12 @@
   },
   "delete": "Löschen",
   "downNoticeBanner": {
-    "a11yLabel": "Hinweis zu geplanter Wartung",
+    "a11yLabel": "Hinweis zum Plattformstatus",
     "dismiss": "Hinweis schließen",
-    "message": "Geplante Wartung am Freitag, 31. Juli, 21:00 Uhr MESZ. Die Plattform ist möglicherweise kurzzeitig nicht erreichbar."
+    "incident": "Aktuelle Störung: {{name}}",
+    "maintenanceInProgress": "Wartung läuft: {{name}}",
+    "maintenanceScheduled": "Geplante Wartung am {{date}}: {{name}}",
+    "viewStatus": "Status ansehen"
   },
   "edit": "Bearbeiten",
   "error": "Fehler",

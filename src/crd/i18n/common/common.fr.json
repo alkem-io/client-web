@@ -1057,9 +1057,12 @@
   },
   "delete": "Supprimer",
   "downNoticeBanner": {
-    "a11yLabel": "Avis de maintenance planifiée",
+    "a11yLabel": "Avis sur l'état de la plateforme",
     "dismiss": "Fermer l'avis",
-    "message": "Maintenance planifiée le vendredi 31 juillet à 21h00 CEST. La plateforme pourrait être brièvement indisponible."
+    "incident": "Incident en cours : {{name}}",
+    "maintenanceInProgress": "Maintenance en cours : {{name}}",
+    "maintenanceScheduled": "Maintenance planifiée le {{date}} : {{name}}",
+    "viewStatus": "Voir l'état"
   },
   "edit": "Modifier",
   "error": "Erreur",

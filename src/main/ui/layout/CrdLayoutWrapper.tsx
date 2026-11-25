@@ -43,6 +43,16 @@ const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(
 const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/help/CrdHelpDialog'));
 const CrdSearchOverlay = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/search/CrdSearchOverlay'));
 
+// "27 Nov 2026, 13:00 CET", in the viewer's zone (en-GB names the European zones; others read
+// "GMT-5"). Non-breaking spaces keep it on one line in the notice.
+const formatNoticeDate = (date: Date, language: string) => {
+  const zone = new Intl.DateTimeFormat('en-GB', { timeZoneName: 'short' })
+    .formatToParts(date)
+    .find(part => part.type === 'timeZoneName')?.value;
+  const text = format(date, 'd MMM yyyy, HH:mm', { locale: resolveDateFnsLocale(language) });
+  return `${text} ${zone ?? ''}`.trim().replace(/ /g, '\u00a0');
+};
+
 function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { user, userModel, isAuthenticated, isAdmin } = useCrdUser();
   const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
@@ -66,7 +76,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { openSearch } = useSearch();
   const navigate = useNavigate();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
-  const { visible: downNoticeVisible, dismiss: dismissDownNotice } = useDownNoticeBanner();
+  const { visible: downNoticeVisible, notice: downNotice, dismiss: dismissDownNotice } = useDownNoticeBanner();
   const breadcrumbItems = useBreadcrumbs();
   const overlayBanner = useBannerOverlay();
   const secondFactorReminder = useSecondFactorReminder();
@@ -123,7 +133,15 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         topBanner={
           downNoticeVisible || secondFactorReminder.visible ? (
             <>
-              {downNoticeVisible ? <DownNoticeBanner onDismiss={dismissDownNotice} /> : null}
+              {downNoticeVisible && downNotice ? (
+                <DownNoticeBanner
+                  kind={downNotice.kind}
+                  name={downNotice.name}
+                  scheduledFor={downNotice.scheduledFor && formatNoticeDate(downNotice.scheduledFor, currentLanguage)}
+                  statusHref={downNotice.href}
+                  onDismiss={dismissDownNotice}
+                />
+              ) : null}
               {secondFactorReminder.visible && secondFactorReminder.deadline ? (
                 <SecondFactorReminderBanner
                   deadline={format(secondFactorReminder.deadline, 'PPP', {
