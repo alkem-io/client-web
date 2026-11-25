@@ -85,7 +85,7 @@ const CrdUserSettingsTab = () => {
     ? (i18nInstance.options.supportedLngs as string[])
     : [];
   const availableLanguages = supportedLngsRaw
-    .filter(lng => lng !== 'inContextTool' && lng !== 'cimode')
+    .filter(lng => lng !== 'cimode')
     // biome-ignore lint/suspicious/noExplicitAny: dynamic key — lng is a supported language code
     .map(lng => ({ code: lng, label: String((i18nInstance as any).t(`languages.${lng}`)) }));
 
