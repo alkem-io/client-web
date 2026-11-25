@@ -8,9 +8,8 @@ import { error as logError } from '@/core/logging/sentry/log';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { CurrentUserModel } from '@/domain/community/userCurrent/model/CurrentUserModel';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '@/main/cookies/useAlkemioCookies';
+import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes, APM_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
 
-const APM_CLIENT_TRACK_COOKIE = 'apm';
 const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07
 const APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX = 'apm';
 const APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED = 'not-tracked';
@@ -73,9 +72,9 @@ export const useApmInit = (user: CurrentUserModel | undefined) => {
 
 export const useGetOrSetApmCookie = (): string | undefined => {
   // TODO Refactor to store data in localStorage, remove react-cookie npm
-  const [cookies, setCookie] = useCookies([APM_CLIENT_TRACK_COOKIE, ALKEMIO_COOKIE_NAME]);
+  const [cookies, setCookie] = useCookies([APM_COOKIE_NAME, ALKEMIO_COOKIE_NAME]);
 
-  const cookieId = cookies[APM_CLIENT_TRACK_COOKIE];
+  const cookieId = cookies[APM_COOKIE_NAME];
 
   if (cookieId) {
     return cookieId;
@@ -91,7 +90,7 @@ export const useGetOrSetApmCookie = (): string | undefined => {
   }
 
   const userApmId = `${APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX}-${uuidv4()}`;
-  setCookie(APM_CLIENT_TRACK_COOKIE, userApmId, {
+  setCookie(APM_COOKIE_NAME, userApmId, {
     expires: new Date(APM_CLIENT_TRACK_COOKIE_EXPIRY),
     path: '/',
     sameSite: 'strict',

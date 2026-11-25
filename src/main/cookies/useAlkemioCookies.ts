@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 
 export const ALKEMIO_COOKIE_NAME = 'accepted_cookies';
+// The persistent APM tracking id, minted only with analysis consent and removed when it is withdrawn.
+export const APM_COOKIE_NAME = 'apm';
 // localStorage marker so the host-only -> apex consent migration runs at most once per
 // browser, rather than re-writing the cookie (and sliding its 150-day expiry) on every load.
 const CONSENT_APEX_MIGRATED_KEY = 'alkemio.consentCookieApexMigrated';
@@ -71,7 +73,7 @@ const isStoredInBrowser = (value: string) =>
   document.cookie.split('; ').includes(`${ALKEMIO_COOKIE_NAME}=${encodeURIComponent(value)}`);
 
 export const useAlkemioCookies = () => {
-  const [cookies, setCookie] = useCookies([ALKEMIO_COOKIE_NAME], READ_FROM_BROWSER);
+  const [cookies, setCookie, removeCookie] = useCookies([ALKEMIO_COOKIE_NAME, APM_COOKIE_NAME], READ_FROM_BROWSER);
   const stored: unknown = cookies[ALKEMIO_COOKIE_NAME];
   const consent: CookieConsent = Array.isArray(stored)
     ? { decided: true, analysis: stored.includes(AlkemioCookieTypes.analysis) }
@@ -81,6 +83,7 @@ export const useAlkemioCookies = () => {
   const saveConsent = (analysis: boolean): boolean => {
     const value = JSON.stringify(analysis ? ALL_COOKIES : MANDATORY_COOKIES);
     setCookie(ALKEMIO_COOKIE_NAME, value, createCookieOptions());
+    if (!analysis) removeCookie(APM_COOKIE_NAME, { path: '/' });
     return isStoredInBrowser(value);
   };
 

@@ -1,6 +1,11 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ALKEMIO_COOKIE_NAME, useAlkemioCookies, useMigrateConsentCookieToApex } from './useAlkemioCookies';
+import {
+  ALKEMIO_COOKIE_NAME,
+  APM_COOKIE_NAME,
+  useAlkemioCookies,
+  useMigrateConsentCookieToApex,
+} from './useAlkemioCookies';
 
 // Regression test for #9695: accepting cookies on the platform (app.alkem.io) must write
 // the consent cookie at the environment apex (`.alkem.io`) so it is readable on the welcome
@@ -120,6 +125,22 @@ describe('useAlkemioCookies', () => {
     result.current.saveConsent(true);
 
     expect(storedCategories()).toEqual(['technical', 'analysis']);
+  });
+
+  it('Only necessary removes the persistent APM tracking id', () => {
+    const { result } = renderHook(() => useAlkemioCookies());
+
+    result.current.saveConsent(false);
+
+    expect(removeCookie).toHaveBeenCalledWith(APM_COOKIE_NAME, { path: '/' });
+  });
+
+  it('Accept all keeps the APM tracking id', () => {
+    const { result } = renderHook(() => useAlkemioCookies());
+
+    result.current.saveConsent(true);
+
+    expect(removeCookie).not.toHaveBeenCalled();
   });
 
   it('reports success when the browser kept the cookie', () => {
