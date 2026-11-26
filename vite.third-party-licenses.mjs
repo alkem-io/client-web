@@ -161,6 +161,11 @@ Its prebuilt package carries no notices for the components it bundles; they are 
 <a href="https://github.com/element-hq/element-call/tree/v${escapeHtml(ELEMENT_CALL_VERSION)}" rel="noopener noreferrer">upstream
 element-call source at v${escapeHtml(ELEMENT_CALL_VERSION)}</a>.</p>
 </section>
+<section>
+<h2>Source Sans Pro</h2>
+<p>License: OFL-1.1 &middot; the font files are served unmodified under <code>/fonts/source-sans-pro/</code>.</p>
+<pre>${escapeHtml(readFileSync('public/fonts/source-sans-pro/OFL.txt', 'utf8'))}</pre>
+</section>
 ${withUnscannedDependencies(dependencies).map(renderDependency).join('\n')}
 </main>
 </body>
@@ -169,7 +174,7 @@ ${withUnscannedDependencies(dependencies).map(renderDependency).join('\n')}
 
 /**
  * Writes `third-party-licenses.html` beside the build: every package bundled into the app with its
- * licence text, plus Element Call, which is served beside the app rather than bundled into it.
+ * licence text, plus Element Call and Source Sans Pro, which are served beside the app rather than bundled into it.
  * Shared by every Vite config; runs on builds only.
  */
 export const thirdPartyLicenses = () => ({
