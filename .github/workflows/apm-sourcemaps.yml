@@ -1,0 +1,93 @@
+name: APM source maps
+
+# Uploads a release's source maps to Elastic APM, then prunes old versions.
+# Every Kibana upload AND delete rewrites the APM Fleet policy (see
+# .build/apm/sourcemaps.sh), so a release's ~550 maps take ~8 min to upload and
+# pruning an old version as long again. This runs only after Deploy to DockerHub
+# succeeded, so the release itself is done as soon as the image is pushed.
+on:
+  workflow_run:
+    workflows: [Deploy to DockerHub]
+    types: [completed]
+  # By hand: prune only (uploading needs a release run's maps).
+  workflow_dispatch:
+    inputs:
+      keep_versions:
+        description: Newest versions (by upload time) whose maps are kept
+        default: '3'
+
+permissions:
+  contents: read
+  actions: read # download the maps artifact from the Deploy to DockerHub run
+
+env:
+  KIBANA_URL: https://kibana.alkem.io
+  # Any problem fails the job. Set the repo variable APM_SOURCEMAPS_STRICT=false
+  # to only warn instead.
+  APM_SOURCEMAPS_STRICT: ${{ vars.APM_SOURCEMAPS_STRICT || 'true' }}
+  # Parallel Kibana requests; tune with the repo variable APM_SOURCEMAPS_CONCURRENCY.
+  APM_CONCURRENCY: ${{ vars.APM_SOURCEMAPS_CONCURRENCY || '8' }}
+
+jobs:
+  upload:
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'release'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # The release's commit, not the default branch: package.json "version"
+      # must be the one the released bundles report as serviceVersion.
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          sparse-checkout: |
+            .build/apm
+            package.json
+          sparse-checkout-cone-mode: false
+
+      - name: Download source maps
+        uses: actions/download-artifact@v8
+        with:
+          name: sourcemaps
+          path: ./sourcemaps
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - name: Upload source maps to Elastic APM
+        env:
+          KIBANA_APM_SOURCEMAP_API_KEY: ${{ secrets.KIBANA_APM_SOURCEMAP_API_KEY }}
+        run: |
+          SERVICE_VERSION="$(jq -r .version package.json)" \
+            ./.build/apm/sourcemaps.sh upload ./sourcemaps
+
+  prune:
+    needs: upload
+    # After a successful upload, or on its own when started by hand. Never after
+    # a failed upload: a partial version must not push a complete one out.
+    if: >-
+      always() && (
+        needs.upload.result == 'success' ||
+        (github.event_name == 'workflow_dispatch' && needs.upload.result == 'skipped')
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # One prune at a time; a newer pending one replaces an older pending one,
+    # which would have done the same work. Uploads are never queued behind this.
+    concurrency:
+      group: apm-sourcemaps-prune
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: .build/apm
+          sparse-checkout-cone-mode: false
+
+      - name: Prune old source maps from Elastic APM
+        env:
+          KIBANA_APM_SOURCEMAP_API_KEY: ${{ secrets.KIBANA_APM_SOURCEMAP_API_KEY }}
+          KEEP_VERSIONS: ${{ inputs.keep_versions || '3' }}
+        run: ./.build/apm/sourcemaps.sh prune
