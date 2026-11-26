@@ -1,9 +1,10 @@
 import { useApm } from '@/core/analytics/apm/context/useApm';
-import { info as logInfo, TagCategoryValues } from '@/core/logging/sentry/log';
+import { breadcrumb, info as logInfo, TagCategoryValues } from '@/core/logging/sentry/log';
 
 /**
- * Analytics hook for guest whiteboard interactions
- * Sends events to both Elastic APM and Sentry for observability
+ * Analytics hook for guest whiteboard interactions. Usage events go to Elastic APM and onto the
+ * Sentry breadcrumb trail, both only with `analysis` consent. Neither carries the guest's name.
+ * A failed load is reported to Sentry for everyone.
  */
 export const useGuestAnalytics = () => {
   const apm = useApm();
@@ -13,15 +14,13 @@ export const useGuestAnalytics = () => {
     if (apm) {
       const transaction = apm.startTransaction('guest_name_submitted', 'user-interaction');
       transaction?.addLabels({
-        guestName,
         isDerived: isDerived.toString(),
         source: isDerived ? 'derived' : 'manual',
       });
       transaction?.end();
     }
 
-    // Sentry breadcrumb for debugging
-    logInfo(`Guest name submitted: ${guestName} (derived: ${isDerived})`, {
+    breadcrumb(`Guest name submitted (derived: ${isDerived})`, {
       category: TagCategoryValues.WHITEBOARD,
       label: 'guest_name_submitted',
     });
@@ -32,13 +31,12 @@ export const useGuestAnalytics = () => {
       const transaction = apm.startTransaction('whiteboard_load_success', 'page-load');
       transaction?.addLabels({
         whiteboardId,
-        guestName,
         accessType: 'guest',
       });
       transaction?.end();
     }
 
-    logInfo(`Guest whiteboard loaded: ${whiteboardId} by ${guestName}`, {
+    breadcrumb(`Guest whiteboard loaded: ${whiteboardId}`, {
       category: TagCategoryValues.WHITEBOARD,
       label: 'whiteboard_load_success',
     });
@@ -71,7 +69,7 @@ export const useGuestAnalytics = () => {
       transaction?.end();
     }
 
-    logInfo(`Guest join dialog dismissed: ${whiteboardId}`, {
+    breadcrumb(`Guest join dialog dismissed: ${whiteboardId}`, {
       category: TagCategoryValues.WHITEBOARD,
       label: 'guest_dialog_dismissed',
     });
@@ -82,13 +80,12 @@ export const useGuestAnalytics = () => {
       const transaction = apm.startTransaction('derived_name_used', 'user-interaction');
       transaction?.addLabels({
         whiteboardId,
-        derivedName,
         derivationMethod, // e.g., "full_name", "first_only", "last_only"
       });
       transaction?.end();
     }
 
-    logInfo(`Derived guest name used: ${derivedName} (method: ${derivationMethod}) for whiteboard ${whiteboardId}`, {
+    breadcrumb(`Derived guest name used (method: ${derivationMethod}) for whiteboard ${whiteboardId}`, {
       category: TagCategoryValues.WHITEBOARD,
       label: 'derived_name_used',
     });

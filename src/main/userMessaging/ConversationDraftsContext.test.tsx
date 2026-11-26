@@ -110,6 +110,19 @@ describe('ConversationDraftsProvider', () => {
     expect(readMessagingDrafts()).toEqual({ 'user-1': { 'conv-2': 'new draft' } });
   });
 
+  test('a failed write keeps the draft in memory without an APM agent to report to', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota', 'QuotaExceededError');
+    });
+    const { result } = renderDrafts();
+
+    act(() => result.current.setDraft('conv-1', 'kept'));
+    act(() => vi.advanceTimersByTime(500));
+
+    expect(result.current.getDraft('conv-1')).toBe('kept');
+    vi.restoreAllMocks();
+  });
+
   test('flushes a pending draft when the page is hidden', () => {
     const { result } = renderDrafts();
 

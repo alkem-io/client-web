@@ -2399,10 +2399,6 @@ export const ConfigurationFragmentDoc = gql`
     rumEnabled
     endpoint
   }
-  geo {
-    enabled
-    endpoint
-  }
 }
     `;
 export const PageInfoFragmentDoc = gql`

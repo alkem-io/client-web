@@ -53,13 +53,24 @@
     "home": "Startseite"
   },
   "cookieConsent": {
-    "consent": "Wenn Sie auf \"Alle Cookies akzeptieren\" klicken, stimmen Sie der Speicherung von Cookies auf Ihrem Gerät zu, um die Website-Navigation zu verbessern und die Nutzung der Website zu analysieren.",
-    "settingsIntro": "Beim Besuch einer Website können Informationen in Form von Cookies in Ihrem Browser gespeichert werden. Diese Informationen können sich über Sie, Ihre Einstellungen und Ihr Gerät beziehen. Meistens werden diese Informationen verwendet, um das Funktionieren der Website so gut wie möglich zu gestalten. Da Alkemio keine Werbung auf seiner Website zulässt, unterscheiden wir nur zwei Arten von Cookies.",
-    "technical": "Technisch notwendige Cookies: Sie können die Grundfunktionen navigieren und nutzen und Präferenzen speichern.",
-    "analysis": "Analyse-Cookies: Ermitteln Sie uns die Art und Weise, wie Besucher mit unseren Diensten interagieren, um die Benutzererfahrung zu verbessern.",
-    "settings": "einstellungen",
-    "acceptAll": "Alle Cookies akzeptieren",
-    "confirmChoice": "Auswahl bestätigen"
+    "title": "Cookies",
+    "text": "Wir verwenden notwendige Cookies. Mit Ihrer Erlaubnis messen wir auch die Seitengeschwindigkeit und die App-Nutzung. Das ist aus, solange Sie nicht zustimmen.",
+    "settings": "Einstellungen",
+    "acceptAll": "Alle akzeptieren",
+    "onlyNecessary": "Nur notwendige",
+    "settingsTitle": "Cookie-Einstellungen",
+    "sectionDescription": "Was Alkemio auf diesem Gerät speichern und messen darf.",
+    "close": "Schließen",
+    "necessary": "Notwendig",
+    "necessaryDescription": "Hält Sie angemeldet und sicher, meldet Fehler, damit wir sie beheben können, und speichert Ihre Cookie-Einstellungen.",
+    "alwaysOn": "Immer aktiv",
+    "analytics": "Analyse",
+    "analyticsDescription": "Misst die Seitengeschwindigkeit und die App-Nutzung. Aus, solange Sie es nicht einschalten.",
+    "cookiePolicy": "Cookie-Richtlinie",
+    "privacyPolicy": "Datenschutzerklärung",
+    "saveSettings": "Einstellungen speichern",
+    "saved": "Cookie-Einstellungen gespeichert.",
+    "saveFailed": "Ihre Cookie-Einstellungen konnten nicht gespeichert werden. Möglicherweise blockiert Ihr Browser Cookies für diese Website."
   },
   "secondFactorReminder": {
     "action": "Jetzt einrichten",

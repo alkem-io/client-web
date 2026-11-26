@@ -1,10 +1,9 @@
 import { Check, Globe } from 'lucide-react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import type { CrdFooterLinks, CrdLanguageOption } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
-import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/crd/primitives/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +17,8 @@ type FooterProps = {
   currentLanguage: string;
   onLanguageChange: (code: string) => void;
   onSupportClick?: () => void;
+  /** Opens the Cookie settings sheet; the entry is left out when not given. */
+  onCookieSettingsClick?: () => void;
   className?: string;
 };
 
@@ -29,10 +30,10 @@ export function Footer({
   currentLanguage,
   onLanguageChange,
   onSupportClick,
+  onCookieSettingsClick,
   className,
 }: FooterProps) {
   const { t } = useTranslation('crd-layout');
-  const [licensesOpen, setLicensesOpen] = useState(false);
 
   const currentLabel = languages.find(l => currentLanguage.startsWith(l.code))?.label ?? 'English';
 
@@ -83,19 +84,49 @@ export function Footer({
           )}
           {links?.thirdPartyLicenses &&
             (links.thirdPartyLicensesInDialog ? (
-              <button
-                type="button"
-                onClick={() => setLicensesOpen(true)}
-                className={cn(linkClassName, 'cursor-pointer bg-transparent border-none p-0 font-inherit text-body')}
-              >
-                {t('footer.thirdPartyLicenses')}
-              </button>
+              // the trigger and the dialog share one root, so closing returns focus to the button
+              <Dialog>
+                <DialogTrigger asChild={true}>
+                  <button
+                    type="button"
+                    className={cn(
+                      linkClassName,
+                      'cursor-pointer bg-transparent border-none p-0 font-inherit text-body'
+                    )}
+                  >
+                    {t('footer.thirdPartyLicenses')}
+                  </button>
+                </DialogTrigger>
+                <DialogContent
+                  className="flex h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl"
+                  closeLabel={t('footer.close')}
+                  aria-describedby={undefined}
+                >
+                  <DialogTitle className="border-b border-border px-6 py-4">
+                    {t('footer.thirdPartyLicenses')}
+                  </DialogTitle>
+                  <iframe
+                    src={links.thirdPartyLicenses}
+                    title={t('footer.thirdPartyLicenses')}
+                    className="w-full flex-1 border-0"
+                  />
+                </DialogContent>
+              </Dialog>
             ) : (
               <a href={links.thirdPartyLicenses} target="_blank" rel="noopener noreferrer" className={linkClassName}>
                 {t('footer.thirdPartyLicenses')}
                 <span className="sr-only"> ({t('footer.opensInNewTab')})</span>
               </a>
             ))}
+          {onCookieSettingsClick && (
+            <button
+              type="button"
+              onClick={onCookieSettingsClick}
+              className={cn(linkClassName, 'cursor-pointer bg-transparent border-none p-0 font-inherit text-body')}
+            >
+              {t('cookieConsent.settingsTitle')}
+            </button>
+          )}
         </nav>
 
         {/* Language selector */}
@@ -130,22 +161,6 @@ export function Footer({
           </DropdownMenu>
         </div>
       </div>
-      {links?.thirdPartyLicenses && (
-        <Dialog open={licensesOpen} onOpenChange={setLicensesOpen}>
-          <DialogContent
-            className="flex h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl"
-            closeLabel={t('footer.close')}
-            aria-describedby={undefined}
-          >
-            <DialogTitle className="border-b border-border px-6 py-4">{t('footer.thirdPartyLicenses')}</DialogTitle>
-            <iframe
-              src={links.thirdPartyLicenses}
-              title={t('footer.thirdPartyLicenses')}
-              className="w-full flex-1 border-0"
-            />
-          </DialogContent>
-        </Dialog>
-      )}
     </footer>
   );
 }

@@ -47,7 +47,8 @@ export function UnsavedChangesBar({ state, onSave, onDiscard }: UnsavedChangesBa
       aria-hidden={!visible}
       inert={!visible}
       className={cn(
-        'fixed inset-x-0 bottom-0 z-50 border-t border-primary/35 bg-primary/[0.09] backdrop-blur-sm transition-all duration-300',
+        // Sits on the cookie banner's height while that banner is open, so it is never covered.
+        'fixed inset-x-0 bottom-[var(--cookie-banner-height,0px)] z-50 border-t border-primary/35 bg-primary/[0.09] backdrop-blur-sm transition-all duration-300',
         visible
           ? 'translate-y-0 opacity-100 shadow-[0_-4px_16px_rgba(0,0,0,0.10)]'
           : 'pointer-events-none translate-y-full opacity-0'

@@ -76,8 +76,4 @@ fragment Configuration on Config {
     rumEnabled
     endpoint
   }
-  geo {
-    enabled
-    endpoint
-  }
 }

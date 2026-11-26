@@ -1,5 +1,4 @@
 import { ApmProvider, ApmUserSetter } from '@/core/analytics/apm/context';
-import { UserGeoProvider } from '@/core/analytics/geo';
 import SentryErrorBoundaryProvider from '@/core/analytics/SentryErrorBoundaryProvider';
 import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
 import AlkemioApolloProvider from '@/core/apollo/context/ApolloProvider';
@@ -23,6 +22,7 @@ import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMemb
 import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
+import { CookieSettingsProvider } from '@/main/cookies/CookieSettingsProvider';
 import { CrdAwareErrorComponent } from '@/main/crdPages/error/CrdAwareErrorComponent';
 import { UnifiedChatLauncher } from '@/main/crdPages/unifiedChat/UnifiedChatLauncher';
 import { UnifiedChatProvider } from '@/main/crdPages/unifiedChat/UnifiedChatProvider';
@@ -129,50 +129,52 @@ const Root: FC = () => {
                   <BrowserRouter>
                     <NativePushTapRouter />
                     <AppDownloadInterceptor />
-                    <UserGeoProvider>
-                      <ApmProvider>
-                        <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                          <UserProvider>
-                            <PendingMembershipsDialogProvider>
-                              <InAppNotificationsProvider>
-                                <PushNotificationProvider>
-                                  <UnifiedChatProvider>
-                                    <FullscreenEditorProvider>
-                                      <AssistantProvider>
-                                        <NavigationHistoryTracker />
-                                        <RefreshOnMembershipChange />
-                                        <ApmUserSetter />
-                                        <ScrollToTop />
-                                        <NotificationsGate />
-                                        <InAppNotificationCountSubscriber />
-                                        <ConversationEventsSubscriber />
-                                        <MatrixSession />
-                                        <UnreadTabBadge />
-                                        <Suspense fallback={null}>
-                                          <AssistantDialog />
-                                        </Suspense>
-                                        <VersionHandling />
-                                        <OnlineStatusNotification />
-                                        <AppPullToRefresh />
+                    <ApmProvider>
+                      <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
+                        <UserProvider>
+                          <PendingMembershipsDialogProvider>
+                            <InAppNotificationsProvider>
+                              <PushNotificationProvider>
+                                <UnifiedChatProvider>
+                                  <FullscreenEditorProvider>
+                                    <AssistantProvider>
+                                      <NavigationHistoryTracker />
+                                      <RefreshOnMembershipChange />
+                                      <ApmUserSetter />
+                                      <ScrollToTop />
+                                      <NotificationsGate />
+                                      <InAppNotificationCountSubscriber />
+                                      <ConversationEventsSubscriber />
+                                      <MatrixSession />
+                                      <UnreadTabBadge />
+                                      <Suspense fallback={null}>
+                                        <AssistantDialog />
+                                      </Suspense>
+                                      <VersionHandling />
+                                      <OnlineStatusNotification />
+                                      <AppPullToRefresh />
+                                      {/* Above the error boundary, so the footer's Cookie settings entry
+                                          also opens the one sheet on the 403, 404 and error pages. */}
+                                      <CookieSettingsProvider>
                                         <Error40XBoundary
                                           errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
                                         >
                                           <TopLevelRoutes />
                                           <GlobalErrorDialogGate />
                                         </Error40XBoundary>
-                                        {/* Rendered after TopLevelRoutes so the full-screen mobile chat
-                                            panel (z-50) paints above the app header (also z-50). */}
-                                        <UnifiedChatGate />
-                                      </AssistantProvider>
-                                    </FullscreenEditorProvider>
-                                  </UnifiedChatProvider>
-                                </PushNotificationProvider>
-                              </InAppNotificationsProvider>
-                            </PendingMembershipsDialogProvider>
-                          </UserProvider>
-                        </AlkemioApolloProvider>
-                      </ApmProvider>
-                    </UserGeoProvider>
+                                      </CookieSettingsProvider>
+                                      {/* Rendered after TopLevelRoutes so the full-screen mobile chat
+                                          panel (z-50) paints above the app header (also z-50). */}
+                                      <UnifiedChatGate />
+                                    </AssistantProvider>
+                                  </FullscreenEditorProvider>
+                                </UnifiedChatProvider>
+                              </PushNotificationProvider>
+                            </InAppNotificationsProvider>
+                          </PendingMembershipsDialogProvider>
+                        </UserProvider>
+                      </AlkemioApolloProvider>
+                    </ApmProvider>
                   </BrowserRouter>
                 </AuthenticationProvider>
               </GlobalErrorProvider>
