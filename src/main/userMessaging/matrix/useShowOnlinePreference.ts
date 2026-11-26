@@ -44,6 +44,11 @@ export const setPresenceRetryingOnce = async (
 export const showOnlineOf = (client: MatrixClient | null): boolean =>
   client?.getAccountData(SHOW_ONLINE_EVENT)?.getContent().show_online !== false;
 
+const apply = (client: MatrixClient, showOnline: boolean) => {
+  void client.setSyncPresence(showOnline ? SetPresence.Online : SetPresence.Offline);
+  writeStoredShowOnline(client.getSafeUserId(), showOnline);
+};
+
 // Every change, from another device or echoed back from this one, reaches the
 // sync loop and the start-up copy here. Only the device that switched it off
 // sends the explicit offline presence.
@@ -51,11 +56,14 @@ const subscribeToSetting = (client: MatrixClient | null) => (listener: () => voi
   if (!client) {
     return noop;
   }
+  // Account data that arrived before anything listened, e.g. on a browser with no copy yet.
+  // Absent data is left alone: before the first sync it would undo an offline start.
+  if (client.getAccountData(SHOW_ONLINE_EVENT)) {
+    apply(client, showOnlineOf(client));
+  }
   const onAccountData = (event: MatrixEvent) => {
     if (event.getType() === SHOW_ONLINE_EVENT) {
-      const showOnline = event.getContent().show_online !== false;
-      void client.setSyncPresence(showOnline ? SetPresence.Online : SetPresence.Offline);
-      writeStoredShowOnline(client.getSafeUserId(), showOnline);
+      apply(client, event.getContent().show_online !== false);
       listener();
     }
   };

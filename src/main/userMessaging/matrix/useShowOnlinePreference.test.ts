@@ -47,6 +47,20 @@ describe('useShowOnlinePreference', () => {
     localStorage.clear();
   });
 
+  it('applies account data that arrived before it mounted, and leaves the sync alone while there is none', () => {
+    const off = makeClient({ [EVENT_TYPE]: { show_online: false } });
+    harness.client = off;
+    renderHook(() => useShowOnlinePreference());
+    expect(off.setSyncPresence).toHaveBeenCalledWith('offline');
+    expect(readStoredShowOnline('@me:hs')).toBe(false);
+
+    const none = makeClient();
+    harness.client = none;
+    renderHook(() => useShowOnlinePreference());
+    expect(none.setSyncPresence).not.toHaveBeenCalled();
+    expect(readStoredShowOnline('@me:hs')).toBe(false);
+  });
+
   it('is on while the account data is absent or says nothing, and off when it says so', () => {
     harness.client = makeClient();
     expect(renderHook(() => useShowOnlinePreference()).result.current.showOnline).toBe(true);
@@ -152,7 +166,7 @@ describe('useShowOnlinePreference', () => {
     await act(() => result.current.setShowOnline(true));
 
     expect(client.setAccountData).toHaveBeenCalledWith(EVENT_TYPE, { show_online: true });
-    expect(client.setSyncPresence).toHaveBeenCalledExactlyOnceWith('online');
+    expect(client.setSyncPresence).toHaveBeenLastCalledWith('online');
     expect(client.setPresence).not.toHaveBeenCalled();
     expect(readStoredShowOnline('@me:hs')).toBe(true);
   });
