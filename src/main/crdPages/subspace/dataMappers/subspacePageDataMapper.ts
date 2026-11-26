@@ -1,3 +1,5 @@
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
+import type { ParentSpaceStackItem } from '@/crd/components/space/ParentSpaceStack';
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData, SubspaceHeaderProps } from '@/crd/components/space/SubspaceHeader';
 import type {
@@ -55,6 +57,50 @@ export function mapSubspaceBanner({
     color: pickColorFromId(levelZeroSpaceId ?? levelZeroName),
   };
 }
+
+// ---------------------------------------------------------------------------
+// Ancestors (021 D1: the returned ancestors, root-first, truncated by the resolver)
+// ---------------------------------------------------------------------------
+
+type AncestorLike = {
+  id: string;
+  depth: number;
+  url?: string | null;
+  about: {
+    displayName: string;
+    tagline?: string | null;
+    avatar?: { file: { url: string } } | null;
+    card?: { file: { url: string } } | null;
+  };
+};
+
+/** Breadcrumb hops above the current space; the root has no avatar, so its card banner is its identity image. */
+export const mapAncestorCrumbs = (ancestors: AncestorLike[]): BreadcrumbTrailItem[] =>
+  ancestors.map(ancestor => ({
+    label: ancestor.about.displayName,
+    href: ancestor.url ?? undefined,
+    avatar: {
+      src: (ancestor.depth === 0 ? ancestor.about.card : ancestor.about.avatar)?.file.url || undefined,
+      initials: getInitials(ancestor.about.displayName),
+    },
+  }));
+
+/** The sidebar's stacked parent cards, outermost first: card banners with the deterministic gradient fallback. */
+export const mapParentSpaceStack = (ancestors: AncestorLike[]): ParentSpaceStackItem[] =>
+  ancestors.flatMap(ancestor =>
+    ancestor.url
+      ? [
+          {
+            name: ancestor.about.displayName,
+            initials: getInitials(ancestor.about.displayName),
+            href: ancestor.url,
+            bannerUrl: ancestor.about.card?.file.url || undefined,
+            color: pickColorFromId(ancestor.id),
+            tagline: ancestor.about.tagline ?? undefined,
+          },
+        ]
+      : []
+  );
 
 // ---------------------------------------------------------------------------
 // Header actions

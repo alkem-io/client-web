@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('react-i18next', () => ({
@@ -54,5 +54,33 @@ describe('MyMembershipsPanel', () => {
     render(<MyMembershipsPanel {...base} open={true} items={[item('h1', []), item('h2', [])]} title="I Host" />);
     expect(screen.getByText('Space h1')).toBeInTheDocument();
     expect(screen.getByText('Space h2')).toBeInTheDocument();
+  });
+
+  it('retains and expands metadata-only memberships without navigating', () => {
+    const onNavigate = vi.fn();
+    const child = { ...item('child', ['member']), href: undefined };
+    const parent = { ...item('parent', ['member'], [child]), href: undefined };
+    render(<MyMembershipsPanel {...base} onNavigate={onNavigate} open={true} items={[parent]} />);
+
+    for (const name of ['Space parent', 'Space child']) {
+      const label = screen.getByText(name);
+      expect(label.closest('a')).not.toHaveAttribute('href');
+      fireEvent.click(label);
+    }
+    expect(onNavigate).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'myMembershipsPanel.collapse' }));
+    expect(screen.queryByText('Space child')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'myMembershipsPanel.expand' }));
+    expect(screen.getByText('Space child')).toBeInTheDocument();
+  });
+
+  it('navigates to the exact supplied membership URL', () => {
+    const onNavigate = vi.fn();
+    const membership = { ...item('linked', ['member']), href: '/space/real?view=about#details' };
+    render(<MyMembershipsPanel {...base} onNavigate={onNavigate} open={true} items={[membership]} />);
+
+    expect(screen.getByText('Space linked').closest('a')).toHaveAttribute('href', membership.href);
+    fireEvent.click(screen.getByText('Space linked'));
+    expect(onNavigate).toHaveBeenCalledExactlyOnceWith(membership.href);
   });
 });

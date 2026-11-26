@@ -13,6 +13,7 @@ import type { InnovationPackCardData } from './types';
 
 export type InnovationPackProfileViewProps = {
   pack: InnovationPackCardData & {
+    url: string;
     /** Optional tagline / short subtitle. */
     tagline?: string;
     references?: { id: string; name: string; uri: string; description?: string }[];

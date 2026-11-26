@@ -1,13 +1,11 @@
 import type { ReactNode } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useCalloutContributionCommentsQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { useCrdRoomComments } from '../hooks/useCrdRoomComments';
 
 type CalloutCommentsConnectorProps = {
   roomId: string;
   calloutId?: string;
-  contributionId?: string;
   roomData?: CommentsWithMessagesModel;
   /**
    * Override the default subscription gate. When omitted, the subscription
@@ -53,7 +51,6 @@ type CalloutCommentsConnectorProps = {
 export function CalloutCommentsConnector({
   roomId,
   calloutId: _calloutId,
-  contributionId,
   roomData,
   skipSubscription,
   eager = false,
@@ -64,24 +61,8 @@ export function CalloutCommentsConnector({
   const { ref, inView } = useInView({ triggerOnce: true, delay: 200 });
   const effectiveInView = inView || eager;
 
-  const { data } = useCalloutContributionCommentsQuery({
-    variables: {
-      contributionId: contributionId ?? '',
-      includePost: true,
-    },
-    skip: !contributionId || Boolean(roomData) || !effectiveInView,
-    // Revalidate every time this connector starts observing a response's
-    // thread. The live room subscription only carries messages published while
-    // it is active, and it is torn down with the dialog — so a comment posted
-    // between two opens of the same response exists nowhere in the client.
-    // Under Apollo's default `cache-first` the second open is served entirely
-    // from the normalized cache, no request goes out, and the thread silently
-    // omits that comment until a full page reload. `cache-and-network` keeps
-    // the cached messages on screen (no empty flash) while it refreshes them.
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const room = roomData ?? data?.lookup.contribution?.post?.comments;
+  // Comment threads are not served until WP-MSG1: the room renders from what its post carries (the count).
+  const room = roomData;
 
   // The lazy contribution-query loading state is intentionally not surfaced
   // here: useInView keeps this connector unmounted until the slot scrolls

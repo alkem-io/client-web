@@ -1,17 +1,20 @@
+import type { ApolloError } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  refetchUserSettingsQuery,
-  useDashboardExploreSpacesQuery,
-  useHomeSpaceLookupQuery,
-  useLatestContributionsQuery,
-  useLatestContributionsSpacesFlatQuery,
-  useMyMembershipsQuery,
-  useNonActivityHostedSpacesQuery,
-  useRecentSpacesQuery,
-  useUpdateUserSettingsMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import { ActivityEventType, ActivityFeedRoles, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+  useV2DashboardActivityQuery,
+  useV2DashboardFeedSpacesQuery,
+  useV2DashboardHostedResourcesQuery,
+  useV2DashboardMembershipsQuery,
+  useV2DashboardMostActiveSpacesQuery,
+  useV2DashboardRecentSpacesQuery,
+  useV2DashboardSaveUserSettingsMutation,
+} from '@/core/apollo/generated-v2/apollo-hooks';
+import { RoleName } from '@/core/apollo/generated-v2/legacy-vocabulary';
+import { isNotServedYet } from '@/core/apollo/hooks/nativeErrorWording';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { useReportedQueryError } from '@/core/apollo/hooks/useReportedQueryError';
+import { useNativeFoundation } from '@/core/foundation/NativeFoundationProvider';
 import useNavigate from '@/core/routing/useNavigate';
 import { ActivityDialog } from '@/crd/components/dashboard/ActivityDialog';
 import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
@@ -28,17 +31,18 @@ import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages
 import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 import { LEGACY_VIEW_KEY, resolveActivityView, SEED_FLAG_KEY, shouldSeedFromLegacy } from './activityViewPreference';
 import {
-  mapActivityToFeedItems,
+  type DashboardSpace,
   mapHostedSpacesToPanelItems,
   mapHostSection,
   mapLastActiveSection,
   mapLeadAdminSection,
-  mapMembershipsToPanelItems,
   mapMostActivitySection,
+  mapNativeActivityToFeedItems,
   mapRecentSpacesToCompactCards,
-  type RecentSpaceEntry,
+  WHITEBOARD_CONTENT_MODIFIED_ACTIVITY,
 } from './dashboardDataMappers';
-import { isVcCampaignTargeted } from './isVcCampaignTargeted';
+import { mapDashboardMemberships } from './dashboardV2DataMapper';
+import { isVcCampaignTargeted, isVcCreationAvailable } from './isVcCampaignTargeted';
 import { NonActivityHomeSections } from './NonActivityHomeSections';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
@@ -55,10 +59,11 @@ type DashboardWithMembershipsProps = {
   onPendingMembershipsClick: () => void;
 };
 
-const EXCLUDED_ACTIVITY_TYPES = [ActivityEventType.CalloutWhiteboardContentModified];
+const EXCLUDED_ACTIVITY_TYPES = [WHITEBOARD_CONTENT_MODIFIED_ACTIVITY];
 const ACTIVITY_PAGE_SIZE = 20;
 const SECTION_ACTIVITY_DAYS = 7;
 const SECTION_ITEM_CAP = 4;
+const RECENT_SPACES_LIMIT = 5;
 
 export default function DashboardWithMemberships({
   dialogState,
@@ -67,7 +72,10 @@ export default function DashboardWithMemberships({
   const { t } = useTranslation('crd-dashboard');
   const { t: tMain } = useTranslation();
   const navigate = useNavigate();
-  const { platformRoles, accountEntitlements, accountId, userModel } = useCurrentUserContext();
+  const { platformRoles, userModel } = useCurrentUserContext();
+  const handleError = useApolloErrorHandler();
+  // The raw core.user_settings value: setSettings replaces the whole setting, so a write carries every other key.
+  const { data: foundation } = useNativeFoundation();
   const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
   const [createVcOpen, setCreateVcOpen] = useState(false);
 
@@ -79,17 +87,23 @@ export default function DashboardWithMemberships({
   const [activityOverride, setActivityOverride] = useState<boolean | null>(null);
   const activityEnabled = resolveActivityView(activityOverride, settingActivityView);
 
-  const [updateUserSettings] = useUpdateUserSettingsMutation();
+  const [saveUserSettings] = useV2DashboardSaveUserSettingsMutation();
 
+  // screens-dispositions.tsv:5213 (L009): setSettings(viewer, 'core', 'user_settings'); the returned actor settings
+  // update the foundation viewer in the cache, replacing the legacy UserSettings refetch.
   const persistActivityView = (enabled: boolean) => {
     if (!userId) return;
-    updateUserSettings({
-      variables: { settingsData: { userID: userId, settings: { dashboard: { activityView: enabled } } } },
-      refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
-    }).catch(() => {
+    const settings = (foundation?.viewer.actor?.settings ?? {}) as { dashboard?: Record<string, unknown> };
+    saveUserSettings({
+      variables: {
+        id: userId,
+        value: { ...settings, dashboard: { ...settings.dashboard, activity_view: enabled } },
+      },
+    }).catch((error: ApolloError) => {
       // Persist failed — drop the local override so the UI falls back to the
       // last-known server value rather than showing a change that didn't save.
       setActivityOverride(null);
+      handleError(error);
     });
   };
 
@@ -114,52 +128,58 @@ export default function DashboardWithMemberships({
 
   // Recent spaces
   const { homeSpaceId, membershipSettingsUrl } = useHomeSpaceSettings();
-  const { data: recentSpacesData, loading: recentSpacesLoading } = useRecentSpacesQuery({
-    variables: { limit: 5 },
-  });
-  const { data: homeSpaceData } = useHomeSpaceLookupQuery({
-    variables: { spaceId: homeSpaceId ?? '' },
-    skip: !homeSpaceId,
-  });
+  const {
+    data: recentSpacesData,
+    loading: recentSpacesLoading,
+    error: recentSpacesError,
+  } = useV2DashboardRecentSpacesQuery({ variables: { first: RECENT_SPACES_LIMIT } });
+  useReportedQueryError(recentSpacesError);
+  // screens-dispositions.tsv:19297: the home space card is Viewer.homeSpace (null without READ on the pinned space).
+  const homeSpace = homeSpaceId ? (recentSpacesData?.viewer.homeSpace ?? undefined) : undefined;
 
-  const myRecentSpaces = recentSpacesData?.me.mySpaces ?? [];
+  const myRecentSpaces = recentSpacesData?.viewer.recentSpaces ?? [];
   const recentSpacesEmpty = !recentSpacesLoading && myRecentSpaces.length === 0;
 
   // Memberships — drives the "Explore all" panel, the non-activity Lead & Administer
   // section, and (when the user has no recent contributions) the Recent-spaces fallback.
   const needMemberships = dialogState.openDialog === 'memberships' || !activityEnabled || recentSpacesEmpty;
-  const { data: myMembershipsData, loading: membershipsLoading } = useMyMembershipsQuery({
-    skip: !needMemberships,
-  });
+  const {
+    data: myMembershipsData,
+    loading: membershipsLoading,
+    error: membershipsError,
+  } = useV2DashboardMembershipsQuery({ skip: !needMemberships });
+  useReportedQueryError(membershipsError);
+  const viewerActor = myMembershipsData?.viewer.actor;
+  const memberships = viewerActor && 'memberships' in viewerActor ? viewerActor.memberships : [];
 
   const recentSpaces = (() => {
-    const homeSpace = homeSpaceData?.lookup.space;
-    const memberships = myMembershipsData?.me?.spaceMembershipsHierarchical ?? [];
-    // New members with no contributions have an empty mySpaces; fall back to the
-    // top-level spaces they're a member of. Subspaces are intentionally NOT flattened
-    // in — without activity we only surface the parent spaces, not sub-communities.
-    const source: RecentSpaceEntry[] = myRecentSpaces.length > 0 ? myRecentSpaces : memberships;
+    // New members with no participation have no recent spaces; fall back to the
+    // top-level spaces they're a member of. Subspaces are intentionally NOT included
+    // — without activity we only surface the parent spaces, not sub-communities.
+    const source: DashboardSpace[] =
+      myRecentSpaces.length > 0
+        ? myRecentSpaces.map(entry => entry.space)
+        : memberships.filter(membership => membership.space.depth === 0).map(membership => membership.space);
     // Show every available space (home space first), not an arbitrary few.
-    const filtered = source.filter(s => s.space.id !== homeSpaceId);
-    const all = homeSpace ? [{ space: homeSpace }, ...filtered] : filtered;
-    return mapRecentSpacesToCompactCards(all, homeSpaceId);
+    const filtered = source.filter(space => space.id !== homeSpaceId);
+    return mapRecentSpacesToCompactCards(homeSpace ? [homeSpace, ...filtered] : filtered, homeSpaceId);
   })();
 
   // Non-activity home sections (024)
-  const { data: exploreData } = useDashboardExploreSpacesQuery({
-    variables: { daysOld: SECTION_ACTIVITY_DAYS, limit: SECTION_ITEM_CAP },
+  const { data: exploreData, error: exploreError } = useV2DashboardMostActiveSpacesQuery({
+    variables: { days: SECTION_ACTIVITY_DAYS, first: SECTION_ITEM_CAP },
     skip: activityEnabled,
   });
-  const { data: hostedData, loading: hostedLoading } = useNonActivityHostedSpacesQuery({
-    skip: activityEnabled,
-  });
+  useReportedQueryError(exploreError);
+  // The sidebar's document (one viewer.account read serves the resources, the host section and the campaign).
+  const { data: hostedData, loading: hostedLoading, error: hostedError } = useV2DashboardHostedResourcesQuery();
+  useReportedQueryError(hostedError);
 
-  const hierarchicalMemberships = myMembershipsData?.me?.spaceMembershipsHierarchical ?? [];
-  const hostedSpaces = hostedData?.me.user?.account?.spaces ?? [];
+  const hostedSpaces = hostedData?.viewer.account?.hosted.spaces ?? [];
 
-  const lastActiveItems = mapLastActiveSection(myRecentSpaces, homeSpaceData?.lookup.space ?? undefined, homeSpaceId);
-  const mostActivityItems = mapMostActivitySection(exploreData?.exploreSpaces ?? []);
-  const leadAdminItems = mapLeadAdminSection(hierarchicalMemberships);
+  const lastActiveItems = mapLastActiveSection(myRecentSpaces, homeSpace, homeSpaceId);
+  const mostActivityItems = mapMostActivitySection(exploreData?.spaces.edges.map(edge => edge.node) ?? []);
+  const leadAdminItems = mapLeadAdminSection(memberships);
   const hostItems = mapHostSection(hostedSpaces);
   const hostedPanelItems = mapHostedSpacesToPanelItems(hostedSpaces);
 
@@ -173,8 +193,9 @@ export default function DashboardWithMemberships({
   });
 
   // Activity feed data
-  const { data: spacesData } = useLatestContributionsSpacesFlatQuery();
-  const flatSpaces = spacesData?.me.spaceMembershipsFlat ?? [];
+  const { data: spacesData, error: spacesError } = useV2DashboardFeedSpacesQuery();
+  useReportedQueryError(spacesError);
+  const flatSpaces = spacesData?.spaces.edges.map(edge => edge.node) ?? [];
 
   const [spaceActivityFilter, setSpaceActivityFilter] = useState('all');
   const [roleFilter, setRoleFilter] = useState('all');
@@ -182,64 +203,78 @@ export default function DashboardWithMemberships({
 
   const spaceFilterOptions = [
     { value: 'all', label: t('activity.filter.space.all') },
-    ...flatSpaces.map(m => ({
-      value: m.space.id,
-      label: m.space.about.profile.displayName,
+    ...flatSpaces.map(space => ({
+      value: space.id,
+      label: space.about.displayName,
     })),
   ];
 
   const roleFilterOptions = [
     { value: 'all', label: t('activity.filter.role.all') },
-    { value: ActivityFeedRoles.Member, label: t('activity.filter.role.member') },
-    { value: ActivityFeedRoles.Lead, label: t('activity.filter.role.lead') },
-    { value: ActivityFeedRoles.Admin, label: t('activity.filter.role.admin') },
+    { value: RoleName.Member, label: t('activity.filter.role.member') },
+    { value: RoleName.Lead, label: t('activity.filter.role.lead') },
+    { value: RoleName.Admin, label: t('activity.filter.role.admin') },
   ];
-
-  const spaceActivitySpaceIds = spaceActivityFilter === 'all' ? flatSpaces.map(m => m.space.id) : [spaceActivityFilter];
-  const personalSpaceIds = personalSpaceFilter === 'all' ? flatSpaces.map(m => m.space.id) : [personalSpaceFilter];
 
   const isActivityDialogOpen =
     dialogState.openDialog === 'my-activity' || dialogState.openDialog === 'my-space-activity';
   const needsActivityData = activityEnabled || isActivityDialogOpen;
 
+  // Query.activity (L015/L176): no space = the viewer's member spaces and their readable descendants, as legacy's
+  // all-spaces list; mine false = others' activity (legacy excludeMyActivity), true = own (legacy myActivity).
   const spaceActivityFilter_ = {
-    spaceIds: spaceActivitySpaceIds,
-    roles: roleFilter === 'all' ? undefined : [roleFilter as ActivityFeedRoles],
+    space: spaceActivityFilter === 'all' ? undefined : spaceActivityFilter,
+    roles: roleFilter === 'all' ? undefined : [roleFilter],
     excludeTypes: EXCLUDED_ACTIVITY_TYPES,
-    excludeMyActivity: true,
+    mine: false,
   };
 
   const personalActivityFilter_ = {
-    spaceIds: personalSpaceIds,
-    myActivity: true,
+    space: personalSpaceFilter === 'all' ? undefined : personalSpaceFilter,
     excludeTypes: EXCLUDED_ACTIVITY_TYPES,
+    mine: true,
   };
 
   const {
     data: spaceActivityData,
     loading: spaceActivityLoading,
+    error: spaceActivityError,
     fetchMore: fetchMoreSpaceActivity,
-  } = useLatestContributionsQuery({
-    variables: { first: ACTIVITY_PAGE_SIZE, filter: spaceActivityFilter_ },
+  } = useV2DashboardActivityQuery({
+    variables: { first: ACTIVITY_PAGE_SIZE, ...spaceActivityFilter_ },
     skip: !needsActivityData || flatSpaces.length === 0,
     notifyOnNetworkStatusChange: true,
   });
+  // Query.activity is NOT1's: while it is not served, each feed shows its not-available state once, with no toast,
+  // retry or fetchMore.
+  const spaceActivityUnavailable = isNotServedYet(spaceActivityError);
+  useReportedQueryError(spaceActivityUnavailable ? undefined : spaceActivityError);
 
   const {
     data: personalActivityData,
     loading: personalActivityLoading,
+    error: personalActivityError,
     fetchMore: fetchMorePersonalActivity,
-  } = useLatestContributionsQuery({
-    variables: { first: ACTIVITY_PAGE_SIZE, filter: personalActivityFilter_ },
+  } = useV2DashboardActivityQuery({
+    variables: { first: ACTIVITY_PAGE_SIZE, ...personalActivityFilter_ },
     skip: !needsActivityData || flatSpaces.length === 0,
     notifyOnNetworkStatusChange: true,
   });
+  const personalActivityUnavailable = isNotServedYet(personalActivityError);
+  useReportedQueryError(personalActivityUnavailable ? undefined : personalActivityError);
+  const activityUnavailableText = tMain('apollo.errors.userMessages.operations.notAvailableYet');
 
-  const spaceActivityItems = mapActivityToFeedItems(spaceActivityData?.activityFeed?.activityFeed ?? [], tMain);
-  const personalActivityItems = mapActivityToFeedItems(personalActivityData?.activityFeed?.activityFeed ?? [], tMain);
+  const spaceActivityItems = mapNativeActivityToFeedItems(
+    spaceActivityData?.activity.edges.map(edge => edge.node) ?? [],
+    tMain
+  );
+  const personalActivityItems = mapNativeActivityToFeedItems(
+    personalActivityData?.activity.edges.map(edge => edge.node) ?? [],
+    tMain
+  );
 
-  const spacePageInfo = spaceActivityData?.activityFeed?.pageInfo;
-  const personalPageInfo = personalActivityData?.activityFeed?.pageInfo;
+  const spacePageInfo = spaceActivityData?.activity.pageInfo;
+  const personalPageInfo = personalActivityData?.activity.pageInfo;
   const [loadingMoreSpaceActivity, setLoadingMoreSpaceActivity] = useState(false);
   const [loadingMorePersonalActivity, setLoadingMorePersonalActivity] = useState(false);
 
@@ -248,7 +283,7 @@ export default function DashboardWithMemberships({
     setLoadingMoreSpaceActivity(true);
     try {
       await fetchMoreSpaceActivity({
-        variables: { first: ACTIVITY_PAGE_SIZE, after: spacePageInfo.endCursor, filter: spaceActivityFilter_ },
+        variables: { first: ACTIVITY_PAGE_SIZE, after: spacePageInfo.endCursor, ...spaceActivityFilter_ },
       });
     } finally {
       setLoadingMoreSpaceActivity(false);
@@ -260,7 +295,7 @@ export default function DashboardWithMemberships({
     setLoadingMorePersonalActivity(true);
     try {
       await fetchMorePersonalActivity({
-        variables: { first: ACTIVITY_PAGE_SIZE, after: personalPageInfo.endCursor, filter: personalActivityFilter_ },
+        variables: { first: ACTIVITY_PAGE_SIZE, after: personalPageInfo.endCursor, ...personalActivityFilter_ },
       });
     } finally {
       setLoadingMorePersonalActivity(false);
@@ -268,12 +303,11 @@ export default function DashboardWithMemberships({
   };
 
   // Memberships panel — reuses the same query loaded above.
-  const membershipsItems = mapMembershipsToPanelItems(myMembershipsData?.me?.spaceMembershipsHierarchical ?? []);
+  const membershipsItems = mapDashboardMemberships(memberships);
 
-  // Campaign
+  // Campaign (screens-dispositions.tsv:16196)
   const showCampaign =
-    isVcCampaignTargeted(platformRoles) &&
-    accountEntitlements?.some(e => e === LicenseEntitlementType.AccountVirtualContributor);
+    isVcCampaignTargeted(platformRoles) && isVcCreationAvailable(hostedData?.viewer.account?.canCreate);
 
   // Tips — from crd-dashboard namespace
   const tipsRaw = t('tips.items', { returnObjects: true });
@@ -322,6 +356,7 @@ export default function DashboardWithMemberships({
               feedId="inline-spaces"
               title={t('activity.spacesTitle')}
               items={spaceActivityItems}
+              unavailableText={spaceActivityUnavailable ? activityUnavailableText : undefined}
               loading={spaceActivityLoading && spaceActivityItems.length === 0}
               spaceFilter={spaceActivityFilter}
               spaceFilterOptions={spaceFilterOptions}
@@ -337,6 +372,7 @@ export default function DashboardWithMemberships({
               feedId="inline-personal"
               title={t('activity.personalTitle')}
               items={personalActivityItems}
+              unavailableText={personalActivityUnavailable ? activityUnavailableText : undefined}
               loading={personalActivityLoading && personalActivityItems.length === 0}
               spaceFilter={personalSpaceFilter}
               spaceFilterOptions={spaceFilterOptions}
@@ -362,9 +398,7 @@ export default function DashboardWithMemberships({
           />
         )}
       </DashboardLayout>
-      {accountId && (
-        <CrdCreateSpaceDialog open={createSpaceOpen} accountId={accountId} onClose={() => setCreateSpaceOpen(false)} />
-      )}
+      <CrdCreateSpaceDialog open={createSpaceOpen} onClose={() => setCreateSpaceOpen(false)} />
 
       <TipsAndTricksDialog
         open={dialogState.openDialog === 'tips-and-tricks'}
@@ -384,6 +418,7 @@ export default function DashboardWithMemberships({
           feedId="dialog-personal"
           title=""
           items={personalActivityItems}
+          unavailableText={personalActivityUnavailable ? activityUnavailableText : undefined}
           loading={personalActivityLoading && personalActivityItems.length === 0}
           spaceFilter={personalSpaceFilter}
           spaceFilterOptions={spaceFilterOptions}
@@ -405,6 +440,7 @@ export default function DashboardWithMemberships({
           feedId="dialog-spaces"
           title=""
           items={spaceActivityItems}
+          unavailableText={spaceActivityUnavailable ? activityUnavailableText : undefined}
           loading={spaceActivityLoading && spaceActivityItems.length === 0}
           spaceFilter={spaceActivityFilter}
           spaceFilterOptions={spaceFilterOptions}

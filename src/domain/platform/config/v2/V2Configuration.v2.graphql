@@ -1,0 +1,39 @@
+# replaces: configuration (src/domain/platform/config/configuration.graphql), VapidPublicKey (src/main/pushNotifications/graphql/vapidPublicKey.graphql)
+query V2Configuration {
+  config {
+    platformId
+    languages
+    defaultLanguage
+    features
+    authentication {
+      kratosPublicUrl
+    }
+    matrix {
+      homeserverUrl
+      sessionBaseUrl
+      serverName
+    }
+    links {
+      key
+      url
+    }
+    iframeAllowlist
+    telemetry {
+      environment
+      sentry { enabled endpoint submitPII environment }
+      apm { rumEnabled endpoint }
+    }
+    geo {
+      enabled
+      endpoint
+    }
+    vapidPublicKey
+    versions {
+      server
+    }
+    storage {
+      maxFileSize
+      allowedMime
+    }
+  }
+}

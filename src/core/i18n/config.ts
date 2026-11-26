@@ -9,6 +9,7 @@ import crdCommonEN from '@/crd/i18n/common/common.en.json';
 // boundary can render a CRD error page even when a crash happens at boot,
 // before the lazy backend has a chance to fetch it.
 import crdErrorEN from '@/crd/i18n/error/error.en.json';
+import crdExploreSpacesEN from '@/crd/i18n/exploreSpaces/exploreSpaces.en.json';
 // CRD layout namespace — eagerly loaded (renders on every CRD page)
 import crdLayoutEN from '@/crd/i18n/layout/layout.en.json';
 import { env } from '@/main/env';
@@ -251,6 +252,7 @@ const translationCache = new Map<string, Record<string, unknown>>();
 translationCache.set(`${defaultLang}-${defaultNS}`, crdCommonEN);
 translationCache.set(`${defaultLang}-crd-layout`, crdLayoutEN);
 translationCache.set(`${defaultLang}-crd-error`, crdErrorEN);
+translationCache.set(`${defaultLang}-crd-exploreSpaces`, crdExploreSpacesEN);
 
 // Custom backend for lazy loading
 const lazyBackend = {
@@ -309,6 +311,7 @@ i18n
         'crd-common': crdCommonEN,
         'crd-layout': crdLayoutEN,
         'crd-error': crdErrorEN,
+        'crd-exploreSpaces': crdExploreSpacesEN,
       },
     },
     // DL-10 / SC-001c / FR-004 / SC-005: reconfigure the language detector so the

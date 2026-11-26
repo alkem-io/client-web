@@ -1,113 +1,74 @@
+import { useSpaceCommunityCandidatesLazyQuery } from '@/core/apollo/generated-v2/apollo-hooks';
+import { CandidateEntry } from '@/core/apollo/generated-v2/graphql-schema';
 import {
-  useAvailableVirtualContributorsInLibraryLazyQuery,
-  useAvailableVirtualContributorsInSpaceAccountLazyQuery,
-  useAvailableVirtualContributorsInSpaceLazyQuery,
-} from '@/core/apollo/generated/apollo-hooks';
-import type { VirtualContributorFullFragment } from '@/core/apollo/generated/graphql-schema';
-import { SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import type { Identifiable } from '@/core/utils/Identifiable';
+  ACTOR_TYPE,
+  SPACE_ROLE,
+  type SpaceCommunityCandidate,
+  toSpaceCommunityCandidate,
+} from '@/domain/spaceAdmin/SpaceAdminCommunity/native/spaceCommunityNative';
 
 interface useVirtualContributorsAdminParams {
-  level: SpaceLevel;
   spaceId: string;
-  currentMembers: Identifiable[];
-}
-
-export interface ContributorNameProps extends Identifiable {
-  profile?: {
-    displayName: string;
-  };
 }
 
 export interface useVirtualContributorsAdminProvided {
   virtualContributorAdmin: {
-    getAvailable: (filter?: string) => Promise<VirtualContributorFullFragment[]>;
-    getAvailableInLibrary: (filter: string | undefined) => Promise<VirtualContributorFullFragment[]>;
+    /** VCs this viewer may add directly as members (account VCs) — `candidates(entry: DIRECT)`. */
+    getAvailable: (filter?: string) => Promise<SpaceCommunityCandidate[]>;
+    /** VCs this viewer may invite (library VCs) — `candidates(entry: INVITE)`. */
+    getAvailableInLibrary: (filter: string | undefined) => Promise<SpaceCommunityCandidate[]>;
   };
 }
 
+const PAGE_SIZE = 100;
+
+/**
+ * VC candidates for a space's member role (invite-candidates, community-roles-screens.tsv:173).
+ * The server decides admission — account agency, current holders and open requests are filtered
+ * before paging — so the client only reads every page of each list.
+ */
 const useVirtualContributorsAdmin = ({
-  level,
-  currentMembers,
   spaceId,
 }: useVirtualContributorsAdminParams): useVirtualContributorsAdminProvided => {
-  // Filter functions for contributors already in the role
-  const filterByName = (vc: ContributorNameProps, filter?: string) =>
-    (vc.profile?.displayName ?? '').toLowerCase().includes(filter?.toLowerCase() ?? '');
+  // One lazy query per entry so the two lists can load concurrently without sharing one observable.
+  const [fetchDirect] = useSpaceCommunityCandidatesLazyQuery({ fetchPolicy: 'network-only' });
+  const [fetchInvite] = useSpaceCommunityCandidatesLazyQuery({ fetchPolicy: 'network-only' });
 
-  const filterExisting = (currentMembers: Identifiable[]) => (contributor: Identifiable) =>
-    !currentMembers.some(member => member.id === contributor.id);
-
-  // TODO: Implement ServerSide pagination and filtering for VCs
-  const mockPaginatedResponse = <T>(virtualContributors: T[], refetch: () => Promise<unknown>) => ({
-    virtualContributors,
-    refetch,
-    hasMore: false,
-    loading: false,
-    fetchMore: () => Promise.resolve(),
-  });
-  const filterExistingVcs = filterExisting(currentMembers);
-
-  //////
-  // Library
-  const [fetchAvailableVirtualContributorsInLibrary] = useAvailableVirtualContributorsInLibraryLazyQuery();
-  const findAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
-    const { data, refetch } = await fetchAvailableVirtualContributorsInLibrary();
-
-    const virtualContributors = (data?.platform.library.virtualContributors ?? []).filter(
-      vc => vc.searchVisibility === SearchVisibility.Public && filterByName(vc, filter) && filterExistingVcs(vc)
-    );
-
-    return mockPaginatedResponse(virtualContributors, refetch);
-  };
-
-  const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
-    const { virtualContributors } = await findAvailableVirtualContributorsInLibrary(filter);
-    return virtualContributors;
-  };
-
-  //////
-  // Space
-  const [fetchAvailableVirtualContributorsInSpaceAccount] = useAvailableVirtualContributorsInSpaceAccountLazyQuery();
-  const [fetchAvailableVirtualContributorsInSpace] = useAvailableVirtualContributorsInSpaceLazyQuery();
-  const findAvailableVirtualContributors = async (filter: string | undefined) => {
-    // Get from Account on Space
-    if (level === SpaceLevel.L0) {
-      const { data, refetch } = await fetchAvailableVirtualContributorsInSpaceAccount({
+  const loadAll = async (
+    fetchPage: typeof fetchDirect,
+    entry: CandidateEntry,
+    filter: string | undefined
+  ): Promise<SpaceCommunityCandidate[]> => {
+    const candidates: SpaceCommunityCandidate[] = [];
+    let after: string | undefined;
+    do {
+      const { data, error } = await fetchPage({
         variables: {
-          spaceId: spaceId!,
+          space: spaceId,
+          role: SPACE_ROLE.Member,
+          entry,
+          actorType: ACTOR_TYPE.VirtualContributor,
+          terms: filter || undefined,
+          first: PAGE_SIZE,
+          after,
         },
       });
-      // data?.lookup?.space?.account.virtualContributors is always an array
-      const virtualContributors = data?.lookup?.space?.account.virtualContributors ?? [];
-      const filteredVCs = virtualContributors.filter(vc => filterByName(vc, filter) && filterExistingVcs(vc));
-      return mockPaginatedResponse(filteredVCs, refetch);
-    }
-
-    // Get from L0 space for subspaces
-    const { data, refetch } = await fetchAvailableVirtualContributorsInSpace({
-      variables: {
-        spaceId: spaceId!,
-      },
-    });
-    // TODO: when move over to paginated handling of VCs fully then this can be removed
-    // For now convert to the mockPaginatedResponse. Note: the filtering is done on the server to remove
-    // VCs from the list that are already a member.
-    const virtualContributors =
-      data?.lookup?.space?.community.roleSet.availableVirtualContributorsForEntryRole?.virtualContributors ?? [];
-    const filteredVCs = virtualContributors.filter(vc => filterByName(vc, filter) && filterExistingVcs(vc));
-    return mockPaginatedResponse(filteredVCs, refetch);
-  };
-
-  const getAvailableVirtualContributors = async (filter: string | undefined) => {
-    const { virtualContributors } = await findAvailableVirtualContributors(filter);
-    return virtualContributors;
+      if (error) throw error;
+      if (!data) throw new Error('candidates returned no result');
+      candidates.push(...data.candidates.edges.map(edge => toSpaceCommunityCandidate(edge.node)));
+      const { hasNextPage, endCursor } = data.candidates.pageInfo;
+      if (hasNextPage && (!endCursor || endCursor === after)) {
+        throw new Error('candidates continuation did not advance its cursor');
+      }
+      after = hasNextPage ? (endCursor ?? undefined) : undefined;
+    } while (after);
+    return candidates;
   };
 
   return {
     virtualContributorAdmin: {
-      getAvailable: getAvailableVirtualContributors,
-      getAvailableInLibrary: getAvailableVirtualContributorsInLibrary,
+      getAvailable: filter => loadAll(fetchDirect, CandidateEntry.Direct, filter),
+      getAvailableInLibrary: filter => loadAll(fetchInvite, CandidateEntry.Invite, filter),
     },
   };
 };

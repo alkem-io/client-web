@@ -1,14 +1,17 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-const useTaskBoardDataQuery = vi.fn();
+// The board post is read from the cache (021 H19); the legacy TaskBoardData query is absent from the mock below.
+const useCachedPost = vi.fn();
+vi.mock('@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails', () => ({
+  useCachedPost: (id: string) => useCachedPost(id),
+}));
 const createColumnMock = vi.fn();
 const renameColumnMock = vi.fn();
 const deleteColumnMock = vi.fn();
 const reorderColumnsMock = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useTaskBoardDataQuery: (options: unknown) => useTaskBoardDataQuery(options),
   useCreateTaskColumnOnCalloutMutation: () => [createColumnMock, {}] as const,
   useUpdateTaskColumnOnCalloutMutation: () => [renameColumnMock, {}] as const,
   useDeleteTaskColumnOnCalloutMutation: () => [deleteColumnMock, {}] as const,
@@ -32,19 +35,26 @@ vi.mock('@/crd/components/callout/task-board/TaskBoardColumnsDialog', () => ({
 }));
 
 import { TaskBoardColumnsConnector } from './TaskBoardColumnsConnector';
+import { TaskBoardManageColumnsButton } from './TaskBoardManageColumnsButton';
 
-function boardCallout() {
+function boardPost(manageColumns = true) {
   return {
     id: 'callout-1',
-    classification: {
-      id: 'c',
-      tagsets: [{ id: 't', name: 'task', allowedValues: ['Backlog', 'Done'] }],
+    contentKind: 'task_board',
+    can: { manageColumns },
+    content: {
+      __typename: 'TaskBoardContent',
+      columns: [
+        { id: 'done', name: 'Done', sortOrder: 1 },
+        { id: 'backlog', name: 'Backlog', sortOrder: 0 },
+      ],
+      tasks: [],
     },
   };
 }
 
 afterEach(() => {
-  useTaskBoardDataQuery.mockReset();
+  useCachedPost.mockReset();
   createColumnMock.mockReset();
   renameColumnMock.mockReset();
   deleteColumnMock.mockReset();
@@ -53,11 +63,11 @@ afterEach(() => {
 });
 
 describe('TaskBoardColumnsConnector', () => {
-  it('feeds the dialog the columns from the task tagset and wires the four mutations', () => {
-    useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
+  it("feeds the dialog the board's columns in their order and wires the four mutations", () => {
+    useCachedPost.mockReturnValue(boardPost());
     render(<TaskBoardColumnsConnector calloutId="callout-1" open={true} onOpenChange={() => {}} />);
 
-    // Columns come from the tagset's allowedValues, in order.
+    expect(useCachedPost).toHaveBeenCalledWith('callout-1');
     expect(capturedColumnsProps?.columns).toEqual([{ name: 'Backlog' }, { name: 'Done' }]);
 
     (capturedColumnsProps?.onAddColumn as (name: string) => void)('Review');
@@ -82,10 +92,22 @@ describe('TaskBoardColumnsConnector', () => {
   });
 
   it('passes the controlled open state through to the dialog', () => {
-    useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
+    useCachedPost.mockReturnValue(boardPost());
     const onOpenChange = vi.fn();
     render(<TaskBoardColumnsConnector calloutId="callout-1" open={false} onOpenChange={onOpenChange} />);
     expect(capturedColumnsProps?.open).toBe(false);
     expect(capturedColumnsProps?.onOpenChange).toBe(onOpenChange);
+  });
+});
+
+describe('TaskBoardManageColumnsButton', () => {
+  it('is offered only when the board allows managing its columns', () => {
+    useCachedPost.mockReturnValue(boardPost(false));
+    const { rerender } = render(<TaskBoardManageColumnsButton calloutId="callout-1" />);
+    expect(screen.queryByRole('button', { name: 'columns.manage' })).not.toBeInTheDocument();
+
+    useCachedPost.mockReturnValue(boardPost(true));
+    rerender(<TaskBoardManageColumnsButton calloutId="callout-1" />);
+    expect(screen.getByRole('button', { name: 'columns.manage' })).toBeInTheDocument();
   });
 });

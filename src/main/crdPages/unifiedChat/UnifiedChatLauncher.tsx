@@ -12,11 +12,6 @@ type UnifiedChatLauncherProps = {
   hidden?: boolean;
 };
 
-/**
- * The single floating chat entry point for CRD pages: the launcher button plus
- * the (open-only) panel. The unread badge while closed comes from the lightweight
- * unread-count query; when open, the full conversations query is authoritative.
- */
 export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
   const { t } = useTranslation('crd-chat');
   const { isEnabled, isOpen, setIsOpen } = useUserMessagingContext();

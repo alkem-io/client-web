@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import useCalloutDetails from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
+import { useNativeRouteSpace } from '@/main/routing/urlResolver/native/useNativeRouteSpace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useMemoSigningReturnContext } from '@/main/ui/layout/MemoSigningReturnContext';
+import { mapPostToCallout } from '../dataMappers/calloutDataMapper';
 import { CalloutDeeplinkView } from './CalloutDeeplinkView';
 
 type CrdCalloutDialogFromUrlProps = {
@@ -20,7 +22,13 @@ type CrdCalloutDialogFromUrlProps = {
  * CRD dialog so deep links land on the new UI.
  */
 export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProps) {
-  const { calloutId, calloutsSetId, contributionId, postId, loading: urlLoading } = useUrlResolver();
+  // 021 D1/D2: the URL's post, or a response URL's parent with the response selected in its window; the
+  // layout loaded it with the page (SpacePageWithPost), so it is read from the cache.
+  const { spaceId: calloutsSetId, loading: urlLoading } = useUrlResolver();
+  const { post: routePost } = useNativeRouteSpace();
+  const calloutId = routePost?.parentPost?.id ?? routePost?.id;
+  const contributionId = routePost?.parentPost ? routePost.id : undefined;
+  const postId = contributionId;
   const { restoreIntent, setRestoreIntent, setRestoreResolution, routeSettlementRequest, setRouteSettlement } =
     useMemoSigningReturnContext();
 
@@ -28,6 +36,7 @@ export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProp
     calloutId,
     calloutsSetId,
     withClassification: true,
+    toCallout: post => mapPostToCallout(post, [], calloutsSetId),
     skip: !calloutId,
     overrideCalloutSettings: { movable: true },
   });

@@ -2,7 +2,7 @@ import { formatDuration } from 'date-fns';
 import type { TFunction } from 'i18next';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import {
   AUTH_REMINDER_PATH,
@@ -15,9 +15,7 @@ import {
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import type { LocationStateWithKratosErrors } from '@/core/auth/authentication/pages/LocationStateWithKratosErrors';
-import LoginSuccessPage from '@/core/auth/authentication/pages/LoginSuccessPage';
 import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
-import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { resolveInternalReturnPath } from '@/core/utils/links';
@@ -26,7 +24,7 @@ import { LoginCard, type LoginCardNotice } from '@/crd/components/auth/LoginCard
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { buildSignUpUrl } from '@/main/routing/urlBuilders';
-import { AuthShellWrapper } from './AuthShellWrapper';
+import { AuthFlowContext, AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger, PasskeyTriggerError } from './passkeyTrigger';
 import { useKratosMessageCopy, useTranslateDescriptor } from './useKratosMessageCopy';
@@ -87,6 +85,16 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const [passkeyError, setPasskeyError] = useState<string>();
   const translateDescriptor = useTranslateDescriptor();
   const translateMessages = useKratosMessageCopy();
+  const forwardedMessages = kratosErrors
+    ? translateMessages(
+        kratosErrors.map(message => ({
+          id: message.id,
+          type: message.type as KratosMessage['type'],
+          text: message.text,
+          context: message.context as Record<string, unknown> | undefined,
+        }))
+      )
+    : undefined;
 
   // OIDC BFF entry (parity with the MUI `LoginPage`): when this page is reached
   // without a Kratos flow id the user is starting a fresh sign-in — hand off to
@@ -111,7 +119,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   // Like a lockout arrival this is NOT an OIDC entry — redirecting would throw
   // the reason away before it could be read.
   const appSignIn = readAppSignIn(params);
-  const isOidcEntry = !flow && !isLockedOutArrival && !appSignIn;
+  const isOidcEntry = !flow && !isLockedOutArrival && !appSignIn && !kratosErrors?.length;
 
   useLayoutEffect(() => {
     if (!isOidcEntry) return;
@@ -157,16 +165,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     // from the registration flow) arrive as raw Kratos text — run them through
     // the same copy overrides as inline flow messages so the user sees Alkemio's
     // wording, matching the MUI `LoginPage` → `KratosMessages` path.
-    let messages: KratosMessage[] = kratosErrors
-      ? translateMessages(
-          kratosErrors.map(error => ({
-            id: error.id,
-            type: error.type as KratosMessage['type'],
-            text: error.text,
-            context: error.context as Record<string, unknown> | undefined,
-          }))
-        )
-      : base.messages;
+    let messages: KratosMessage[] = forwardedMessages ?? base.messages;
     if (isLockedOut) {
       messages = [
         ...messages,
@@ -183,14 +182,6 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     return { ...base, messages };
   })();
 
-  // The two arrivals that carry their reason in the query string: the backoff
-  // proxy's lockout bounce, and the shell / server hand-off bounce. Neither may
-  // render a Kratos form — the auto-provisioned flow is deliberately ignored,
-  // both because a Kratos-native login would bypass Hydra and because the
-  // backoff proxy would refuse the POST anyway — so each renders its notice with
-  // a manual re-entry into the OIDC sign-in. Lockout wins when both are present:
-  // the account is blocked either way. Nothing here knows or asks whether it is
-  // running in the app; the card is correct in a plain browser too.
   const arrivalNotice: LoginCardNotice | undefined = isLockedOutArrival
     ? {
         text: t('authentication.lockout', { duration: lockoutDuration }),
@@ -204,7 +195,13 @@ function CrdLoginPage({ flow }: { flow?: string }) {
           actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
           tone: appSignIn === 'failed' ? 'destructive' : 'info',
         }
-      : undefined;
+      : forwardedMessages?.length
+        ? {
+            text: forwardedMessages.map(message => message.text).join(' '),
+            actionLabel: tAuth('signUp.signIn'),
+            actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
+          }
+        : undefined;
 
   if (!flow && arrivalNotice) {
     return (
@@ -300,30 +297,10 @@ function translatePasskeyError(t: TFunction, error: unknown): string {
   return t('authentication.passkey.unknown-error');
 }
 
-/**
- * CRD login route — the replacement for the MUI `LoginRoute`.
- * Mirrors its structure: the login screen at `/` and the post-login
- * success handler at `/success`.
- *
- * A Kratos-initiated login arrives here with a `flow` id in the URL. This
- * includes *refresh* (re-authentication) logins, which Kratos demands before
- * privileged Settings changes — adding a passkey, changing the password —
- * once the session is older than `privileged_session_max_age`. In that case
- * the user already holds a (non-privileged) session, so the usual
- * `NotAuthenticatedRoute` guard would bounce them to the dashboard and the
- * re-auth form would never render, silently aborting the Settings change.
- * Whenever a flow id is present we render the login page regardless of
- * authentication state so the flow (incl. refresh / step-up) can complete.
- */
+// The provider's flow owns login authorization; flow-less entry restarts at the BFF.
 export function LoginCrdRoute() {
   const params = useQueryParams();
   const flow = params.get('flow') || undefined;
-  // A hand-off arrival carries no flow id but, like a Kratos refresh login, can
-  // legitimately reach this page while the user still holds an `alkemio_session`
-  // (Settings > Security re-auth is exactly that case). Exempt it from the guard
-  // alongside `flow`, or `NotAuthenticatedRoute` bounces it to the dashboard and
-  // the notice never renders.
-  const appSignIn = readAppSignIn(params);
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
   const { setReturnUrl } = useReturnUrl();
 
@@ -336,15 +313,9 @@ export function LoginCrdRoute() {
     }
   }, [returnUrl]);
 
-  const loginPage = <CrdLoginPage flow={flow} />;
-
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={flow || appSignIn ? loginPage : <NotAuthenticatedRoute>{loginPage}</NotAuthenticatedRoute>}
-      />
-      <Route path="success" element={<LoginSuccessPage />} />
-    </Routes>
+    <AuthFlowContext>
+      <CrdLoginPage flow={flow} />
+    </AuthFlowContext>
   );
 }

@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useAdminAccessGuard } from '../useAdminAccessGuard';
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
@@ -80,7 +81,7 @@ describe('useAdminAccessGuard', () => {
     expect(
       guard({
         platform: ['CREATE_ORGANIZATION', 'PLATFORM_FORUM_MANAGE', 'PLATFORM_SUPPORT_LISTS_READ'],
-        myRoles: ['PLATFORM_SUPPORT'],
+        myRoles: [RoleName.PlatformSupport],
       }).isPlatformAdmin
     ).toBe(true);
   });
@@ -102,7 +103,7 @@ describe('useAdminAccessGuard', () => {
   // is anchored on account policies. Without the role check the operator is
   // redirected off /admin/transfer, the only section it exists to run.
   test('admits Platform Resource Admin by role, holding NO platform-level privilege (F1)', () => {
-    expect(guard({ myRoles: ['PLATFORM_RESOURCE_ADMIN'] }).isPlatformAdmin).toBe(true);
+    expect(guard({ myRoles: [RoleName.PlatformResourceAdmin] }).isPlatformAdmin).toBe(true);
   });
 
   test('denies an ordinary registered user', () => {
@@ -117,7 +118,7 @@ describe('useAdminAccessGuard', () => {
    */
   test.each([
     ['Platform Settings Admin', { platform: ['PLATFORM_SETTINGS_ADMIN'] }],
-    ['Feature Beta Tester', { myRoles: ['FEATURE_BETA_TESTER'] }],
+    ['Feature Beta Tester', { myRoles: [RoleName.FeatureBetaTester] }],
   ])('denies %s — no usable section', (_role, fixture) => {
     expect(guard(fixture).isPlatformAdmin).toBe(false);
   });

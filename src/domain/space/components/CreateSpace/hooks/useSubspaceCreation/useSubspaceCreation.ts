@@ -1,170 +1,42 @@
+import { ApolloError } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import {
-  type CreateSubspaceMutationOptions,
-  refetchCurrentUserLightQuery,
-  SubspaceCardFragmentDoc,
-  useCreateSubspaceMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import {
-  CommunityMembershipStatus,
-  PlatformFeatureFlagName,
-  SpaceLevel,
-  SpaceVisibility,
-  TagsetReservedName,
-  TagsetType,
-  VisualType,
-} from '@/core/apollo/generated/graphql-schema';
-import type { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
-import { useConfig } from '@/domain/platform/config/useConfig';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import useUploadVisualsOnCreate from '../useUploadVisualsOnCreate/useUploadVisualsOnCreate';
+import { type CreateSubspaceMutationOptions, useCreateSubspaceMutation } from '@/core/apollo/generated-v2/apollo-hooks';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { mapCreatedSpace, type SpaceCreationProfile, spaceCreationBlueprint } from '../spaceCreationBlueprint';
+import useUploadVisualsOnCreate, { type SpaceVisuals } from '../useUploadVisualsOnCreate/useUploadVisualsOnCreate';
 
-interface SubspaceCreationInput {
-  spaceID: string;
-  about: {
-    profile: {
-      displayName: string;
-      tagline: string;
-      description?: string;
-      visuals: {
-        avatar?: VisualUploadModel;
-        cardBanner?: VisualUploadModel;
-      };
-      tags: string[];
-    };
-    why?: string;
-  };
-  addTutorialCallouts: boolean;
-  addCallouts?: boolean;
+type SubspaceCreationInput = {
+  parentId: string;
+  profile: SpaceCreationProfile;
+  visuals: SpaceVisuals;
   spaceTemplateId?: string;
-}
+};
 
+/** The subspace submit of 023 FR-020: `createSpace` under a parent, with the template the picker holds. */
 export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptions = {}) => {
-  const { spaceId } = useUrlResolver();
-  const { isFeatureEnabled } = useConfig();
-
+  const [createSubspace, { loading }] = useCreateSubspaceMutation(mutationOptions);
   const { t } = useTranslation();
+  // The native client has no global error link: a refusal (023 refusal table) is shown here, as legacy's link did.
+  const handleError = useApolloErrorHandler();
   const { uploadVisuals } = useUploadVisualsOnCreate({ entityName: t('common.subspace') });
 
-  const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
-  const {
-    refetchQueries = [refetchCurrentUserLightQuery()], // default to refetching user provider
-    ...restMutationOptions
-  } = mutationOptions;
-
-  const [createSubspaceLazy, { loading }] = useCreateSubspaceMutation({
-    update: (cache, { data }) => {
-      if (subscriptionsEnabled || !data) {
-        return;
-      }
-
-      const { createSubspace } = data;
-
-      const spaceRefId = cache.identify({
-        __typename: 'Space',
-        id: spaceId,
-      });
-
-      if (!spaceRefId) {
-        return;
-      }
-
-      cache.modify({
-        id: spaceRefId,
-        fields: {
-          subspaces(existingChallenges = []) {
-            const newChallengeRef = cache.writeFragment({
-              data: createSubspace,
-              fragment: SubspaceCardFragmentDoc,
-              fragmentName: 'SubspaceCard',
-            });
-            return [...existingChallenges, newChallengeRef];
-          },
-        },
-      });
-    },
-    refetchQueries,
-    ...restMutationOptions,
-  });
-
-  const createSubspace = async (value: SubspaceCreationInput) => {
-    const includeVisuals =
-      Boolean(value.about.profile.visuals.avatar?.file) || Boolean(value.about.profile.visuals.cardBanner?.file);
-
-    const { data } = await createSubspaceLazy({
+  const handleCreateSubspace = async (value: SubspaceCreationInput) => {
+    const { data } = await createSubspace({
       variables: {
         input: {
-          spaceID: value.spaceID,
-          spaceTemplateID: value.spaceTemplateId ? value.spaceTemplateId : undefined,
-          about: {
-            why: value.about.why,
-            profileData: {
-              displayName: value.about.profile.displayName,
-              tagline: value.about.profile.tagline,
-              description: value.about.profile.description,
-              tags: value.about.profile.tags,
-            },
-          },
-          collaborationData: {
-            // addTutorialCallouts: value.addTutorialCallouts, // temporarily disabled
-            addCallouts: value.addCallouts, // we always want to add the default callouts
-            calloutsSetData: {},
-          },
-        },
-        includeVisuals,
-      },
-      optimisticResponse: {
-        createSubspace: {
-          id: '',
-          level: SpaceLevel.L1,
-          visibility: SpaceVisibility.Active,
-          pinned: false,
-          sortOrder: 0,
-          about: {
-            id: '',
-            why: value.about.why,
-            profile: {
-              id: '',
-              displayName: value.about.profile.displayName ?? '',
-              tagline: value.about.profile.tagline,
-              url: '',
-              // Optimistic placeholders — the real visuals arrive with the
-              // mutation result. Ratios match the server's defaults for each type.
-              cardBanner: {
-                id: '',
-                uri: '',
-                name: VisualType.Card,
-              },
-              avatar: {
-                id: '',
-                uri: '',
-                name: VisualType.Avatar,
-              },
-              tagset: {
-                id: '-1',
-                name: TagsetReservedName.Default,
-                tags: value.about.profile.tags ?? [],
-                allowedValues: [],
-                type: TagsetType.Freeform,
-              },
-            },
-            isContentPublic: true,
-            membership: {
-              myMembershipStatus: CommunityMembershipStatus.Member,
-              leadUsers: [],
-              leadOrganizations: [],
-            },
-          },
+          parent: value.parentId,
+          template: value.spaceTemplateId || undefined,
+          blueprint: spaceCreationBlueprint(value.profile),
         },
       },
+    }).catch((error: unknown) => {
+      if (error instanceof ApolloError) handleError(error);
+      throw error;
     });
-
-    if (includeVisuals) {
-      await uploadVisuals(data?.createSubspace.about.profile, value.about.profile.visuals);
-    }
-
-    return data?.createSubspace;
+    const created = mapCreatedSpace(data?.createSpace);
+    if (created) await uploadVisuals(created.id, value.visuals);
+    return created;
   };
 
-  return { createSubspace, loading };
+  return { createSubspace: handleCreateSubspace, loading };
 };

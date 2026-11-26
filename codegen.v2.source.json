@@ -1,0 +1,349 @@
+{
+  "scope": "SOURCE: canonical Space/Subspace route and basic About using actual node/resolve, arbitrary returned hierarchy and server parent URLs. Existing child reader retained. No client permission preflight, fabricated parent, evaluator change, rich facet claim or served/Pi acceptance. Actual backend errors remain visible.",
+  "legacyCommit": "71f8ddcf7d0a97097a4de445c0ddc0c8a8ecb252",
+  "cleanBase": "7e04079c5b93179a0c603043bb3c71f11f625d2c",
+  "censusChild": "220e415ffbf455f69b388b4aadf3e1a3c1fe2137",
+  "legacyPageGuard": {
+    "sourceCommit": "a51f6d9886981a359680847cdabdb20d283842f0",
+    "sourceGate": "Sol bounded SOURCE GATE PASS message-vthq0z628pd6; tooling composition only",
+    "fixture": "scripts/parity/fixtures/legacy-routes.71f8.json",
+    "fixtureSHA256": "a4f0b7842c0b59dbc097b1e91a11f7324b76cfbe958349daf8e498733f859c32",
+    "verifiedCompositionTree": "cd810221702c85700f6fe0dcd6cbf3aab7ecd168",
+    "scope": "Exact existing /logout route added to declared runtime tuple; all historical152routes retained,0served pending actual E2E. No checker change or broad exception.38guard controls PASS.",
+    "retirementAuthority": ["Astra5qx513wdj6cz", "Astramcyjjolevspr"]
+  },
+  "sourceCuts": {
+    "providers": "c7cfab28e8627bb43c0c5fb56862f888830c85ac",
+    "routeData": "e7fc93e81df6b5e146d1ff525a617d178f5c95ff",
+    "homeData": "61086fe425274f70344f4b786c206e98b53fc92e",
+    "settings": "320228189ed758e1ba21d95b66cd9607e695f221 source changes already present in newer exact71f8; never overwrite those pages with older WIP"
+  },
+  "serverCommit": "88d60ec5b3c36cab09f6cda6d7690fffc3eae499",
+  "schemaPath": "internal/adapter/graphql/schema/*.graphql + local designed additions (see schemaComposition)",
+  "schemaFiles": {
+    "internal/adapter/graphql/schema/actors.graphql": "0cf1633c015cd33671ac8b4275c9f2f18c535ab96c3dd7982120ae65c3e2efbd",
+    "internal/adapter/graphql/schema/boot.graphql": "78ae1feca482b89021f0be9c1f7715caccbf4010605c22daffd86de7743bfc66",
+    "internal/adapter/graphql/schema/connections.gen.graphql": "753a6b11df637f5b8439a6d84837f5d58855e0234921c4508471412249baec03",
+    "internal/adapter/graphql/schema/creations.graphql": "6ceb5d60c5ef948eed6d09fae0f1c8dffcc6c7e1a286369c506af730abeb5fca",
+    "internal/adapter/graphql/schema/document_faces.graphql": "ff48bf537b9b5813e02fcaf14907b21f611e734d297a045f8c185214b2620fc8",
+    "internal/adapter/graphql/schema/files.graphql": "0a10ff75b9631b6a068b6f7c1832631935bf048521379cb7914a7b1fdca572a8",
+    "internal/adapter/graphql/schema/membership.graphql": "56cf320f865d651488861e1c8899a3a3037eecd485d28a1d15631cac3721b45f",
+    "internal/adapter/graphql/schema/membership_invite.graphql": "c934966f99443d0103ea40dd2384553b08cb6cb471424473b85a3d77c3171554",
+    "internal/adapter/graphql/schema/native_comments.graphql": "56fb72fb172fe3418f2f8e29c4562467390a6a5225fc45d4e0fccfa35597f162",
+    "internal/adapter/graphql/schema/notifications.graphql": "8fa6b12c74d41e2c5a80c6f2624ae457f6e131d3269a0a42c2fba0c3a317c8b5",
+    "internal/adapter/graphql/schema/plan.graphql": "bf45f071deca0b0d734becae7ca0d6346483471f90385cc67ebb714bb513b5e5",
+    "internal/adapter/graphql/schema/posts.graphql": "424977a62796ac4c29dcab75302eb44429d430ff9f60cf2f7c7a8e893681bf6b",
+    "internal/adapter/graphql/schema/public.graphql": "873d46af3fcdaffe39fcfa3c649b16b8696eb7b50216c401d7383320b1a995ed",
+    "internal/adapter/graphql/schema/space_writes.graphql": "2a3a52a02a551afb71dac537baabfc8e2a445122fb3fe7b4cbe2ca634483ef75",
+    "internal/adapter/graphql/schema/viewer.graphql": "b65cba848b02725bcaf064fe4e290f5ff3e7a06e84f279bf0745ef719a0a8b13"
+  },
+  "documents": {
+    "src/core/foundation/NativeFoundation.v2.graphql": "5367765550ec4dd97ecf2220618bc9a7122f15cd6057969b3e489421c95163ac",
+    "src/domain/access/ApplicationsAndInvitations/MembershipRequests.v2.graphql": "527e2a0f25018cb9470f8cb8ca034ded0e7e9f155eead1d4aa777ff0ef17d485",
+    "src/domain/collaboration/post/PostDetail.v2.graphql": "7b3f76fe9d3cfa1de5908b856c469e81512d15055ced88955282853a02de4196",
+    "src/domain/common/visual/v2/V2FileRef.v2.graphql": "80b74f8a93553e6c9cb977eded66e4ba907e768b73189662faf8701ae4e1b5e9",
+    "src/domain/community/invitations/RespondToRequest.v2.graphql": "15891bf2f645582cc80d83eafd196e22edb608d1e88324eb918f9c91030d015d",
+    "src/domain/community/pendingMembership/PendingMemberships.v2.graphql": "2ab04848fd7d8083cdc47cd1d62ead0137e4be9c8ab2b565cc7a9ae8e96914a5",
+    "src/domain/platform/config/native/NativeConfig.v2.graphql": "499aa670314b3d168f43d39eeeca9fcf5cf5802dfb5944dd7240423b382f2c87",
+    "src/domain/platform/config/v2/V2Configuration.v2.graphql": "2c0cf054bfaaf571270ef9128c1a59e4dc5e788c238739d48537ea5d1ec79a15",
+    "src/domain/platform/routes/HomeRedirect.v2.graphql": "16340986878eac7bf618c070bc6a93fa4265a21d97d1b72996d6bc82ee0b0191",
+    "src/domain/space/components/CreateSpace/hooks/CreateSpaceVisualConstraints.v2.graphql": "24cbbc49bcc6ed185e33ef575ceb5deafdf2d2089503b5d52fc61c5bca66d165",
+    "src/domain/space/components/CreateSpace/hooks/spacePlans/CreateSpaceAccount.v2.graphql": "5a4e7d05b98ae36654b73bd4deb21e6471c6cafb2b3cbf75624fc8454da2f2f4",
+    "src/domain/space/components/CreateSpace/hooks/useSpaceCreation/CreateSpace.v2.graphql": "61cab7afedaf3a98c77089897fbb6c322ecc7d9b26f58249eee515245e948aea",
+    "src/domain/space/components/CreateSpace/hooks/useSubspaceCreation/CreateSubspace.v2.graphql": "b492fe78691691421b6c5ac13d6f6914155e0bf4a3df7df198f93e0412094dbf",
+    "src/domain/space/components/CreateSpace/hooks/useUploadVisualsOnCreate/UploadVisualsOnCreate.v2.graphql": "4733eaf1baeca8242147a723aa58b6af481f0371e3a38f2a0f2c11bb7ed36c5a",
+    "src/domain/space/context/SpacePageShell.v2.graphql": "ff63fbeb6dd1dbf22187b4bd8e61a2614e80e71ea5f41b5c19990f1436b1febe",
+    "src/domain/space/queries/NativeSubspaces.v2.graphql": "90fefaf92ccf2e9f2f81d8d3eeaae5dabd176ab8f39272ba2333c619ce24512e",
+    "src/domain/space/queries/SpaceCommunity.v2.graphql": "b14b18508a2d89ec13bf6d34bfc68212e005bbf744299703a2aea6c7b81b79ea",
+    "src/domain/space/queries/SpacePage.v2.graphql": "a4c6e4350621e6cb2c915b38187a26cc9c00b4c9980442c750bce314f5c53109",
+    "src/domain/spaceAdmin/SpaceAdminCommunity/native/SpaceCommunityAdmin.v2.graphql": "78676bf0d15b714df81440db5db555f8b1e87821528d7fcd0577d069b9e2f180",
+    "src/main/crdPages/dashboard/v2/V2Dashboard.v2.graphql": "ca3eded47e226636bfc8ee3aeeddf4ae3a5869bcfb450e28d74c45437dc8bdfc",
+    "src/main/crdPages/innovationHub/v2/V2Homepage.v2.graphql": "753d83a7637857ccd03ea409ec372a54fe21da54d89bc3b419adf8351f1d4ab5",
+    "src/main/crdPages/spaces/v2/V2SpaceCards.v2.graphql": "471e4c55f925820a6e66ac6858c8d790f788207328ca17c076ffd3a32a34162b",
+    "src/main/crdPages/templates/settingsTemplates/SettingsTemplates.v2.graphql": "fede2597424b4a88333267e7ce683572cdb7c7cc34a642264601e464eaca2958",
+    "src/main/crdPages/templates/spaceTemplates/SpaceTemplatePicker.v2.graphql": "73628be5d34d83b798a570077434516ce4b3537eb2fc3ba4ae1877c2ee2c42a4",
+    "src/main/crdPages/topLevelPages/spaceSettings/about/SpaceSettingsAbout.v2.graphql": "b5e28e374cdeba8718358d12b89d73cf5ea9fa8a0699179415a0b5a3f8872e23",
+    "src/main/crdPages/topLevelPages/spaceSettings/account/SpaceSettingsAccount.v2.graphql": "582be2b186c80ab578c1dd9cee19b6119d44c5520d41ff6e3735133657f83607",
+    "src/main/crdPages/topLevelPages/spaceSettings/settings/SpaceSettingsApplicationForm.v2.graphql": "d568164c95b93fa27f760a9ee6102a7832de72a30c6899aa51ca0589674e0a9d",
+    "src/main/crdPages/topLevelPages/spaceSettings/settings/SpaceSettingsDeleteSpace.v2.graphql": "0a03b30d1b97595ecbf4f1f6d10f1fec89d99d7721a758699364770a0d9fd9c5",
+    "src/main/crdPages/topLevelPages/spaceSettings/settings/SpaceSettingsSettings.v2.graphql": "ab0d18f232f6d4d4e5f9b41ecc6d2338b3e9b9d55150fbb3a2573f46ff49c640",
+    "src/main/crdPages/topLevelPages/spaceSettings/subspaces/CreateSubspaceRoot.v2.graphql": "6363f6566dd49fea23fd8f34352197e93a38fef41df9946cb9e2c7f128ad1c57",
+    "src/main/crdPages/topLevelPages/spaceSettings/subspaces/SpaceSettingsSubspaces.v2.graphql": "26b9cc569f9c32d41b99784efac94bbd4b190743f62d1c3510ede578a1a55af8",
+    "src/main/crdPages/topLevelPages/userPages/settings/v2/V2PersonalSettings.v2.graphql": "96ab9a36b165ddc8a66e93e9e178b8e7e3ac371c022b411337a1fbbadad2fe0e",
+    "src/main/crdPages/unifiedChat/ChatRecipientDirectory.v2.graphql": "9d1983de43f568f39ee521205674e52b687a9fa257abc25a6e7a4325538f915e",
+    "src/main/routing/urlResolver/native/NativeRouteResolution.v2.graphql": "e8997c617f990f57baec811949f84fc400b7c6b2afb14e64872ded3160b0c927",
+    "src/main/routing/v2/V2Resolve.v2.graphql": "e8da6cbfc880152a751fdfdfa582ff24e97898ee405f6e7442e47093d8d0d255"
+  },
+  "outputs": {
+    "src/core/apollo/generated-v2/apollo-helpers.ts": "98fe9bb979bccd10e128bda6bd741c5c8b9dc64ba77401586fcb728bf2707798",
+    "src/core/apollo/generated-v2/apollo-hooks.ts": "214947ae6b3b96f99d49b780aed3cb1a4592f04573541cc24b10a16236dc7a0a",
+    "src/core/apollo/generated-v2/graphql-schema.ts": "2fc187722316c70b136004505e67587764632b9a2f1cb4e8e85c4f69161b892c",
+    "src/core/apollo/generated-v2/legacy-vocabulary.ts": "6a27a8f49ac14e150b8df9451f38a1ec38eba1b4af9a23943cfbeda716a102d2",
+    "src/core/apollo/generated-v2/possible-types.ts": "1308b728e55dd6144df543c8af3533f9fbf662234ec1fcec5d7202f89ae79bbc"
+  },
+  "recipe": "CODEGEN_V2_SCHEMA='<served SDL at serverCommit + designed additions>/*.graphql' pnpm run codegen:v2",
+  "runtime": {
+    "node": "24.14.0",
+    "pnpm": "10.17.1"
+  },
+  "localChanges": [
+    "Atomically select About/about in all retained native documents, stock generated types/hooks and actual data mappers; ExplorerRootSpaces selects only displayName/tagline.",
+    "Retire dormant V2ViewerIdentity/V2CurrentViewer documents and closed unreachable connector/import chain under root5qx/mcy;21-module reverse closure has0intersection with248 current-entry reachable modules.",
+    "Remove unused broad V2ExplorerSpaceCard fragment/mapper and V2HomepageSpaces operation with their actual unreachable consumers; preserve underlying CRD presentation.",
+    "Extend exact retired-module guard inventory for3 removed hub/home modules; keep historical152pending rows and reject restoration/import rebinding/replacement pages.",
+    "Preserve one credentialed HttpLink attempt on network/503 failure, FC-X1 visible-grid paging, canonical URL validation and live READ lock semantics.",
+    "Align V2Foundation with surface.graphql Actor settings/notificationPrefs and 011 FR-003/FR-004/T002 (A10.19), preserving all legitimate private-field demands and the merged NativeSubspaces first500 Relay document. Own-member transport/layout tests are client source witnesses, not native authorization acceptance."
+  ],
+  "gapList": "specs/client-adoption/server-gaps.md",
+  "historicalC0Checks": {
+    "stockGeneration": "PASS exact2b4 SDL with12referenced operation/fragment definitions in10source documents",
+    "focused": "PASS23files/133tests on final trimmed source; original failure logs retained. No runtime-stack, screenshot or whole-suite claim.",
+    "homepageDeclaredDependency": "PASS2files/16tests with already-declared Yup, including3new strict malformed-input controls",
+    "wholeTypecheck": "RED: exactly5nullable-URL legacy prop contract mismatches only; /tmp/dev3-c0-checkpoint-typecheck.log. No UI changes, casts or fabricated destinations.",
+    "routeCensus": "PASS integrated10census tests within30guard tests; byte-identical fixture moved to scripts/parity;152pending/0served",
+    "browserDOMScreenshot": "NOT_RUN",
+    "noNewPageGuard": "PASS pnpm check:legacy-pages and pnpm test:legacy-pages,30tests/0skips, pinnedNode24.14.0; exact owner files and script values retained",
+    "forgejoGuardWorkflow": "SOURCE ONLY; runner execution NOT_RUN",
+    "scopedBiome": "PASS78sourcefiles",
+    "stockRepeat": "Earlier repeat byte-exact; final trimmed documents have fresh stock outputs recorded below.",
+    "scopedESLint": "PASS70sourcefiles"
+  },
+  "explorerIncrement": {
+    "decision": "Astra68khvu2dzxgt/dkafwsqsolcd; O27ybbenbk1p1/axhdvm2budmp; server-go docs/spaces-deployable-increment@2de32bf759971366dbf2b14fa04dd5ffc2cd4e64 section1.2",
+    "operation": "ExplorerRootSpaces",
+    "filter": {
+      "kind": "SPACE",
+      "depths": [0],
+      "status": ["ACTIVE"]
+    },
+    "selectedFields": [
+      "spaces.edges.node.id",
+      "spaces.edges.node.depth",
+      "spaces.edges.node.status",
+      "spaces.edges.node.url",
+      "spaces.edges.node.about.displayName",
+      "spaces.edges.node.about.tagline",
+      "spaces.edges.node.can.read",
+      "spaces.pageInfo.hasNextPage",
+      "spaces.pageInfo.endCursor"
+    ],
+    "paging": "FC-X1 cards overlapping the visible grid area×2 clamped10..60; excludes header/controls above grid; opaque cursor; resize affects next continuation only; no polling/duplicate in-flight batch",
+    "unavailable": [
+      "search",
+      "filters",
+      "children",
+      "images",
+      "leads",
+      "membership",
+      "account/profile/notifications",
+      "logout without issued return contract",
+      "other routes"
+    ],
+    "identity": "No Viewer/auth/current-user observers or fabricated identity contexts. Header account state unavailable; credentialed new Apollo transport; BFF login returnTo=/spaces; server resolves requester/effective.",
+    "urls": "Nonempty returned canonical destination required; missing value errors, never fabricated/coalesced/dropped",
+    "ledger": "scripts/parity/fixtures/legacy-routes.71f8.json; /spaces remains pending,0served",
+    "readProjection": "isLocked reflects only live can.read. Public/private labels unavailable; READ and READ_META do not establish publicness.",
+    "transport": "Credentialed HttpLink with no RetryLink: network/503 failure surfaces after one physical request. No automatic retries.",
+    "operationDocument": {
+      "path": "src/main/crdPages/spaces/v2/V2SpaceCards.v2.graphql",
+      "sha256": "d89560367529d99afb4c3b0d3f29ae3fcced55b73598c289947afc11f48f8d21",
+      "rawGeneratedTemplateBytes": 432,
+      "rawGeneratedTemplateSHA256": "edb9a811e3bbf734f714a6bc316e4cc91134184a8464fc2f37ee8fd76f8abf37",
+      "scope": "Raw generated gql template hash, not serialized HTTP wire hash"
+    }
+  },
+  "serverAboutSourceSuccessor": "d4b6d420661cf3356cb254967a820fe443c014b0; historical About source successor, not the current SDL producer pin",
+  "aboutContract": "server-go docs/spaces-deployable-increment@c86ac30b675cb5c7fa7d5c06e5c47edf3cb31dea; one shared About/about surface, no alias; same authority/storage/nullability",
+  "historicalC0LocalChanges": [
+    "Keep71f8 MatrixSession provider and logout; no V2 Matrix UI or old mint fallback transplant.",
+    "Remove dormant operation definitions not referenced by adopted data code/types.",
+    "Home resolution selects only homepage.id used by legacy dispatch.",
+    "Preserve71f8 generated legacy schema additions; stock vocabulary rewrite replaces only two enum declarations.",
+    "Keep historical47aa vocabulary source manifest explicit; chosen-S1 requalification pending.",
+    "Fix incomplete bootstrap fixtures with explicit nullable selected fields, preserving retry/cookie/draft assertions.",
+    "Use already declared Yup for homepage selection validation; source Zod resolved accidentally from /home/antst/node_modules and was not a client dependency.",
+    "Trim unused viewer session.fresh, entitlement limit/usage and config.authProviders; only actual adopted consumer fields remain, preserving required cache identifiers.",
+    "Retain original admin assertions with the existing source identifier-only fixture corrections from c7cfab28.",
+    "Exclude the copied unread hook/query and auth-URL helper because the retained legacy runtime does not consume them; notification adoption remains pending."
+  ],
+  "retiredUnreachableModules": {
+    "entry_reachable_modules": 248,
+    "seeds": [
+      "src/core/apollo/v2/watchViewerChange.ts",
+      "src/domain/community/userCurrent/v2/V2CurrentViewerProvider.tsx",
+      "src/domain/community/userCurrent/v2/v2CurrentViewer.ts",
+      "src/domain/community/userCurrent/v2/useV2AccountLanguage.ts",
+      "src/domain/community/userCurrent/native/legacyUserProfileDataMapper.ts",
+      "src/domain/community/userCurrent/native/NativeCurrentUserProvider.tsx",
+      "src/core/auth/authentication/context/native/NativeAuthenticationProvider.tsx",
+      "src/main/crdPages/spaces/v2/v2SpaceCards.ts"
+    ],
+    "reverse_import_closure": [
+      "src/core/apollo/v2/sessionStoreOutage.test.tsx",
+      "src/core/apollo/v2/watchViewerChange.test.ts",
+      "src/core/apollo/v2/watchViewerChange.ts",
+      "src/core/auth/authentication/context/native/NativeAuthenticationProvider.test.tsx",
+      "src/core/auth/authentication/context/native/NativeAuthenticationProvider.tsx",
+      "src/domain/community/userCurrent/native/NativeCurrentUserProvider.test.tsx",
+      "src/domain/community/userCurrent/native/NativeCurrentUserProvider.tsx",
+      "src/domain/community/userCurrent/native/legacyUserProfileDataMapper.test.ts",
+      "src/domain/community/userCurrent/native/legacyUserProfileDataMapper.ts",
+      "src/domain/community/userCurrent/v2/V2CurrentViewerProvider.tsx",
+      "src/domain/community/userCurrent/v2/useV2AccountLanguage.test.ts",
+      "src/domain/community/userCurrent/v2/useV2AccountLanguage.ts",
+      "src/domain/community/userCurrent/v2/v2CurrentViewer.test.ts",
+      "src/domain/community/userCurrent/v2/v2CurrentViewer.ts",
+      "src/main/crdPages/innovationHub/CrdInnovationHubHomePage.tsx",
+      "src/main/crdPages/innovationHub/hooks/useInnovationHubHomeData.test.tsx",
+      "src/main/crdPages/innovationHub/hooks/useInnovationHubHomeData.ts",
+      "src/main/crdPages/innovationHub/routing/CrdHubRoute.tsx",
+      "src/main/crdPages/spaces/v2/v2SpaceCards.ts",
+      "src/main/topLevelPages/Home/CrdHomePage.native.test.tsx",
+      "src/main/topLevelPages/Home/CrdHomePage.tsx"
+    ],
+    "live_intersection": [],
+    "sourceEntryCommit": "4295f7a2eaf3dcf2ed542f69e2e6c79a82aff7f8",
+    "removedAdditionalInputs": [
+      "src/core/apollo/v2/V2ViewerIdentity.v2.graphql",
+      "src/domain/community/userCurrent/v2/V2CurrentViewer.v2.graphql",
+      "src/domain/community/userCurrent/v2/accountLanguage.ts"
+    ]
+  },
+  "loginFlowComposition": {
+    "parent": "01368d882438a5b0d0a17f161d6efa87db76ac10",
+    "authority": ["Astra1x0sdnnicdcb", "orchestrator50wnmkm13yfm", "M1za6rml5f3rjh"],
+    "routes": {
+      "login": "/login?flow=…",
+      "recovery": "/recovery",
+      "verification": "/verify (and reminder)",
+      "recoverySettings": "/settings?flow=…",
+      "error": "/error?id=…"
+    },
+    "runtime": "Reuse existing VITE_APP_ALKEMIO_DOMAIN as PlatformOrigin; existing same-origin /ory/kratos/public path supplies KratosPublicUrlContext. Pi value https://alkemio.antst.xyz; source constants contain no environment literal or new env field. Existing local Sentry scope only; no global auth/Viewer/config/Matrix observers.",
+    "bff": "Flowless login restarts actual /api/auth/oidc/login; supplied provider flow uses original SDK GET, form action/method/CSRF/return_to. The real provider/Hydra resumes its own challenge and BFF callback; UI does not supply an actor or create a session.",
+    "unserved": ["/sign_up", "/registration", "/login/success", "/logout", "other non-slice routes"],
+    "originalFlowBodies": {
+      "src/main/crdPages/auth/LoginCrdRoute.tsx": {
+        "original": "CrdLoginPage",
+        "current": "CrdLoginPage",
+        "bodySHA256": "fa148b0751a6bf41d31bd1607e542e6a6f707e5ff5c239afe93ec3e78c9b8bb1",
+        "byteEqual": true
+      },
+      "src/main/crdPages/auth/RecoveryCrdRoute.tsx": {
+        "original": "RecoveryCrdRoute",
+        "current": "CrdRecoveryPage",
+        "bodySHA256": "2d0c46e8f016498f8d64bcefdd4e302fb9040e7f387f7bbcd5d60308ca67f6a7",
+        "byteEqual": true
+      },
+      "src/main/crdPages/auth/VerifyCrdRoute.tsx": {
+        "original": "CrdVerificationPage",
+        "current": "CrdVerificationPage",
+        "bodySHA256": "0bd9d46c4ef4d8c762df6d5abc9d4c51925f2ddd194d95237c6db4967917fcdd",
+        "byteEqual": true
+      },
+      "src/main/crdPages/auth/SettingsCrdRoute.tsx": {
+        "original": "SettingsCrdRoute",
+        "current": "SettingsCrdFlow",
+        "bodySHA256": "393ed8176eea8de0d905f0f326dc7ace79e6b86a5aeb50c6231ec6362422c5c2",
+        "byteEqual": true
+      },
+      "src/main/crdPages/auth/ErrorCrdRoute.tsx": {
+        "original": "ErrorCrdRoute",
+        "current": "CrdErrorPage",
+        "bodySHA256": "60295220e8a01ef133208ea8af58fb4b8d3be6d753faded0d2786f6c9bbbbd6b",
+        "byteEqual": true
+      }
+    },
+    "sourceChecks": {
+      "focused": "58PASS across5files including14actual Kratos SDK HTTP fixture controls",
+      "guard": "37PASS +actual guard0; unsupported registration restoration negative retained",
+      "activeEntry": "root graph TS PASS, no product option changes",
+      "wholeTypecheck": "same3inherited unserved nullable-URL errors; no new errors",
+      "build": "pnpm build production PASS;0maps",
+      "lint": "Biome supported changed files0; ESLint11src files0; parity test is outside existing ESLint tsconfig and is qualified by its actual37 Vitest controls",
+      "browser": "Built Chromium156 at1440/390: native login GET+POST, exact provider action/CSRF/return_to, stale-flow recovery and flowless BFF navigation;0pageerrors/no unrelated APIs. Existing root browse still1initial+1opaque continuation each. HTTP fixtures only; no real authority/session/callback/Pi claim."
+    },
+    "logs": "/tmp/dev3-kratos-login-*; local receipts ~/.local/state/dev3-kratos-login/",
+    "retainedFailures": "Original44focused had1obsolete local-auth-guard assertion RED; adapted BFF/no-local-state assertions. Cold lazy modules exceeded first1s DOM test wait; actual completed2.49s, only test harness wait updated. Temporary active-test configs lacked Node/jest globals; root-only actual-entry check passes and whole project has no new errors. Existing script-outside-eslint-project failure retained; no production config/exclusion changed."
+  },
+  "historicalChecksBeforeFoundation": {
+    "stockGeneration": "PASS whole stock codegen against exact81d SDL; repeat byte-identical across all generated outputs, no schema overlay or handwritten generated types",
+    "explorerFixture": "PASS68 tests/10 files: existing root/explorer/cards/navigation, actual HttpLink About wire selection+network/503 one-attempt error controls, cache About merge and retained valid mapper controls",
+    "wholeTypecheck": "RED exactly3 inherited nullable-URL errors in unserved dashboard/homepage mappers;2 prior broad-card errors disappeared with its authorized retirement; no new errors",
+    "browserDOMScreenshot": "About fixture screenshots only; legacy two-stack/real-data acceptance NOT_RUN",
+    "liveServer": "NOT_RUN pending actual composed server+normal BFF+native real acceptance data",
+    "pi": "NOT_RUN; rpi-deployer only",
+    "activeEntryTypecheck": "PASS root.tsx and focused controls using actual project types/options",
+    "noNewPageGuard": "Historical152route census retained,0served pending real E2E; exact existing /spaces and five identity flow routes only. Unserved registration/logout/login-success refuse; original no-new-page/import-binding and retired-module protections preserved.37guard controls PASS.",
+    "clientBuild": "PASS pnpm build production;0maps; no ARM/current Pi promotion",
+    "browserFixture": "PASS built Chromium156 at1440x900 and390x844 using About response:1 initial+1 opaque continuation each, first12/10,0pageerrors, no unsupported API requests or fabricated publicness. HTTP fixture only, not live BFF/authz/Pi/two-stack",
+    "scopedESLint": "PASS12 changed handwritten TS/TSX files; scoped Biome PASS (10 supported files). Inherited Browserslist/chunk warnings retained",
+    "sourceGate": "Sol bounded SOURCE DELTA PASS427 message267r1ck9yk0h; root3df additional absent-citation-line1 finding corrected in narrow guard-only successor, rereview pending",
+    "fullSuite": "NOT_RUN; no full-app gate claim. Parent dormant Viewer outage tests already RED7/9 with actual no-retry transport; actual retired path removed under root authority, single-attempt transport tests retained"
+  },
+  "foundationIncrement": {
+    "base": "f35b5f6fc75d1935d78949d3ac919e2c573b77dd",
+    "authority": [
+      "Astra87zzqs475u1q",
+      "Astra6753lqjeutcz/Fable2yyocfi5znau/wohwu9avqpof conditional homepage selector",
+      "Astra cwceyz5bpdm1/Fable drwq13bi7ysp F1/F2",
+      "Astra imj3angu30yc/Fable2eplhaqfo75q F4"
+    ],
+    "operation": "V2Foundation",
+    "consumer": "NativeFoundationProvider shares one config+Viewer observation; no mounted hint/status/config/legacy Viewer bootstrap",
+    "conditionalResolve": "Only / and /home include existing resolve(url:actual browser origin){homepage{id}}; deployed883 refuses it. No null/default/landing/dashboard substitution.",
+    "privacy": "Actual admitted context compared before cache writes; identity change replaces client/cache and mounted consumer lifetime, rejects old in-flight generations.401 stays terminal,503 stays unavailable; no instant remote revocation claim.",
+    "explorer": "Existing100-page public document and opaque continuation; real cache revisit/filter/page-size isolation controls, no per-card fetch.",
+    "auth": "Effective disclosed actor face and requester session remain separate. Actual anonymous presentation nil is not the admitted fixed actor8; guest is not inferred from BFF status or null face.",
+    "unfinished": [
+      "usable / and /home dispatch",
+      "member/settings/home authority positives",
+      "guest capability admission/positive UI",
+      "broader feature pages/global data connectors",
+      "real signed-in/password/provider logout end-to-end acceptance"
+    ],
+    "status": "Historical combined e67c9b54 observation; current memberBootRepair separates public config because Viewer! errors null the complete response."
+  },
+  "historicalChecksBeforeMemberRepair": {
+    "stockGeneration": "PASS exact deployed883 SDL and original codegen:v2; repeat byte-identical",
+    "focused": "54 core/root/config/cache plus68 auth/SDK/header owner controls PASS; reached3 banner negatives RED-before/PASS-after; final3 provider tests PASS after fixture-only lint closure",
+    "fullSuite": "FAIL_INHERITED:5413PASS/71FAIL/2skip. All71 failed names and normalized actual assertion/error messages match retained exactf35 failure control; zero new failures. Full run runtime sources exact; subsequent test-only effect-capture lint correction requalified3 tests.",
+    "wholeTypecheck": "RED exactly3 inherited unserved nullable-URL mapper errors; zero new errors",
+    "scopedESLint": "PASS changed source and corrected provider test; whole ESLint retains2 pre-existing parity-script project parser errors",
+    "noNewPageGuard": "PASS38 tests; historical152/0served; only existing logout route tuple restored",
+    "clientBuild": "PASS production19.66s/0maps; build runtime source unchanged by later fixture-only lint correction",
+    "sourceReview": "Actor bounded SOURCE CONCUR message-j4fjx5qfcjln; final pin binding follows outside repository",
+    "browserDOMScreenshot": "NOT_RUN for this increment; P owns actual browser acceptance",
+    "liveServer": "Deployed883 API is source input; client increment live acceptance NOT_RUN",
+    "pi": "NOT_RUN for client increment; P only"
+  },
+  "memberBootRepair": {
+    "authority": ["Metaqceo9ositovk", "Metadb02rpmnf1cn"],
+    "introducer": "e67c9b54b65d8275de905fbcb440cff2e2486b8f",
+    "failure": "NativeConfigProvider consumed combined config+Viewer and threw before routes mounted; actualfc35 memberPi issuedFoundation only and noExplorer in20s.",
+    "partialResponse": "Viewer is non-null in actualserver0681 schema; retainedPi ti94 has data:null/no partialconfig. Independent requests are necessary; Viewer stays requested and errorvisible.",
+    "documents": "Move the existing served config selection unchanged into NativeConfiguration. Foundation retains actual Viewer/settings and conditional homepage resolve.",
+    "regression": "src/root.test.tsx: renders signed-in spaces while the requested Viewer failure stays visible; actualRoot/Apollo/providers/router/layout/page with backend-admittedmember and Foundationdata:null/pathviewerUNAVAILABLE, actualfirst500+card+visibleerror assertions.",
+    "redEvidence": "/tmp/t16-member-spaces-boot-20261118/regression-before.log:1FAIL, expected1Explorer/actual0 onfc35 plus newtest; originaln1Pi memberfailure retained.",
+    "greenEvidence": "/tmp/t16-member-spaces-boot-20261118/regression-after.log: single regression PASS; affected-r2.log: actual Root/config/foundation/lifecycle/logout/identity checks after complete native-context fixture correction; final hook/build/source review remain separately producer-bound.",
+    "CI": "Existing required client guard additionally runs actualRoot test file before unchanged nativeTypeScript finalstep; no new job/context/runner or checker bypass.",
+    "limits": "No fake member identity, Viewer suppression, evaluator fix, retry-to-win, or served/Pi acceptance from localmockedHTTP tests; soledeployer realmember rerun+n20Chromium/WebKit still required.",
+    "currentLocalChecks": {
+      "stockCodegen": "PASS current mergedserver0681 SDL, actual stock codegen:v2; generated code not handwritten",
+      "affected": "50PASS/6files affected-r2; 401/403/logout/503/cache and actual Root member error+first500 case",
+      "nativeTypecheck": "PASS existing Node24.14 source toolchain",
+      "legacyGuard": "152routesPASS +38refusaltestsPASS",
+      "build": "PASS Vite14.68s; inherited chunk warnings retained",
+      "fullSuite": "Normal precommit hook and exact local head proof are recorded host-side after completion; no Pi outcome inferred"
+    }
+  },
+  "schemaComposition": {
+    "status": "RED until served: 4 documents select model fields server-go ReadMeta 88d60ec5b does not serve (SettingsTemplates: Stage.defaultTemplate, createTemplate, updateTemplate; SpaceSettingsAbout: Space.links, Space.classifications, upsertLink, add/update/removeClassification; SpaceSettingsDeleteSpace and SpaceSettingsSubspaces: deleteSpace); the documents stay (user: do not cut functionality), the local composite supplies only those fields",
+    "served": "server-go origin/seedfix3-db-cleanup4 88d60ec5b3c36cab09f6cda6d7690fffc3eae499 (WP-RF2: ReadMeta, one meta read for every entity type), its served SDL internal/adapter/graphql/schema/*.graphql",
+    "designAdditionsSha256": "39660eee8a40159a4a8163d3d35231207f0dff2fb91cb2dde1141d7782b8b7cb",
+    "designAdditionsSource": "the model fields rf2-create-dialogs selects that ReadMeta 88d60ec5b does not serve (18 lines: Classification, Space.links/classifications, Stage.defaultTemplate, TemplateDocumentInit/TemplatePostInit/TemplateInitInput, createTemplate/updateTemplate, upsertLink, add/update/removeClassification, deleteSpace); About.facets, AboutFacet, attachFile and DeleteResult are now served and dropped from it; never committed",
+    "otherServers": {
+      "ActorFilter.terms, AccountSummary.entitlements nullable, Viewer.matrix / MatrixAccess": "served by 88d60ec5b (actors.graphql:102, plan.graphql:16, viewer.graphql:7); no other server needed"
+    }
+  }
+}

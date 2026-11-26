@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
+import { ROLE_LABEL_KEYS } from '@/main/ui/layout/useCrdUser';
 import enJson from './common.en.json';
 
 // Completeness check for the role-vocabulary fallback the in-app mapper relies on
@@ -11,7 +12,8 @@ describe('common.roles completeness over RoleName', () => {
   const roles = enJson.common.roles as Record<string, string>;
 
   it.each(Object.values(RoleName))('has a non-empty label for RoleName.%s', roleName => {
-    const key = kebabToConstantCase(roleName);
+    const declared = Object.entries(ROLE_LABEL_KEYS).find(([role]) => role === roleName)?.[1];
+    const key = declared?.replace('common.roles.', '') ?? kebabToConstantCase(roleName);
     expect(roles[key], `missing common.roles.${key} for RoleName "${roleName}"`).toBeTruthy();
   });
 });

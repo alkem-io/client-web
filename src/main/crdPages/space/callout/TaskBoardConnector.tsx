@@ -1,101 +1,58 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import {
   useMoveTaskToColumnMutation,
-  useTaskBoardDataQuery,
   useUpdateContributionsSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  type TaskBoardCalloutFragment,
-  type TaskBoardContributionFragment,
-} from '@/core/apollo/generated/graphql-schema';
+import type { PostBodyFragment, ResponseCardFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import { TaskBoardView } from '@/crd/components/callout/task-board/TaskBoardView';
-import { isTaskBoard, TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
+import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
 import { cn } from '@/crd/lib/utils';
+import { useCachedPost } from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
 import { PostContributionAddConnector } from './PostContributionAddConnector';
-import { applyMoveToCounts, contributionColumnTag, mapTaskBoardColumns } from './taskBoardMapper';
+import { applyMoveToCounts } from './taskBoardMapper';
 
 type TaskBoardConnectorProps = {
   calloutId: string;
   /** Fill the container height — set when rendered inside the board dialog. */
   fill?: boolean;
-  /** Detect board-ness (fire `onBoardResolved`) but render nothing — for the
-   *  deep-link view, which shows the board in a dialog rather than inline. */
-  detectOnly?: boolean;
-  /**
-   * Fires once board detection resolves (true when the callout is a Tasks board).
-   * Lets the consumer route "open the callout" to the board instead of the plain
-   * post-detail dialog. Must be a stable callback.
-   */
-  onBoardResolved?: (isBoard: boolean) => void;
-  /**
-   * The normal POSTS contributions body. Rendered unchanged whenever this
-   * callout is not a Tasks board (marker absent) or the board view is switched
-   * off — so a non-board callout is byte-identical to before.
-   */
+  /** Rendered when the post is not a task board. */
   fallback: ReactNode;
-  /** Opens the existing post detail dialog for a contribution. */
   onOpenTask?: (contributionId: string) => void;
 };
 
+type TaskBoardContent = Extract<NonNullable<PostBodyFragment['content']>, { __typename: 'TaskBoardContent' }>;
+
 /**
- * Decides whether a POSTS callout renders as a Tasks board. All task-board
- * GraphQL is isolated here; the shared callout model and its query are
- * untouched. When the callout is not a board, the provided fallback renders
- * verbatim. The board itself lives in an inner component so its hooks run
- * unconditionally regardless of the branch.
+ * 021 FR-009 / H19: the board is the post of content kind `task_board`; its columns and its complete task list
+ * arrive in its own content, in the feed window of its card (or the post URL's load), so the board sends nothing.
  */
-export function TaskBoardConnector({
-  calloutId,
-  fill,
-  detectOnly,
-  onBoardResolved,
-  fallback,
-  onOpenTask,
-}: TaskBoardConnectorProps) {
-  const { data, loading } = useTaskBoardDataQuery({ variables: { calloutId } });
-
-  const callout = data?.lookup.callout;
-  const isBoard = Boolean(
-    callout &&
-      isTaskBoard({
-        classification: { tagsets: callout.classification?.tagsets },
-        allowedContributionTypes: callout.settings.contribution.allowedTypes.map(type => String(type)),
-      })
-  );
-
-  // Report board-ness up so the consumer can open the callout to the board — but
-  // only once the query has resolved. While loading, `callout` is undefined and
-  // `isBoard` is a provisional `false`; reporting that would make the deep-link
-  // view mount the post-detail dialog first and flash before swapping to the
-  // board. The consumer keeps its "detection in flight" state until this fires.
-  useEffect(() => {
-    if (loading) return;
-    onBoardResolved?.(isBoard);
-  }, [loading, isBoard, onBoardResolved]);
-
-  // Detection-only consumers (the deep-link view) render the board elsewhere.
-  if (detectOnly) {
-    return null;
-  }
-
-  if (!isBoard || !callout) {
+export function TaskBoardConnector({ calloutId, fill, fallback, onOpenTask }: TaskBoardConnectorProps) {
+  const board = useCachedPost(calloutId);
+  const content = board?.contentKind === 'task_board' ? (board.content as TaskBoardContent | null) : undefined;
+  if (!board || !content) {
     return <>{fallback}</>;
   }
-
-  return <TaskBoardBody callout={callout} contributions={callout.contributions} fill={fill} onOpenTask={onOpenTask} />;
+  return <TaskBoardBody board={board} content={content} fill={fill} onOpenTask={onOpenTask} />;
 }
 
+const taskCard = (task: ResponseCardFragment) => ({
+  id: task.id,
+  title: task.about.displayName,
+  description: task.about.description || undefined,
+  tags: task.tags,
+  commentCount: task.room?.messageCount,
+});
+
 function TaskBoardBody({
-  callout,
-  contributions,
+  board,
+  content,
   fill,
   onOpenTask,
 }: {
-  callout: TaskBoardCalloutFragment;
-  contributions: TaskBoardContributionFragment[];
+  board: PostBodyFragment;
+  content: TaskBoardContent;
   fill?: boolean;
   onOpenTask?: (contributionId: string) => void;
 }) {
@@ -107,11 +64,15 @@ function TaskBoardBody({
   // add with no column distinct from the closed state.
   const [addState, setAddState] = useState<{ column?: string } | undefined>();
 
-  const privileges = callout.authorization?.myPrivileges ?? [];
-  const canMove = privileges.includes(AuthorizationPrivilege.MoveTask);
-  const canAdd = privileges.includes(AuthorizationPrivilege.Contribute);
-
-  const columns = mapTaskBoardColumns(callout, contributions);
+  const canMove = board.can.moveTask;
+  const canAdd = board.can.respond;
+  const tasks = [...content.tasks].sort((a, b) => a.sortOrder - b.sortOrder);
+  const columns = [...content.columns]
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map(column => {
+      const cards = tasks.filter(task => task.stage?.id === column.id).map(taskCard);
+      return { name: column.name, count: cards.length, cards };
+    });
 
   // Persist a card order (every contribution id, in the board's new top-to-bottom
   // order). The board renders by sortOrder, so the optimistic response reassigns
@@ -122,7 +83,7 @@ function TaskBoardBody({
   const persistOrder = (orderedCardIds: string[]) => {
     if (orderedCardIds.length === 0) return;
     void reorderTasks({
-      variables: { calloutID: callout.id, contributionIds: orderedCardIds },
+      variables: { calloutID: board.id, contributionIds: orderedCardIds },
       optimisticResponse: {
         updateContributionsSortOrder: orderedCardIds.map((id, index) => ({
           __typename: 'CalloutContribution',
@@ -137,8 +98,8 @@ function TaskBoardBody({
   };
 
   const handleMoveTask = (contributionId: string, toColumn: string, orderedCardIds: string[]) => {
-    const contribution = contributions.find(item => item.id === contributionId);
-    const fromColumn = contribution ? contributionColumnTag(contribution) : undefined;
+    const task = tasks.find(item => item.id === contributionId);
+    const fromColumn = content.columns.find(column => column.id === task?.stage?.id)?.name;
 
     void moveTask({
       variables: { moveData: { contributionID: contributionId, column: toColumn } },
@@ -150,17 +111,17 @@ function TaskBoardBody({
           sortOrder: orderedCardIds.indexOf(contributionId),
           classification: {
             __typename: 'Classification',
-            id: contribution?.classification?.id ?? `${contributionId}-classification`,
+            id: `${contributionId}-classification`,
             tagsets: [
               {
                 __typename: 'Tagset',
-                id: contribution?.classification?.tagsets?.[0]?.id ?? `${contributionId}-task`,
+                id: `${contributionId}-task`,
                 name: TASK_TAGSET_NAME,
                 tags: [toColumn],
               },
             ],
           },
-          post: contribution?.post,
+          post: undefined,
         },
       },
       update: cache => {
@@ -168,7 +129,7 @@ function TaskBoardBody({
         // the move immediately; the server value replaces this on settle. The
         // stored entries carry a __typename that the helper preserves via spread.
         cache.modify<{ taskColumnCounts?: { column: string; count: number }[] }>({
-          id: cache.identify({ __typename: 'Callout', id: callout.id }),
+          id: cache.identify({ __typename: 'Callout', id: board.id }),
           fields: {
             taskColumnCounts(existing = []) {
               // These entries have no id, so the cache stores them inline (never
@@ -216,15 +177,13 @@ function TaskBoardBody({
         // column. The refetch of TaskBoardData (inside the dialog) surfaces the
         // new card under its column with updated counts.
         <PostContributionAddConnector
-          calloutId={callout.id}
+          calloutId={board.id}
           taskColumn={addState.column}
           isTaskBoard={true}
           // Seed a new task from the board's contribution defaults (the "default
           // task template" set at creation) — title + description — instead of the
           // generic "New Post" fallback. Mirrors the non-board add flow in
           // CalloutDetailDialogConnector.
-          defaultDisplayName={callout.contributionDefaults?.defaultDisplayName ?? undefined}
-          defaultDescription={callout.contributionDefaults?.postDescription ?? undefined}
           inlineTrigger={true}
           // The board is a Radix dialog (z-50, fullscreen via the DOM Fullscreen
           // API — not a z-[100] portal), so the creation dialog only needs to sit

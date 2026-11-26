@@ -1,61 +1,33 @@
-import 'fake-indexeddb/auto';
-import { logger as sdkLogger } from 'matrix-js-sdk/lib/logger';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { stopActiveSession } from './activeSession';
+import { afterEach, expect, it, vi } from 'vitest';
 import { establishSession } from './sessionController';
-import { clearNamespace, storeCredentials } from './storage';
 
-// The SDK module is only evaluated by the session's own dynamic import, so the
-// logger created here stands in for the ones SDK modules create at load time.
-const loadTime = vi.hoisted(() => ({ logger: undefined as ReturnType<typeof sdkLogger.getChild> | undefined }));
+const { quietSdkLogging, createClient } = vi.hoisted(() => ({
+  quietSdkLogging: vi.fn(),
+  createClient: vi.fn(),
+}));
+vi.mock('matrix-js-sdk', () => ({ ClientEvent: {}, HttpApiEvent: {}, SyncState: {}, createClient }));
+vi.mock('./sdkLogging', () => ({ quietSdkLogging }));
 
-vi.mock('matrix-js-sdk', async () => {
-  const { logger } = await import('matrix-js-sdk/lib/logger');
-  loadTime.logger = logger.getChild('[load-time]');
-  return {
-    createClient: vi.fn(() => ({ stopClient: vi.fn(), startClient: vi.fn(async () => {}), on: vi.fn() })),
-  };
-});
-vi.mock('./ssoLogin', () => ({ attemptSilentSso: vi.fn() }));
+afterEach(() => vi.unstubAllGlobals());
 
-describe('establishSession SDK logging', () => {
-  const USER_ID = '@abc-123:matrix.dev-alkem.io';
-
-  afterEach(async () => {
-    stopActiveSession();
-    await clearNamespace(USER_ID);
+it('quiets SDK diagnostics before a session can issue its identity request', async () => {
+  const expected = new Error('identity service unavailable');
+  quietSdkLogging.mockResolvedValueOnce(undefined);
+  createClient.mockReturnValueOnce({ whoami: vi.fn().mockRejectedValueOnce(expected) });
+  vi.stubGlobal('navigator', {
+    locks: {
+      request: (_key: string, _options: object, use: (lock: object) => Promise<void>) => use({}),
+    },
   });
-
-  it('keeps SDK debug and info out of the console for loggers created at SDK load and after, but not warnings or errors', async () => {
-    await storeCredentials({
-      userId: USER_ID,
-      deviceId: 'DEV1',
-      accessToken: 'syt_stored_access',
-      homeserverUrl: 'https://matrix.dev-alkem.io',
-    });
-
-    await establishSession('abc-123');
-
-    const spies = (['debug', 'info', 'warn', 'error'] as const).map(method =>
-      vi.spyOn(console, method).mockImplementation(() => {})
-    );
-    const [debug, info, warn, error] = spies;
-    try {
-      for (const target of [loadTime.logger, sdkLogger.getChild('[room]')]) {
-        target?.debug('debug line');
-        target?.info('info line');
-        target?.warn('warn line');
-        target?.error('error line');
-      }
-
-      expect(debug).not.toHaveBeenCalled();
-      expect(info).not.toHaveBeenCalled();
-      expect(warn).toHaveBeenCalledTimes(2);
-      expect(error).toHaveBeenCalledTimes(2);
-      expect(warn).toHaveBeenNthCalledWith(1, '[load-time]', 'warn line');
-      expect(warn).toHaveBeenNthCalledWith(2, '[room]', 'warn line');
-    } finally {
-      for (const spy of spies) spy.mockRestore();
-    }
-  });
+  const running = establishSession(
+    '/api/matrix',
+    {
+      userId: '@actor:platform.example.test',
+      sessionBaseUrl: '/api/matrix',
+      expiresAt: '2099-01-01T00:00:00Z',
+    },
+    new AbortController().signal
+  );
+  await expect(running).rejects.toBe(expected);
+  expect(quietSdkLogging).toHaveBeenCalledBefore(createClient);
 });

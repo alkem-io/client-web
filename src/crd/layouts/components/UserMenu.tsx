@@ -98,18 +98,22 @@ export function UserMenu({
             <span>{t('header.dashboard')}</span>
           </a>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild={true}>
-          <a href={navigationHrefs.profile} className="cursor-pointer">
-            <User aria-hidden="true" className="mr-2 h-4 w-4" />
-            <span>{t('header.profile')}</span>
-          </a>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild={true}>
-          <a href={navigationHrefs.account} className="cursor-pointer">
-            <Settings aria-hidden="true" className="mr-2 h-4 w-4" />
-            <span>{t('header.myAccount')}</span>
-          </a>
-        </DropdownMenuItem>
+        {navigationHrefs.profile && (
+          <DropdownMenuItem asChild={true}>
+            <a href={navigationHrefs.profile} className="cursor-pointer">
+              <User aria-hidden="true" className="mr-2 h-4 w-4" />
+              <span>{t('header.profile')}</span>
+            </a>
+          </DropdownMenuItem>
+        )}
+        {navigationHrefs.account && (
+          <DropdownMenuItem asChild={true}>
+            <a href={navigationHrefs.account} className="cursor-pointer">
+              <Settings aria-hidden="true" className="mr-2 h-4 w-4" />
+              <span>{t('header.myAccount')}</span>
+            </a>
+          </DropdownMenuItem>
+        )}
 
         {/* Pending memberships */}
         {onPendingMembershipsClick && (

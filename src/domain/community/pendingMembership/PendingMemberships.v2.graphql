@@ -1,0 +1,69 @@
+# replaces: PendingInvitations, PendingInvitationsCount, UserPendingMemberships, PendingMembershipsSpace, PendingMembershipsUser.
+# screens-dispositions.tsv:10984-10986, :21182, :17683 (Viewer.pendingInvitations / Viewer.pendingApplications); the
+# invitation count is the list length (:10984 "count only via list length").
+fragment V2PendingMembershipRequest on MembershipRequest {
+  id
+  state
+  createdAt
+  message
+  roles
+  availableEvents
+  wouldJoin {
+    displayName
+    url
+  }
+  resource {
+    id
+    entityType
+    ... on Organization {
+      url
+      about {
+        displayName
+        avatar {
+          ...V2FileRef
+        }
+      }
+    }
+  }
+  space {
+    id
+    url
+    depth
+    tags
+    about {
+      displayName
+      tagline
+      avatar {
+        ...V2FileRef
+      }
+      card {
+        ...V2FileRef
+      }
+    }
+  }
+  actor {
+    id
+    actorType
+    about {
+      displayName
+    }
+  }
+  createdBy {
+    id
+    about {
+      displayName
+    }
+  }
+}
+
+query V2PendingMemberships {
+  viewer {
+    id
+    pendingInvitations {
+      ...V2PendingMembershipRequest
+    }
+    pendingApplications {
+      ...V2PendingMembershipRequest
+    }
+  }
+}

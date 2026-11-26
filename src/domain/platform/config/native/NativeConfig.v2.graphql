@@ -1,0 +1,26 @@
+query NativeConfiguration {
+  config {
+    platformId
+    matrix { sessionBaseUrl }
+    languages
+    defaultLanguage
+    features
+    authProviders
+    authentication { kratosPublicUrl }
+    links { key url }
+    iframeAllowlist
+    telemetry {
+      environment
+      sentry { enabled endpoint submitPII environment }
+      apm { rumEnabled endpoint }
+    }
+    geo { enabled endpoint }
+    versions { server }
+  }
+}
+
+query NativeGuidancePointer {
+  config {
+    pointers { guidanceVirtualContributor }
+  }
+}

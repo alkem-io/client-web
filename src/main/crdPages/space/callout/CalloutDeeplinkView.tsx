@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { useCachedPost } from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
 import type { MemoSigningRestoreIntent } from '@/main/ui/layout/MemoSigningReturnContext';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
-import { TaskBoardConnector } from './TaskBoardConnector';
 import { TaskBoardDialog } from './TaskBoardDialog';
 
 type CalloutDeeplinkViewProps = {
@@ -42,33 +42,26 @@ export function CalloutDeeplinkView({
   onMemoSigningRestoreConsumed,
   onClose,
 }: CalloutDeeplinkViewProps) {
-  // null while board detection is still in flight — keep the board fullscreen in
-  // that window so a board never flashes as an inline (feed-less) preview first.
-  const [isBoard, setIsBoard] = useState<boolean | null>(null);
   // The task shown on top of the board (seeded from the URL, then driven by
   // clicks within the board). Undefined shows the board alone.
   const [openContributionId, setOpenContributionId] = useState<string | undefined>(contributionId);
 
-  // Only a POSTS-only callout can be a Tasks board (the marker sits on a POSTS
-  // contribution config). Anything else — and any callout when the board build
-  // flag is off — takes the regular dialog directly, without firing the board
-  // query or waiting on detection.
-  const allowedTypes = callout.settings.contribution.allowedTypes;
-  const maybeBoard =
-    isTaskBoardEnabled() && allowedTypes.length === 1 && String(allowedTypes[0]).toLowerCase() === 'post';
+  // A Tasks board is the post of content kind task_board (021 H19); the post is already in the cache.
+  const contentKind = useCachedPost(callout.id)?.contentKind;
+  const isBoard = isTaskBoardEnabled() && contentKind === 'task_board';
 
   useEffect(() => {
-    if (maybeBoard && isBoard === true && memoSigningRestore) {
+    if (isBoard && memoSigningRestore) {
       onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
     }
-  }, [isBoard, maybeBoard, memoSigningRestore, onMemoSigningRestoreConsumed]);
+  }, [isBoard, memoSigningRestore, onMemoSigningRestoreConsumed]);
 
   useEffect(() => {
-    if (!memoSigningRouteAttemptId || (maybeBoard && isBoard === null)) return;
+    if (!memoSigningRouteAttemptId) return;
     onMemoSigningRouteSettled?.(memoSigningRouteAttemptId);
-  }, [isBoard, maybeBoard, memoSigningRouteAttemptId, onMemoSigningRouteSettled]);
+  }, [memoSigningRouteAttemptId, onMemoSigningRouteSettled]);
 
-  if (!maybeBoard) {
+  if (!isBoard) {
     return (
       <CalloutDetailDialogConnector
         open={true}
@@ -86,39 +79,19 @@ export function CalloutDeeplinkView({
 
   return (
     <>
-      {/* Confirm board-ness without rendering an inline board on the page. */}
-      <TaskBoardConnector calloutId={callout.id} detectOnly={true} onBoardResolved={setIsBoard} fallback={null} />
-
-      {/* Non-board callout: the usual post-with-responses dialog. */}
-      {isBoard === false && (
-        <CalloutDetailDialogConnector
-          open={true}
-          onOpenChange={open => {
-            if (!open) onClose();
-          }}
-          callout={callout}
-          initialContributionId={contributionId}
-          initialPostId={postId}
-          memoSigningRestore={memoSigningRestore}
-          onMemoSigningRestoreConsumed={onMemoSigningRestoreConsumed}
-        />
-      )}
-
       {/* Board callout: the board dialog (with its fullscreen toggle). */}
-      {isBoard === true && (
-        <TaskBoardDialog
-          calloutId={callout.id}
-          title={callout.framing.profile.displayName}
-          open={true}
-          onOpenChange={open => {
-            if (!open) onClose();
-          }}
-          onOpenTask={setOpenContributionId}
-        />
-      )}
+      <TaskBoardDialog
+        calloutId={callout.id}
+        title={callout.framing.profile.displayName}
+        open={true}
+        onOpenChange={open => {
+          if (!open) onClose();
+        }}
+        onOpenTask={setOpenContributionId}
+      />
 
       {/* Board callout + a task: the focused post dialog on top of the board. */}
-      {isBoard === true && openContributionId && (
+      {openContributionId && (
         <CalloutDetailDialogConnector
           open={true}
           onOpenChange={open => {

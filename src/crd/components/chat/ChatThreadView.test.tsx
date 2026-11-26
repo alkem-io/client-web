@@ -47,6 +47,30 @@ const renderThread = (messages: ChatMessage[], conversation: ChatThreadHeader = 
 // Visible text of an element, leaving out screen-reader-only and aria-hidden parts.
 const rowFor = (content: string) => screen.getByText(content).closest('[data-chat-message]') as HTMLElement;
 
+test('reply and cancel controls use the selected event on the existing timeline', () => {
+  const message = msg(at(14, 10, 0), { content: 'answer', replyPreview: 'previous message' });
+  const onReply = vi.fn();
+  const onCancelReply = vi.fn();
+  render(
+    <ChatThreadView
+      conversation={direct}
+      messages={[message]}
+      messagesLoading={false}
+      locale="en-GB"
+      onSendMessage={vi.fn()}
+      onReply={onReply}
+      replyPreview="answer"
+      onCancelReply={onCancelReply}
+    />
+  );
+
+  expect(within(rowFor('previous message')).getByText('previous message').tagName).toBe('BLOCKQUOTE');
+  fireEvent.click(screen.getByRole('button', { name: 'comments.reply' }));
+  expect(onReply).toHaveBeenCalledWith(message.id);
+  fireEvent.click(screen.getByRole('button', { name: 'actions.cancel' }));
+  expect(onCancelReply).toHaveBeenCalledOnce();
+});
+
 // jsdom has no PointerEvent, so `pointerType` would never reach the handler.
 class TestPointerEvent extends MouseEvent {
   pointerType: string;

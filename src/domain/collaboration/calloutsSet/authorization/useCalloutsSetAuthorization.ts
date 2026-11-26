@@ -1,5 +1,5 @@
-import { useCalloutsSetAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { useSpacePageData } from '@/domain/space/hooks/useSpacePage';
 
 type CalloutsSetAuthorizationParams = {
   calloutsSetId: string | undefined;
@@ -14,28 +14,24 @@ type CalloutsSetAuthorizationType = {
   loading: boolean;
 };
 
-// TODO: Additional Auth Check
+/** Natively the set is its space (021 F029): its privileges are the D2 Space document's `can`, from the page cache. */
 export const useCalloutsSetAuthorization = ({
   calloutsSetId,
   skip,
 }: CalloutsSetAuthorizationParams): CalloutsSetAuthorizationType => {
-  const { data: calloutsSetData, loading: loadingCalloutsSet } = useCalloutsSetAuthorizationQuery({
-    variables: {
-      calloutsSetId: calloutsSetId!,
-    },
-    skip: skip || !calloutsSetId,
-  });
-
-  const calloutsSetPrivileges = calloutsSetData?.lookup.calloutsSet?.authorization?.myPrivileges ?? [];
-  const canReadCalloutsSet = calloutsSetPrivileges.includes(AuthorizationPrivilege.Read);
-  const canCreateCallout = calloutsSetPrivileges.includes(AuthorizationPrivilege.CreateCallout);
-  const canMoveCallouts = calloutsSetPrivileges.includes(AuthorizationPrivilege.Update);
+  const node = useSpacePageData(skip ? undefined : calloutsSetId, 'space')?.node;
+  const can = node && 'can' in node ? node.can : undefined;
+  const calloutsSetPrivileges = [
+    can?.read ? AuthorizationPrivilege.Read : undefined,
+    can?.createPost ? AuthorizationPrivilege.CreateCallout : undefined,
+    can?.update ? AuthorizationPrivilege.Update : undefined,
+  ].filter(privilege => privilege !== undefined);
 
   return {
     calloutsSetPrivileges,
-    canCreateCallout,
-    canReadCalloutsSet,
-    canMoveCallouts,
-    loading: loadingCalloutsSet,
+    canCreateCallout: can?.createPost ?? false,
+    canReadCalloutsSet: can?.read ?? false,
+    canMoveCallouts: can?.update ?? false,
+    loading: Boolean(calloutsSetId) && !skip && !node,
   };
 };

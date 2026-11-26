@@ -1,0 +1,24 @@
+# replaces: InnovationHubById (src/domain/innovationHub/HubLandingPage/InnovationHubById.graphql)
+# pending: declared settings/subdomain/curated/leads read projection, fable ehb0z8yiegki; C1 child after step 4.
+query V2Homepage($id: UUID!) {
+  node(id: $id) {
+    id
+    ... on Space {
+      kind url settings subdomain
+      can { update }
+      about { displayName tagline description banner { alt ...V2FileRef } }
+      curated {
+        role sortOrder
+        node {
+          id entityType
+          ... on Space {
+            kind url tags templateCount
+            about { displayName description avatar { ...V2FileRef } }
+            host { about { displayName avatar { ...V2FileRef } } url }
+          }
+          ... on Agent { actorType url about { displayName tagline avatar { ...V2FileRef } } }
+        }
+      }
+    }
+  }
+}

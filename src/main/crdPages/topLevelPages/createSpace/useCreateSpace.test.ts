@@ -49,19 +49,18 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-vi.mock('@/core/apollo/generated/graphql-schema', () => ({
-  VisualType: { Banner: 'BANNER', Card: 'CARD', Avatar: 'AVATAR' },
+const CONSTRAINTS = {
+  aspectRatio: 3,
+  maxWidth: 1920,
+  maxHeight: 640,
+  minWidth: 384,
+  minHeight: 128,
+  allowedTypes: ['image/png'],
+};
+vi.mock('@/domain/space/components/CreateSpace/hooks/useSpaceVisualConstraints', () => ({
+  useSpaceVisualConstraints: () => ({ constraintsFor: () => CONSTRAINTS }),
 }));
-
-const CONSTRAINTS = { aspectRatio: 3, maxWidth: 1920, maxHeight: 640, minWidth: 384, minHeight: 128 };
-vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useDefaultVisualTypeConstraintsQuery: () => ({
-    data: { platform: { configuration: { defaultVisualTypeConstraints: CONSTRAINTS } } },
-  }),
-  useTemplateContentLazyQuery: () => [getTemplateContentMock],
-}));
-
-const getTemplateContentMock = vi.fn();
+vi.mock('@/core/apollo/hooks/useApolloErrorHandler', () => ({ useApolloErrorHandler: () => vi.fn() }));
 
 const navigateMock = vi.fn();
 vi.mock('@/core/routing/useNavigate', () => ({ default: () => navigateMock }));
@@ -71,6 +70,7 @@ vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () 
 
 const infoMock = vi.fn();
 vi.mock('@/core/logging/sentry/log', () => ({
+  error: vi.fn(),
   info: (...args: unknown[]) => infoMock(...args),
   TagCategoryValues: { SPACE_CREATION: 'SPACE_CREATION' },
 }));
@@ -90,26 +90,21 @@ vi.mock('@/domain/space/components/CreateSpace/hooks/spacePlans/useSpacePlans', 
   useSpacePlans: () => ({ availablePlans, loading: false }),
 }));
 
-vi.mock('@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces', () => ({
-  useDashboardSpaces: () => ({ refetchSpaces: vi.fn() }),
-}));
-
-// Phase count is per-test: the hook must apply a Space template whatever the
-// length of its innovation flow.
-let mappedPhases: { name: string }[] = [];
-vi.mock('@/main/crdPages/templates/templateContentMapper', () => ({
-  mapTemplateContent: () => ({ type: 'space', phases: mappedPhases }),
-}));
-
 let pickerSelectedId: string | null = null;
 const clearSelectionMock = vi.fn();
-vi.mock('@/main/crdPages/templates/useTemplatePicker', () => ({
-  useTemplatePicker: () => ({
-    selectedTemplateId: pickerSelectedId,
-    pickerProps: {},
-    openPicker: vi.fn(),
-    clearSelection: clearSelectionMock,
-  }),
+const fetchSpaceTemplateMock = vi.fn();
+const pickerArgs: unknown[] = [];
+vi.mock('@/main/crdPages/templates/spaceTemplates/useSpaceTemplatePicker', () => ({
+  useSpaceTemplatePicker: (args: unknown) => {
+    pickerArgs.push(args);
+    return {
+      selectedTemplateId: pickerSelectedId,
+      pickerProps: {},
+      openPicker: vi.fn(),
+      clearSelection: clearSelectionMock,
+      fetchSpaceTemplate: fetchSpaceTemplateMock,
+    };
+  },
 }));
 
 import { useCreateSpace } from './useCreateSpace';
@@ -125,15 +120,17 @@ describe('useCreateSpace', () => {
     infoMock.mockReset();
     addSpaceWelcomeCacheMock.mockReset();
     clearSelectionMock.mockReset();
-    getTemplateContentMock.mockReset();
-    mappedPhases = [];
+    fetchSpaceTemplateMock.mockReset();
+    pickerArgs.length = 0;
     pickerSelectedId = null;
   });
 
   afterEach(() => vi.clearAllMocks());
 
   const setup = (onClose = vi.fn(), onSpaceCreated?: (s: unknown) => void) =>
-    renderHook(() => useCreateSpace({ open: true, accountId: ACCOUNT_ID, onClose, onSpaceCreated } as never));
+    renderHook(() =>
+      useCreateSpace({ open: true, account: { id: ACCOUNT_ID, canCreate: [] }, onClose, onSpaceCreated } as never)
+    );
 
   it('auto-derives the slug from the name until the user edits it', () => {
     const { result } = setup();
@@ -180,7 +177,7 @@ describe('useCreateSpace', () => {
   });
 
   it('maps trimmed values, the license plan, and cropped visual alt text into createSpace, then navigates', async () => {
-    createSpaceMock.mockResolvedValue({ id: 'space-1', about: { profile: { url: '/space/climate' } } });
+    createSpaceMock.mockResolvedValue({ id: 'space-1', url: '/space/climate', omissions: [] });
     const onClose = vi.fn();
     const { result } = setup(onClose);
 
@@ -197,11 +194,13 @@ describe('useCreateSpace', () => {
     expect(createSpaceMock).toHaveBeenCalledTimes(1);
     const arg = createSpaceMock.mock.calls[0][0];
     expect(arg.accountId).toBe(ACCOUNT_ID);
-    expect(arg.licensePlanId).toBe('plan-1');
+    expect(arg.planId).toBe('plan-1');
     expect(arg.nameId).toBe('climatehub');
-    expect(arg.about.profile.displayName).toBe('Climate Hub');
-    expect(arg.about.profile.tagline).toBe('Tagline');
-    expect(arg.about.profile.visuals.banner).toEqual({ file: cropped, altText: 'A blue banner' });
+    expect(arg.profile.displayName).toBe('Climate Hub');
+    expect(arg.profile.tagline).toBe('Tagline');
+    expect(arg.addTutorialCallouts).toBe(false);
+    expect(arg.spaceTemplateId).toBeUndefined();
+    expect(arg.visuals).toEqual({ banner: { file: cropped, altText: 'A blue banner' }, card: undefined });
     expect(addSpaceWelcomeCacheMock).toHaveBeenCalledWith('space-1');
     expect(onClose).toHaveBeenCalledTimes(1);
     expect(navigateMock).toHaveBeenCalledWith('/space/climate');
@@ -215,30 +214,20 @@ describe('useCreateSpace', () => {
 
     const phases = (count: number) => Array.from({ length: count }, (_, i) => ({ name: `Phase ${i + 1}` }));
 
-    const templateResponse = {
-      data: {
-        lookup: {
-          template: {
-            profile: { displayName: 'Six Phase Template', defaultTagset: { tags: ['pack-tag'] } },
-            contentSpace: {
-              about: {
-                profile: {
-                  displayName: 'Climate Journey',
-                  tagline: 'From idea to impact',
-                  description: 'A six-phase journey.',
-                  tagsets: [{ name: 'default', type: 'FREEFORM', tags: ['climate'] }],
-                },
-              },
-            },
-          },
-        },
+    const fetched = (phaseCount: number) => ({
+      content: { type: 'space', phases: phases(phaseCount) },
+      prefill: {
+        templateName: 'Six Phase Template',
+        displayName: 'Climate Journey',
+        tagline: 'From idea to impact',
+        description: 'A six-phase journey.',
+        tags: ['climate'],
       },
-    };
+    });
 
     /** Opens the dialog, then picks a template whose flow has `phaseCount` phases. */
     const pickTemplate = async (phaseCount: number) => {
-      mappedPhases = phases(phaseCount);
-      getTemplateContentMock.mockResolvedValue(templateResponse);
+      fetchSpaceTemplateMock.mockResolvedValue(fetched(phaseCount));
       const rendered = setup();
       // The open transition resets the form (and invalidates in-flight fetches),
       // so the selection is made on the already-open dialog, as a user would.
@@ -272,6 +261,28 @@ describe('useCreateSpace', () => {
       expect(result.current.values.description).toBe('A six-phase journey.');
       expect(result.current.values.tags).toEqual(['climate']);
     });
+  });
+
+  it('asks the picker for the account and platform sources only (item9: no L0 space source)', () => {
+    setup();
+    expect(pickerArgs[0]).toEqual({ accountId: ACCOUNT_ID });
+  });
+
+  it('holds no template when the template read fails, so nothing unpreviewed is submitted', async () => {
+    fetchSpaceTemplateMock.mockRejectedValue(new Error('read failed'));
+    // The real picker's clearSelection empties its selection.
+    clearSelectionMock.mockImplementation(() => {
+      pickerSelectedId = null;
+    });
+    const rendered = setup();
+    pickerSelectedId = 'template-1';
+    await act(async () => {
+      rendered.rerender();
+      await Promise.resolve();
+    });
+    expect(rendered.result.current.values.spaceTemplateId).toBe('');
+    expect(rendered.result.current.selectedTemplateName).toBeUndefined();
+    expect(clearSelectionMock).toHaveBeenCalled();
   });
 
   it('keeps the dialog open (no navigation) when the create mutation rejects', async () => {

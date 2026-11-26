@@ -30,6 +30,13 @@ type PlatformTemplateResult = ImportTemplateDialogPlatformTemplatesQuery['platfo
 const cardFromImportTemplate = (t: ImportDialogTemplate, ownerLabel?: string): TemplateCardData =>
   mapTemplateToCardData(t, ownerLabel);
 
+/**
+ * A space's templates set as served. The native server refuses the legacy SpaceTemplatesManager read (422), and no v2
+ * read serves a template's content for import yet, so a space's template pickers say "not available yet" in place
+ * and send nothing (spaces 2026-11-26). The one place it lights up.
+ */
+export const servedSpaceTemplatesSetId = (_levelZeroSpaceId: string | undefined): string | undefined => undefined;
+
 export type UseTemplatePickerArgs = {
   allowedTypes: TemplateType[];
   /** The current space's templates set, if in a space context (for the Space source section). */

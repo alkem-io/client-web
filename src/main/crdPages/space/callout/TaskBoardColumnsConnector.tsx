@@ -3,12 +3,14 @@ import { toast } from 'sonner';
 import {
   useCreateTaskColumnOnCalloutMutation,
   useDeleteTaskColumnOnCalloutMutation,
-  useTaskBoardDataQuery,
   useUpdateTaskColumnOnCalloutMutation,
   useUpdateTaskColumnsSortOrderOnCalloutMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import type { PostBodyFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import { TaskBoardColumnsDialog } from '@/crd/components/callout/task-board/TaskBoardColumnsDialog';
-import { getBoardColumns } from '@/crd/components/callout/task-board/taskBoard';
+import { useCachedPost } from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
+
+type TaskBoardContent = Extract<NonNullable<PostBodyFragment['content']>, { __typename: 'TaskBoardContent' }>;
 
 type TaskBoardColumnsConnectorProps = {
   calloutId: string;
@@ -19,20 +21,21 @@ type TaskBoardColumnsConnectorProps = {
 /**
  * Owns the column-management dialog for a Tasks board, mounted from the
  * callout's 3-dots settings menu (`CalloutSettingsConnector`) rather than the
- * board content. Reads the callout's column names off the task tagset and runs
- * the four column mutations. The `TaskBoardData` query is deduped by Apollo, so
- * mounting this alongside `TaskBoardConnector` adds no extra network cost.
+ * board content. Reads the board's columns and runs the four column mutations.
  */
 export function TaskBoardColumnsConnector({ calloutId, open, onOpenChange }: TaskBoardColumnsConnectorProps) {
   const { t } = useTranslation('crd-taskBoard');
-  const { data } = useTaskBoardDataQuery({ variables: { calloutId } });
+  // 021 H19: the board's columns are its TaskBoardContent, already in the cache with its card; no request.
+  const board = useCachedPost(calloutId);
+  const content = board?.contentKind === 'task_board' ? (board.content as TaskBoardContent | null) : undefined;
   const [createColumn] = useCreateTaskColumnOnCalloutMutation();
   const [renameColumn] = useUpdateTaskColumnOnCalloutMutation();
   const [deleteColumn] = useDeleteTaskColumnOnCalloutMutation();
   const [reorderColumns] = useUpdateTaskColumnsSortOrderOnCalloutMutation();
 
-  const callout = data?.lookup.callout;
-  const columnNames = getBoardColumns({ classification: { tagsets: callout?.classification?.tagsets } });
+  const columnNames = [...(content?.columns ?? [])]
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map(column => column.name);
 
   // Surface a toast for a failed column mutation and re-throw so the dialog's
   // save sweep aborts and keeps itself open. Column edits run in their own

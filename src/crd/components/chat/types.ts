@@ -37,6 +37,8 @@ export type ChatMessage = {
   /** Undefined for synthetic/system messages. */
   author?: CommentAuthor;
   content: string;
+  replyTo?: string;
+  replyPreview?: string;
   /** Epoch milliseconds; sort key and the source of every time shown in the
    *  thread. Synthetic intro uses 0 to sort first and carries no time. */
   timestampMs: number;

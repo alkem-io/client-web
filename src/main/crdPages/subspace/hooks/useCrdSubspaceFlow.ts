@@ -1,5 +1,4 @@
 import { useSearchParams } from 'react-router-dom';
-import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 
 const PHASE_PARAM = 'phase';
 
@@ -8,8 +7,12 @@ export type UseCrdSubspaceFlowResult = {
   setActivePhaseId: (id: string) => void;
 };
 
+/**
+ * The active phase: `?phase` when it names a stage, else the current stage when it is one. The current stage is not
+ * served yet (021 tasks.md S01), so without `?phase` there is no active phase, never a guessed first one.
+ */
 export function useCrdSubspaceFlow(
-  phases: SubspaceFlowPhase[],
+  phases: ReadonlyArray<{ id: string }>,
   currentStateId: string | undefined
 ): UseCrdSubspaceFlowResult {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,7 +21,7 @@ export function useCrdSubspaceFlow(
   const validUrlPhase = fromUrl && phases.some(p => p.id === fromUrl) ? fromUrl : undefined;
   const validCurrentState = currentStateId && phases.some(p => p.id === currentStateId) ? currentStateId : undefined;
 
-  const activePhaseId = validUrlPhase ?? validCurrentState ?? phases[0]?.id;
+  const activePhaseId = validUrlPhase ?? validCurrentState;
 
   const setActivePhaseId = (id: string) => {
     const next = new URLSearchParams(searchParams);

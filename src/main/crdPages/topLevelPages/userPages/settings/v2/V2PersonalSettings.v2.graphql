@@ -1,0 +1,5 @@
+mutation V2SavePersonalSettings($id: UUID!, $value: JSON!) {
+  setSettings(id: $id, namespace: "core", name: "user_settings", value: $value) {
+    id
+  }
+}

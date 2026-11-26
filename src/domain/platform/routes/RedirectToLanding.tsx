@@ -1,9 +1,8 @@
 import { useLayoutEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
-import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { useNativeFoundation } from '@/core/foundation/NativeFoundationProvider';
 import useNavigate from '@/core/routing/useNavigate';
-import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovationHub';
 import useLandingUrl from '@/main/landing/useLandingUrl';
 import { useConfig } from '../config/useConfig';
 import { ROUTE_HOME } from './constants';
@@ -11,12 +10,12 @@ import { useHomeRedirect } from './useHomeRedirect';
 
 const RedirectToLanding = () => {
   const { isFeatureEnabled } = useConfig();
-  const { isAuthenticated, loading: loadingAuthentication } = useAuthenticationContext();
-  const { innovationHub, innovationHubLoading } = useInnovationHub();
+  const { data: foundation, loading: loadingAuthentication } = useNativeFoundation();
+  const isAuthenticated = !!foundation?.viewer.session.authenticated;
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isOnCustomHomepage = !!innovationHub;
+  const isOnCustomHomepage = !!foundation?.resolve?.homepage;
 
   const landingUrl = useLandingUrl();
 
@@ -25,8 +24,8 @@ const RedirectToLanding = () => {
   useLayoutEffect(() => {
     const homeRoute = `${ROUTE_HOME}${location.search}`;
 
-    // Wait for loading states to resolve
-    if (loadingAuthentication || innovationHubLoading) {
+    // Wait for loading states to resolve; a failed foundation stays visible on `/`
+    if (loadingAuthentication || !foundation) {
       return;
     }
 
@@ -66,10 +65,10 @@ const RedirectToLanding = () => {
       window.location.replace(landingUrl);
     }
   }, [
+    foundation,
     isAuthenticated,
     loadingAuthentication,
     isFeatureEnabled,
-    innovationHubLoading,
     isOnCustomHomepage,
     landingUrl,
     loadingHomeRedirect,

@@ -1,14 +1,11 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAvailableUsersForEntryRoleQuery, useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
+import { RoleSetInvitationResultNotice, RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
 import {
-  ActorType,
-  RoleName,
-  RoleSetInvitationResultNotice,
-  RoleSetInvitationResultType,
-  SpaceLevel,
-  type VirtualContributorFullFragment,
-} from '@/core/apollo/generated/graphql-schema';
+  useSpaceCommunityCandidatesQuery,
+  useSpaceCommunityInviteTargetQuery,
+} from '@/core/apollo/generated-v2/apollo-hooks';
+import { CandidateEntry, type InviteOutcomeKind } from '@/core/apollo/generated-v2/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   type InvitationResult,
@@ -19,17 +16,19 @@ import {
 } from '@/crd/components/community/InviteMembersDialog';
 import type { VcPreviewData } from '@/crd/components/virtualContributor/community/VirtualContributorPreview.types';
 import type { ContributorSelectorInvitee, ContributorSelectorUserResult } from '@/crd/forms/ContributorSelector';
-import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
-import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 import type InvitationResultModel from '@/domain/access/model/InvitationResultModel';
-import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
-import { InvitationState } from '@/domain/community/invitations/InvitationApplicationConstants';
 import emailParser from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/emailParser';
-import { useContributors } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
 import useVirtualContributorsAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useVirtualContributorsAdmin';
+import {
+  ACTOR_TYPE,
+  SPACE_ROLE,
+  type SpaceCommunityCandidate,
+  type SpaceCommunityInviteOutcome,
+  toSpaceCommunityCandidate,
+  useSpaceCommunityMutations,
+} from '@/domain/spaceAdmin/SpaceAdminCommunity/native/spaceCommunityNative';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export type InviteMembersDialogConnectorProps = {
@@ -40,14 +39,15 @@ export type InviteMembersDialogConnectorProps = {
   /**
    * When true, only existing parent-community members can be invited and the
    * email-paste path is hidden. Mirrors the legacy `InviteContributorsDialog`
-   * `onlyFromParentCommunity` behaviour. User kind only.
+   * `onlyFromParentCommunity` behaviour. User kind only. The server's INVITE
+   * candidates already admit only parent members there (invite-candidates,
+   * community-roles-screens.tsv:173); the flag keeps the email path hidden.
    */
   onlyFromParentCommunity?: boolean;
   /**
    * Override the URL-resolved space. Required when the dialog is opened from
    * (sub)space settings, where the route may resolve to a parent space but the
-   * invite must target the (sub)space being edited. `spaceName` + `roleSetId`
-   * are then derived from this id via `useInviteUsersDialogQuery`.
+   * invite must target the (sub)space being edited.
    */
   spaceId?: string;
   /**
@@ -59,7 +59,10 @@ export type InviteMembersDialogConnectorProps = {
 };
 
 /**
- * Correlates the mutation's per-invitee results back to what was submitted.
+ * Correlates the legacy `inviteForEntryRoleOnRoleSet` per-invitee results back to what was
+ * submitted. Still used by the organization Associates invite connector, which is not
+ * repointed; the space invite below maps the native `InviteOutcome` list with
+ * `mapInviteOutcomes`.
  *
  * Every result carries the invitee's identity — `invitedActorID` for an actor
  * (and for an email address that turned out to belong to an existing user),
@@ -145,6 +148,51 @@ export const mapInvitationResults = (
   });
 };
 
+/**
+ * The C2.2 outcome vocabulary (InviteOutcomeKind) onto the dialog's result rows. NOT_ALLOWED and
+ * ROLE_LIMIT_REACHED have no dedicated result copy, so they render as the generic failure row.
+ */
+const INVITE_OUTCOME_RESULT: Record<InviteOutcomeKind, InvitationResult['outcome']> = {
+  SENT: 'sent',
+  ALREADY_INVITED: 'alreadyInvited',
+  ALREADY_MEMBER: 'alreadyMember',
+  OPEN_APPLICATION: 'alreadyHasApplication',
+  PARENT_NOT_AUTHORIZED: 'parentNotAuthorized',
+  ORGANIZATION_NOT_ACCEPTING_INVITATIONS: 'notAcceptingInvitations',
+  ORGANIZATION_LEAD_ROLE_LIMIT_REACHED: 'leadLimitReached',
+  EXTRA_ROLE_LIMIT_REACHED: 'extraRoleLimitReached',
+  NOT_ALLOWED: 'error',
+  ROLE_LIMIT_REACHED: 'error',
+};
+
+/**
+ * Correlates the native `invite` outcomes (invite-send, community-roles-screens.tsv:174) back to
+ * the submitted chips. Exactly one of `actor` / `email` names each outcome, so the match is by
+ * identity and independent of ordering; a chip no outcome names reports an error.
+ * `noOrganizationAdmin` is the inviter advisory rendered as the `noAdministrators` notice.
+ */
+export const mapInviteOutcomes = (
+  submittedInvitees: ContributorSelectorInvitee[],
+  outcomes: SpaceCommunityInviteOutcome[]
+): InvitationResult[] => {
+  const remaining = [...outcomes];
+  return submittedInvitees.map(invitee => {
+    const actorId = invitee.kind === 'organization' ? invitee.id : invitee.kind === 'user' ? invitee.userId : undefined;
+    const email = invitee.kind === 'email' ? invitee.email.toLowerCase() : undefined;
+    const index = remaining.findIndex(result =>
+      actorId !== undefined ? result.actor === actorId : result.email?.toLowerCase() === email
+    );
+    if (index === -1 || (actorId === undefined && email === undefined)) {
+      return { invitee, outcome: 'error' as const };
+    }
+    const [result] = remaining.splice(index, 1);
+    const outcome = INVITE_OUTCOME_RESULT[result.outcome];
+    return result.noOrganizationAdmin
+      ? { invitee, outcome, notice: 'noAdministrators' as const }
+      : { invitee, outcome };
+  });
+};
+
 const SEARCH_DEBOUNCE_MS = 300;
 const INVITE_PAGE_SIZE = 20;
 
@@ -156,22 +204,22 @@ const EMAIL_REGEX =
 // @IsEmail accepts and flag the rest as invalid chips instead of failing the whole batch.
 export const isValidEmail = (value: string): boolean => EMAIL_REGEX.test(value.trim().toLowerCase());
 
-const ROLE_TO_NAME: Record<InviteRole, RoleName> = {
-  Member: RoleName.Member,
-  Lead: RoleName.Lead,
-  Admin: RoleName.Admin,
+// The offered roles, as the server's role names (schema.sql:84-90).
+const ROLE_TO_NAME: Record<InviteRole, string> = {
+  Member: SPACE_ROLE.Member,
+  Lead: SPACE_ROLE.Lead,
+  Admin: SPACE_ROLE.Admin,
   // Associate/Owner are never offered on a Space-target invite (organization target only,
   // 062) — the shared role type is exhaustive, so this map needs an entry even though these
   // two are unreachable here.
-  Associate: RoleName.Associate,
-  Owner: RoleName.Owner,
+  Associate: 'associate',
+  Owner: 'owner',
 };
 
 /**
- * Wires the CRD `InviteMembersDialog` to Apollo, the existing email parser,
- * the legacy contributor search hook, and the `inviteContributorsOnRoleSet`
- * mutation. Owns ALL i18n resolution so the presentational layer stays
- * label-free.
+ * Wires the CRD `InviteMembersDialog` to the native space community reads and writes
+ * (`candidates`, `invite`, `setRoles`) and the existing email parser. Owns ALL i18n resolution
+ * so the presentational layer stays label-free.
  */
 export function InviteMembersDialogConnector({
   open,
@@ -184,7 +232,7 @@ export function InviteMembersDialogConnector({
   const { t } = useTranslation('crd-community');
   const { i18n } = useTranslation();
   const notify = useNotification();
-  const { spaceId: resolvedSpaceId, parentSpaceId } = useUrlResolver();
+  const { spaceId: resolvedSpaceId } = useUrlResolver();
   const spaceId = spaceIdOverride ?? resolvedSpaceId;
   const { userModel: currentUser } = useCurrentUserContext();
 
@@ -196,14 +244,15 @@ export function InviteMembersDialogConnector({
     label: String((i18n as any).t(`languages.${code}`)),
   }));
 
-  const { data: spaceData, loading: loadingSpace } = useInviteUsersDialogQuery({
-    variables: { spaceId: spaceId ?? '' },
+  const { data: spaceData, loading: loadingSpace } = useSpaceCommunityInviteTargetQuery({
+    variables: { space: spaceId ?? '' },
     skip: !open || !spaceId,
   });
 
-  const spaceName = spaceData?.lookup.space?.about.profile.displayName ?? '';
-  const roleSetId = spaceData?.lookup.space?.about.membership.roleSetID;
-  const spaceLevel = spaceData?.lookup.space?.level;
+  const target = spaceData?.node;
+  const spaceName = target && 'about' in target ? target.about.displayName : '';
+
+  const { invite, setRoles } = useSpaceCommunityMutations(spaceId ?? '');
 
   // ---------- form state ----------
   const [selectedContributors, setSelectedContributors] = useState<ContributorSelectorInvitee[]>([]);
@@ -239,217 +288,96 @@ export function InviteMembersDialogConnector({
     setDefaultMessage(next);
   }, [open, spaceName, kind, t, welcomeMessage, defaultMessage]);
 
-  // Debounce the search query so we don't fire useContributors on every
+  // Debounce the search query so we don't fire a candidates read on every
   // keystroke. 300ms matches the legacy debounce.
   useEffect(() => {
     const handle = window.setTimeout(() => setDebouncedQuery(searchQuery), SEARCH_DEBOUNCE_MS);
     return () => window.clearTimeout(handle);
   }, [searchQuery]);
 
-  // Candidate-list source depends on level:
-  //  - L0 / L1 (`!onlyFromParentCommunity`): the (sub)space's OWN role set via
-  //    `availableUsersForEntryRole`. The server returns the setting-aware,
-  //    privilege-aware invitable set — the full platform list, or only parent-space
-  //    members when the caller can't invite to the parent — and already excludes
-  //    current members. This replaces the old global `usersPaginated` directory,
-  //    which ignored the space/setting and surfaced non-parent-members at L1.
-  //  - L2 (`onlyFromParentCommunity`): unchanged legacy behaviour — only existing
-  //    parent-community members, via `useContributors` (usersInRoles based).
-  // Trim once: a pasted value with surrounding whitespace (e.g. an email with a
-  // trailing space) must not gate `skip` as non-empty while leaking the
-  // whitespace into the server-side filter — that yields zero matches. The same
-  // trimmed value drives the server filter, the skip gate, and the L2
-  // client-side match below.
+  // ---------- user / organization candidates ----------
+  // `candidates(entry: INVITE)` (invite-candidates, community-roles-screens.tsv:173): the server
+  // admits the invitable set for this space — current holders, open requests, directly grantable
+  // actors and (on an L2 space) non-parent-members are filtered before paging, never in the client.
+  // Trim once: a pasted value with surrounding whitespace must not gate `skip` as
+  // non-empty while leaking the whitespace into the server-side filter.
   const trimmedQuery = debouncedQuery.trim();
-  const searchFilter = trimmedQuery ? { displayName: trimmedQuery, email: trimmedQuery } : undefined;
+  const isOrganization = kind === 'organization';
+  const isVirtualContributor = kind === 'virtualContributor';
 
   const {
-    data: entryRoleData,
-    loading: entryRoleLoading,
-    fetchMore: entryRoleFetchMore,
-  } = useAvailableUsersForEntryRoleQuery({
-    variables: { roleSetId: roleSetId ?? '', first: INVITE_PAGE_SIZE, filter: searchFilter },
-    skip: !open || onlyFromParentCommunity || !roleSetId || !trimmedQuery,
+    data: candidatesData,
+    loading: candidatesLoading,
+    fetchMore: candidatesFetchMore,
+  } = useSpaceCommunityCandidatesQuery({
+    variables: {
+      space: spaceId ?? '',
+      role: SPACE_ROLE.Member,
+      entry: CandidateEntry.Invite,
+      actorType: isOrganization ? ACTOR_TYPE.Organization : ACTOR_TYPE.User,
+      terms: trimmedQuery || undefined,
+      first: INVITE_PAGE_SIZE,
+    },
+    // Users are searched once something is typed (the parent-members list at L2 also
+    // without); organizations are listed from the start — as before the repoint.
+    skip: !open || !spaceId || isVirtualContributor || (!isOrganization && !onlyFromParentCommunity && !trimmedQuery),
   });
-  const entryRolePage = entryRoleData?.lookup.roleSet?.availableUsersForEntryRole;
-
-  const {
-    data: parentMembers = [],
-    hasMore: parentHasMore,
-    loading: parentLoading,
-    fetchMore: parentFetchMore,
-  } = useContributors({
-    filter: searchFilter,
-    // Only the L2 path consults the parent community; pass undefined otherwise so
-    // the hook short-circuits instead of firing the global usersPaginated query.
-    parentSpaceId: onlyFromParentCommunity ? parentSpaceId : undefined,
-    onlyUsersInRole: true,
-    pageSize: INVITE_PAGE_SIZE,
-  });
-
-  const contributorsLoading = onlyFromParentCommunity ? parentLoading : entryRoleLoading;
-  const hasMore = onlyFromParentCommunity ? parentHasMore : (entryRolePage?.pageInfo.hasNextPage ?? false);
-  const fetchMore = onlyFromParentCommunity
-    ? parentFetchMore
-    : () => {
-        if (!roleSetId || !entryRolePage) return;
-        void entryRoleFetchMore({
-          variables: {
-            roleSetId,
-            first: INVITE_PAGE_SIZE,
-            after: entryRolePage.pageInfo.endCursor,
-            filter: searchFilter,
-          },
-        });
-      };
-
-  // Normalise both sources to a common row shape, then exclude self + already-selected.
-  const selectedUserIds = new Set(
-    selectedContributors.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
-  );
-  // The entry-role query (L0/L1) filters server-side. The parent-members (L2)
-  // source ignores the `filter` arg, so the search box would otherwise do
-  // nothing — apply a client-side displayName match for that path.
-  const query = trimmedQuery.toLowerCase();
-  const rawCandidates = (onlyFromParentCommunity ? parentMembers : (entryRolePage?.users ?? []))
-    .map(c => ({
-      id: c.id,
-      displayName: c.profile?.displayName ?? '',
-      avatarUrl: c.profile?.visual?.uri,
-      city: c.profile?.location?.city,
-      country: c.profile?.location?.country,
-    }))
-    .filter(c => !onlyFromParentCommunity || !query || c.displayName.toLowerCase().includes(query));
-  const userSearchResults: ContributorSelectorUserResult[] = rawCandidates
-    .filter(c => c.id !== currentUser?.id)
-    .filter(c => !selectedUserIds.has(c.id))
-    .map(c => {
-      const city = c.city?.trim() ?? '';
-      const country = c.country?.trim() ?? '';
-      const location = city && country ? `${city}, ${country}` : city ? city : country ? country : undefined;
-      return { userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl, location };
+  const candidatesPage = candidatesData?.candidates;
+  const hasMore = candidatesPage?.pageInfo.hasNextPage ?? false;
+  const fetchMore = () => {
+    const after = candidatesPage?.pageInfo.endCursor;
+    if (!candidatesPage?.pageInfo.hasNextPage || !after) return;
+    void candidatesFetchMore({
+      variables: { after },
+      updateQuery: (previous, { fetchMoreResult }) => ({
+        ...fetchMoreResult,
+        candidates: {
+          ...fetchMoreResult.candidates,
+          edges: [...previous.candidates.edges, ...fetchMoreResult.candidates.edges],
+        },
+      }),
     });
+  };
 
-  // ---------- organization candidates (D12) ----------
-  // Current member/lead organizations of this space are excluded from the search
-  // results client-side (the server still rejects a duplicate as a safety net).
-  // Fetched narrowly (organizations only, no role definitions) rather than via the
-  // heavier useCommunityAdmin, and skipped entirely outside the organization kind.
-  const { organizations: currentMemberOrganizations } = useRoleSetManager({
-    roleSetId: kind === 'organization' ? roleSetId : undefined,
-    relevantRoles: RELEVANT_ROLES.Community,
-    contributorTypes: [ActorType.Organization],
-    fetchContributors: true,
-  });
-  const { findAvailableOrganizationsForRoleSet } = useRoleSetAvailableContributors({
-    roleSetId,
-    filterCurrentMembers: currentMemberOrganizations,
-  });
-  const [orgCandidates, setOrgCandidates] = useState<ContributorSelectorUserResult[]>([]);
-  const [orgLoading, setOrgLoading] = useState(false);
-  // Organizations with an already-open invitation (`invited` state) are excluded — sending
-  // another invite would just hit ALREADY_INVITED_TO_ROLE_SET.
-  //
-  // Only the invitations are needed here. `applications` is gated on GRANT server-side, so
-  // selecting it too would turn a FORBIDDEN for an inviter without GRANT (a subspace admin
-  // allowed to invite) into a null role set and silently disable this dedupe.
-  const {
-    invitations: existingInvitations,
-    inviteContributorsOnRoleSet,
-    loading: loadingRoleSet,
-  } = useRoleSetApplicationsAndInvitations({ roleSetId, includeApplications: false });
-  // "Open" must mean the same thing here as in the Member Organisations >
-  // Pending invitations list (`useCommunityTabData.isOpenOrganizationInvitation`):
-  // 'invited' PLUS the brief in-flight 'accepting'. Excluding only 'invited'
-  // let an organization that had just clicked Accept show up as an invitable
-  // candidate while it was still listed as pending, so re-inviting it came
-  // back as "Already invited to this space".
-  const openOrgInvitationIds = new Set(
-    existingInvitations
-      .filter(
-        inv =>
-          inv.contributorType === ActorType.Organization &&
-          (inv.state === InvitationState.INVITED || inv.state === 'accepting')
-      )
-      .map(inv => inv.actor.id)
+  // Exclude self + already-selected chips (dialog state, not admission).
+  const selectedIds = new Set(
+    selectedContributors.flatMap(c => (c.kind === 'user' ? [c.userId] : c.kind === 'organization' ? [c.id] : []))
   );
-  const selectedOrgIds = new Set(
-    selectedContributors.filter(c => c.kind === 'organization').map(c => (c as { kind: 'organization'; id: string }).id)
-  );
-  // `findAvailableOrganizationsForRoleSet` is intentionally excluded from deps — it returns a
-  // fresh function on every render, so including it would re-fetch on every render. Mirrors
-  // VirtualContributorInviteConnector's `lookup` exclusion.
-  //
-  // `currentMemberOrgIds` IS a dep (as a joined string, not the array, which is fresh every
-  // render): the member list arrives two round trips after `roleSetId` resolves, so the first
-  // fetch filters against an empty set and offers organizations that are already Members or
-  // Leads. Re-running once it settles is what makes US1-AS2's exclusion hold. The VC branch
-  // below guards the same way with `currentVcMemberIds`.
-  const currentMemberOrgIds = currentMemberOrganizations.map(org => org.id).join(',');
-  useEffect(() => {
-    if (!open || kind !== 'organization' || !roleSetId) return;
-    let cancelled = false;
-    setOrgLoading(true);
-    void (async () => {
-      try {
-        const { organizations } = await findAvailableOrganizationsForRoleSet(trimmedQuery || undefined);
-        if (cancelled) return;
-        setOrgCandidates(organizations.map(org => ({ userId: org.id, displayName: org.profile?.displayName ?? '' })));
-      } catch {
-        // A failed lookup must render as "no results", not as an unhandled rejection.
-        if (!cancelled) setOrgCandidates([]);
-      } finally {
-        if (!cancelled) setOrgLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [open, kind, roleSetId, trimmedQuery, currentMemberOrgIds]);
-  const organizationSearchResults: ContributorSelectorUserResult[] = orgCandidates.filter(
-    c => !openOrgInvitationIds.has(c.userId) && !selectedOrgIds.has(c.userId)
-  );
-
-  const searchResults = kind === 'organization' ? organizationSearchResults : userSearchResults;
+  const searchResults: ContributorSelectorUserResult[] = (candidatesPage?.edges ?? [])
+    .map(edge => toSpaceCommunityCandidate(edge.node))
+    .filter(c => isOrganization || c.id !== currentUser?.id)
+    .filter(c => !selectedIds.has(c.id))
+    .map(c =>
+      isOrganization
+        ? { userId: c.id, displayName: c.displayName }
+        : { userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl, location: c.location }
+    );
 
   // ---------- virtualContributor candidates (T019 fold) ----------
-  // `useCommunityAdmin` is only actually fetched for the virtualContributor kind — its
-  // internal `useRoleSetManager` skips its queries when roleSetId is falsy, so passing ''
-  // for the other kinds costs nothing. Reused (not re-derived) because virtualContributorAdmin
-  // .onAdd (a role ASSIGNMENT, not an invitation) and .inviteContributors already exist there.
-  const vcCommunity = useCommunityAdmin({ roleSetId: kind === 'virtualContributor' ? (roleSetId ?? '') : '' });
-  const currentVcMemberIds = vcCommunity.virtualContributorAdmin.members.map(m => m.id).join(',');
-  const { virtualContributorAdmin: vcLookup } = useVirtualContributorsAdmin({
-    level: spaceLevel ?? SpaceLevel.L0,
-    spaceId: spaceId ?? '',
-    currentMembers: vcCommunity.virtualContributorAdmin.members,
-  });
+  // Account VCs = `candidates(entry: DIRECT)` (added with `setRoles`), library VCs =
+  // `candidates(entry: INVITE)` (invited with `invite`); the server keeps the two verdicts apart.
+  const { virtualContributorAdmin: vcLookup } = useVirtualContributorsAdmin({ spaceId: spaceId ?? '' });
   const [vcAccountItems, setVcAccountItems] = useState<VcInviteItem[]>([]);
   const [vcLibraryItems, setVcLibraryItems] = useState<VcInviteItem[]>([]);
-  const [vcFetchedItems, setVcFetchedItems] = useState<VirtualContributorFullFragment[]>([]);
+  const [vcFetchedItems, setVcFetchedItems] = useState<SpaceCommunityCandidate[]>([]);
   const [vcLoading, setVcLoading] = useState(false);
   const [vcBusyId, setVcBusyId] = useState<string | null>(null);
   const [vcPreviewData, setVcPreviewData] = useState<VcPreviewData | undefined>(undefined);
-  const toVcItem = (vc: VirtualContributorFullFragment): VcInviteItem => ({
+  const toVcItem = (vc: SpaceCommunityCandidate): VcInviteItem => ({
     id: vc.id,
-    displayName: vc.profile?.displayName ?? '',
-    avatarUrl: vc.profile?.avatar?.uri,
+    displayName: vc.displayName,
+    avatarUrl: vc.avatarUrl,
   });
-  const toVcPreviewData = (vc: VirtualContributorFullFragment): VcPreviewData => ({
+  const toVcPreviewData = (vc: SpaceCommunityCandidate): VcPreviewData => ({
     id: vc.id,
-    displayName: vc.profile?.displayName ?? '',
-    avatarUrl: vc.profile?.avatar?.uri,
-    tags: (vc.profile?.tagsets ?? []).flatMap(tagset => tagset.tags),
-    description: vc.profile?.description ?? '',
+    displayName: vc.displayName,
+    avatarUrl: vc.avatarUrl,
+    tags: vc.tags,
+    description: vc.description ?? '',
   });
   // `vcLookup` is intentionally excluded from deps — it returns a fresh object every render.
-  // The space query (`roleSetId`/`spaceLevel`) is still unresolved on the render where
-  // `open` flips true, so the effect is gated on both resolving — otherwise it fetches
-  // through the L0 branch on a subspace and filters against an empty current-member set.
-  // `currentVcMemberIds` (not `vcCommunity.virtualContributorAdmin.members`, a fresh array
-  // every render) re-runs the fetch once the member list itself settles.
   useEffect(() => {
-    if (!open || kind !== 'virtualContributor' || !roleSetId || !spaceLevel) return;
+    if (!open || !isVirtualContributor || !spaceId) return;
     let cancelled = false;
     setVcLoading(true);
     void (async () => {
@@ -463,9 +391,8 @@ export function InviteMembersDialogConnector({
         setVcLibraryItems(library.map(toVcItem));
         setVcFetchedItems([...account, ...library]);
       } catch {
-        // Same contract as the organization lookup above: a failed lookup must
-        // render as "no results", not as an unhandled rejection that leaves the
-        // previous query's candidates on screen once the spinner clears.
+        // A failed lookup must render as "no results", not as an unhandled rejection
+        // that leaves the previous query's candidates on screen once the spinner clears.
         if (!cancelled) {
           setVcAccountItems([]);
           setVcLibraryItems([]);
@@ -478,12 +405,15 @@ export function InviteMembersDialogConnector({
     return () => {
       cancelled = true;
     };
-  }, [open, kind, libraryOnly, trimmedQuery, roleSetId, spaceLevel, currentVcMemberIds]);
+  }, [open, isVirtualContributor, libraryOnly, trimmedQuery, spaceId]);
 
+  // direct-add-vc (community-roles-screens.tsv:167). A DIRECT candidate holds no community role
+  // (current member holders are not candidates and lead/admin require member), so its exact
+  // desired set is the member role alone.
   const handleAddAccountVc = async (id: string) => {
     setVcBusyId(id);
     try {
-      await vcCommunity.virtualContributorAdmin.onAdd(id);
+      await setRoles(id, [SPACE_ROLE.Member]);
       notify(t('inviteMembers.dialog.virtualContributor.addedNotice'), 'success');
       closeAndReset();
     } catch {
@@ -496,11 +426,11 @@ export function InviteMembersDialogConnector({
   const handleInviteLibraryVc = async (id: string, message: string) => {
     setVcBusyId(id);
     try {
-      await vcCommunity.virtualContributorAdmin.inviteContributors({
-        welcomeMessage: message,
-        invitedContributorIds: [id],
-        invitedUserEmails: [],
-      });
+      const [outcome] = await invite({ actors: [id], message });
+      if (outcome?.outcome !== 'SENT') {
+        notify(t('inviteMembers.dialog.virtualContributor.error'), 'error');
+        return;
+      }
       notify(t('inviteMembers.dialog.virtualContributor.invitedNotice'), 'success');
       closeAndReset();
     } catch {
@@ -593,7 +523,7 @@ export function InviteMembersDialogConnector({
   } satisfies Record<InvitationResult['outcome'], string>;
 
   const handleSend = () => {
-    if (!roleSetId) return;
+    if (!spaceId) return;
     // Defensive — RoleMultiSelect locks Member, but if a future regression
     // unlocked it, abort silently rather than send an invite without the
     // baseline Member role.
@@ -613,16 +543,16 @@ export function InviteMembersDialogConnector({
 
     startTransition(async () => {
       try {
-        const legacyResults = await inviteContributorsOnRoleSet({
-          roleSetId,
-          invitedContributorIds,
-          invitedUserEmails,
-          welcomeMessage,
-          extraRoles: extraRoles.map(role => ROLE_TO_NAME[role]),
+        // invite-send (community-roles-screens.tsv:174).
+        const outcomes = await invite({
+          actors: invitedContributorIds,
+          emails: invitedUserEmails,
+          message: welcomeMessage,
+          roles: extraRoles.map(role => ROLE_TO_NAME[role]),
           // T013: only include when the host explicitly chose a language (FR-015).
-          suggestedLanguage,
+          language: suggestedLanguage,
         });
-        const built = mapInvitationResults(validInvitees, legacyResults);
+        const built = mapInviteOutcomes(validInvitees, outcomes);
         setResults(built);
         // The result rows show per-invitee detail, but a non-sent outcome is easy
         // to miss inside the dialog — surface a toast too. A single outcome shows
@@ -686,11 +616,7 @@ export function InviteMembersDialogConnector({
   };
 
   // ---------- render ----------
-  // The dialog is hidden but mounted while the space query is loading — once
-  // `roleSetId` resolves, Send becomes available. spaceName empty → title
-  // shows the placeholder ("…").
-  const isOrganization = kind === 'organization';
-  const isVirtualContributor = kind === 'virtualContributor';
+  // spaceName empty → title shows the placeholder ("…").
   const title = isOrganization
     ? t('inviteMembers.dialog.organization.title', { spaceName: spaceName || '…' })
     : isVirtualContributor
@@ -740,11 +666,7 @@ export function InviteMembersDialogConnector({
       onSelectUser={handleSelectUser}
       onAddEmails={isOrganization || onlyFromParentCommunity ? undefined : handleAddEmails}
       onRemoveContributor={handleRemoveContributor}
-      searchLoading={
-        (isOrganization ? orgLoading : isVirtualContributor ? vcLoading : contributorsLoading) ||
-        loadingSpace ||
-        loadingRoleSet
-      }
+      searchLoading={(isVirtualContributor ? vcLoading : candidatesLoading) || loadingSpace}
       hasMoreSearchResults={isOrganization ? false : hasMore}
       onLoadMoreSearchResults={isOrganization ? undefined : fetchMore}
       allowEmailInvites={!isOrganization && !onlyFromParentCommunity}

@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 // ---- Mocks ----
 
@@ -7,14 +7,30 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-const sendDirectMessageMock = vi.fn();
-vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useSendDirectMessageToUsersMutation: () => [sendDirectMessageMock, { loading: false }],
-  useUserSelectorQuery: () => ({ data: undefined, loading: false }),
+vi.mock('@/core/apollo/hooks/useReportedQueryError', () => ({ useReportedQueryError: () => {} }));
+vi.mock('@/main/crdPages/unifiedChat/useChatRecipientDirectory', () => ({
+  useChatRecipientDirectory: () => ({ searchResults: [], loading: false }),
 }));
 
-vi.mock('@/core/apollo/generated/graphql-schema', () => ({
-  DirectMessageDeliveryStatus: { Sent: 'SENT', BlockedNoConsent: 'BLOCKED_NO_CONSENT', Failed: 'FAILED' },
+const alice = '00000000-0000-4000-8000-000000000002';
+const bob = '00000000-0000-4000-8000-000000000003';
+const aliceRoom = '00000000-0000-4000-8000-000000000004';
+const bobRoom = '00000000-0000-4000-8000-000000000005';
+const matrixAliceRoom = `!${aliceRoom}:matrix.test`;
+const matrixBobRoom = `!${bobRoom}:matrix.test`;
+const createRoomMock = vi.fn();
+const sendTextMessageMock = vi.fn();
+let connected = true;
+vi.mock('@/core/matrix/activeClient', () => ({
+  useMatrixClient: () =>
+    connected
+      ? {
+          getUserId: () => '@00000000-0000-4000-8000-000000000001:matrix.test',
+          getAccountData: () => ({ getContent: () => ({ [`@${alice}:matrix.test`]: [matrixAliceRoom] }) }),
+          createRoom: createRoomMock,
+          sendTextMessage: sendTextMessageMock,
+        }
+      : null,
 }));
 
 const notifyMock = vi.fn();
@@ -28,10 +44,12 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
 
 const setIsOpenMock = vi.fn();
 const setSelectedConversationIdMock = vi.fn();
+const setSelectedRoomIdMock = vi.fn();
 vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
   useUserMessagingContext: () => ({
     setIsOpen: setIsOpenMock,
     setSelectedConversationId: setSelectedConversationIdMock,
+    setSelectedRoomId: setSelectedRoomIdMock,
   }),
 }));
 
@@ -47,10 +65,10 @@ vi.mock('@/crd/forms/UserSelector', () => ({
     onSelect: (u: { id: string; displayName: string }) => void;
   }) => (
     <div>
-      <button type="button" onClick={() => onSelect({ id: 'u1', displayName: 'Alice' })}>
+      <button type="button" onClick={() => onSelect({ id: alice, displayName: 'Alice' })}>
         add-alice
       </button>
-      <button type="button" onClick={() => onSelect({ id: 'u2', displayName: 'Bob' })}>
+      <button type="button" onClick={() => onSelect({ id: bob, displayName: 'Bob' })}>
         add-bob
       </button>
       <div data-testid="selected">{selectedUsers.map(u => u.id).join(',')}</div>
@@ -72,7 +90,7 @@ vi.mock('@/crd/components/chat/SendConfirmationDialog', () => ({
   }) =>
     open ? (
       <div data-testid="confirmation">
-        notReached:{(notReached ?? []).join(',')}
+        <div data-testid="not-reached">{(notReached ?? []).join(',')}</div>
         {onOpenChat ? (
           <button type="button" onClick={onOpenChat}>
             open-chat
@@ -88,47 +106,34 @@ vi.mock('@/crd/components/chat/SendConfirmationDialog', () => ({
 import { CalloutShareOnAlkemioForm } from './CalloutShareOnAlkemioForm';
 
 describe('CalloutShareOnAlkemioForm (US2 — Share on Alkemio → individual chats)', () => {
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
+    connected = true;
+    createRoomMock.mockReset().mockResolvedValue({ room_id: matrixBobRoom });
+    sendTextMessageMock.mockReset().mockResolvedValue({ event_id: '$sent' });
   });
 
-  test('sends once with all recipient ids and shows the confirmation', async () => {
-    sendDirectMessageMock.mockResolvedValue({
-      data: {
-        sendDirectMessageToUsers: [
-          { receiverID: 'u1', status: 'SENT', conversationID: 'c1' },
-          { receiverID: 'u2', status: 'SENT', conversationID: 'c2' },
-        ],
-      },
-    });
-
+  test('shares in the existing direct room and creates a room only for the other recipient', async () => {
     render(<CalloutShareOnAlkemioForm url="https://alkem.io/x" entityLabel="post" />);
 
     fireEvent.click(screen.getByText('add-alice'));
     fireEvent.click(screen.getByText('add-bob'));
-    expect(screen.getByTestId('selected').textContent).toBe('u1,u2');
-
+    expect(screen.getByTestId('selected').textContent).toBe(`${alice},${bob}`);
+    fireEvent.change(screen.getByRole('textbox', { name: 'share.alkemio.messageLabel' }), {
+      target: { value: '$5 for this post' },
+    });
     fireEvent.click(screen.getByText('share.alkemio.send'));
-    await vi.waitFor(() => expect(sendDirectMessageMock).toHaveBeenCalledTimes(1));
 
-    const callArg = sendDirectMessageMock.mock.calls[0][0];
-    expect(callArg.variables.messageData.receiverIDs).toEqual(['u1', 'u2']);
-
-    await vi.waitFor(() => expect(screen.getByTestId('confirmation')).toBeTruthy());
-    expect(screen.getByTestId('confirmation').textContent).toContain('notReached:');
-    expect(screen.getByTestId('confirmation').textContent).not.toContain('Alice');
-    expect(screen.getByTestId('confirmation').textContent).not.toContain('Bob');
+    expect(await screen.findByTestId('not-reached')).toBeEmptyDOMElement();
+    expect(createRoomMock).toHaveBeenCalledTimes(1);
+    expect(createRoomMock).toHaveBeenCalledWith({ invite: [`@${bob}:matrix.test`], is_direct: true });
+    expect(sendTextMessageMock).toHaveBeenCalledTimes(2);
+    expect(sendTextMessageMock).toHaveBeenCalledWith(matrixAliceRoom, null, '$5 for this post\n\nhttps://alkem.io/x');
+    expect(sendTextMessageMock).toHaveBeenCalledWith(matrixBobRoom, null, '$5 for this post\n\nhttps://alkem.io/x');
   });
 
-  test('partial failure lists the not-reached recipients', async () => {
-    sendDirectMessageMock.mockResolvedValue({
-      data: {
-        sendDirectMessageToUsers: [
-          { receiverID: 'u1', status: 'SENT', conversationID: 'c1' },
-          { receiverID: 'u2', status: 'BLOCKED_NO_CONSENT', conversationID: null },
-        ],
-      },
-    });
+  test('a refused create lists the recipient who could not be reached and opens the successful chat', async () => {
+    createRoomMock.mockRejectedValue({ errcode: 'M_FORBIDDEN' });
 
     render(<CalloutShareOnAlkemioForm url="https://alkem.io/x" entityLabel="post" />);
 
@@ -136,19 +141,15 @@ describe('CalloutShareOnAlkemioForm (US2 — Share on Alkemio → individual cha
     fireEvent.click(screen.getByText('add-bob'));
     fireEvent.click(screen.getByText('share.alkemio.send'));
 
-    await vi.waitFor(() => expect(screen.getByTestId('confirmation')).toBeTruthy());
-    expect(screen.getByTestId('confirmation').textContent).toContain('notReached:Bob');
+    expect(await screen.findByTestId('not-reached')).toHaveTextContent(/^Bob$/);
+    expect(sendTextMessageMock).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByText('open-chat'));
+
+    expect(setSelectedConversationIdMock).toHaveBeenCalledWith(aliceRoom);
+    expect(setSelectedRoomIdMock).toHaveBeenCalledWith(aliceRoom);
   });
 
   test('open chat after multiple recipients opens the conversation list and closes the share dialog', async () => {
-    sendDirectMessageMock.mockResolvedValue({
-      data: {
-        sendDirectMessageToUsers: [
-          { receiverID: 'u1', status: 'SENT', conversationID: 'c1' },
-          { receiverID: 'u2', status: 'SENT', conversationID: 'c2' },
-        ],
-      },
-    });
     const onClose = vi.fn();
 
     render(<CalloutShareOnAlkemioForm url="https://alkem.io/x" entityLabel="post" onClose={onClose} />);
@@ -157,18 +158,15 @@ describe('CalloutShareOnAlkemioForm (US2 — Share on Alkemio → individual cha
     fireEvent.click(screen.getByText('add-bob'));
     fireEvent.click(screen.getByText('share.alkemio.send'));
 
-    await vi.waitFor(() => expect(screen.getByText('open-chat')).toBeTruthy());
-    fireEvent.click(screen.getByText('open-chat'));
+    fireEvent.click(await screen.findByText('open-chat'));
 
     expect(setSelectedConversationIdMock).toHaveBeenCalledWith(null);
+    expect(setSelectedRoomIdMock).toHaveBeenCalledWith(null);
     expect(setIsOpenMock).toHaveBeenCalledWith(true);
     expect(onClose).toHaveBeenCalled();
   });
 
   test('dismissing the confirmation closes the share dialog', async () => {
-    sendDirectMessageMock.mockResolvedValue({
-      data: { sendDirectMessageToUsers: [{ receiverID: 'u1', status: 'SENT', conversationID: 'c1' }] },
-    });
     const onClose = vi.fn();
 
     render(<CalloutShareOnAlkemioForm url="https://alkem.io/x" entityLabel="post" onClose={onClose} />);
@@ -176,11 +174,34 @@ describe('CalloutShareOnAlkemioForm (US2 — Share on Alkemio → individual cha
     fireEvent.click(screen.getByText('add-alice'));
     fireEvent.click(screen.getByText('share.alkemio.send'));
 
-    await vi.waitFor(() => expect(screen.getByText('dismiss-confirmation')).toBeTruthy());
-    fireEvent.click(screen.getByText('dismiss-confirmation'));
+    fireEvent.click(await screen.findByText('dismiss-confirmation'));
 
-    // Single recipient → that conversation is focused; share dialog closes.
-    expect(setSelectedConversationIdMock).not.toHaveBeenCalledWith(null);
+    expect(setSelectedConversationIdMock).not.toHaveBeenCalled();
     expect(onClose).toHaveBeenCalled();
+  });
+
+  test('a failed send to an existing direct chat does not offer to open it', async () => {
+    sendTextMessageMock.mockRejectedValue({ errcode: 'M_FORBIDDEN' });
+    render(<CalloutShareOnAlkemioForm url="https://alkem.io/x" entityLabel="post" />);
+
+    fireEvent.click(screen.getByText('add-alice'));
+    fireEvent.click(screen.getByText('share.alkemio.send'));
+
+    expect(await screen.findByTestId('not-reached')).toHaveTextContent(/^Alice$/);
+    expect(screen.queryByText('open-chat')).not.toBeInTheDocument();
+    expect(createRoomMock).not.toHaveBeenCalled();
+  });
+
+  test('a disconnected session preserves the form and shows the send failure notice', async () => {
+    connected = false;
+    render(<CalloutShareOnAlkemioForm url="https://alkem.io/x" entityLabel="post" />);
+
+    fireEvent.click(screen.getByText('add-alice'));
+    fireEvent.click(screen.getByText('share.alkemio.send'));
+
+    await waitFor(() => expect(notifyMock).toHaveBeenCalledWith('share.alkemio.errors.sendFailed', 'error'));
+    expect(screen.getByTestId('selected').textContent).toBe(alice);
+    expect(screen.queryByTestId('confirmation')).not.toBeInTheDocument();
+    expect(sendTextMessageMock).not.toHaveBeenCalled();
   });
 });

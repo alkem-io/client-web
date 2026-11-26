@@ -1,5 +1,5 @@
-import { ChevronDown, FolderOpen, Search, SlidersHorizontal, X } from 'lucide-react';
-import { useState } from 'react';
+import { FolderOpen, Search, SlidersHorizontal, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SpaceCardData, SpaceCardParent } from '@/crd/components/space/SpaceCard';
 import { SpaceCard, SpaceCardSkeleton } from '@/crd/components/space/SpaceCard';
@@ -26,11 +26,11 @@ export type SpaceExplorerProps = {
   spaces: SpaceCardData[];
   loading: boolean;
   hasMore?: boolean;
-  searchTerms: string[];
-  membershipFilter: SpacesFilterValue;
-  authenticated: boolean;
+  searchTerms?: string[];
+  membershipFilter?: SpacesFilterValue;
+  authenticated?: boolean;
   loadingSearchResults?: boolean;
-  onSearchTermsChange: (terms: string[]) => void;
+  onSearchTermsChange?: (terms: string[]) => void;
   onMembershipFilterChange?: (filter: SpacesFilterValue) => void;
   onLoadMore: () => Promise<void>;
   onParentClick?: (parent: SpaceCardParent) => void;
@@ -47,8 +47,8 @@ export function SpaceExplorer({
   spaces,
   loading,
   hasMore,
-  searchTerms,
-  membershipFilter,
+  searchTerms = [],
+  membershipFilter = 'all',
   authenticated,
   loadingSearchResults,
   onSearchTermsChange,
@@ -60,6 +60,30 @@ export function SpaceExplorer({
 }: SpaceExplorerProps) {
   const { t } = useTranslation(['crd-exploreSpaces', 'crd-common']);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [continuationError, setContinuationError] = useState<Error>();
+  const sentinel = useRef<HTMLDivElement>(null);
+  const inFlight = useRef(false);
+
+  useEffect(() => {
+    if (!hasMore || loading || loadingMore || !sentinel.current) return;
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting) || inFlight.current) return;
+      inFlight.current = true;
+      setLoadingMore(true);
+      void onLoadMore()
+        .catch(cause =>
+          setContinuationError(cause instanceof Error ? cause : new Error('Explorer continuation failed'))
+        )
+        .finally(() => {
+          inFlight.current = false;
+          setLoadingMore(false);
+        });
+    });
+    observer.observe(sentinel.current);
+    return () => observer.disconnect();
+  }, [hasMore, loading, loadingMore, onLoadMore]);
+
+  if (continuationError) throw continuationError;
 
   const gridCols = gridClassName ?? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]';
   const cardsListClassName = cn('grid gap-6 list-none p-0 m-0', gridCols);
@@ -68,21 +92,12 @@ export function SpaceExplorer({
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
   const [privacyFilter, setPrivacyFilter] = useState<PrivacyFilter>('all');
 
-  const handleLoadMore = async () => {
-    setLoadingMore(true);
-    try {
-      await onLoadMore();
-    } finally {
-      setLoadingMore(false);
-    }
-  };
-
   // Client-side filtering
   const displayedSpaces = (() => {
     let result = spaces;
 
-    if (privacyFilter === 'public') result = result.filter(s => !s.isPrivate);
-    if (privacyFilter === 'private') result = result.filter(s => s.isPrivate);
+    if (privacyFilter === 'public') result = result.filter(s => s.isPrivate === false);
+    if (privacyFilter === 'private') result = result.filter(s => s.isPrivate === true);
 
     if (typeFilter === 'spaces') result = result.filter(s => !s.parent);
     if (typeFilter === 'subspaces') result = result.filter(s => !!s.parent);
@@ -114,19 +129,22 @@ export function SpaceExplorer({
           {/* Search + Sort + Filters */}
           <div className="flex flex-col sm:flex-row gap-3 mb-6">
             {/* Tag-based search input */}
-            <TagsInput
-              value={searchTerms}
-              onChange={onSearchTermsChange}
-              placeholder={t('spaces.searchPlaceholder')}
-              className="flex-1"
-              icon={<Search className="shrink-0 size-4 text-muted-foreground" />}
-            />
+            <fieldset disabled={!onSearchTermsChange} className="min-w-0 flex-1 disabled:opacity-50">
+              <TagsInput
+                value={searchTerms}
+                onChange={terms => onSearchTermsChange?.(terms)}
+                placeholder={t('spaces.searchPlaceholder')}
+                className="flex-1"
+                icon={<Search className="shrink-0 size-4 text-muted-foreground" />}
+              />
+            </fieldset>
 
             {/* Filters dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild={true}>
                 <Button
                   variant="outline"
+                  disabled={!onMembershipFilterChange}
                   className={cn(
                     'gap-2 h-10 rounded-lg',
                     activeFilterCount > 0 ? 'text-primary border-primary' : 'text-foreground border-border'
@@ -309,24 +327,11 @@ export function SpaceExplorer({
             </div>
           )}
 
-          {/* Load More */}
-          {hasMore && displayedSpaces.length > 0 && !loading && (
-            <div className="flex justify-center mt-8">
-              <Button
-                variant="outline"
-                onClick={handleLoadMore}
-                disabled={loadingMore}
-                aria-busy={loadingMore}
-                className="gap-2"
-              >
-                {loadingMore ? (
-                  <div className="animate-spin rounded-full size-4 border-2 border-current border-t-transparent" />
-                ) : (
-                  <ChevronDown className="size-4" />
-                )}
-                {t('crd-common:loadMore')}
-              </Button>
-            </div>
+          {hasMore && <div ref={sentinel} className="h-px" aria-hidden="true" />}
+          {loadingMore && (
+            <output className="flex justify-center mt-8" aria-label={t('spaces.loading')}>
+              <div className="animate-spin rounded-full size-4 border-2 border-current border-t-transparent" />
+            </output>
           )}
         </div>
       </div>

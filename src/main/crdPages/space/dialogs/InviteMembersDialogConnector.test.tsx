@@ -1,22 +1,21 @@
-import { act, render } from '@testing-library/react';
-import type { ReactElement } from 'react';
-import { describe, expect, test, vi } from 'vitest';
-import {
-  RoleSetInvitationResultNotice,
-  RoleSetInvitationResultType,
-  SpaceLevel,
-} from '@/core/apollo/generated/graphql-schema';
+import { ApolloClient, ApolloLink, ApolloProvider, Observable } from '@apollo/client';
+import { act, render, waitFor } from '@testing-library/react';
+import type { PropsWithChildren } from 'react';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { RoleSetInvitationResultNotice, RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
+import { useSpaceCommunityVirtualContributorPickerQuery } from '@/core/apollo/generated-v2/apollo-hooks';
+import { createV2Cache } from '@/core/apollo/v2/createV2ApolloClient';
 import type { ContributorSelectorInvitee } from '@/crd/forms/ContributorSelector';
 import type InvitationResultModel from '@/domain/access/model/InvitationResultModel';
-import { InviteMembersDialogConnector, mapInvitationResults } from './InviteMembersDialogConnector';
-
-// ---- Mocks for the connector-level VC-fetch regression test below ----
+import type { SpaceCommunityInviteOutcome } from '@/domain/spaceAdmin/SpaceAdminCommunity/native/spaceCommunityNative';
+import { InviteMembersDialogConnector, mapInvitationResults, mapInviteOutcomes } from './InviteMembersDialogConnector';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { t: (key: string) => key } }),
 }));
 
-vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
+const notify = vi.fn();
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { id: 'viewer-1' } }),
@@ -24,79 +23,119 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
 
 vi.mock('@/domain/platform/config/useConfig', () => ({ useConfig: () => ({ language: { eligible: [] } }) }));
 
-const useRoleSetApplicationsAndInvitationsMock = vi.fn(
-  (_params: { roleSetId: string | undefined; includeApplications?: boolean }) => ({
-    invitations: [],
-    inviteContributorsOnRoleSet: vi.fn(),
-    loading: false,
-  })
-);
-vi.mock('@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations', () => ({
-  default: (params: { roleSetId: string | undefined; includeApplications?: boolean }) =>
-    useRoleSetApplicationsAndInvitationsMock(params),
-}));
-
-vi.mock('@/domain/access/AvailableContributors/useRoleSetAvailableContributors', () => ({
-  default: () => ({ findAvailableOrganizationsForRoleSet: vi.fn(async () => ({ organizations: [] })) }),
-}));
-
-vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', async importOriginal => {
-  const actual = await importOriginal<typeof import('@/domain/access/RoleSetManager/useRoleSetManager')>();
-  return { ...actual, default: () => ({ organizations: [] }) };
-});
-
-vi.mock('@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors', () => ({
-  useContributors: () => ({ data: [], hasMore: false, loading: false, fetchMore: vi.fn() }),
-}));
-
-// A VC already in the community — proves `currentMembers` reaches
-// `useVirtualContributorsAdmin` non-empty once the community query resolves.
-const existingVcMember = { id: 'vc-existing' };
-vi.mock('@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin', () => ({
-  default: () => ({
-    virtualContributorAdmin: { members: [existingVcMember], onAdd: vi.fn(), inviteContributors: vi.fn() },
-  }),
-}));
-
-const getAvailableMock = vi.fn(async () => []);
-const getAvailableInLibraryMock = vi.fn(async () => []);
-const useVirtualContributorsAdminMock = vi.fn((_params: { level: SpaceLevel; currentMembers: { id: string }[] }) => ({
-  virtualContributorAdmin: { getAvailable: getAvailableMock, getAvailableInLibrary: getAvailableInLibraryMock },
-}));
-vi.mock('@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useVirtualContributorsAdmin', () => ({
-  default: (params: { level: SpaceLevel; currentMembers: { id: string }[] }) => useVirtualContributorsAdminMock(params),
-}));
-
 vi.mock('@/main/routing/urlResolver/useUrlResolver', () => ({
-  default: () => ({ spaceId: 'space-1', parentSpaceId: undefined }),
+  default: () => ({ spaceId: 'space-url', parentSpaceId: undefined }),
 }));
 
-// The space query — mutable so the test can simulate it resolving after the
-// dialog opens (the render on which `open` flips true has no data yet).
-let inviteUsersDialogQueryReturn: {
-  data:
-    | {
-        lookup: {
-          space: { about: { profile: { displayName: string }; membership: { roleSetID: string } } } & {
-            level: SpaceLevel;
-          };
-        };
-      }
-    | undefined;
-  loading: boolean;
-} = { data: undefined, loading: true };
-vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useInviteUsersDialogQuery: () => inviteUsersDialogQueryReturn,
-  useAvailableUsersForEntryRoleQuery: () => ({ data: undefined, loading: false, fetchMore: vi.fn() }),
-}));
-
-// Stub the presentational dialog — this test exercises the connector's data
-// wiring only, not the CRD component's rendering.
-const inviteMembersDialogMock = vi.fn((_props: Record<string, unknown>) => null);
+// Stub the presentational dialog — these tests exercise the connector's data wiring through
+// the props it hands the CRD component.
+type DialogProps = Record<string, unknown> & {
+  searchResults: Array<{ userId: string; displayName: string; avatarUrl?: string; location?: string }>;
+  results?: Array<{ outcome: string; notice?: string }>;
+  vcAccountItems: Array<{ id: string; avatarUrl?: string }>;
+  vcLibraryItems: Array<{ id: string; avatarUrl?: string }>;
+  spaceName: string;
+  onSearchChange: (value: string) => void;
+  onSelectUser: (id: string) => void;
+  onAddEmails: (text: string) => void;
+  onExtraRolesChange: (roles: string[]) => void;
+  onSuggestedLanguageChange: (code: string | undefined) => void;
+  onSend: () => void;
+  onAddAccountVc: (id: string) => Promise<void>;
+  onInviteLibraryVc: (id: string, message: string) => Promise<void>;
+};
+const inviteMembersDialogMock = vi.fn((_props: DialogProps) => null);
 vi.mock('@/crd/components/community/InviteMembersDialog', () => ({
-  InviteMembersDialog: (props: Record<string, unknown>) => inviteMembersDialogMock(props),
+  InviteMembersDialog: (props: DialogProps) => inviteMembersDialogMock(props),
 }));
+const latestProps = () => {
+  const calls = inviteMembersDialogMock.mock.calls;
+  return calls[calls.length - 1][0];
+};
 
+type Request = { operationName: string; variables: Record<string, unknown> };
+/** A reply the server refuses (an `errors` result), as the Pi server answered the VC picker for a root space's admin. */
+const FORBIDDEN = Symbol('forbidden');
+
+const about = (displayName: string, extra: Record<string, unknown> = {}) => ({
+  __typename: 'About',
+  displayName,
+  description: null,
+  location: null,
+  avatar: { __typename: 'FileRef', file: { __typename: 'File', url: `/avatar/${displayName}` } },
+  ...extra,
+});
+const candidates = (nodes: Array<Record<string, unknown>>, endCursor: string | null = null) => ({
+  candidates: {
+    __typename: 'ActorConnection',
+    edges: nodes.map(node => ({ __typename: 'ActorEdge', node })),
+    pageInfo: { __typename: 'PageInfo', hasNextPage: endCursor !== null, endCursor },
+  },
+});
+const userNode = (id: string, location?: Record<string, string>) => ({
+  __typename: 'User',
+  id,
+  actorType: 'user',
+  url: `/user/${id}`,
+  about: about(id, location ? { location } : {}),
+});
+const orgNode = (id: string) => ({
+  __typename: 'Organization',
+  id,
+  actorType: 'organization',
+  url: null,
+  about: about(id),
+});
+const vcNode = (id: string) => ({
+  __typename: 'Agent',
+  id,
+  actorType: 'virtual_contributor',
+  url: `/vc/${id}`,
+  keywords: ['ai', 'helper'],
+  about: about(id, { description: `About ${id}` }),
+});
+const inviteTarget = {
+  node: {
+    __typename: 'Space',
+    id: 'space-1',
+    entityType: 'space',
+    about: { __typename: 'About', displayName: 'My Space' },
+  },
+};
+
+function setup(respond: (request: Request) => Record<string, unknown> | typeof FORBIDDEN | undefined) {
+  const requests: Request[] = [];
+  const client = new ApolloClient({
+    cache: createV2Cache(),
+    link: new ApolloLink(
+      operation =>
+        new Observable(observer => {
+          const request = { operationName: operation.operationName, variables: operation.variables };
+          requests.push(request);
+          const reply = respond(request);
+          const timer = setTimeout(() => {
+            if (!reply) observer.error(new Error(`Unexpected ${operation.operationName}`));
+            else if (reply === FORBIDDEN) {
+              observer.next({ errors: [{ message: 'forbidden', extensions: { code: 'FORBIDDEN' } }] });
+              observer.complete();
+            } else {
+              observer.next({ data: reply });
+              observer.complete();
+            }
+          }, 0);
+          return () => clearTimeout(timer);
+        })
+    ),
+  });
+  const wrapper = ({ children }: PropsWithChildren) => <ApolloProvider client={client}>{children}</ApolloProvider>;
+  const named = (name: string) => requests.filter(r => r.operationName === name).map(r => r.variables);
+  return { wrapper, requests, named };
+}
+
+beforeEach(() => {
+  inviteMembersDialogMock.mockClear();
+  notify.mockClear();
+});
 /**
  * Pure-function coverage for the result-correlation logic (T007). The server
  * returns one RoleSetInvitationResult per submitted invitee, in input order;
@@ -292,113 +331,347 @@ describe('mapInvitationResults', () => {
   });
 });
 
+/** The native `invite` outcomes (invite-send, community-roles-screens.tsv:174) onto the result rows. */
+describe('mapInviteOutcomes', () => {
+  const outcome = (
+    fields: Partial<SpaceCommunityInviteOutcome> & Pick<SpaceCommunityInviteOutcome, 'outcome'>
+  ): SpaceCommunityInviteOutcome => ({
+    actor: null,
+    email: null,
+    noOrganizationAdmin: false,
+    request: null,
+    ...fields,
+  });
+
+  test('maps every InviteOutcomeKind onto the dialog vocabulary', () => {
+    const kinds = [
+      ['SENT', 'sent'],
+      ['ALREADY_INVITED', 'alreadyInvited'],
+      ['ALREADY_MEMBER', 'alreadyMember'],
+      ['OPEN_APPLICATION', 'alreadyHasApplication'],
+      ['PARENT_NOT_AUTHORIZED', 'parentNotAuthorized'],
+      ['ORGANIZATION_NOT_ACCEPTING_INVITATIONS', 'notAcceptingInvitations'],
+      ['ORGANIZATION_LEAD_ROLE_LIMIT_REACHED', 'leadLimitReached'],
+      ['EXTRA_ROLE_LIMIT_REACHED', 'extraRoleLimitReached'],
+      ['NOT_ALLOWED', 'error'],
+      ['ROLE_LIMIT_REACHED', 'error'],
+    ] as const;
+    const invitees: ContributorSelectorInvitee[] = kinds.map(([kind]) => ({
+      kind: 'organization',
+      id: `org-${kind}`,
+      displayName: kind,
+    }));
+    const outcomes = kinds.map(([kind]) => outcome({ actor: `org-${kind}`, outcome: kind }));
+
+    expect(mapInviteOutcomes(invitees, outcomes).map(r => r.outcome)).toEqual(kinds.map(([, row]) => row));
+  });
+
+  test('correlates by actor id and by email regardless of server order; noOrganizationAdmin is the notice', () => {
+    const invitees: ContributorSelectorInvitee[] = [
+      { kind: 'email', email: 'Bob@Example.com' },
+      { kind: 'user', userId: 'u-1', displayName: 'Alice' },
+      { kind: 'organization', id: 'org-1', displayName: 'Acme' },
+    ];
+    const outcomes = [
+      outcome({ actor: 'org-1', outcome: 'SENT', noOrganizationAdmin: true }),
+      outcome({ actor: 'u-1', outcome: 'ALREADY_MEMBER' }),
+      outcome({ email: 'bob@example.com', outcome: 'SENT' }),
+    ];
+
+    expect(mapInviteOutcomes(invitees, outcomes)).toEqual([
+      { invitee: invitees[0], outcome: 'sent' },
+      { invitee: invitees[1], outcome: 'alreadyMember' },
+      { invitee: invitees[2], outcome: 'sent', notice: 'noAdministrators' },
+    ]);
+  });
+
+  test('a chip no outcome names reports an error and never borrows another outcome', () => {
+    const invitees: ContributorSelectorInvitee[] = [
+      { kind: 'user', userId: 'u-1', displayName: 'Alice' },
+      { kind: 'email', email: 'new@example.com' },
+    ];
+    const outcomes = [outcome({ actor: 'u-other', outcome: 'SENT' })];
+
+    expect(mapInviteOutcomes(invitees, outcomes).map(r => r.outcome)).toEqual(['error', 'error']);
+  });
+});
+
+describe('InviteMembersDialogConnector — organization invite', () => {
+  test('lists INVITE organization candidates on open and reads the space name natively', async () => {
+    const fixture = setup(({ operationName }) =>
+      operationName === 'SpaceCommunityInviteTarget'
+        ? inviteTarget
+        : operationName === 'SpaceCommunityCandidates'
+          ? candidates([orgNode('org-1')])
+          : undefined
+    );
+
+    render(<InviteMembersDialogConnector open={true} kind="organization" spaceId="space-1" onClose={vi.fn()} />, {
+      wrapper: fixture.wrapper,
+    });
+
+    await waitFor(() => expect(latestProps().searchResults).toEqual([{ userId: 'org-1', displayName: 'org-1' }]));
+    expect(latestProps().spaceName).toBe('My Space');
+    expect(fixture.named('SpaceCommunityInviteTarget')).toEqual([{ space: 'space-1' }]);
+    expect(fixture.named('SpaceCommunityCandidates')).toEqual([
+      { space: 'space-1', role: 'member', entry: 'INVITE', actorType: 'organization', first: 20 },
+    ]);
+  });
+});
+
+describe('InviteMembersDialogConnector — user invite', () => {
+  test('searches INVITE user candidates, then sends one invite and maps its outcomes onto the rows', async () => {
+    const fixture = setup(({ operationName }) => {
+      if (operationName === 'SpaceCommunityInviteTarget') return inviteTarget;
+      if (operationName === 'SpaceCommunityCandidates')
+        return candidates([userNode('viewer-1'), userNode('u-1', { city: 'Delft', country: 'NL' })]);
+      if (operationName === 'InviteToSpaceCommunity')
+        return {
+          invite: [
+            {
+              __typename: 'InviteOutcome',
+              actor: 'u-1',
+              email: null,
+              outcome: 'SENT',
+              noOrganizationAdmin: false,
+              request: { __typename: 'MembershipRequest', id: 'req-1' },
+            },
+            {
+              __typename: 'InviteOutcome',
+              actor: null,
+              email: 'bob@example.com',
+              outcome: 'ALREADY_INVITED',
+              noOrganizationAdmin: false,
+              request: null,
+            },
+          ],
+        };
+      return undefined;
+    });
+
+    render(<InviteMembersDialogConnector open={true} spaceId="space-1" onClose={vi.fn()} />, {
+      wrapper: fixture.wrapper,
+    });
+    await waitFor(() => expect(latestProps().spaceName).toBe('My Space'));
+    // Users are only searched once something is typed.
+    expect(fixture.named('SpaceCommunityCandidates')).toEqual([]);
+
+    act(() => latestProps().onSearchChange(' ali '));
+    // The viewer is never offered to themselves.
+    await waitFor(() =>
+      expect(latestProps().searchResults).toEqual([
+        { userId: 'u-1', displayName: 'u-1', avatarUrl: '/avatar/u-1', location: 'Delft, NL' },
+      ])
+    );
+    expect(fixture.named('SpaceCommunityCandidates')).toEqual([
+      { space: 'space-1', role: 'member', entry: 'INVITE', actorType: 'user', terms: 'ali', first: 20 },
+    ]);
+
+    act(() => latestProps().onSelectUser('u-1'));
+    act(() => latestProps().onAddEmails('bob@example.com'));
+    act(() => latestProps().onExtraRolesChange(['Member', 'Lead']));
+    act(() => latestProps().onSuggestedLanguageChange('nl'));
+    act(() => latestProps().onSend());
+
+    await waitFor(() => expect(latestProps().results).toBeDefined());
+    expect(fixture.named('InviteToSpaceCommunity')).toEqual([
+      {
+        space: 'space-1',
+        input: {
+          actors: ['u-1'],
+          emails: ['bob@example.com'],
+          message: 'inviteMembers.dialog.defaultWelcomeMessage',
+          roles: ['member', 'lead'],
+          language: 'nl',
+        },
+      },
+    ]);
+    expect(latestProps().results?.map(r => r.outcome)).toEqual(['sent', 'alreadyInvited']);
+  });
+});
+
+describe('InviteMembersDialogConnector — virtual contributors', () => {
+  const vcFixture = () =>
+    setup(({ operationName, variables }) => {
+      if (operationName === 'SpaceCommunityInviteTarget') return inviteTarget;
+      if (operationName === 'SpaceCommunityCandidates')
+        return candidates([vcNode(variables.entry === 'DIRECT' ? 'vc-account' : 'vc-library')]);
+      if (operationName === 'SetSpaceCommunityRoles')
+        return {
+          setRoles: {
+            __typename: 'MembershipResult',
+            node: { __typename: 'Space', id: 'space-1' },
+          },
+        };
+      if (operationName === 'InviteToSpaceCommunity')
+        return {
+          invite: [
+            {
+              __typename: 'InviteOutcome',
+              actor: 'vc-library',
+              email: null,
+              outcome: 'SENT',
+              noOrganizationAdmin: false,
+              request: { __typename: 'MembershipRequest', id: 'req-vc' },
+            },
+          ],
+        };
+      return undefined;
+    });
+
+  test('account VCs are DIRECT candidates and library VCs INVITE candidates, avatars passed through', async () => {
+    const fixture = vcFixture();
+    render(<InviteMembersDialogConnector open={true} kind="virtualContributor" spaceId="space-1" onClose={vi.fn()} />, {
+      wrapper: fixture.wrapper,
+    });
+
+    await waitFor(() => expect(latestProps().vcLibraryItems).toHaveLength(1));
+    const vcVariables = { space: 'space-1', role: 'member', actorType: 'virtual_contributor', first: 100 };
+    expect(fixture.named('SpaceCommunityCandidates')).toEqual(
+      expect.arrayContaining([
+        { ...vcVariables, entry: 'DIRECT' },
+        { ...vcVariables, entry: 'INVITE' },
+      ])
+    );
+    expect(fixture.named('SpaceCommunityCandidates')).toHaveLength(2);
+    expect(latestProps().vcAccountItems).toEqual([
+      { id: 'vc-account', displayName: 'vc-account', avatarUrl: '/avatar/vc-account' },
+    ]);
+    expect(latestProps().vcLibraryItems).toEqual([
+      { id: 'vc-library', displayName: 'vc-library', avatarUrl: '/avatar/vc-library' },
+    ]);
+  });
+
+  test('libraryOnly reads only the INVITE list', async () => {
+    const fixture = vcFixture();
+    render(
+      <InviteMembersDialogConnector
+        open={true}
+        kind="virtualContributor"
+        spaceId="space-1"
+        libraryOnly={true}
+        onClose={vi.fn()}
+      />,
+      { wrapper: fixture.wrapper }
+    );
+
+    await waitFor(() => expect(latestProps().vcLibraryItems).toHaveLength(1));
+    expect(fixture.named('SpaceCommunityCandidates').map(v => v.entry)).toEqual(['INVITE']);
+  });
+
+  test('adding an account VC is setRoles with exactly the member role', async () => {
+    const fixture = vcFixture();
+    const onClose = vi.fn();
+    render(<InviteMembersDialogConnector open={true} kind="virtualContributor" spaceId="space-1" onClose={onClose} />, {
+      wrapper: fixture.wrapper,
+    });
+    await waitFor(() => expect(latestProps().vcAccountItems).toHaveLength(1));
+
+    await act(() => latestProps().onAddAccountVc('vc-account'));
+
+    expect(fixture.named('SetSpaceCommunityRoles')).toEqual([
+      { space: 'space-1', actor: 'vc-account', roles: ['member'] },
+    ]);
+    expect(notify).toHaveBeenCalledWith('inviteMembers.dialog.virtualContributor.addedNotice', 'success');
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  test('inviting a library VC is one invite with the VC and the welcome message', async () => {
+    const fixture = vcFixture();
+    render(<InviteMembersDialogConnector open={true} kind="virtualContributor" spaceId="space-1" onClose={vi.fn()} />, {
+      wrapper: fixture.wrapper,
+    });
+    await waitFor(() => expect(latestProps().vcLibraryItems).toHaveLength(1));
+
+    await act(() => latestProps().onInviteLibraryVc('vc-library', 'Welcome!'));
+
+    expect(fixture.named('InviteToSpaceCommunity')).toEqual([
+      { space: 'space-1', input: { actors: ['vc-library'], message: 'Welcome!' } },
+    ]);
+    expect(notify).toHaveBeenCalledWith('inviteMembers.dialog.virtualContributor.invitedNotice', 'success');
+  });
+});
+
+/** The Community tab's mounted VC picker: a mutation's refetch list re-reads it. */
+const PickerWatcher = () => {
+  useSpaceCommunityVirtualContributorPickerQuery({ variables: { space: 'space-1' } });
+  return null;
+};
+
 /**
- * Regression coverage: the virtualContributor kind's fetch effect must wait for
- * the space query (roleSetId/spaceLevel) to resolve before fetching, and must
- * re-run once it does — otherwise it fetches through the L0 branch on a
- * subspace and filters against an empty current-member set (corr-client-web-2).
+ * A write the server committed resolves on its own result: a refetched query the caller may not read (the VC picker
+ * refused FORBIDDEN) keeps its error to itself and never rejects the mutation, as legacy's role-set writes did
+ * (useRoleSetManagerRolesAssignment evicted the role set and awaited no re-read).
  */
-describe('InviteMembersDialogConnector — virtualContributor fetch waits for the resolved space', () => {
-  test('does not fetch while the space query is still pending, then fetches with the resolved level once it settles', async () => {
-    inviteUsersDialogQueryReturn = { data: undefined, loading: true };
-    getAvailableMock.mockClear();
-    useVirtualContributorsAdminMock.mockClear();
-
-    let rerender!: (ui: ReactElement) => void;
-    await act(async () => {
-      ({ rerender } = render(
-        <InviteMembersDialogConnector open={true} kind="virtualContributor" spaceId="space-1" onClose={vi.fn()} />
-      ));
-    });
-
-    // Space query still pending on the render where `open` flips true — the
-    // effect must not fetch yet, and the lookup hook must not have been
-    // constructed with the L0 default while the resolved values are unknown.
-    expect(getAvailableMock).not.toHaveBeenCalled();
-
-    // The space query resolves: an L1 subspace with its own role set.
-    inviteUsersDialogQueryReturn = {
-      data: {
-        lookup: {
-          space: {
-            about: { profile: { displayName: 'My Subspace' }, membership: { roleSetID: 'rs-1' } },
-            level: SpaceLevel.L1,
+describe('InviteMembersDialogConnector — a refused refetch never rejects a committed write', () => {
+  const refusedPicker = () =>
+    setup(({ operationName, variables }) => {
+      if (operationName === 'SpaceCommunityVirtualContributorPicker') return FORBIDDEN;
+      if (operationName === 'SpaceCommunityInviteTarget') return inviteTarget;
+      if (operationName === 'SpaceCommunityCandidates')
+        return candidates([variables.actorType === 'user' ? userNode('u-1') : vcNode('vc-account')]);
+      if (operationName === 'SpaceCommunityMembers' || operationName === 'SpaceCommunityAdmin') return undefined;
+      if (operationName === 'SetSpaceCommunityRoles')
+        return {
+          setRoles: {
+            __typename: 'MembershipResult',
+            node: { __typename: 'Space', id: 'space-1' },
           },
-        },
-      },
-      loading: false,
-    };
-    await act(async () => {
-      rerender(
-        <InviteMembersDialogConnector open={true} kind="virtualContributor" spaceId="space-1" onClose={vi.fn()} />
-      );
+        };
+      if (operationName === 'InviteToSpaceCommunity')
+        return {
+          invite: [
+            {
+              __typename: 'InviteOutcome',
+              actor: 'u-1',
+              email: null,
+              outcome: 'SENT',
+              noOrganizationAdmin: false,
+              request: { __typename: 'MembershipRequest', id: 'req-1' },
+            },
+          ],
+        };
+      return undefined;
     });
 
-    expect(getAvailableMock).toHaveBeenCalledTimes(1);
-    // useVirtualContributorsAdmin must have been (re-)constructed with the
-    // resolved L1 level, not the SpaceLevel.L0 fallback, and with the
-    // community's actual (non-empty) current-member list.
-    const calls = useVirtualContributorsAdminMock.mock.calls;
-    const lastCallArgs = calls[calls.length - 1][0];
-    expect(lastCallArgs.level).toBe(SpaceLevel.L1);
-    expect(lastCallArgs.currentMembers).toEqual([{ id: 'vc-existing' }]);
+  test('setRoles: the account VC is added and the dialog closes', async () => {
+    const fixture = refusedPicker();
+    const onClose = vi.fn();
+    render(
+      <>
+        <InviteMembersDialogConnector open={true} kind="virtualContributor" spaceId="space-1" onClose={onClose} />
+        <PickerWatcher />
+      </>,
+      { wrapper: fixture.wrapper }
+    );
+    await waitFor(() => expect(latestProps().vcAccountItems).toHaveLength(1));
+    await waitFor(() => expect(fixture.named('SpaceCommunityVirtualContributorPicker')).toHaveLength(1));
+
+    await act(() => latestProps().onAddAccountVc('vc-account'));
+
+    await waitFor(() => expect(fixture.named('SpaceCommunityVirtualContributorPicker')).toHaveLength(2));
+    expect(notify).toHaveBeenCalledWith('inviteMembers.dialog.virtualContributor.addedNotice', 'success');
+    expect(onClose).toHaveBeenCalled();
   });
-});
 
-describe('InviteMembersDialogConnector — virtualContributor rows carry the VC avatar', () => {
-  test('passes each VC profile avatar through to the account and library rows', async () => {
-    inviteUsersDialogQueryReturn = {
-      data: {
-        lookup: {
-          space: {
-            about: { profile: { displayName: 'My Space' }, membership: { roleSetID: 'rs-1' } },
-            level: SpaceLevel.L0,
-          },
-        },
-      },
-      loading: false,
-    };
-    const vc = (id: string, uri: string) => ({ id, profile: { displayName: id, avatar: { uri } } });
-    getAvailableMock.mockResolvedValueOnce([vc('vc-account', 'https://img/account.png')] as never);
-    getAvailableInLibraryMock.mockResolvedValueOnce([vc('vc-library', 'https://img/library.png')] as never);
+  test('invite: the SENT outcome reaches the result screen', async () => {
+    const fixture = refusedPicker();
+    render(
+      <>
+        <InviteMembersDialogConnector open={true} spaceId="space-1" onClose={vi.fn()} />
+        <PickerWatcher />
+      </>,
+      { wrapper: fixture.wrapper }
+    );
+    await waitFor(() => expect(latestProps().spaceName).toBe('My Space'));
+    await waitFor(() => expect(fixture.named('SpaceCommunityVirtualContributorPicker')).toHaveLength(1));
+    act(() => latestProps().onSearchChange('u'));
+    await waitFor(() => expect(latestProps().searchResults).toHaveLength(1));
+    act(() => latestProps().onSelectUser('u-1'));
 
-    await act(async () => {
-      render(
-        <InviteMembersDialogConnector open={true} kind="virtualContributor" spaceId="space-1" onClose={vi.fn()} />
-      );
-    });
+    act(() => latestProps().onSend());
 
-    const calls = inviteMembersDialogMock.mock.calls;
-    const props = calls[calls.length - 1][0];
-    expect(props.vcAccountItems).toEqual([expect.objectContaining({ avatarUrl: 'https://img/account.png' })]);
-    expect(props.vcLibraryItems).toEqual([expect.objectContaining({ avatarUrl: 'https://img/library.png' })]);
-  });
-});
-
-describe('InviteMembersDialogConnector — the invitation dedupe never selects applications', () => {
-  test('reads the role set with includeApplications: false, so an inviter without GRANT still gets the invitations', async () => {
-    inviteUsersDialogQueryReturn = {
-      data: {
-        lookup: {
-          space: {
-            about: { profile: { displayName: 'My Subspace' }, membership: { roleSetID: 'rs-1' } },
-            level: SpaceLevel.L1,
-          },
-        },
-      },
-      loading: false,
-    };
-    useRoleSetApplicationsAndInvitationsMock.mockClear();
-
-    await act(async () => {
-      render(<InviteMembersDialogConnector open={true} kind="organization" spaceId="space-1" onClose={vi.fn()} />);
-    });
-
-    const calls = useRoleSetApplicationsAndInvitationsMock.mock.calls;
-    expect(calls.length).toBeGreaterThan(0);
-    for (const [params] of calls) {
-      expect(params.includeApplications).toBe(false);
-    }
-    expect(calls[calls.length - 1][0].roleSetId).toBe('rs-1');
+    await waitFor(() => expect(latestProps().results?.map(r => r.outcome)).toEqual(['sent']));
+    await waitFor(() => expect(fixture.named('SpaceCommunityVirtualContributorPicker')).toHaveLength(2));
   });
 });

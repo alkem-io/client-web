@@ -1,0 +1,7 @@
+# replaces: VisualModel (src/domain/common/visual/graphql/VisualModel.graphql)
+fragment V2FileRef on FileRef {
+  file {
+    id
+    url
+  }
+}

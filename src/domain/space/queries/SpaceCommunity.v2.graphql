@@ -1,0 +1,21 @@
+# specs/021-space-pages data-model.md D6: the community roster, 500 per request with continuation.
+query SpaceCommunity($space: UUID!, $first: Int!, $after: String) {
+  members(resource: $space, first: $first, after: $after) {
+    edges {
+      cursor
+      node {
+        id
+        roles
+        joinedAt
+        actor {
+          ...ActorIdentity
+          about { location description }
+          ... on User { skills keywords }
+          ... on Organization { tags }
+        }
+      }
+    }
+    pageInfo { hasNextPage endCursor }
+    totalCount
+  }
+}

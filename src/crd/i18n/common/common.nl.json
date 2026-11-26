@@ -13,7 +13,8 @@
       "generic-with-code": "Er is een fout opgetreden met code {{code}}",
       "network": {
         "session_store_unavailable": "De dienst is tijdelijk niet beschikbaar. Probeer het over een moment opnieuw.",
-        "generic": "Er is een verbindingsprobleem opgetreden. Controleer je verbinding en probeer het opnieuw."
+        "generic": "Er is een verbindingsprobleem opgetreden. Controleer je verbinding en probeer het opnieuw.",
+        "retry": "Opnieuw proberen"
       },
       "support": {
         "emailBody": "Hallo,\n\nIk ben een fout tegengekomen tijdens het gebruik van Alkemio.\n\nError Code: {{code}}\n\nHelp me dit probleem op te lossen.\n\nBedankt.",
@@ -63,6 +64,7 @@
           "messagingNotEnabled": "Berichten niet ingeschakeld.",
           "noAgentForUser": "Geen agent voor gebruiker.",
           "notEnabled": "Functionaliteit niet ingeschakeld.",
+          "notAvailableYet": "Deze actie is nog niet beschikbaar.",
           "operationNotAllowed": "Handeling niet toegestaan.",
           "roleLimitsViolated": "Rol limieten overschreden.",
           "roleSetAlreadyMember": "You're already a member of this space.",
@@ -1424,7 +1426,11 @@
       "fullName": "$t(common.templateLibrary)"
     },
     "logout": {
-      "loading": "Uitloggen ..."
+      "loading": "Uitloggen ...",
+      "unavailable": "Afmelden kon niet worden voltooid. Probeer het opnieuw.",
+      "unknown": "Afmelden kon niet worden bevestigd. De sessie bij de identiteitsprovider is mogelijk nog actief.",
+      "cleanupUnavailable": "Je bent afgemeld, maar lokale gegevens konden niet worden gewist. Probeer het opnieuw.",
+      "pushCleanupUnavailable": "Je bent afgemeld, maar het opruimen van meldingen op dit apparaat is niet voltooid."
     },
     "recovery": {
       "cooldown": {

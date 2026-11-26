@@ -34,7 +34,7 @@ describe('retryLink retryIf', () => {
   });
 
   it('does not retry a query on a non-retryable status code', () => {
-    for (const statusCode of [500, 400, 401, 403]) {
+    for (const statusCode of [500, 400, 401, 403, 422]) {
       expect(retryIf({ statusCode }, asOperation(QUERY))).toBe(false);
     }
   });

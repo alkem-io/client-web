@@ -1,0 +1,36 @@
+# The space page shell: SpaceContext (the level-zero space) and the settings scope (the space at any depth).
+# replaces: SpaceAboutBase + SpaceEntitlements (SpaceContext), SpaceAboutDetails (SubspaceContext), SpacePrivileges
+# (settings access guard) and the useVideoCall reads (SpacePrivileges + SpaceSettings + SpaceStorageAggregatorId).
+# Rows (map/dispositions): space-screens "space about: nameID, level, visibility, privileges, host"
+# → space(id){handle, url, depth, status, can, host, isContentPublic, about}; space-screens "space context: license
+# entitlements" → Space.entitlements; account-screens "the space's account id" → Space.host → Actor.account →
+# AccountSummary.id; community-roles "membership-status" → Space.membership.status; community-roles "wrapper-ids"
+# → Space.id; space-screens "video-call URL" → Space.videoCallUrl (L062) with the members_video_call setting.
+query SpacePageShell($id: UUID!) {
+  node(id: $id) {
+    id
+    entityType
+    ... on Space {
+      handle
+      url
+      depth
+      status
+      isContentPublic
+      tags
+      settings
+      videoCallUrl
+      about {
+        displayName
+        tagline
+        description
+        avatar { file { url } alt }
+        banner { file { url } alt aspectRatio }
+        card { file { url } alt }
+      }
+      can { read update createSubspace manageTemplates saveAsTemplate }
+      membership { status }
+      entitlements { name }
+      host { id account { id } }
+    }
+  }
+}

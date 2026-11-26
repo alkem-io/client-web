@@ -28,6 +28,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["src", "@types", "vite.config.mjs", "eslint.config.mjs", "specs"],
+  "include": ["src", "@types", "vite.config.mjs", "eslint.config.mjs", "specs", "scripts/parity/*.test.ts"],
   "exclude": ["node_modules", "src/**/*.test_.ts", "src/crd/app/vite.config.ts"]
 }

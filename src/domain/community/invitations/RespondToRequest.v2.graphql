@@ -1,0 +1,15 @@
+# replaces: InvitationStateEvent. screens-dispositions.tsv:10977 / :17683: Mutation.respondToRequest(id, event); the events
+# are the membership_request:invitation lifecycle rows (ACCEPT, REJECT; H-community-roles-2, B2.6).
+mutation V2RespondToRequest($id: UUID!, $event: String!) {
+  respondToRequest(id: $id, event: $event) {
+    request {
+      id
+      state
+      availableEvents
+      withheldRoles {
+        role
+        reason
+      }
+    }
+  }
+}

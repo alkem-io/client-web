@@ -1,26 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  refetchSpaceAdminDefaultSpaceTemplatesDetailsQuery,
-  refetchSubspacesInSpaceQuery,
-  useDeleteSpaceMutation,
-  useSpaceAdminDefaultSpaceTemplatesDetailsQuery,
-  useSpaceContentTemplatesOnSpaceQuery,
-  useSubspacesInSpaceQuery,
-  useUpdateSpaceSettingsMutation,
-  useUpdateSubspacePinnedMutation,
-  useUpdateSubspacesSortOrderMutation,
-  useUpdateTemplateDefaultMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, SpaceSortMode, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
+  useDeleteSpaceSettingsSubspaceMutation,
+  usePinSpaceSettingsSubspaceMutation,
+  useReorderSpaceSettingsSubspacesMutation,
+  useSetSpaceSettingsSubspaceDefaultTemplateMutation,
+  useSpaceSettingsSubspaceTemplatesQuery,
+  useUpdateSpaceSettingsSubspacesSortModeMutation,
+} from '@/core/apollo/generated-v2/apollo-hooks';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import type { SubspaceKebabAction, SubspaceTile } from '@/crd/components/space/settings/SpaceSettingsSubspacesView';
-import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
-import { mapSortMode, mapSubspaceToTile } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/subspacesMapper';
+import { useNativeSubspaces } from '@/domain/space/hooks/useNativeSubspaces';
+import { useSubspaceDefaultTemplate } from '@/main/crdPages/templates/spaceTemplates/useSubspaceDefaultTemplate';
+import {
+  mapSortMode,
+  mapSortModeToBackend,
+  mapSubspaceToTile,
+} from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/subspacesMapper';
 
 export type UseSubspacesTabDataResult = {
   subspaces: SubspaceTile[];
-  canCreate: boolean;
-  canSaveAsTemplate: boolean;
-  templatesSetId: string | undefined;
   loading: boolean;
   /** 'alphabetical' | 'manual' — drives the sort-mode selector + drag-enabled rule. */
   sortMode: 'alphabetical' | 'manual';
@@ -44,91 +42,71 @@ export type UseSubspacesTabDataResult = {
   subspaceTemplatesSaving: boolean;
 };
 
+/** Every view of the parent's subspace list re-reads through NativeSubspaces (023 FR-020). */
+const SUBSPACE_LIST = ['NativeSubspaces'];
+
+/**
+ * Settings → Subspaces tab (map/dispositions/space-screens.tsv, /:spaceNameId/settings/subspaces): the list is
+ * NativeSubspaces — `spaces(filter{parent, kind: SPACE})`, ordered by the server in the parent's `sort_mode` — read to
+ * its end so a manual reorder sends every child; pin, reorder, delete and the sort-mode write each re-read it.
+ */
 export function useSubspacesTabData(spaceId: string): UseSubspacesTabDataResult {
-  const { data: subspacesData, loading: subspacesLoading } = useSubspacesInSpaceQuery({
-    variables: { spaceId },
-    skip: !spaceId,
-  });
+  const handleError = useApolloErrorHandler();
+  const list = useNativeSubspaces(spaceId || undefined, !spaceId);
+  const { hasMore, loading: listLoading, loadMore } = list;
+  useEffect(() => {
+    if (hasMore && !listLoading) void loadMore();
+  }, [hasMore, listLoading, loadMore]);
 
-  const { data: templateData, loading: templateLoading } = useSpaceAdminDefaultSpaceTemplatesDetailsQuery({
-    variables: { spaceId },
-    skip: !spaceId,
-  });
-
-  const backendSortMode = subspacesData?.lookup.space?.settings.sortMode ?? SpaceSortMode.Alphabetical;
-
-  const rawSubspaces =
-    subspacesData?.lookup.space?.subspaces?.map(s => ({
-      ...s,
-      about: { profile: { displayName: s.about.profile.displayName } },
-    })) ?? [];
-
-  const sortedRaw = useSubspacesSorted(rawSubspaces, backendSortMode);
-
-  const subspaces: SubspaceTile[] = sortedRaw.map(raw => {
-    const original = subspacesData?.lookup.space?.subspaces?.find(s => s.id === raw.id);
-    if (!original) return mapSubspaceToTile(raw as never);
-    return mapSubspaceToTile(original);
-  });
-
-  const templatesManager = templateData?.lookup.space?.templatesManager;
-  const templatesSet = templatesManager?.templatesSet;
-  const templateSetPrivileges = templatesSet?.authorization?.myPrivileges ?? [];
-  const canSaveAsTemplate = templateSetPrivileges.includes(AuthorizationPrivilege.Create);
-
-  const templateDefaults = templatesManager?.templateDefaults;
-  const defaultSubspaceTemplate = templateDefaults?.find(td => td.type === TemplateDefaultType.SpaceSubspace);
+  const subspaces = (list.subspaces ?? []).map(mapSubspaceToTile);
+  const sortMode = mapSortMode(list.space?.settings);
 
   const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
   const [saveAsTemplateSubspaceId, setSaveAsTemplateSubspaceId] = useState<string | null>(null);
   const [selectDefaultTemplateOpen, setSelectDefaultTemplateOpen] = useState(false);
 
-  const [deleteSpace] = useDeleteSpaceMutation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
-    awaitRefetchQueries: true,
-  });
-
-  const [updateSubspacePinned] = useUpdateSubspacePinnedMutation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
-    awaitRefetchQueries: true,
-  });
-  const [updateSubspacesSortOrder] = useUpdateSubspacesSortOrderMutation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
-  });
-  const [updateSpaceSettings] = useUpdateSpaceSettingsMutation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
-    awaitRefetchQueries: true,
-  });
-  const [updateTemplateDefault, { loading: updatingTemplateDefault }] = useUpdateTemplateDefaultMutation({
-    refetchQueries: [refetchSpaceAdminDefaultSpaceTemplatesDetailsQuery({ spaceId })],
-    awaitRefetchQueries: true,
-  });
-
-  const { data: templatesOnSpaceData, loading: loadingSubspaceTemplates } = useSpaceContentTemplatesOnSpaceQuery({
-    variables: { spaceId },
+  // templates-screens "subspace default template": the scope's subspace_default binding and its SPACE templates.
+  const defaultTemplate = useSubspaceDefaultTemplate(spaceId || undefined, !spaceId);
+  const { data: templatesData, loading: loadingSubspaceTemplates } = useSpaceSettingsSubspaceTemplatesQuery({
+    variables: { space: spaceId },
     skip: !spaceId || !selectDefaultTemplateOpen,
   });
   const subspaceTemplateChoices =
-    templatesOnSpaceData?.lookup.space?.templatesManager?.templatesSet?.spaceTemplates.map(tmpl => ({
-      id: tmpl.id,
-      name: tmpl.profile.displayName,
-    })) ?? [];
+    templatesData?.templates.map(template => ({ id: template.id, name: template.about.displayName })) ?? [];
+
+  const [deleteSpace] = useDeleteSpaceSettingsSubspaceMutation({
+    refetchQueries: SUBSPACE_LIST,
+    awaitRefetchQueries: true,
+    onError: handleError,
+  });
+  const [pinSubspace] = usePinSpaceSettingsSubspaceMutation({
+    refetchQueries: SUBSPACE_LIST,
+    awaitRefetchQueries: true,
+    onError: handleError,
+  });
+  const [reorderSubspaces] = useReorderSpaceSettingsSubspacesMutation({
+    refetchQueries: SUBSPACE_LIST,
+    onError: handleError,
+  });
+  const [updateSortMode] = useUpdateSpaceSettingsSubspacesSortModeMutation({
+    refetchQueries: SUBSPACE_LIST,
+    awaitRefetchQueries: true,
+    onError: handleError,
+  });
+  const [setTemplateDefault, { loading: updatingTemplateDefault }] = useSetSpaceSettingsSubspaceDefaultTemplateMutation(
+    {
+      refetchQueries: ['CreateSubspaceTemplateDefault'],
+      awaitRefetchQueries: true,
+      onError: handleError,
+    }
+  );
 
   const onKebabAction = (id: string, action: SubspaceKebabAction) => {
+    const subspace = subspaces.find(s => s.id === id);
     if (action === 'delete') {
-      const ss = subspaces.find(s => s.id === id);
-      setPendingDelete({ id, name: ss?.name ?? '' });
+      setPendingDelete({ id, name: subspace?.name ?? '' });
     } else if (action === 'pinToggle') {
-      const ss = subspaces.find(s => s.id === id);
-      void updateSubspacePinned({
-        variables: {
-          pinnedData: {
-            spaceID: spaceId,
-            subspaceID: id,
-            pinned: !(ss?.isPinned ?? false),
-          },
-        },
-      });
+      void pinSubspace({ variables: { id, pinned: !(subspace?.isPinned ?? false) } });
     } else if (action === 'saveAsTemplate') {
       setSaveAsTemplateSubspaceId(id);
     }
@@ -136,7 +114,7 @@ export function useSubspacesTabData(spaceId: string): UseSubspacesTabDataResult 
 
   const confirmDelete = () => {
     if (pendingDelete) {
-      void deleteSpace({ variables: { spaceId: pendingDelete.id } });
+      void deleteSpace({ variables: { id: pendingDelete.id } });
       setPendingDelete(null);
     }
   };
@@ -146,40 +124,23 @@ export function useSubspacesTabData(spaceId: string): UseSubspacesTabDataResult 
   };
 
   const onReorder = (subspaceIds: string[]) => {
-    void updateSubspacesSortOrder({
-      variables: { spaceID: spaceId, subspaceIds },
-    });
+    void reorderSubspaces({ variables: { parent: spaceId, ids: subspaceIds } });
   };
 
+  // "settings tab write (… sortMode-only write from subspaces tab)" → updateSpace(id, settings): only sort_mode.
   const onSortModeChange = (mode: 'alphabetical' | 'manual') => {
-    void updateSpaceSettings({
-      variables: {
-        settingsData: {
-          spaceID: spaceId,
-          settings: { sortMode: mode === 'manual' ? SpaceSortMode.Custom : SpaceSortMode.Alphabetical },
-        },
-      },
-    });
+    void updateSortMode({ variables: { id: spaceId, settings: { sort_mode: mapSortModeToBackend(mode) } } });
   };
 
   const onSelectDefaultTemplate = (templateId: string) => {
-    if (!defaultSubspaceTemplate) return;
-    void updateTemplateDefault({
-      variables: {
-        templateDefaultID: defaultSubspaceTemplate.id,
-        templateID: templateId,
-      },
-    });
+    void setTemplateDefault({ variables: { scope: spaceId, template: templateId } });
     setSelectDefaultTemplateOpen(false);
   };
 
   return {
     subspaces,
-    canCreate: true,
-    canSaveAsTemplate,
-    templatesSetId: templatesSet?.id,
-    loading: subspacesLoading || templateLoading,
-    sortMode: mapSortMode(backendSortMode),
+    loading: listLoading || hasMore || defaultTemplate.loading,
+    sortMode,
     onSortModeChange,
     onKebabAction,
     onReorder,
@@ -193,7 +154,7 @@ export function useSubspacesTabData(spaceId: string): UseSubspacesTabDataResult 
     openSelectDefaultTemplate: () => setSelectDefaultTemplateOpen(true),
     closeSelectDefaultTemplate: () => setSelectDefaultTemplateOpen(false),
     onSelectDefaultTemplate,
-    defaultTemplateId: defaultSubspaceTemplate?.template?.id,
+    defaultTemplateId: defaultTemplate.templateId,
     subspaceTemplateChoices,
     subspaceTemplatesLoading: loadingSubspaceTemplates,
     subspaceTemplatesSaving: updatingTemplateDefault,

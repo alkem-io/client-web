@@ -1,165 +1,82 @@
-import { ApmProvider, ApmUserSetter } from '@/core/analytics/apm/context';
-import { UserGeoProvider } from '@/core/analytics/geo';
-import SentryErrorBoundaryProvider from '@/core/analytics/SentryErrorBoundaryProvider';
-import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
-import AlkemioApolloProvider from '@/core/apollo/context/ApolloProvider';
-import { AuthenticationProvider } from '@/core/auth/authentication/context/AuthenticationProvider';
-import { IdentityRoutes } from '@/core/auth/authentication/routing/IdentityRoute';
 import '@/core/i18n/config';
-import { type FC, Suspense } from 'react';
 import { CookiesProvider } from 'react-cookie';
-import { BrowserRouter, useLocation } from 'react-router-dom';
+import { BrowserRouter, createRoutesFromElements, matchRoutes, useLocation } from 'react-router-dom';
 import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
+import { isSessionStoreUnavailable } from '@/core/apollo/v2/isSessionStoreUnavailable';
+import { V2ApolloProvider } from '@/core/apollo/v2/V2ApolloProvider';
+import { IdentityRoute } from '@/core/auth/authentication/routing/IdentityRoute';
+import { NativeFoundationContext, NativeFoundationProvider } from '@/core/foundation/NativeFoundationProvider';
+import { GlobalErrorProvider } from '@/core/lazyLoading/GlobalErrorContext';
 import { MatrixSession } from '@/core/matrix/MatrixSessionProvider';
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
 import { FullscreenEditorProvider, useIsFullscreenEditorOpen } from '@/core/ui/fullscreen/FullscreenEditorContext';
-import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
-import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
-import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider';
-import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
-import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
+import { CrdNotificationHandler } from '@/core/ui/notifications/CrdNotificationHandler';
+import { NativeCurrentUserProvider } from '@/domain/community/userCurrent/native/NativeCurrentUserProvider';
+import { NativeConfigProvider } from '@/domain/platform/config/native/NativeConfigProvider';
+import { privateGraphQLEndpoint } from '@/main/constants/endpoints';
 import { CrdAwareErrorComponent } from '@/main/crdPages/error/CrdAwareErrorComponent';
+import CrdGlobalErrorDialog from '@/main/crdPages/error/CrdGlobalErrorDialog';
 import { UnifiedChatLauncher } from '@/main/crdPages/unifiedChat/UnifiedChatLauncher';
 import { UnifiedChatProvider } from '@/main/crdPages/unifiedChat/UnifiedChatProvider';
-import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
+import { OnlineStatusNotification } from '@/main/onlineStatus/OnlineStatusNotification';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
-import { UnreadTabBadge } from '@/main/tabBadge/UnreadTabBadge';
-import { ConversationEventsSubscriber } from '@/main/userMessaging/ConversationEventsSubscriber';
-import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
-import { AssistantProvider } from './main/assistant/AssistantContext';
-import { CrdAssistantButtonGate } from './main/assistant/CrdAssistantButtonGate';
-import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
-import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
-import { PushNotificationProvider } from './main/pushNotifications/PushNotificationProvider';
-import { useNativePushTapRouting } from './main/pushNotifications/useNativePushTapRouting';
-import { VersionHandling } from './main/versionHandling';
+import { VersionHandling } from '@/main/versionHandling';
 
-const CrdGlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./main/crdPages/error/CrdGlobalErrorDialog'));
-const AssistantDialog = lazyWithGlobalErrorHandler(() => import('./main/assistant/AssistantDialog'));
-
-const CrdNotificationsPanelConnector = lazyWithGlobalErrorHandler(
-  () => import('./main/ui/layout/CrdNotificationsPanelConnector')
-);
-
-/** Renders the CRD notifications panel. */
-function NotificationsGate() {
-  return (
-    <Suspense fallback={null}>
-      <CrdNotificationsPanelConnector />
-    </Suspense>
-  );
-}
-
-/** Renders the CRD global (chunk-load) error dialog. */
-function GlobalErrorDialogGate() {
-  return (
-    <Suspense fallback={null}>
-      <CrdGlobalErrorDialog />
-    </Suspense>
-  );
-}
-
-/**
- * Mounted inside `BrowserRouter` and above `PushNotificationProvider` (which
- * short-circuits while unauthenticated) because the tap listener must be live on
- * every app start, signed in or not — see the hook for why.
- */
-function NativePushTapRouter() {
-  useNativePushTapRouting();
-  return null;
-}
-
-/** Top-level path segments owned by the auth flow — the unified chat is hidden on all of them. */
-const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
-
-/**
- * Mounts the unified chat floating launcher. The unified surface is the only
- * messaging entry point, so it is NOT hidden on mobile — only on auth flows and
- * immersive/fullscreen editors.
- *
- * The 004 assistant launcher (CrdAssistantButtonGate) is mounted alongside it: it
- * self-positions just above the unified-chat button and self-gates on the assistant
- * flag + auth, so it shares the same hide rules (auth flow / fullscreen editor).
- */
+/** The unified chat's floating launcher beside every page but the identity pages, hidden while a fullscreen editor is open. */
 function UnifiedChatGate() {
-  const { pathname } = useLocation();
-  const { fullscreen } = useFullscreen();
-  const isFullscreenEditorOpen = useIsFullscreenEditorOpen();
-  const isAuthPage = AUTH_ROUTE_SEGMENTS.has(pathname.split('/')[1]);
-  const hidden = isAuthPage || fullscreen || isFullscreenEditorOpen;
-  return (
-    <>
-      <UnifiedChatLauncher hidden={hidden} />
-      {!hidden && <CrdAssistantButtonGate />}
-    </>
-  );
+  const location = useLocation();
+  const fullscreen = useIsFullscreenEditorOpen();
+  // IdentityRoute is called during render, as TopLevelRoutes calls it: compiled, it uses hooks.
+  const identityPage = matchRoutes(createRoutesFromElements(IdentityRoute()), location);
+  return identityPage ? null : <UnifiedChatLauncher hidden={fullscreen} />;
 }
 
-const Root: FC = () => {
+export default function Root() {
   return (
     <CookiesProvider>
-      <ConfigProvider url={publicGraphQLEndpoint}>
+      <V2ApolloProvider uri={privateGraphQLEndpoint}>
+        {/* As legacy root.tsx: every route's useTransactionScope (e.g. /required) finds its provider. */}
         <SentryTransactionScopeContextProvider>
-          <SentryErrorBoundaryProvider>
-            <GlobalStateProvider>
-              <GlobalErrorProvider>
-                <AuthenticationProvider>
-                  <BrowserRouter>
-                    <NativePushTapRouter />
-                    <UserGeoProvider>
-                      <ApmProvider>
-                        <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                          <UserProvider>
-                            <PendingMembershipsDialogProvider>
-                              <InAppNotificationsProvider>
-                                <PushNotificationProvider>
-                                  <UnifiedChatProvider>
-                                    <FullscreenEditorProvider>
-                                      <AssistantProvider>
-                                        <NavigationHistoryTracker />
-                                        <ApmUserSetter />
-                                        <ScrollToTop />
-                                        <NotificationsGate />
-                                        <InAppNotificationCountSubscriber />
-                                        <ConversationEventsSubscriber />
-                                        <MatrixSession />
-                                        <UnreadTabBadge />
-                                        <Suspense fallback={null}>
-                                          <AssistantDialog />
-                                        </Suspense>
-                                        <VersionHandling />
-                                        <OnlineStatusNotification />
-                                        <Error40XBoundary
-                                          errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
-                                        >
-                                          <TopLevelRoutes />
-                                          <GlobalErrorDialogGate />
-                                        </Error40XBoundary>
-                                        {/* Rendered after TopLevelRoutes so the full-screen mobile chat
-                                            panel (z-50) paints above the app header (also z-50). */}
-                                        <UnifiedChatGate />
-                                      </AssistantProvider>
-                                    </FullscreenEditorProvider>
-                                  </UnifiedChatProvider>
-                                </PushNotificationProvider>
-                              </InAppNotificationsProvider>
-                            </PendingMembershipsDialogProvider>
-                          </UserProvider>
-                        </AlkemioApolloProvider>
-                      </ApmProvider>
-                    </UserGeoProvider>
-                  </BrowserRouter>
-                </AuthenticationProvider>
-              </GlobalErrorProvider>
-            </GlobalStateProvider>
-          </SentryErrorBoundaryProvider>
+          <GlobalStateProvider>
+            <GlobalErrorProvider>
+              <BrowserRouter>
+                <NativeFoundationProvider>
+                  <FullscreenEditorProvider>
+                    <NavigationHistoryTracker />
+                    <ScrollToTop />
+                    <VersionHandling />
+                    <OnlineStatusNotification />
+                    <Error40XBoundary errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}>
+                      <NativeConfigProvider
+                        matrixSession={sessionBaseUrl => <MatrixSession sessionBaseUrl={sessionBaseUrl} />}
+                      >
+                        <NativeFoundationContext.Consumer>
+                          {foundation =>
+                            foundation?.error && !isSessionStoreUnavailable(foundation.error) ? (
+                              <p role="alert">{foundation.error.message}</p>
+                            ) : null
+                          }
+                        </NativeFoundationContext.Consumer>
+                        <NativeCurrentUserProvider>
+                          <UnifiedChatProvider>
+                            <TopLevelRoutes />
+                            <UnifiedChatGate />
+                          </UnifiedChatProvider>
+                        </NativeCurrentUserProvider>
+                      </NativeConfigProvider>
+                      <CrdGlobalErrorDialog />
+                    </Error40XBoundary>
+                    <CrdNotificationHandler />
+                  </FullscreenEditorProvider>
+                </NativeFoundationProvider>
+              </BrowserRouter>
+            </GlobalErrorProvider>
+          </GlobalStateProvider>
         </SentryTransactionScopeContextProvider>
-      </ConfigProvider>
+      </V2ApolloProvider>
     </CookiesProvider>
   );
-};
-
-export default Root;
+}

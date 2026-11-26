@@ -1,175 +1,71 @@
-import type { MatrixClient } from 'matrix-js-sdk';
-import { isAppMode } from '@/core/appMode/isAppMode';
-import { setActiveClient, setSessionEstablishing } from './activeClient';
+import { getActiveClient, setActiveClient, setSessionEstablishing } from './activeClient';
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
-import { mintAndStore } from './mintSession';
+import { matrixSessionFetch, sessionEndpoint, withTabInstance } from './nativeMatrixSessionFetch';
 import { quietSdkLogging } from './sdkLogging';
-import { attemptSilentSso } from './ssoLogin';
-import { type CredentialRecord, clearNamespace, loadActorCredentials } from './storage';
 
-// matrix-js-sdk's HttpApiEvent.SessionLoggedOut: emitted when the homeserver
-// rejects the access token (M_UNKNOWN_TOKEN). A string here keeps the SDK a
-// lazily loaded chunk.
-const SESSION_LOGGED_OUT = 'Session.logged_out';
-const CLIENT_SYNC = 'sync';
+type MatrixAccess = { userId: string; sessionBaseUrl: string; expiresAt: string };
 
-// Room timelines start from the sync response; history deeper than this is
-// paged in when a conversation is opened.
-const INITIAL_SYNC_LIMIT = 20;
+export async function establishSession(
+  configEndpoint: string,
+  access: MatrixAccess,
+  lifetime: AbortSignal
+): Promise<void> {
+  if (lifetime.aborted) return;
+  const baseUrl = sessionEndpoint(configEndpoint);
+  if (sessionEndpoint(access.sessionBaseUrl) !== baseUrl || !(Date.parse(access.expiresAt) > Date.now())) {
+    throw new Error('Matrix session metadata is invalid or expired');
+  }
 
-type MatrixClientLike = {
-  stopClient(): void;
-  startClient(opts?: { initialSyncLimit?: number; lazyLoadMembers?: boolean }): Promise<void>;
-  on(event: string, listener: (state?: string) => void): unknown;
-};
-
-type SessionHandle = {
-  readonly stop: () => void;
-};
-
-type SessionOptions = {
-  readonly signal?: AbortSignal;
-  /** The platform origin the silent-SSO callback lives on. */
-  readonly platformOrigin?: string;
-};
-
-/**
- * Establishes and syncs the browser's Matrix session for the given actor:
- * resumes from a stored credential record, or runs one silent SSO round-trip
- * when none is usable, then starts the sync loop and publishes the client to
- * the read hooks. Registers the session so an Alkemio sign-out can stop it.
- *
- * A rejected token clears the stored record and gets one silent SSO and
- * restart; if that restart is rejected before it has synced, the session stays
- * stopped. A restart that syncs earns a fresh recovery for the next expiry.
- */
-const establishSession = async (
-  actorId: string,
-  { signal, platformOrigin }: SessionOptions = {}
-): Promise<SessionHandle> => {
-  let activeClient: MatrixClientLike | null = null;
-  let recoveryUsed = false;
-  // Cancels an in-flight silent SSO: its iframe would otherwise go on to
-  // persist fresh credentials after this session has already been stopped.
-  const abort = new AbortController();
-
-  const stopClient = (): void => {
-    activeClient?.stopClient();
-    activeClient = null;
-    setActiveClient(null);
-  };
-
-  // A session that was stopped must not clear the flag a newer session has set.
-  const finishEstablishing = (): void => {
-    if (!abort.signal.aborted) {
-      setSessionEstablishing(false);
-    }
-  };
-
-  const stop = (): void => {
-    abort.abort();
-    setSessionEstablishing(false);
-    stopClient();
-    unregisterActiveSession(stop);
-  };
+  const controller = new AbortController();
+  const stop = () => controller.abort();
+  const signal = AbortSignal.any([lifetime, controller.signal]);
   registerActiveSession(stop);
-  if (signal?.aborted) {
-    stop();
-  }
-  signal?.addEventListener('abort', stop);
-
-  const loadOrAcquireRecord = async (): Promise<CredentialRecord | null> => {
-    const record = await loadActorCredentials(actorId);
-    if (record) {
-      return record;
-    }
-    // The app skips silent SSO entirely: no identity-origin cookie exists in
-    // this WebView's jar, so the iframe cannot complete — and on Android the
-    // attempt is actively harmful, because the shell intercepts the iframe's
-    // hop through identity.<host>/login and navigates the MAIN WebView to a
-    // "Sign in to continue" landing. See workspace#091 spec FR-014.
-    if (!isAppMode()) {
-      const outcome = await attemptSilentSso(actorId, { signal: abort.signal, platformOrigin });
-      if (outcome === 'authenticated') {
-        return loadActorCredentials(actorId);
-      }
-    }
-    // M3 mandates this leg for the app; reached in a BROWSER only after SSO
-    // fails, which is the one credential-issuance path this feature adds
-    // there — spec R-7(b).
-    return mintAndStore(abort.signal);
-  };
-
-  const start = async (record: CredentialRecord): Promise<void> => {
-    await quietSdkLogging();
-    const sdk = (await import('matrix-js-sdk')) as unknown as {
-      createClient(opts: { baseUrl: string; userId: string; deviceId: string; accessToken: string }): MatrixClientLike;
-    };
-    const client = sdk.createClient({
-      baseUrl: record.homeserverUrl,
-      userId: record.userId,
-      deviceId: record.deviceId,
-      accessToken: record.accessToken,
-    });
-    if (abort.signal.aborted) {
-      client.stopClient();
-      return;
-    }
-    client.on(SESSION_LOGGED_OUT, () => {
-      if (activeClient === client) {
-        void recover(record);
-      }
-    });
-    client.on(CLIENT_SYNC, state => {
-      if (state === 'PREPARED') {
-        recoveryUsed = false;
-      }
-    });
-    activeClient = client;
-    setActiveClient(client as unknown as MatrixClient);
-    await client.startClient({ initialSyncLimit: INITIAL_SYNC_LIMIT, lazyLoadMembers: true });
-  };
-
-  const recover = async (rejected: CredentialRecord): Promise<void> => {
-    stopClient();
-    try {
-      await clearNamespace(rejected.userId);
-    } catch {
-      // The record is unusable either way; a failed delete must not block recovery.
-    }
-    if (abort.signal.aborted || recoveryUsed) {
-      return;
-    }
-    recoveryUsed = true;
-    setSessionEstablishing(true);
-    try {
-      const record = await loadOrAcquireRecord();
-      if (!abort.signal.aborted && record) {
-        await start(record);
-      }
-    } catch {
-      // Fails closed: the session stays stopped until the next page load.
-    } finally {
-      finishEstablishing();
-    }
-  };
-
-  if (!abort.signal.aborted) {
-    setSessionEstablishing(true);
-  }
+  setSessionEstablishing(true);
   try {
-    const record = await loadOrAcquireRecord();
-    if (!abort.signal.aborted && record) {
-      await start(record);
-    }
-  } catch {
-    // Establishment failure leaves nothing to stop; the next load retries.
+    await quietSdkLogging();
+    const { ClientEvent, HttpApiEvent, SyncState, createClient } = await import('matrix-js-sdk');
+    await withTabInstance(signal, async instance => {
+      const fetchFn = matrixSessionFetch(baseUrl, instance, signal);
+      const probe = createClient({ baseUrl, fetchFn, disableVoip: true });
+      const identity = await probe.whoami();
+      if (signal.aborted) return;
+      if (identity.user_id !== access.userId || !identity.device_id) {
+        throw new Error('Matrix session identity mismatch');
+      }
+      const client = createClient({
+        baseUrl,
+        fetchFn,
+        userId: identity.user_id,
+        deviceId: identity.device_id,
+        disableVoip: true,
+      });
+      // This text-only session already has its homeserver URL. SDK 42 starts
+      // both discovery caches even with VoIP disabled and no polling period.
+      client.cachedRtcTransports.start = () => undefined;
+      // biome-ignore lint/complexity/useLiteralKeys: SDK 42 declares the cache protected.
+      client['cachedWellKnown'].start = () => undefined;
+      const ended = new Promise<void>(resolve => {
+        signal.addEventListener('abort', () => resolve(), { once: true });
+      });
+      client.on(HttpApiEvent.SessionLoggedOut, stop);
+      client.on(ClientEvent.Sync, state => {
+        if (state === SyncState.Prepared && !signal.aborted) {
+          setActiveClient(client);
+          setSessionEstablishing(false);
+        }
+      });
+      try {
+        await client.startClient({ initialSyncLimit: 20, lazyLoadMembers: true, threadSupport: false });
+        await ended;
+      } finally {
+        stop();
+        client.stopClient();
+        if (getActiveClient() === client) setActiveClient(null);
+      }
+    });
   } finally {
-    finishEstablishing();
+    stop();
+    unregisterActiveSession(stop);
+    if (!lifetime.aborted) setSessionEstablishing(false);
   }
-
-  return { stop };
-};
-
-export { establishSession };
-export type { MatrixClientLike };
+}

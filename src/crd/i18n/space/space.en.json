@@ -13,7 +13,8 @@
     "dashboard": "Dashboard",
     "community": "Community",
     "subspaces": "Subspaces",
-    "knowledgeBase": "Knowledge Base"
+    "knowledgeBase": "Knowledge Base",
+    "unavailable": "This content is not available yet."
   },
   "visibility": {
     "archived": "This Space is archived and is read-only.",

@@ -25,6 +25,7 @@ import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { IconButton } from '@/crd/primitives/icon-button';
+import { useSpacePageLoad } from '@/domain/space/hooks/useSpacePage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
 import { CreateSubspaceDialogs } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/CreateSubspaceDialogs';
@@ -39,6 +40,7 @@ import {
   useSettingsTabDescriptors,
 } from '@/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs';
 import { buildSettingsTabUrl, buildSubspaceSettingsUrl } from '@/main/routing/urlBuilders';
+import { useNativeRouteSpace } from '@/main/routing/urlResolver/native/useNativeRouteSpace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
@@ -105,6 +107,7 @@ export default function CrdSubspacePageLayout() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { spaceLevel } = useUrlResolver();
+  const { space: routeSpace, post: routePost } = useNativeRouteSpace();
   const { t } = useTranslation(['crd-spaceSettings', 'crd-subspace']);
   const [activeDialog, setActiveDialog] = useState<SubspaceQuickActionId | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -115,7 +118,7 @@ export default function CrdSubspacePageLayout() {
   const [inviteOpen, setInviteOpen] = useState(false);
   // Active flow phase (URL-driven, shared with the callouts page) — the Add Post
   // dialog pre-selects it, exactly as the old flow-tabs button did.
-  const { activePhaseId } = useCrdSubspaceFlow(data.phases, data.currentPhaseId);
+  const { activePhaseId } = useCrdSubspaceFlow(routeSpace?.stages ?? [], data.currentPhaseId);
   const activePhase = data.phases.find(phase => phase.id === activePhaseId);
   const { collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed } = useSubspaceSidebarCollapsed();
   const locale = useCrdSpaceLocale();
@@ -143,10 +146,7 @@ export default function CrdSubspacePageLayout() {
   // Wire the Create-Subspace template picker with this subspace's own templates
   // set + default subspace template (D21 / FR-031), matching the Settings flow.
   // Account stays undefined at L1/L2 — the same as the Settings scope.
-  const createSubspace = useCreateSubspace(data.subspaceId ?? '', {
-    templatesSetId: data.templatesSetId,
-    defaultTemplateId: data.defaultSubspaceTemplateId,
-  });
+  const createSubspace = useCreateSubspace(data.subspaceId ?? '');
   const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
 
   // Sidebar links are portaled in via `mobileMenuContent`, so following one
@@ -157,6 +157,10 @@ export default function CrdSubspacePageLayout() {
   }, [pathname]);
 
   const isOnSettings = pathname.includes('/settings');
+
+  // 021 FR-005, the page's request: the Space document. Its space tree (the active phase's posts and the subspace links,
+  // the rail and the 7 rows) is one read of its own, sent by the sections that show it. Settings show no sidebar.
+  useSpacePageLoad(routeSpace?.id, ['space'], (routePost?.parentPost ?? routePost)?.id);
 
   // Edge-swipe from the left opens the mobile menu drawer (the Sheet rendered by
   // SubspaceFlowTabs, whose open state lives here). Only armed while a drawer
@@ -182,38 +186,18 @@ export default function CrdSubspacePageLayout() {
     }
   };
 
-  // Breadcrumbs render the full ancestor chain. At L1 the L0 hop is the same as the
-  // parent — collapse to a single hop. At L2 the L0 hop is distinct, so we render
-  // L0 → L1 → L2. On `/settings` we additionally append a Settings hop and the
-  // active tab label, mirroring the L0 settings breadcrumb shape.
-  const includeL0Crumb =
-    !!data.levelZeroSpaceName && !!data.levelZeroSpaceId && data.levelZeroSpaceId !== data.parentSpaceId;
-  const baseTrail =
-    data.parentSpaceName && data.subspaceName
-      ? [
-          ...(includeL0Crumb
-            ? [
-                {
-                  // biome-ignore lint/style/noNonNullAssertion: includeL0Crumb == true requires levelZeroSpaceName to be set
-                  label: data.levelZeroSpaceName!,
-                  href: data.levelZeroSpaceUrl,
-                  // biome-ignore lint/style/noNonNullAssertion: includeL0Crumb == true requires levelZeroSpaceName to be set
-                  avatar: { src: data.levelZeroSpaceAvatarUrl, initials: getInitials(data.levelZeroSpaceName!) },
-                },
-              ]
-            : []),
-          {
-            label: data.parentSpaceName,
-            href: data.parentSpaceUrl,
-            avatar: { src: data.parentSpaceAvatarUrl, initials: getInitials(data.parentSpaceName) },
-          },
-          {
-            label: data.subspaceName,
-            avatar: { src: data.subspaceAvatarUrl, initials: getInitials(data.subspaceName) },
-            ...(isOnSettings ? { href: data.subspaceUrl } : {}),
-          },
-        ]
-      : [];
+  // Breadcrumbs render exactly the ancestors D1 returns, root-first, then this space. On `/settings` we
+  // additionally append a Settings hop and the active tab label, mirroring the L0 settings breadcrumb shape.
+  const baseTrail = data.subspaceName
+    ? [
+        ...data.ancestorCrumbs,
+        {
+          label: data.subspaceName,
+          avatar: { src: data.subspaceAvatarUrl, initials: getInitials(data.subspaceName) },
+          ...(isOnSettings ? { href: data.subspaceUrl } : {}),
+        },
+      ]
+    : [];
   const settingsTrail = isOnSettings
     ? [
         { label: t('tabs.settings'), href: buildSubspaceSettingsUrl(data.subspaceUrl) },
@@ -315,6 +299,7 @@ export default function CrdSubspacePageLayout() {
       </IconButton>
     ) : undefined,
     subspaces: data.subspaces,
+    subspacesUnavailableMessage: data.subspacesUnavailable ? t('tabs.unavailable', { ns: 'crd-space' }) : undefined,
     onShowAllSubspaces: () => {
       setMobileMenuOpen(false);
       setActiveDialog('subspaces');
@@ -333,6 +318,7 @@ export default function CrdSubspacePageLayout() {
           setUpdatesOpen(true);
         }}
         locale={locale}
+        unavailableMessage={communityUpdates.unavailable ? t('tabs.unavailable', { ns: 'crd-space' }) : undefined}
       />
     ),
   };

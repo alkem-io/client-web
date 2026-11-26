@@ -1,6 +1,6 @@
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { useSpace } from '@/domain/space/context/useSpace';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { NotFoundError } from '@/core/40XErrorHandler/40XErrors';
+import { useSpacePageShellQuery } from '@/core/apollo/generated-v2/apollo-hooks';
+import { shellSpace } from '@/domain/space/context/spacePageShellMapper';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export type SettingsScopeLevel = 'L0' | 'L1' | 'L2';
@@ -9,37 +9,39 @@ export type SettingsScope = {
   id: string;
   level: SettingsScopeLevel;
   url: string;
+  /** The membership resource: the space itself (no role-set wrapper natively; "wrapper-ids" → Space.id). */
   roleSetId: string;
+  /** The space itself (no community wrapper natively; "wrapper-ids" → Space.id). */
   communityId: string;
+  /** The space itself: its guidelines are `Space.guidelines` ("wrapper-ids" → Space.id). */
   guidelinesId: string;
   accountId: string | undefined;
+  displayName: string;
+  tagline: string | undefined;
+  /** `SpaceCan.update` — undefined until the space is read. */
+  canUpdate: boolean | undefined;
+  /** `SpaceCan.createSubspace` (023 FR-018). */
+  canCreateSubspace: boolean;
+  /** `SpaceCan.saveAsTemplate` (A16.6). */
+  canSaveAsTemplate: boolean;
   loading: boolean;
 };
 
-const toScopeLevel = (level: SpaceLevel | undefined): SettingsScopeLevel => {
-  if (level === SpaceLevel.L1) return 'L1';
-  if (level === SpaceLevel.L2) return 'L2';
-  return 'L0';
-};
+const toScopeLevel = (depth: number): SettingsScopeLevel => (depth === 1 ? 'L1' : depth === 2 ? 'L2' : 'L0');
 
 /**
- * Resolves the entity IDs the settings page operates on.
- *
- * At L0 the IDs come from `SpaceContext` (the level-zero space). At L1/L2 the
- * level-zero context still resolves to the parent space's IDs, so we must read
- * the subspace fields from `SubspaceContext` instead — otherwise mutations
- * would silently target the wrong community.
+ * Resolves the space the settings page operates on — the space the URL resolves to, at any depth — from one native
+ * read (SpacePageShell, the same read SpaceContext makes for the level-zero space).
  */
 export function useSettingsScope(): SettingsScope {
-  const { spaceLevel, loading: resolverLoading } = useUrlResolver();
-  const { space, loading: spaceLoading } = useSpace();
-  const { subspace, loading: subspaceLoading } = useSubSpace();
+  const { spaceId, loading: resolverLoading } = useUrlResolver();
+  const id = spaceId ?? '';
+  const { data, loading, error } = useSpacePageShellQuery({ variables: { id }, skip: resolverLoading || !id });
+  if (id && error) throw error;
 
-  // While the URL resolver is still loading, `spaceLevel` is undefined; falling
-  // back to L0 here would expose root-space ids on L1/L2 routes and let the
-  // settings page boot its tab hooks against the wrong community/role-set
-  // until the resolver settles. Hold off until we know the level.
-  if (resolverLoading || spaceLevel === undefined) {
+  const space = resolverLoading ? undefined : shellSpace(data?.node, id);
+  if (id && !resolverLoading && !loading && data && !space) throw new NotFoundError();
+  if (!space) {
     return {
       id: '',
       level: 'L0',
@@ -48,33 +50,30 @@ export function useSettingsScope(): SettingsScope {
       communityId: '',
       guidelinesId: '',
       accountId: undefined,
-      loading: true,
+      displayName: '',
+      tagline: undefined,
+      canUpdate: undefined,
+      canCreateSubspace: false,
+      canSaveAsTemplate: false,
+      loading: resolverLoading || loading || !!id,
     };
   }
 
-  const level = toScopeLevel(spaceLevel);
-
-  if (level === 'L0') {
-    return {
-      id: space.id,
-      level,
-      url: space.about.profile.url ?? '',
-      roleSetId: space.about.membership?.roleSetID ?? '',
-      communityId: space.about.membership?.communityID ?? '',
-      guidelinesId: space.about.guidelines?.id ?? '',
-      accountId: space.accountId || undefined,
-      loading: spaceLoading,
-    };
-  }
-
+  const level = toScopeLevel(space.depth);
   return {
-    id: subspace.id,
+    id: space.id,
     level,
-    url: subspace.about.profile.url,
-    roleSetId: subspace.about.membership.roleSetID ?? '',
-    communityId: subspace.about.membership.communityID ?? '',
-    guidelinesId: subspace.about.guidelines.id,
-    accountId: undefined,
-    loading: subspaceLoading,
+    url: space.url ?? '',
+    roleSetId: space.id,
+    communityId: space.id,
+    guidelinesId: space.id,
+    // The account section of pickers is the top-level space's hosting account, as before (L1/L2 have none).
+    accountId: level === 'L0' ? (space.host?.account?.id ?? undefined) : undefined,
+    displayName: space.about.displayName,
+    tagline: space.about.tagline ?? undefined,
+    canUpdate: space.can.update,
+    canCreateSubspace: space.can.createSubspace,
+    canSaveAsTemplate: space.can.saveAsTemplate,
+    loading: false,
   };
 }

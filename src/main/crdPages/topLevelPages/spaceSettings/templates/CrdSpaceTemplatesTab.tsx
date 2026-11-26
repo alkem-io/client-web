@@ -6,10 +6,10 @@ import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { TemplatePreviewDialog } from '@/crd/components/templates/TemplatePreviewDialog';
 import { TemplatesManagerView } from '@/crd/components/templates/TemplatesManagerView';
 import type { TemplateType } from '@/crd/components/templates/types';
-import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { useCreateDialogMarkdown } from '@/domain/space/components/CreateSpace/hooks/useCreateDialogMarkdown';
+import { useNativeMarkdownUpload } from '@/main/crdPages/markdown/useNativeMarkdownUpload';
 import { useTemplatesManager } from '@/main/crdPages/templates/useTemplatesManager';
-import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
+import { useNativeReferenceFileUpload } from '@/main/crdPages/utils/useNativeReferenceFileUpload';
 
 const allTypes = (_type: TemplateType) => true;
 
@@ -27,14 +27,12 @@ export function CrdSpaceTemplatesTab({ spaceId, accountId }: { spaceId: string; 
   // Ambient space `StorageConfigContextProvider` (CrdSpacePageLayout). Editing
   // a template uploads to the space bucket (temporaryLocation: false); creating
   // one has no bucket yet → temporary (server GCs if abandoned) — mirrors MUI.
-  const mdEdit = useMarkdownEditorIntegration();
-  const mdCreate = useMarkdownEditorIntegration({ temporaryLocation: true });
+  const mdEdit = useNativeMarkdownUpload(spaceId);
+  const mdCreate = useCreateDialogMarkdown();
   // References paperclip — uploads land in the space's own (ABOUT) bucket. The space already exists,
   // so the ambient context resolves `temporaryLocation: false` and the upload is permanent, so the
   // file is propagated to `file_backup_outbox` (issue #10126).
-  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
-    useStorageConfigContext()
-  );
+  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useNativeReferenceFileUpload();
   const tm = useTemplatesManager({
     holderKind: 'space',
     templatesSetId,

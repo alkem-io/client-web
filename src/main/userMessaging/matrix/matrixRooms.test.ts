@@ -1,40 +1,21 @@
 import type { MatrixClient } from 'matrix-js-sdk';
-import { describe, expect, it, vi } from 'vitest';
-import { resolveMatrixRoomId } from './matrixRooms';
+import { describe, expect, it } from 'vitest';
+import { nativeEntityId, nativeMatrixId } from './matrixRooms';
 
-const makeClient = (lookup: (alias: string) => Promise<{ room_id: string }>) => {
-  const getRoomIdForAlias = vi.fn(lookup);
-  return {
-    client: { getUserId: () => '@me:hs.test', getRoomIdForAlias } as unknown as MatrixClient,
-    getRoomIdForAlias,
-  };
-};
+const room = '019435a6-8be3-7d28-a5f2-b05f03f76455';
+const server = 'hs.test:8448';
+const client = { getUserId: () => `@me:${server}` } as MatrixClient;
 
-describe('resolveMatrixRoomId', () => {
-  it('maps an Alkemio room id to its Matrix room through the adapter alias on the own homeserver', async () => {
-    const { client, getRoomIdForAlias } = makeClient(async () => ({ room_id: '!abc:hs.test' }));
-
-    await expect(resolveMatrixRoomId(client, 'alk-room')).resolves.toBe('!abc:hs.test');
-    expect(getRoomIdForAlias).toHaveBeenCalledWith('#alk-room:hs.test');
+describe('native Matrix IDs', () => {
+  it('round-trips a canonical room UUID on the session homeserver', () => {
+    expect(nativeMatrixId(room, '!', client)).toBe(`!${room}:${server}`);
+    expect(nativeEntityId(`!${room}:${server}`, '!', client)).toBe(room);
   });
 
-  it('looks a conversation up once per client', async () => {
-    const { client, getRoomIdForAlias } = makeClient(async () => ({ room_id: '!abc:hs.test' }));
-
-    await resolveMatrixRoomId(client, 'alk-room');
-    await resolveMatrixRoomId(client, 'alk-room');
-
-    expect(getRoomIdForAlias).toHaveBeenCalledTimes(1);
-  });
-
-  it('gives null for a room without an alias and tries again on the next call', async () => {
-    const { client, getRoomIdForAlias } = makeClient(async () => {
-      throw new Error('M_NOT_FOUND');
-    });
-
-    await expect(resolveMatrixRoomId(client, 'unlisted')).resolves.toBeNull();
-    await expect(resolveMatrixRoomId(client, 'unlisted')).resolves.toBeNull();
-
-    expect(getRoomIdForAlias).toHaveBeenCalledTimes(2);
+  it('refuses synthetic, foreign, wrong-kind and noncanonical IDs', () => {
+    expect(nativeMatrixId('old-identifier', '!', client)).toBeUndefined();
+    expect(nativeMatrixId(room.toUpperCase(), '!', client)).toBeUndefined();
+    expect(nativeEntityId(`!${room}:other.test`, '!', client)).toBeUndefined();
+    expect(nativeEntityId(`@${room}:${server}`, '!', client)).toBeUndefined();
   });
 });

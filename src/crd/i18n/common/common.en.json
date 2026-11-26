@@ -13,7 +13,8 @@
       "generic-with-code": "An error occurred with code {{code}}",
       "network": {
         "session_store_unavailable": "The service is temporarily unavailable. Please try again in a moment.",
-        "generic": "A connection problem occurred. Please check your connection and try again."
+        "generic": "A connection problem occurred. Please check your connection and try again.",
+        "retry": "Retry"
       },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -63,6 +64,7 @@
           "messagingNotEnabled": "Messaging not enabled.",
           "noAgentForUser": "No agent for user.",
           "notEnabled": "Feature not enabled.",
+          "notAvailableYet": "This action is not available yet.",
           "operationNotAllowed": "Operation not allowed.",
           "roleLimitsViolated": "Role limits exceeded.",
           "roleSetAlreadyMember": "You're already a member of this space.",
@@ -1424,7 +1426,11 @@
       "fullName": "$t(common.templateLibrary)"
     },
     "logout": {
-      "loading": "Signing off ..."
+      "loading": "Signing off ...",
+      "unavailable": "Sign out could not be completed. Please try again.",
+      "unknown": "Sign out could not be confirmed. The identity provider session may still be active.",
+      "cleanupUnavailable": "You are signed out, but local cleanup could not be completed. Please try again.",
+      "pushCleanupUnavailable": "You are signed out, but notification cleanup is incomplete on this device."
     },
     "recovery": {
       "cooldown": {

@@ -1,0 +1,9 @@
+# 023 FR-020 "After the L0/subspace submit": the dialogs upload the chosen visuals after creation through the
+# file contract (022 FR-001/FR-002/FR-004; contracts/http.md): requestUpload, PUT token.url, attachFile.
+mutation RequestVisualUpload($owner: UUID!, $mime: String!, $size: Long!, $role: String!) {
+  requestUpload(owner: $owner, mime: $mime, size: $size, role: $role) { token url }
+}
+
+mutation AttachVisual($owner: UUID!, $file: UUID!, $role: String!, $displayName: String!, $alt: String) {
+  attachFile(owner: $owner, file: $file, role: $role, displayName: $displayName, alt: $alt) { id }
+}

@@ -13,7 +13,8 @@
     "dashboard": "Panel",
     "community": "Comunidad",
     "subspaces": "Subespacios",
-    "knowledgeBase": "Base de conocimiento"
+    "knowledgeBase": "Base de conocimiento",
+    "unavailable": "Este contenido aún no está disponible."
   },
   "visibility": {
     "archived": "Este Espacio está archivado y es de solo lectura.",

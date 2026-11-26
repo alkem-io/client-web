@@ -29,6 +29,8 @@
     "loading": "Spaces laden",
     "moreLeads": "{{count}} meer Leads",
     "moreTags": "{{count}} meer tags",
-    "removeFilter": "filter verwijderen"
+    "removeFilter": "filter verwijderen",
+    "rootBrowseOnly": "Hoofdruimtes zijn beschikbaar. Zoeken, filters, subruimtes, afbeeldingen en leiders zijn nog niet beschikbaar.",
+    "locked": "Vergrendeld"
   }
 }

@@ -1,13 +1,11 @@
 import React, { type PropsWithChildren } from 'react';
-import { useSpaceAboutBaseQuery, useSpaceEntitlementsQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  type LicenseEntitlementType,
-  SpaceLevel,
-  SpaceVisibility,
-} from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import type { LicenseEntitlementType } from '@/core/apollo/generated-v2/legacy-vocabulary';
 import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { useSpacePageData } from '@/domain/space/hooks/useSpacePage';
+import { useNativeRouteSpace } from '@/main/routing/urlResolver/native/useNativeRouteSpace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { pageSpace, rootFaceAbout, shellSpaceAbout } from './spacePageShellMapper';
 
 export interface SpacePermissions {
   canRead: boolean;
@@ -28,6 +26,8 @@ interface SpaceContextProps {
   permissions: SpacePermissions;
   entitlements: LicenseEntitlementType[];
   visibility: SpaceVisibility;
+  /** The space's video-call room, or undefined when members may not video call (or the viewer cannot read it). */
+  videoCallUrl: string | undefined;
   loading: boolean;
 }
 
@@ -62,84 +62,48 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     canCreateTemplates: false,
   },
   visibility: SpaceVisibility.Active,
+  videoCallUrl: undefined,
   loading: true,
 });
 
 const SpaceContextProvider = ({ children }: PropsWithChildren) => {
-  const { levelZeroSpaceId, loading: urlResolverLoading } = useUrlResolver();
+  const { spaceId: currentSpaceId, levelZeroSpaceId, loading: urlResolverLoading } = useUrlResolver();
   const spaceId = levelZeroSpaceId ?? '';
+  // 021 FR-003: the level-zero Space document is the page's own D2 on a top-level space; on a subspace page the
+  // level-zero space is the depth-0 ancestor face D1 returned, with no request of its own.
+  const isLevelZero = Boolean(spaceId) && currentSpaceId === spaceId;
+  const { root } = useNativeRouteSpace();
+  const data = useSpacePageData(isLevelZero ? spaceId : undefined, 'space');
+  const spaceData = pageSpace(data?.node, spaceId);
+  // SpaceStatus and the legacy SpaceVisibility share their values (ACTIVE, ARCHIVED, DEMO, INACTIVE).
+  const visibility = (spaceData?.status as SpaceVisibility | undefined) ?? SpaceVisibility.Active;
+  const can = spaceData?.can;
 
-  const { data: spaceAboutData, loading: loadingSpaceQuery } = useSpaceAboutBaseQuery({
-    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
-    variables: { spaceId: spaceId! },
-    skip: !spaceId,
-  });
+  const permissions: SpacePermissions = {
+    canRead: can?.read ?? false,
+    canUpdate: can?.update ?? false,
+    canCreateSubspaces: can?.createSubspace ?? false,
+    canCreateTemplates: can?.manageTemplates ?? false,
+  };
 
-  const spaceData = spaceAboutData?.lookup.space;
-  const spaceNameId = spaceData?.nameID ?? '';
-  const visibility = spaceData?.visibility || SpaceVisibility.Active;
+  // Feature flags are present by name (client-repoint.md "Licensing": read Space.entitlements[].name).
+  const entitlements = (spaceData?.entitlements ?? []).map(entitlement => entitlement.name as LicenseEntitlementType);
 
-  const spacePrivileges = spaceData?.authorization?.myPrivileges ?? [];
-  const canRead = spacePrivileges.includes(AuthorizationPrivilege.Read);
+  // L062: the room exists for every readable space; members may use it when the space allows it.
+  const settings = spaceData?.settings as { permissions?: { members_video_call?: boolean } } | null | undefined;
+  const videoCallUrl =
+    settings?.permissions?.members_video_call === true ? (spaceData?.videoCallUrl ?? undefined) : undefined;
 
-  const { data: spaceEntitlementsData, loading: loadingSpaceEntitlementsQuery } = useSpaceEntitlementsQuery({
-    variables: {
-      // biome-ignore lint/style/noNonNullAssertion: ensured by skip
-      spaceId: spaceId!,
-    },
-    skip: !spaceId || !canRead,
-  });
+  const space = {
+    id: spaceId,
+    levelZeroSpaceId: levelZeroSpaceId ?? '',
+    nameID: spaceData?.handle ?? '',
+    about: isLevelZero ? shellSpaceAbout(spaceData) : rootFaceAbout(root),
+    level: SpaceLevel.L0,
+    accountId: spaceData?.host?.account?.id ?? '',
+  };
 
-  const entitlements = spaceEntitlementsData?.lookup.space?.license?.availableEntitlements ?? [];
-
-  const permissions = (() => {
-    return {
-      canRead: canRead,
-      canUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
-      canCreateSubspaces: spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace),
-      // TODO: This is a shortcut. Instead of accessing the TemplatesManager of a space,
-      // 100% of the time, if the user is able to create a subspace they should be able to create a template
-      canCreateTemplates: spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace),
-    };
-  })();
-
-  const space = (() => {
-    const aboutModel: SpaceAboutLightModel = {
-      authorization: spaceData?.authorization,
-      isContentPublic: spaceData?.about.isContentPublic ?? true,
-      membership: {
-        myMembershipStatus: spaceData?.about.membership.myMembershipStatus,
-        roleSetID: spaceData?.about.membership.roleSetID,
-        communityID: spaceData?.about.membership.communityID,
-      },
-      profile: {
-        displayName: spaceData?.about.profile.displayName ?? '',
-        url: spaceData?.about.profile.url ?? '',
-        tagline: spaceData?.about.profile.tagline,
-        description: spaceData?.about.profile.description,
-        tagset: spaceData?.about.profile.tagset,
-        avatar: spaceData?.about.profile.avatar,
-        cardBanner: spaceData?.about.profile.cardBanner,
-        banner: spaceData?.about.profile.banner,
-      },
-      guidelines: {
-        id: spaceData?.about.guidelines?.id ?? '',
-      },
-    };
-
-    return {
-      id: spaceId,
-      levelZeroSpaceId: levelZeroSpaceId ?? '',
-      nameID: spaceNameId,
-      about: aboutModel,
-      level: SpaceLevel.L0,
-      // From the entitlements query, not the About one: `Space.account` is
-      // READ-gated, and SpaceAboutBase must stay readable without READ.
-      accountId: spaceEntitlementsData?.lookup.space?.account?.id ?? '',
-    };
-  })();
-
-  const loading = urlResolverLoading || loadingSpaceQuery || loadingSpaceEntitlementsQuery || !spaceId;
+  const loading = urlResolverLoading || !spaceId || (isLevelZero && !spaceData);
   return (
     <SpaceContext
       value={{
@@ -148,6 +112,7 @@ const SpaceContextProvider = ({ children }: PropsWithChildren) => {
         loading,
         visibility,
         entitlements,
+        videoCallUrl,
       }}
     >
       {children}

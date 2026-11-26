@@ -4,41 +4,21 @@ import { AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authenti
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';
 import { Button } from '@/crd/primitives/button';
-import { mapSpacesToCardDataList } from '@/main/crdPages/spaces/spaceCardDataMapper';
 import useSpaceExplorer from '@/main/crdPages/spaces/useSpaceExplorer';
 
 export default function DashboardUnauthenticated() {
   const { t } = useTranslation('crd-dashboard');
   const navigate = useNavigate();
 
-  const {
-    spaces,
-    searchTerms,
-    setSearchTerms,
-    loading,
-    hasMore,
-    fetchMore,
-    membershipFilter,
-    onMembershipFilterChange,
-    authenticated,
-    loadingSearchResults,
-  } = useSpaceExplorer();
-
-  const cardData = mapSpacesToCardDataList(spaces, authenticated);
+  const { spaces, loading, hasMore, fetchMore } = useSpaceExplorer();
 
   return (
     <>
       <SpaceExplorer
-        spaces={cardData}
+        spaces={spaces ?? []}
         loading={loading}
         hasMore={hasMore}
-        searchTerms={searchTerms}
-        membershipFilter={membershipFilter}
-        authenticated={authenticated}
-        loadingSearchResults={loadingSearchResults}
         onLoadMore={fetchMore}
-        onSearchTermsChange={terms => setSearchTerms(terms)}
-        onMembershipFilterChange={onMembershipFilterChange}
         onParentClick={parent => navigate(parent.href)}
       />
 

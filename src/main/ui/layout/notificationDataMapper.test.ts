@@ -693,6 +693,16 @@ describe('platform-admin role-change notification (065)', () => {
       NotificationEventCategory.Platform
     );
 
+  it('resolves the normalized native role through its existing translated label', () => {
+    const data = mapNotificationToItemData(
+      roleChangeNotification({ role: RoleName.PlatformResourceAdmin }),
+      roleAwareT,
+      NotificationEventInAppState.Unread
+    );
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.role).toBe('common.roles.PLATFORM_RESOURCE_ADMIN');
+  });
+
   it('resolves a known role slug through the role translations, never the raw slug', () => {
     const data = mapNotificationToItemData(
       roleChangeNotification({ role: 'platform-resource-admin' }),

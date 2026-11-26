@@ -1,10 +1,11 @@
 import { Configuration, FrontendApi, type UiContainer } from '@ory/kratos-client';
 import axios, { type AxiosError, type AxiosResponse } from 'axios';
 import { once } from 'lodash-es';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import type { AuthenticationProviderConfigUnion, OryConfig } from '@/core/apollo/generated/graphql-schema';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import { KratosPublicUrlContext } from './KratosPublicUrlContext';
 
 export function isOryConfig(pet: AuthenticationProviderConfigUnion): pet is OryConfig {
   return (pet as OryConfig).__typename === 'OryConfig';
@@ -69,15 +70,16 @@ const createAxiosClient = () => {
 
 export const useKratosClient = (): FrontendApi | undefined => {
   const { authentication } = useConfig();
+  const kratosPublicUrl = useContext(KratosPublicUrlContext);
 
   const axiosClient = useRef(once(createAxiosClient)).current();
 
   const config = authentication?.providers.map(x => x.config).find(x => isOryConfig(x));
-  const basePath = config?.kratosPublicBaseURL;
+  const basePath = kratosPublicUrl ?? config?.kratosPublicBaseURL;
 
   const clientRef = useRef<{ basePath: string | undefined; client: FrontendApi } | null>(null);
 
-  if (!authentication) {
+  if (!kratosPublicUrl && !authentication) {
     return undefined;
   }
 

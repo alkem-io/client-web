@@ -1,4 +1,4 @@
-import { Smile } from 'lucide-react';
+import { Reply, Smile } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CommentReactions } from '@/crd/components/comment/CommentReactions';
 import { MessageAttachments } from '@/crd/components/comment/MessageAttachments';
@@ -51,6 +51,7 @@ type ChatMessageBubbleProps = {
   canReact?: boolean;
   onAddReaction?: (emoji: string) => void;
   onRemoveReaction?: (emoji: string) => void;
+  onReply?: () => void;
 };
 
 /**
@@ -71,8 +72,9 @@ export function ChatMessageBubble({
   canReact = false,
   onAddReaction,
   onRemoveReaction,
+  onReply,
 }: ChatMessageBubbleProps) {
-  const { t } = useTranslation('crd-chat');
+  const { t } = useTranslation(['crd-chat', 'crd-space']);
   const { isOwn, author } = message;
   // No reactions on optimistic/pending messages or the synthetic guidance intro (FR-016a).
   const effectiveCanReact = canReact && !message.isPending;
@@ -110,6 +112,16 @@ export function ChatMessageBubble({
     />
   );
 
+  const replyTrigger = onReply && !message.isPending && (
+    <button
+      type="button"
+      onClick={onReply}
+      aria-label={t('comments.reply', { ns: 'crd-space' })}
+      className="flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground opacity-0 hover:bg-accent focus-visible:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100"
+    >
+      <Reply aria-hidden="true" className="size-4" />
+    </button>
+  );
   const bubbleColumn = (
     <div
       className={cn(
@@ -128,6 +140,11 @@ export function ChatMessageBubble({
           still reach assistive technology (FR-008). No new i18n key — author.name is
           business data, not UI copy (FR-016). */}
       {avatarGutter && !showAuthor && !isOwn && author && <span className="sr-only">{author.name}</span>}
+      {message.replyPreview !== undefined && (
+        <blockquote className="max-w-full truncate border-l-2 border-border px-2 text-caption text-muted-foreground">
+          {message.replyPreview}
+        </blockquote>
+      )}
       {(hasText || !hasAttachments) && (
         // Full width, so the bubble's 85% cap is taken of the thread rather than
         // of a row that shrinks to fit the text and wraps short messages early.
@@ -159,6 +176,7 @@ export function ChatMessageBubble({
             </div>
           )}
           {!hasAttachments && addReactionTrigger}
+          {!hasAttachments && replyTrigger}
         </div>
       )}
       {hasAttachments && (
@@ -177,7 +195,12 @@ export function ChatMessageBubble({
         />
       )}
       {/* With media the trigger sits below the attachments and their reactions. */}
-      {hasAttachments && addReactionTrigger}
+      {hasAttachments && (addReactionTrigger || replyTrigger) && (
+        <div className="flex items-center gap-1">
+          {addReactionTrigger}
+          {replyTrigger}
+        </div>
+      )}
     </div>
   );
 

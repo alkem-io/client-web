@@ -1,34 +1,52 @@
-import { useEffect, useState } from 'react';
-import { useUserConversationsUnreadCountQuery } from '@/core/apollo/generated/apollo-hooks';
+import type { ClientEvent, RoomEvent } from 'matrix-js-sdk';
+import { useEffect, useReducer } from 'react';
+import { useMatrixClient } from '@/core/matrix/activeClient';
 import { displayedUnreadCount, useConversationSummaries } from './matrix/conversationSummaryStore';
+import { CLIENT_ROOM, CLIENT_SYNC, nativeEntityId } from './matrix/matrixRooms';
 import { useUserMessagingContext } from './UserMessagingContext';
 
-const DELAY_MS = 2000;
+// Keep SDK values out of the eager bundle.
+const roomListEvents = [
+  CLIENT_ROOM as ClientEvent.Room,
+  CLIENT_SYNC as ClientEvent.Sync,
+  'accountData' as ClientEvent.AccountData,
+  'Room.name' as RoomEvent.Name,
+  'Room.myMembership' as RoomEvent.MyMembership,
+];
 
-export const useUnreadConversationsCount = () => {
-  const { isEnabled, isOpen, selectedRoomId } = useUserMessagingContext();
-  const [ready, setReady] = useState(false);
-
-  const skip = !isEnabled || (!ready && !isOpen);
+export const useNativeConversationRooms = (isEnabled: boolean) => {
+  const client = useMatrixClient();
+  const [, updateRooms] = useReducer((revision: number) => revision + 1, 0);
 
   useEffect(() => {
-    if (!isEnabled) return;
-    const timer = setTimeout(() => {
-      setReady(true);
-    }, DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [isEnabled]);
+    if (!client || !isEnabled) return;
+    for (const event of roomListEvents) {
+      client.on(event, updateRooms);
+    }
+    updateRooms();
+    return () => {
+      for (const event of roomListEvents) {
+        client.off(event, updateRooms);
+      }
+    };
+  }, [client, isEnabled]);
 
-  const { data } = useUserConversationsUnreadCountQuery({
-    skip,
-    fetchPolicy: 'cache-first',
-  });
+  // The platform sync surface currently serves conversation rooms only. Extending
+  // it to other room kinds requires a room-kind fact to select conversations here.
+  const rooms =
+    client && isEnabled
+      ? client.getRooms().flatMap(room => {
+          const id = nativeEntityId(room.roomId, '!', client);
+          return id && room.getMyMembership() === 'join' ? [{ id, room }] : [];
+        })
+      : [];
+  return { client, rooms };
+};
 
-  // Counts conversations with unread messages, not messages; the per-room
-  // counts come from Matrix sync, the conversation list from GraphQL.
-  const roomIds = (data?.me?.conversations?.conversations ?? []).flatMap(conv => (conv.room ? [conv.room.id] : []));
+export const useUnreadConversationsCount = () => {
+  const { isEnabled, selectedRoomId } = useUserMessagingContext();
+  const { rooms } = useNativeConversationRooms(isEnabled);
+  const roomIds = rooms.map(({ id }) => id);
   const summaries = useConversationSummaries(roomIds);
-  const totalUnreadCount = roomIds.filter(roomId => displayedUnreadCount(summaries, roomId, selectedRoomId) > 0).length;
-
-  return totalUnreadCount;
+  return roomIds.filter(roomId => displayedUnreadCount(summaries, roomId, selectedRoomId) > 0).length;
 };

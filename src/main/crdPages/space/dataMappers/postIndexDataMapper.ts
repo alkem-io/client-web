@@ -3,9 +3,10 @@ import {
   CalloutFramingType,
   type CalloutsIndexListQuery,
 } from '@/core/apollo/generated/graphql-schema';
+import { DocType, type PostCardFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import type { CalloutListItem } from '@/crd/components/callout/CalloutListView';
 import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
-import type { CrdSpaceTranslator } from './calloutDataMapper';
+import { type CrdSpaceTranslator, responseContributionType } from './calloutDataMapper';
 
 type IndexCallout = NonNullable<CalloutsIndexListQuery['lookup']['calloutsSet']>['callouts'][number];
 
@@ -52,4 +53,31 @@ export function mapPostIndexToListItems(
         meta: formatResponseMeta(callout, t),
       };
     });
+}
+
+/** An index row: one of the space's own posts in its space tree (SpaceTree). */
+type IndexRow = PostCardFragment;
+
+type IndexDocument = { document?: { docType: DocType } } | null | undefined;
+
+/** 021 D9: the index rows of one stage, in server order, with the legacy response-count meta. */
+export function mapPostIndexRowsToListItems(
+  rows: IndexRow[],
+  tabSectionNumber: number,
+  t: CrdSpaceTranslator
+): CalloutListItem[] {
+  return rows.map(row => {
+    const responseType = responseContributionType(row.responseKind, row.responsePolicy);
+    const docType = row.contentKind === 'document' ? (row.content as IndexDocument)?.document?.docType : undefined;
+    return {
+      id: row.id,
+      title: row.about.displayName,
+      type: docType === DocType.Excalidraw ? 'whiteboard' : 'text',
+      href: row.url ? buildSpaceSectionUrl(row.url, tabSectionNumber) : undefined,
+      meta:
+        responseType && row.responseCount > 0
+          ? t(CONTRIBUTION_COUNT_KEY[responseType], { count: row.responseCount })
+          : undefined,
+    };
+  });
 }

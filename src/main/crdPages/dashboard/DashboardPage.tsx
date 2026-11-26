@@ -1,9 +1,11 @@
 import { Suspense } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useV2DashboardMembershipProbeQuery } from '@/core/apollo/generated-v2/apollo-hooks';
+import { useReportedQueryError } from '@/core/apollo/hooks/useReportedQueryError';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import Loading from '@/core/ui/loading/Loading';
 import {
+  PendingMembershipsDialogProvider,
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
@@ -14,8 +16,24 @@ import { useDashboardDialogs } from './useDashboardDialogs';
 const DashboardUnauthenticated = lazyWithGlobalErrorHandler(() => import('./DashboardUnauthenticated'));
 const DashboardWithMemberships = lazyWithGlobalErrorHandler(() => import('./DashboardWithMemberships'));
 const DashboardWithoutMemberships = lazyWithGlobalErrorHandler(() => import('./DashboardWithoutMemberships'));
+const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(() => import('./CrdPendingMembershipsDialog'));
 
+/**
+ * The pending-memberships dialog and its context, mounted at the shell in fed85 (root.tsx:116, CrdLayoutWrapper.tsx:33,
+ * :131), are mounted with the dashboard that opens them (sidebar invitations, `?dialog=invitations`).
+ */
 export default function DashboardPage() {
+  return (
+    <PendingMembershipsDialogProvider>
+      <DashboardContent />
+      <Suspense fallback={null}>
+        <CrdPendingMembershipsDialog />
+      </Suspense>
+    </PendingMembershipsDialogProvider>
+  );
+}
+
+function DashboardContent() {
   const { userModel, isAuthenticated, loading: isLoadingAuthentication } = useCurrentUserContext();
   const hasNotAuthorized = !isAuthenticated || !userModel;
   const { pathname, search } = useLocation();
@@ -24,10 +42,15 @@ export default function DashboardPage() {
   const openPendingMembershipsDialog = () =>
     setOpenPendingDialog({ type: PendingMembershipsDialogType.PendingMembershipsList });
 
-  const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesFlatQuery({
+  const {
+    data: spacesData,
+    loading: areSpacesLoading,
+    error: spacesError,
+  } = useV2DashboardMembershipProbeQuery({
     skip: hasNotAuthorized,
   });
-  const hasSpaceMemberships = !!spacesData?.me.spaceMembershipsFlat.length;
+  useReportedQueryError(spacesError);
+  const hasSpaceMemberships = !!spacesData?.spaces.edges.length;
 
   // Only act on `dialog=invitations` once the user is authenticated — otherwise the
   // logged-out redirect below owns that case and must keep the param intact.

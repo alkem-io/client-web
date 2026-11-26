@@ -1,3 +1,6 @@
+import type { LicenseEntitlementType, RoleName } from '../generated-v2/legacy-vocabulary';
+
+export { LicenseEntitlementType, RoleName } from '../generated-v2/legacy-vocabulary';
 export type Maybe<T> = T | undefined;
 export type InputMaybe<T> = T | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -4643,25 +4646,6 @@ export enum LicenseEntitlementDataType {
   Limit = 'LIMIT',
 }
 
-export enum LicenseEntitlementType {
-  AccountAiAssistantTokensMonth = 'ACCOUNT_AI_ASSISTANT_TOKENS_MONTH',
-  AccountInnovationHub = 'ACCOUNT_INNOVATION_HUB',
-  AccountInnovationPack = 'ACCOUNT_INNOVATION_PACK',
-  AccountSpaceFree = 'ACCOUNT_SPACE_FREE',
-  AccountSpacePlus = 'ACCOUNT_SPACE_PLUS',
-  AccountSpacePremium = 'ACCOUNT_SPACE_PREMIUM',
-  AccountVirtualContributor = 'ACCOUNT_VIRTUAL_CONTRIBUTOR',
-  SpaceFlagMemoMultiUser = 'SPACE_FLAG_MEMO_MULTI_USER',
-  SpaceFlagMemoSigning = 'SPACE_FLAG_MEMO_SIGNING',
-  SpaceFlagOfficeDocuments = 'SPACE_FLAG_OFFICE_DOCUMENTS',
-  SpaceFlagSaveAsTemplate = 'SPACE_FLAG_SAVE_AS_TEMPLATE',
-  SpaceFlagVirtualContributorAccess = 'SPACE_FLAG_VIRTUAL_CONTRIBUTOR_ACCESS',
-  SpaceFlagWhiteboardMultiUser = 'SPACE_FLAG_WHITEBOARD_MULTI_USER',
-  SpaceFree = 'SPACE_FREE',
-  SpacePlus = 'SPACE_PLUS',
-  SpacePremium = 'SPACE_PREMIUM',
-}
-
 export type LicensePlan = {
   __typename?: 'LicensePlan';
   /** Assign this plan to all new Organization accounts */
@@ -8775,31 +8759,6 @@ export type Role = {
 export enum RoleChangeType {
   Added = 'ADDED',
   Removed = 'REMOVED',
-}
-
-export enum RoleName {
-  Admin = 'ADMIN',
-  Anonymous = 'ANONYMOUS',
-  Associate = 'ASSOCIATE',
-  FeatureBetaTester = 'FEATURE_BETA_TESTER',
-  FeatureOrganizationCreator = 'FEATURE_ORGANIZATION_CREATOR',
-  FeatureVcCampaign = 'FEATURE_VC_CAMPAIGN',
-  FeatureVirtualAssistant = 'FEATURE_VIRTUAL_ASSISTANT',
-  Guest = 'GUEST',
-  Lead = 'LEAD',
-  Member = 'MEMBER',
-  Owner = 'OWNER',
-  PlatformAuditReader = 'PLATFORM_AUDIT_READER',
-  PlatformContentFullAccess = 'PLATFORM_CONTENT_FULL_ACCESS',
-  PlatformLicenseManager = 'PLATFORM_LICENSE_MANAGER',
-  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
-  PlatformResourceAdmin = 'PLATFORM_RESOURCE_ADMIN',
-  PlatformRolesAdmin = 'PLATFORM_ROLES_ADMIN',
-  PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
-  PlatformSpacesReader = 'PLATFORM_SPACES_READER',
-  PlatformSupport = 'PLATFORM_SUPPORT',
-  PlatformUsersAdmin = 'PLATFORM_USERS_ADMIN',
-  Registered = 'REGISTERED',
 }
 
 export type RoleSet = {

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { AddCommunityMemberCandidate } from '@/crd/components/space/settings/AddCommunityMemberDialog';
 import type useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
 import useVirtualContributorsAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useVirtualContributorsAdmin';
+import type { SpaceCommunityCandidate } from '@/domain/spaceAdmin/SpaceAdminCommunity/native/spaceCommunityNative';
 
 export type AddCommunityMemberDialogState = {
   open: boolean;
@@ -17,39 +17,27 @@ export type AddCommunityMemberDialogState = {
   onAdd: (id: string) => Promise<void>;
 };
 
-type EntityLike = {
-  id: string;
-  email?: string | null;
-  profile?: { displayName?: string | null; avatar?: { uri?: string | null } | null } | null;
-};
-
-const toCandidate = (entity: EntityLike): AddCommunityMemberCandidate => ({
-  id: entity.id,
-  displayName: entity.profile?.displayName ?? '',
-  email: entity.email ?? null,
-  avatarUrl: entity.profile?.avatar?.uri ?? null,
+const toCandidate = (candidate: SpaceCommunityCandidate): AddCommunityMemberCandidate => ({
+  id: candidate.id,
+  displayName: candidate.displayName,
+  email: null,
+  avatarUrl: candidate.avatarUrl ?? null,
 });
 
 /**
  * Drives the CRD "Add Virtual Contributor" dialog. Uses
  * `useVirtualContributorsAdmin.virtualContributorAdmin.getAvailable`
- * (account-scoped) for candidates and `community.virtualContributorAdmin.onAdd`
- * for the mutation.
+ * (`candidates(entry: DIRECT)`) for candidates and `community.virtualContributorAdmin.onAdd`
+ * (`setRoles`) for the mutation.
  */
 export function useAddVirtualContributorDialog({
   community,
   spaceId,
-  spaceLevel,
 }: {
   community: ReturnType<typeof useCommunityAdmin>;
   spaceId: string;
-  spaceLevel: SpaceLevel | undefined;
 }): AddCommunityMemberDialogState {
-  const vcAdmin = useVirtualContributorsAdmin({
-    level: spaceLevel ?? SpaceLevel.L0,
-    currentMembers: community.virtualContributorAdmin.members,
-    spaceId,
-  });
+  const vcAdmin = useVirtualContributorsAdmin({ spaceId });
 
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');

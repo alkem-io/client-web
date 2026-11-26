@@ -22,6 +22,13 @@ describe('i18n config — DL-10 detector retrofit (caches: [], order: [querystri
     vi.restoreAllMocks();
   });
 
+  it('has the initial English explorer translations before any lazy namespace request', async () => {
+    const i18n = (await import('./config')).default;
+
+    expect(i18n.hasResourceBundle('en', 'crd-exploreSpaces')).toBe(true);
+    expect(i18n.hasLoadedNamespace('crd-exploreSpaces', { lng: 'en' })).toBe(true);
+  });
+
   it('does not write i18nextLng to localStorage after a language change', async () => {
     // Import fresh after mocks are set up
     const i18n = (await import('./config')).default;

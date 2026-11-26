@@ -7,7 +7,7 @@ import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/us
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { RecoveryCard } from '@/crd/components/auth/RecoveryCard';
-import { AuthShellWrapper } from './AuthShellWrapper';
+import { AuthFlowContext, AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { useTranslateDescriptor } from './useKratosMessageCopy';
 
@@ -37,6 +37,14 @@ const readRemainingCooldown = (): number => {
  * recovery code, or set-new-password), so a single card serves the whole flow.
  */
 export function RecoveryCrdRoute() {
+  return (
+    <AuthFlowContext>
+      <CrdRecoveryPage />
+    </AuthFlowContext>
+  );
+}
+
+function CrdRecoveryPage() {
   useTransactionScope({ type: 'authentication' });
   const { t } = useTranslation();
   usePageTitle(t('pages.recovery.header'));

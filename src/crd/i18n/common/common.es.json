@@ -13,7 +13,8 @@
       "generic-with-code": "Se ha producido un error con el código {{code}}",
       "network": {
         "session_store_unavailable": "El servicio no está disponible temporalmente. Inténtelo de nuevo en un momento.",
-        "generic": "Se produjo un problema de conexión. Compruebe su conexión e inténtelo de nuevo."
+        "generic": "Se produjo un problema de conexión. Compruebe su conexión e inténtelo de nuevo.",
+        "retry": "Reintentar"
       },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -63,6 +64,7 @@
           "messagingNotEnabled": "Messaging not enabled.",
           "noAgentForUser": "No agent for user.",
           "notEnabled": "Feature not enabled.",
+          "notAvailableYet": "Esta acción aún no está disponible.",
           "operationNotAllowed": "Operation not allowed.",
           "roleLimitsViolated": "Role limits exceeded.",
           "roleSetAlreadyMember": "You're already a member of this space.",
@@ -1424,7 +1426,11 @@
       "fullName": "$t(common.templateLibrary)"
     },
     "logout": {
-      "loading": "Cerrando sesión..."
+      "loading": "Cerrando sesión...",
+      "unavailable": "No se pudo completar el cierre de sesión. Inténtalo de nuevo.",
+      "unknown": "No se pudo confirmar el cierre de sesión. La sesión del proveedor de identidad puede seguir activa.",
+      "cleanupUnavailable": "Has cerrado la sesión, pero no se pudieron borrar los datos locales. Inténtalo de nuevo.",
+      "pushCleanupUnavailable": "Has cerrado la sesión, pero la limpieza de notificaciones en este dispositivo está incompleta."
     },
     "recovery": {
       "cooldown": {

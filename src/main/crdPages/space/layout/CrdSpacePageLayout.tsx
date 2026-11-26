@@ -34,8 +34,7 @@ import { resolveBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useSpacePageLoad } from '@/domain/space/hooks/useSpacePage';
 import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
 import { useDirtyTabGuard } from '@/main/crdPages/topLevelPages/spaceSettings/useDirtyTabGuard';
 import {
@@ -43,6 +42,7 @@ import {
   useSpaceSettingsTab,
 } from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
 import { buildSettingsUrl, buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
+import { useNativeRouteSpace } from '@/main/routing/urlResolver/native/useNativeRouteSpace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
@@ -59,8 +59,7 @@ import { resolveSidebarPlan } from './sidebarWidgetPlan';
 export default function CrdSpacePageLayout() {
   const { t } = useTranslation(['crd-space', 'crd-spaceSettings']);
   const { spaceId, spaceLevel, loading: resolvingUrl } = useUrlResolver();
-  const { space, visibility, permissions, loading: loadingSpace } = useSpace();
-  const { isVideoCallEnabled, videoCallUrl } = useVideoCall(space.id, space.nameID);
+  const { space, visibility, permissions, videoCallUrl, loading: loadingSpace } = useSpace();
   const { isSmallScreen } = useScreenSize();
   const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -96,11 +95,6 @@ export default function CrdSpacePageLayout() {
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
 
-  const { tabs, defaultTabIndex, sectionCount, showSettings, stateSidebars } = useCrdSpaceTabs({
-    spaceId,
-    skip: !isLevelZero || !permissions.canRead,
-  });
-
   // L1/L2 settings breadcrumbs are owned by `CrdSubspacePageLayout`. This
   // parent layout only sets breadcrumbs at L0 — and only when on settings —
   // by mounting `<L0SettingsBreadcrumbs>` inside the JSX. If we instead called
@@ -108,6 +102,25 @@ export default function CrdSpacePageLayout() {
   // subspace layout's trail on every re-render (e.g., tab switch), making
   // the trail vanish.
   const isOnSettings = pathname.includes('/settings');
+
+  // 021 FR-005, the page's request: the Space document. Its space tree (every stage's posts, each tab's feed filtering
+  // them by its stage, and the sidebar's subspace links) is one read of its own, sent by the sections that show it.
+  // A space the viewer may not read resolves to its face only; the protected routes send them to its About (legacy).
+  const { post: routePost } = useNativeRouteSpace();
+  useSpacePageLoad(isLevelZero ? spaceId : undefined, ['space'], (routePost?.parentPost ?? routePost)?.id);
+
+  // The space navigation tabs render only off settings; the settings shell shows its own tab strip.
+  const {
+    tabs,
+    defaultTabIndex,
+    sectionCount,
+    showSettings,
+    stateSidebars,
+    unavailable: tabsUnavailable,
+  } = useCrdSpaceTabs({
+    spaceId,
+    skip: !isLevelZero || !permissions.canRead || isOnSettings,
+  });
   const spaceDisplayName = space.about.profile.displayName;
   const spaceUrl = space.about.profile.url ?? '';
 
@@ -134,6 +147,8 @@ export default function CrdSpacePageLayout() {
     activeTabIndex = Number.isNaN(parsed) ? 0 : Math.max(0, Math.min(parsed - 1, maxTabIndex));
   } else if (defaultTabIndex >= 0) {
     activeTabIndex = Math.min(defaultTabIndex, maxTabIndex);
+  } else if (tabsUnavailable) {
+    activeTabIndex = -1;
   }
 
   // A tab configured with zero renderable widgets gets no sidebar column at all — the
@@ -167,8 +182,8 @@ export default function CrdSpacePageLayout() {
     showInfo: true,
     onInfoClick: () => setAboutDialogOpen(true),
     showActivity: true,
-    showVideoCall: isVideoCallEnabled && !!videoCallUrl,
-    videoCallUrl: videoCallUrl || undefined,
+    showVideoCall: !!videoCallUrl,
+    videoCallUrl,
     showShare: true,
     showSettings,
     settingsHref,
@@ -215,7 +230,7 @@ export default function CrdSpacePageLayout() {
 
   return (
     <DirtyTabGuardContext.Provider value={settingsDirtyGuard}>
-      <StorageConfigContextProvider locationType="space" spaceId={spaceId}>
+      <>
         {visibilityData.status !== 'active' && (
           <SpaceVisibilityNotice status={visibilityData.status} contactHref={visibilityData.contactHref} />
         )}
@@ -278,7 +293,7 @@ export default function CrdSpacePageLayout() {
           }
         >
           <Suspense fallback={<LoadingSpinner />}>
-            <Outlet context={{ activeTabIndex, totalTabs: sectionCount, onOpenAbout }} />
+            <Outlet context={{ activeTabIndex, totalTabs: sectionCount, onOpenAbout, tabsUnavailable }} />
           </Suspense>
         </SpaceShell>
 
@@ -341,7 +356,7 @@ export default function CrdSpacePageLayout() {
             ) : undefined
           }
         />
-      </StorageConfigContextProvider>
+      </>
     </DirtyTabGuardContext.Provider>
   );
 }

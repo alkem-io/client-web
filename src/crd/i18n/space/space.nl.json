@@ -13,7 +13,8 @@
     "dashboard": "Dashboard",
     "community": "Community",
     "subspaces": "Subspaces",
-    "knowledgeBase": "Kennisbank"
+    "knowledgeBase": "Kennisbank",
+    "unavailable": "Deze inhoud is nog niet beschikbaar."
   },
   "visibility": {
     "archived": "Deze Space is gearchiveerd en alleen-lezen.",

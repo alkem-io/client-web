@@ -1,5 +1,5 @@
 import { Folder } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
 import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
@@ -35,6 +35,9 @@ type SpaceSubspacesListProps = {
   initialVisibleCount?: number;
   /** Hide the status filter pills and tag filter chips — keep only the search. */
   disableFilters?: boolean;
+  hasMore?: boolean;
+  loading?: boolean;
+  onLoadMore?: () => void;
   className?: string;
 };
 
@@ -69,6 +72,9 @@ export function SpaceSubspacesList({
   variant = 'compact',
   initialVisibleCount,
   disableFilters = false,
+  hasMore,
+  loading,
+  onLoadMore,
   className,
 }: SpaceSubspacesListProps) {
   const { t } = useTranslation('crd-space');
@@ -76,6 +82,17 @@ export function SpaceSubspacesList({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [showAll, setShowAll] = useState(false);
+  const sentinel = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!hasMore || loading || !onLoadMore || !sentinel.current) return;
+    const observer = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) onLoadMore();
+    });
+    observer.observe(sentinel.current);
+    return () => observer.disconnect();
+  }, [hasMore, loading, onLoadMore]);
+
   // The list's own measured width (never a viewport breakpoint) decides whether an
   // all-empty expanded item constrains to the identity block's width or goes full width.
   const [listWidth, listWidthRef] = useElementWidth();
@@ -262,6 +279,7 @@ export function SpaceSubspacesList({
           {showMoreToggle}
         </>
       )}
+      {hasMore && <div ref={sentinel} aria-hidden="true" />}
     </section>
   );
 }

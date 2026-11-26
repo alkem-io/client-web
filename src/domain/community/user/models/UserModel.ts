@@ -5,9 +5,9 @@ import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 
 export interface UserModel {
   id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
   phone?: string;
   agent?: unknown;
   profile?: {
@@ -28,6 +28,10 @@ export interface UserModel {
     organizations: Organization[];
   };
   settings?: {
+    homeSpace?: { spaceID?: string; autoRedirect?: boolean };
+    notification?: { sound?: { chatMessage?: boolean; inAppNotification?: boolean } };
+    language?: string;
+    languageOfferAnswered?: boolean;
     dashboard?: {
       activityView?: boolean;
     };

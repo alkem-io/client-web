@@ -34,30 +34,17 @@ const ownUserId = (client: MatrixClient): string => client.getUserId() ?? '';
 
 const homeserverOf = (client: MatrixClient): string => serverNameOf(ownUserId(client));
 
-// Conversation rooms are reachable only through the alias matrix-adapter
-// creates for them; the directory lookup is remembered for the client's life.
-const resolvedRoomIds = new WeakMap<MatrixClient, Map<string, Promise<string | null>>>();
+const nativeId = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const nilId = '00000000-0000-0000-0000-000000000000';
 
-const resolveMatrixRoomId = (client: MatrixClient, alkemioRoomId: string): Promise<string | null> => {
-  let perClient = resolvedRoomIds.get(client);
-  if (!perClient) {
-    perClient = new Map();
-    resolvedRoomIds.set(client, perClient);
-  }
-  const known = perClient.get(alkemioRoomId);
-  if (known) {
-    return known;
-  }
-  const lookup = client
-    .getRoomIdForAlias(`#${alkemioRoomId}:${homeserverOf(client)}`)
-    .then(response => response.room_id)
-    .catch(() => {
-      // Not remembered: a later watch can try again.
-      perClient.delete(alkemioRoomId);
-      return null;
-    });
-  perClient.set(alkemioRoomId, lookup);
-  return lookup;
+const nativeMatrixId = (id: string, sigil: '@' | '!', client: MatrixClient): string | undefined => {
+  const server = homeserverOf(client);
+  return server && nativeId.test(id) && id !== nilId ? `${sigil}${id}:${server}` : undefined;
+};
+
+const nativeEntityId = (matrixId: string, sigil: '@' | '!', client: MatrixClient): string | undefined => {
+  const id = matrixId.slice(1, 37);
+  return nativeMatrixId(id, sigil, client) === matrixId ? id : undefined;
 };
 
 const fullyReadEventId = (room: Room): string | undefined => {
@@ -101,8 +88,9 @@ export {
   fullyReadEventId,
   homeserverOf,
   liveEvents,
+  nativeEntityId,
+  nativeMatrixId,
   notificationCount,
   ownUserId,
-  resolveMatrixRoomId,
   toRawEvent,
 };

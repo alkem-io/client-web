@@ -3,15 +3,16 @@ import { Download } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useCalloutFormResponsesQuery,
   useDeleteCalloutFormResponseMutation,
   useSubmitCalloutFormResponseMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
+  type CalloutFormQuestionType,
   CalloutFormResponseVisibility,
   CalloutFormState,
 } from '@/core/apollo/generated/graphql-schema';
+import type { PostBodyFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutFormBox } from '@/crd/components/callout/CalloutFormBox';
@@ -21,23 +22,47 @@ import { CalloutFormResponseDialog } from '@/crd/components/callout/CalloutFormR
 import { CalloutFormResponsesTable } from '@/crd/components/callout/CalloutFormResponsesTable';
 import { deriveFormColumns } from '@/crd/components/callout/calloutFormColumns';
 import type { FormAnswerInput } from '@/crd/components/callout/calloutFormTypes';
-import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Separator } from '@/crd/primitives/separator';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { useCachedPost } from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
 import type {
+  CalloutFormAnswerModel,
   CalloutFormDetailsModel,
   CalloutFormResponseModel,
 } from '@/domain/collaboration/callout-form/models/CalloutFormModels';
 import { CalloutFormErrorCode, getCalloutFormError } from '@/domain/collaboration/callout-form/utils/calloutFormErrors';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { usePostResponses } from '@/domain/space/hooks/useSpacePage';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { mapFormQuestionsToViews, mapFormResponseToView } from './calloutFormResponseMapper';
 import { translateFormSubmitError } from './translateFormSubmitError';
 import { useFormResponsesCsvExport } from './useFormResponsesCsvExport';
 
-const RESPONSES_PAGE_SIZE = 50;
+type FormContent = Extract<NonNullable<PostBodyFragment['content']>, { __typename: 'FormContent' }>;
+/** A form response: its child post in the page's space tree (depth 2), its answers the FormResponseContent arm. */
+type FormResponseNode = NonNullable<ReturnType<typeof usePostResponses>['responses']>[number];
+
+/** 021 D11: one submitted response (its immutable answers snapshot) in the legacy response model. */
+const toFormResponse = ({ id, createdAt, author, content }: FormResponseNode): CalloutFormResponseModel => ({
+  id,
+  createdDate: new Date(createdAt),
+  createdBy: author && {
+    id: author.id,
+    profile: author.about && {
+      id: author.id,
+      displayName: author.about.displayName,
+      url: author.url ?? '',
+      avatar: author.about.avatar && { id: author.id, uri: author.about.avatar.file.url },
+    },
+  },
+  answers: ((content && 'answers' in content ? content.answers : []) as CalloutFormAnswerModel[]).map(answer => ({
+    ...answer,
+    type: answer.type.toUpperCase() as CalloutFormQuestionType,
+  })),
+});
 
 type CalloutFramingFormConnectorProps = {
   callout: CalloutDetailsModelExtended;
@@ -82,13 +107,19 @@ function CalloutFramingFormConnectorInner({
   const hasContribute = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Contribute) ?? false;
   const canSubmit = hasContribute && published && isOpen;
 
-  // One page is enough here: the count, the viewer's own responses and the scope flags. The review dialog
-  // loads its own, larger pages.
-  const { data, error, refetch, fetchMore } = useCalloutFormResponsesQuery({
-    variables: { formID: form.id, first: 1 },
-    fetchPolicy: 'cache-and-network',
-  });
-  const responses = data?.lookup.calloutFormResponses;
+  // 021 D11: nothing is asked; the counts arrive with the post (FormContent) and the responses are the form's child
+  // posts in the page's space tree (depth 2). Reading every response needs the read-all flag, not served yet (seed
+  // batch 2), so the viewer's scope is their own responses: the rows they authored.
+  const content = useCachedPost(callout.id)?.content as FormContent | null | undefined;
+  const { userModel } = useCurrentUserContext();
+  const formTree = usePostResponses(callout.calloutsSetId, callout.id);
+  const formRows = formTree.responses;
+  const responses = content && {
+    mine: (formRows ?? []).filter(row => row.author?.id === userModel?.id).map(toFormResponse),
+    canReadAll: false,
+    canModerate: false,
+    all: { total: content.myResponseCount },
+  };
 
   const [submitResponse, { loading: submitting }] = useSubmitCalloutFormResponseMutation();
   const [deleteResponse, { loading: deleting }] = useDeleteCalloutFormResponseMutation();
@@ -100,53 +131,19 @@ function CalloutFramingFormConnectorInner({
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
 
-  // Earlier own responses than `mine` carries (it holds only the newest page), paged from `all` oldest-first.
-  // Only for viewers whose `all` is scoped to their own responses; a reader of every response uses the review.
-  const [earlier, setEarlier] = useState<LoadedPage | null>(null);
-  const [loadingEarlier, setLoadingEarlier] = useState(false);
-
   const questions = mapFormQuestionsToViews(form);
   const mine = responses?.mine ?? [];
   const ownScoped = responses ? !responses.canReadAll : false;
   const ownTotal = ownScoped ? (responses?.all.total ?? 0) : mine.length;
-  const mineIds = new Set(mine.map(response => response.id));
-  const earlierResponses = ownScoped ? (earlier?.responses ?? []) : [];
-  // `mine` is the newest of the viewer's responses, so its first entry is number ownTotal - mine.length + 1.
+  // `mine` holds every own response the space tree carries, so its first entry is number ownTotal - mine.length + 1.
   const mineOffset = Math.max(ownTotal - mine.length, 0);
-  const ownResponses: OwnFormResponseView[] = [
-    ...earlierResponses
-      .map((response, index) => ({ ...mapFormResponseToView(response), number: index + 1 }))
-      .filter(response => !mineIds.has(response.id)),
-    ...mine.map((response, index) => ({ ...mapFormResponseToView(response), number: mineOffset + index + 1 })),
-  ];
-  const hasEarlier = ownScoped && ownResponses.length < ownTotal && (earlier?.hasNextPage ?? true);
-
-  const handleLoadEarlier = async () => {
-    if (loadingEarlier) return;
-    setLoadingEarlier(true);
-    try {
-      const result = await fetchMore({
-        variables: { formID: form.id, first: RESPONSES_PAGE_SIZE, after: earlier?.endCursor },
-      });
-      const page = result.data.lookup.calloutFormResponses.all;
-      setEarlier(previous => ({
-        responses: [...(previous?.responses ?? []), ...page.responses],
-        hasNextPage: page.pageInfo.hasNextPage,
-        endCursor: page.pageInfo.endCursor ?? undefined,
-      }));
-    } catch (err) {
-      logError(new Error('Own form responses page load failed', { cause: err as Error }));
-      notify(t('formResponses.loadFailed'), 'error');
-    } finally {
-      setLoadingEarlier(false);
-    }
-  };
+  const ownResponses: OwnFormResponseView[] = mine.map((response, index) => ({
+    ...mapFormResponseToView(response),
+    number: mineOffset + index + 1,
+  }));
 
   const refreshResponses = async () => {
     setReviewRefreshKey(key => key + 1);
-    // A submission or withdrawal shifts the pages: start the earlier list over.
-    setEarlier(null);
-    await refetch();
   };
 
   /**
@@ -221,12 +218,12 @@ function CalloutFramingFormConnectorInner({
   };
 
   if (!responses) {
-    return error ? (
-      <p className={cn('text-caption text-muted-foreground', className)}>{t('formResponses.loadFailed')}</p>
-    ) : null;
+    return null;
   }
 
   const showOwnResponses = ownResponses.length > 0;
+  // The space tree (the form's responses) is not served yet: the viewer's own responses say so in place.
+  const ownUnavailable = formTree.notServed && (content?.myResponseCount ?? 0) > 0;
   // One response per person: once the viewer holds any response, the fill-in gives way to every one of them
   // (a member may hold several after a switch from multiple responses); it returns once they hold none.
   const showFillIn = !(isSingle && showOwnResponses);
@@ -243,6 +240,7 @@ function CalloutFramingFormConnectorInner({
       onViewResponses={responses.canReadAll ? () => setReviewOpen(true) : undefined}
       responseCount={responses.all.total}
     >
+      {ownUnavailable && <p className="text-body text-muted-foreground py-6 text-center">{t('tabs.unavailable')}</p>}
       {showOwnResponses && (
         <CalloutFormOwnResponses
           responses={ownResponses}
@@ -250,8 +248,6 @@ function CalloutFramingFormConnectorInner({
           onWithdraw={id => void handleDelete(id, 'own')}
           withdrawing={deleting}
           status={showFillIn ? undefined : !published ? 'DRAFT' : isOpen ? undefined : 'CLOSED'}
-          onLoadEarlier={hasEarlier ? () => void handleLoadEarlier() : undefined}
-          loadingEarlier={loadingEarlier}
         />
       )}
       {showOwnResponses && showFillIn && <Separator />}
@@ -276,6 +272,7 @@ function CalloutFramingFormConnectorInner({
           key={`review-${reviewRefreshKey}`}
           open={reviewOpen}
           onOpenChange={setReviewOpen}
+          spaceId={callout.calloutsSetId}
           formId={form.id}
           formTitle={formTitle}
           questions={questions}
@@ -291,6 +288,8 @@ function CalloutFramingFormConnectorInner({
 type FormResponsesReviewDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** The space whose tree carries the form's responses (its child posts). */
+  spaceId: string | undefined;
   formId: string;
   /** The Form title (or the generic "Form"), shown as the heading context of the review. */
   formTitle: string;
@@ -300,15 +299,10 @@ type FormResponsesReviewDialogProps = {
   deletedUserLabel: string;
 };
 
-type LoadedPage = {
-  responses: CalloutFormResponseModel[];
-  hasNextPage: boolean;
-  endCursor: string | undefined;
-};
-
 function FormResponsesReviewDialog({
   open,
   onOpenChange,
+  spaceId,
   formId,
   formTitle,
   questions,
@@ -318,45 +312,12 @@ function FormResponsesReviewDialog({
 }: FormResponsesReviewDialogProps) {
   const { t } = useTranslation('crd-space');
   const [openResponseId, setOpenResponseId] = useState<string | null>(null);
-  const [extraPages, setExtraPages] = useState<LoadedPage[]>([]);
-  const [loadingMore, setLoadingMore] = useState(false);
   const { exportCsv, exporting } = useFormResponsesCsvExport({ formId, formTitle, questions });
 
-  const { data, loading, error, fetchMore } = useCalloutFormResponsesQuery({
-    variables: { formID: formId, first: RESPONSES_PAGE_SIZE },
-    skip: !open,
-    fetchPolicy: 'network-only',
-  });
-
-  const firstPage = data?.lookup.calloutFormResponses.all;
-  const loadedResponses: CalloutFormResponseModel[] = [
-    ...(firstPage?.responses ?? []),
-    ...extraPages.flatMap(page => page.responses),
-  ];
-  const lastExtra = extraPages.length > 0 ? extraPages[extraPages.length - 1] : undefined;
-  const hasMore = lastExtra ? lastExtra.hasNextPage : Boolean(firstPage?.pageInfo.hasNextPage);
-  const cursor = lastExtra ? lastExtra.endCursor : (firstPage?.pageInfo.endCursor ?? undefined);
-
-  const handleLoadMore = async () => {
-    if (!cursor || loadingMore) return;
-    setLoadingMore(true);
-    try {
-      const result = await fetchMore({ variables: { formID: formId, first: RESPONSES_PAGE_SIZE, after: cursor } });
-      const page = result.data.lookup.calloutFormResponses.all;
-      setExtraPages(pages => [
-        ...pages,
-        {
-          responses: page.responses,
-          hasNextPage: page.pageInfo.hasNextPage,
-          endCursor: page.pageInfo.endCursor ?? undefined,
-        },
-      ]);
-    } catch (err) {
-      logError(new Error('Form responses page load failed', { cause: err as Error }));
-    } finally {
-      setLoadingMore(false);
-    }
-  };
+  // Every response is a child post of the form in the page's space tree (depth 2): no request of its own.
+  const rows = usePostResponses(spaceId, formId).responses;
+  const firstPage = open && rows ? { total: rows.length } : undefined;
+  const loadedResponses: CalloutFormResponseModel[] = (rows ?? []).map(toFormResponse);
 
   const responseViews = loadedResponses.map(mapFormResponseToView);
   const columns = deriveFormColumns(questions, responseViews);
@@ -373,16 +334,14 @@ function FormResponsesReviewDialog({
           </div>
           <Separator className="shrink-0" />
           <div className="flex-1 min-h-0 overflow-y-auto">
-            {error && !firstPage ? (
-              <p className="text-body text-muted-foreground">{t('formResponses.loadFailed')}</p>
-            ) : loading && !firstPage ? null : (
+            {!firstPage ? null : (
               <CalloutFormResponsesTable
                 columns={columns}
                 responses={responseViews}
                 total={total}
-                hasMore={hasMore}
-                loadingMore={loadingMore}
-                onLoadMore={() => void handleLoadMore()}
+                hasMore={false}
+                loadingMore={false}
+                onLoadMore={() => undefined}
                 canModerate={canModerate}
                 onDelete={id => void onDelete(id)}
                 onOpen={setOpenResponseId}

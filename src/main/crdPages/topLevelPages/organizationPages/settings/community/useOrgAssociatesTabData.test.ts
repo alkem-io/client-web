@@ -331,7 +331,12 @@ describe('useOrgAssociatesTabData — pending rows dispatch on what the row IS',
 describe('useOrgAssociatesTabData — email invitations (people not yet on the platform)', () => {
   beforeEach(() => {
     platformInvitations = [
-      { id: 'pi-1', email: 'new@example.com', createdDate: '2026-09-01T00:00:00.000Z', roleSetExtraRoles: ['ADMIN'] },
+      {
+        id: 'pi-1',
+        email: 'new@example.com',
+        createdDate: '2026-09-01T00:00:00.000Z',
+        roleSetExtraRoles: [RoleName.Admin],
+      },
     ];
   });
 

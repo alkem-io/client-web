@@ -14,11 +14,32 @@ type UpdatesSectionProps = {
   onSeeAll?: () => void;
   /** date-fns Locale for date formatting; resolved by the consumer. */
   locale?: Locale;
+  /** Shown in place of the latest update while updates are not available; the section then stays visible. */
+  unavailableMessage?: string;
   className?: string;
 };
 
-export function UpdatesSection({ latest, total, onSeeAll, locale, className }: UpdatesSectionProps) {
+export function UpdatesSection({
+  latest,
+  total,
+  onSeeAll,
+  locale,
+  unavailableMessage,
+  className,
+}: UpdatesSectionProps) {
   const { t } = useTranslation('crd-space');
+
+  if (unavailableMessage) {
+    return (
+      <div className={cn('bg-card border border-border rounded-lg p-4', className)}>
+        <div className="flex items-center gap-1.5 mb-3">
+          <Megaphone className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
+          <h3 className="uppercase text-label text-muted-foreground">{t('sidebar.updates')}</h3>
+        </div>
+        <p className="text-body text-muted-foreground">{unavailableMessage}</p>
+      </div>
+    );
+  }
 
   if (!latest) return null;
 

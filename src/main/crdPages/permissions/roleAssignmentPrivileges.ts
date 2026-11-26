@@ -9,48 +9,9 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
  */
 
 /**
- * Adding a USER to the member role of a SPACE role set — `assignRoleToUser`.
- *
- * The `assignRoleToUser` branch of `RoleSetResolverMutations` that enforces this token:
- *
- *   case RoleSetType.SPACE:
- *     privilegeRequired = AuthorizationPrivilege.GRANT;
- *     if (roleData.role === RoleName.MEMBER) {
- *       privilegeRequired = AuthorizationPrivilege.ROLESET_ENTRY_ROLE_ASSIGN;
- *     }
- *
- * The backend grants `ROLESET_ENTRY_ROLE_ASSIGN` only on SUBSPACE role sets — to the admins
- * of that subspace or an ancestor, and to platform roles holding GRANT there — and never on
- * a top-level (L0) role set. Applying it to any other action gates that action shut for
- * every space admin; use `ROLE_SET_GRANT_PRIVILEGES` for those. There is no direct
- * add-member control on the Community settings surface (invitation only,
- * alkem-io/server#6623); the remaining consumer is the virtual-contributor fallback in
- * `useCommunityActionPermissions` (`assignRoleToVirtualContributor` asks for this token
- * when the VC belongs to a different account than the Space).
- */
-export const ROLE_SET_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRoleAssign];
-
-/**
- * Every other user role change on a SPACE or ORGANIZATION role set — assigning the lead
- * or admin role, and removing any user role — plus removing an organization from a space
- * role set.
- *
- * `assignRoleToUser` defaults to `GRANT` for both role-set types and only swaps to
- * `ROLESET_ENTRY_ROLE_ASSIGN` for a space MEMBER; `removeRoleFromUser` requires `GRANT`
- * for every role (member self-removal merely extends the policy so the subject also holds
- * it); `removeRoleFromOrganization` requires `GRANT` alone. Space admins and organization
- * admins hold `GRANT` on their role set, which is what makes these actions theirs.
- */
-export const ROLE_SET_GRANT_PRIVILEGES = [AuthorizationPrivilege.Grant];
-
-/**
  * Inviting an actor (user, organization or by email) to a role set —
- * `inviteForEntryRoleOnRoleSet`.
- *
- * A distinct token from the assign privilege above, and the one space admins hold:
- * invitation is the only way a user or organization joins a Space from the Community
- * settings surface (alkem-io/server#6623). Mirrors `useCommunityAdmin.ts`'s `canInvite` /
- * `canInviteOrganizations`.
+ * `inviteForEntryRoleOnRoleSet`. Used by the organization Associates tab; the space Community
+ * tab gates on the native `SpaceCan.invite` verdict instead (`useCommunityActionPermissions`).
  */
 export const ROLE_SET_INVITE_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRoleInvite];
 
@@ -65,8 +26,8 @@ export const ROLE_SET_INVITE_PRIVILEGES = [AuthorizationPrivilege.RolesetEntryRo
  *   ForbiddenAuthorizationPolicyException: Authorization: unable to grant
  *   'grant-global-admins' privilege: assign role to User ... on roleSet of type: platform
  *
- * This is a different mutation pair from the role-set assignment above, which is why the
- * `ROLESET_ENTRY_ROLE_ASSIGN` token used elsewhere does not apply.
+ * This is a different mutation pair from role-set assignment, which is why the
+ * `ROLESET_ENTRY_ROLE_ASSIGN` token does not apply.
  */
 export const PLATFORM_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.PlatformRolesAssign];
 
@@ -91,8 +52,7 @@ export const FEATURE_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.FeatureRol
  * Server-side, organization role assignment resolves through the ORGANIZATION branch
  * of `authorizeAssignActorToRole`, which requires GRANT on the role set — held by
  * ORGANIZATION_ADMIN and ORGANIZATION_OWNER (062, `role.set.resolver.mutations.ts`).
- * Deliberately NOT `ROLE_SET_ASSIGN_PRIVILEGES` (`RolesetEntryRoleAssign`), which gates
- * the Space-side entry-role assignment token only.
+ * Deliberately NOT `RolesetEntryRoleAssign`, the Space-side entry-role assignment token.
  */
 export const ORG_ROLE_SET_MANAGE_PRIVILEGES = [AuthorizationPrivilege.Grant];
 
@@ -107,14 +67,3 @@ export const ORG_ROLE_SET_MANAGE_PRIVILEGES = [AuthorizationPrivilege.Grant];
  * not already an Associate, so it unlocks no direct-add control.
  */
 export const ORG_ROLE_SET_SUPPORT_MANAGE_PRIVILEGES = [AuthorizationPrivilege.PlatformSupportOrgMembership];
-
-/**
- * Adding a virtual contributor from the account, an alternative to
- * `ROLE_SET_ASSIGN_PRIVILEGES` rather than an addition to it.
- *
- * Space admins may hold this without holding the role-set assign privilege, so the VC add
- * control is permitted when EITHER is present — see `useCommunityAdmin.ts`, which unions
- * the two for the same reason. Evaluate the two separately and combine; do not pass both
- * to one `useActionPermission` call, which requires every listed privilege.
- */
-export const VC_FROM_ACCOUNT_PRIVILEGES = [AuthorizationPrivilege.CommunityAssignVcFromAccount];

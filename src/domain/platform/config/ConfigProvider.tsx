@@ -7,9 +7,10 @@ import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import Loading from '@/core/ui/loading/Loading';
 import useLoadingStateWithHandlers from '@/domain/shared/utils/useLoadingStateWithHandlers';
 import type { Configuration } from './configuration';
+import type { LegacyConfigurationProjection } from './native/legacyConfigDataMapper';
 
 export interface ConfigContextProps {
-  config?: Configuration;
+  config?: Configuration | LegacyConfigurationProjection;
   serverMetadata: Metadata;
   loading: boolean;
   error?: ApolloError;

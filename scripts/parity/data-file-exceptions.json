@@ -1,0 +1,101 @@
+{
+  "src/main/crdPages/dashboard": [
+    "dashboardV2DataMapper.ts",
+    "dashboardV2DataMapper.test.ts",
+    "DashboardWithMemberships.sectionErrors.test.tsx",
+    "DashboardWithoutMemberships.test.tsx",
+    "dashboardPendingTestData.ts",
+    "nativeActivityFeed.test.ts",
+    "nativeTestClient.ts"
+  ],
+  "src/main/crdPages/dashboard/v2": ["V2Dashboard.v2.graphql"],
+  "src/main/crdPages/innovationHub/dataMappers": ["homepageV2DataMapper.ts", "homepageV2DataMapper.test.ts"],
+  "src/main/crdPages/innovationHub/v2": ["V2Homepage.v2.graphql"],
+  "src/main/crdPages/spaces/v2": ["V2SpaceCards.v2.graphql"],
+  "src/main/crdPages/topLevelPages/admin": ["usePlatformAdminData.ts"],
+  "src/main/crdPages/topLevelPages/userPages/settings/v2": ["V2PersonalSettings.v2.graphql"],
+  "src/main/routing/urlResolver/native": [
+    "NativeRouteResolution.v2.graphql",
+    "NativeRouteResolution.test.tsx",
+    "nativeRouteDataMapper.ts",
+    "nativeRouteDataMapper.test.ts",
+    "useNativeHomepageResolution.ts",
+    "useNativeHomepageResolution.test.tsx",
+    "useNativeRouteSpace.ts"
+  ],
+  "src/main/routing/v2": ["V2Resolve.v2.graphql"],
+  "src/main/routing": ["TopLevelRoutes.test.tsx"],
+  "src/main/crdPages/spaces": ["useSpaceExplorer.test.tsx"],
+  "src/main/crdPages/markdown": ["useNativeMarkdownUpload.test.tsx", "useNativeMarkdownUpload.ts"],
+  "src/main/crdPages/space/routing": ["CrdSpaceRoutes.mount.test.tsx", "CrdSpaceRoutes.test.tsx"],
+  "src/main/crdPages/templates/settingsTemplates": [
+    "SettingsTemplates.v2.graphql",
+    "settingsTemplateHooks.test.tsx",
+    "settingsTemplateMappers.test.ts",
+    "settingsTemplateMappers.ts",
+    "useReportTemplateFailure.ts",
+    "useSettingsPostTemplatePicker.ts",
+    "useSettingsSaveSpaceAsTemplate.ts",
+    "useStageDefaultTemplate.ts"
+  ],
+  "src/main/crdPages/templates/spaceTemplates": [
+    "SpaceTemplatePicker.v2.graphql",
+    "spaceTemplateMappers.test.ts",
+    "spaceTemplateMappers.ts",
+    "useSpaceTemplatePicker.test.tsx",
+    "useSpaceTemplatePicker.ts",
+    "useSubspaceDefaultTemplate.ts"
+  ],
+  "src/main/crdPages/topLevelPages/spaceSettings/about": [
+    "SpaceSettingsAbout.v2.graphql",
+    "useAboutTabData.test.tsx",
+    "useClassificationPicker.test.ts"
+  ],
+  "src/main/crdPages/topLevelPages/spaceSettings/account": [
+    "SpaceSettingsAccount.v2.graphql",
+    "useAccountTabData.test.tsx"
+  ],
+  "src/main/crdPages/topLevelPages/spaceSettings/community": ["MembershipDetailDialogConnector.test.tsx"],
+  "src/main/crdPages/topLevelPages/spaceSettings/settings": [
+    "SpaceSettingsApplicationForm.v2.graphql",
+    "SpaceSettingsDeleteSpace.v2.graphql",
+    "SpaceSettingsSettings.v2.graphql",
+    "settingsMapper.privacy.test.ts",
+    "useApplicationFormData.test.tsx",
+    "useSettingsTabData.test.tsx",
+    "useSubspaceDangerZone.test.tsx"
+  ],
+  "src/main/crdPages/topLevelPages/spaceSettings/subspaces": [
+    "CreateSubspaceRoot.v2.graphql",
+    "SpaceSettingsSubspaces.v2.graphql",
+    "useSubspacesTabData.test.tsx"
+  ],
+  "src/main/crdPages/unifiedChat": [
+    "ChatRecipientDirectory.v2.graphql",
+    "useChatRecipientDirectory.test.ts",
+    "useChatRecipientDirectory.ts"
+  ],
+  "src/main/crdPages/utils": ["useNativeReferenceFileUpload.ts"],
+  "src/main/crdPages/space/about": ["CrdSpaceAbout.test.tsx"],
+  "src/main/crdPages/space/callout": [
+    "CalloutDetailDialogConnector.window.test.tsx",
+    "CrdCalloutDialogFromUrl.test.tsx",
+    "PostIndexDialogConnector.test.tsx"
+  ],
+  "src/main/crdPages/space/dataMappers": [
+    "calloutDataMapper.native.test.ts",
+    "nativePostFixtures.test-utils.ts",
+    "spacePageDataMapper.test.ts"
+  ],
+  "src/main/crdPages/space/dialogs": [
+    "CrdSpaceActivityDialogConnector.test.tsx",
+    "CrdSpaceCommunityDialogConnector.test.tsx",
+    "SubspacesDialogConnector.test.tsx"
+  ],
+  "src/main/crdPages/space/hooks": ["useCrdCalloutList.test.tsx", "useCrdSpaceCommunity.test.tsx"],
+  "src/main/crdPages/space": ["useSpaceApplyFlow.test.tsx"],
+  "src/main/crdPages/subspace/about": ["CrdSubspaceAbout.test.tsx", "CrdSubspaceAboutPage.close.test.tsx"],
+  "src/main/crdPages/subspace/dialogs": ["CrdSubspaceIndexDialogConnector.test.tsx"],
+  "src/main/crdPages/subspace/layout": ["CrdSubspacePageLayout.load.test.tsx"],
+  "src/main/crdPages/subspace/routing": ["CrdSubspaceRoutes.test.tsx"]
+}

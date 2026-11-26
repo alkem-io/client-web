@@ -1,13 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import { ReferencesAndTagsStrip } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { InvitationDetailDialog } from '@/crd/components/dashboard/InvitationDetailDialog';
 import useInvitationActions from '@/domain/community/invitations/useInvitationActions';
-import { useInvitationHydrator } from '@/domain/community/pendingMembership/PendingMemberships';
 import type { PendingInvitationItem } from '@/domain/community/user/models/PendingInvitationItem';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
+import { pageSpace, shellSpaceAbout } from '@/domain/space/context/spacePageShellMapper';
+import { useSpacePageData } from '@/domain/space/hooks/useSpacePage';
 import { mapHydratedInvitationToDetailData } from '@/main/crdPages/dashboard/pendingMembershipsDataMappers';
+import { nativeGuidelines } from '../dataMappers/spacePageDataMapper';
 
 type InvitationDetailConnectorProps = {
   open: boolean;
@@ -21,9 +22,17 @@ export function InvitationDetailConnector({ open, onOpenChange, invitation }: In
 
   const close = () => onOpenChange(false);
 
-  const { invitation: hydrated, communityGuidelines } = useInvitationHydrator(invitation, {
-    withCommunityGuidelines: true,
-  });
+  // The invited space's D2 document from the page cache stands in for legacy's hydration queries, the inviter included
+  // (its membership request's createdBy).
+  const spaceId = invitation?.spacePendingMembershipInfo.id;
+  const space = pageSpace(useSpacePageData(spaceId, 'space')?.node, spaceId);
+  const hydrated = invitation &&
+    space && {
+      ...invitation,
+      userDisplayName: space.membership?.request?.createdBy?.about?.displayName,
+      space: { id: space.id, level: invitation.spacePendingMembershipInfo.level, about: shellSpaceAbout(space) },
+    };
+  const guidelines = nativeGuidelines(space);
 
   const props = useInvitationActions({
     onAccept: close,
@@ -68,14 +77,13 @@ export function InvitationDetailConnector({ open, onOpenChange, invitation }: In
     <p className="text-body">{hydrated.invitation.welcomeMessage}</p>
   ) : undefined;
 
-  const guidelinesSlot = communityGuidelines ? (
+  const guidelinesSlot = guidelines ? (
     <>
-      <h3 className="text-card-title pt-2">{communityGuidelines.profile.displayName}</h3>
+      <h3 className="text-card-title pt-2">{guidelines.displayName}</h3>
       <div className="flex flex-col gap-2">
         <div className="break-words">
-          <MarkdownContent content={communityGuidelines.profile.description ?? ''} />
+          <MarkdownContent content={guidelines.description ?? ''} />
         </div>
-        <ReferencesAndTagsStrip references={communityGuidelines.profile.references} />
       </div>
     </>
   ) : undefined;

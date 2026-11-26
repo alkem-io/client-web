@@ -36,8 +36,8 @@ const filterLabelClassName = 'text-badge uppercase tracking-[0.08em] text-muted-
 type PrivacyFilter = 'all' | 'public' | 'private';
 
 const matchesPrivacy = (space: SpaceCardData, filter: PrivacyFilter) => {
-  if (filter === 'public') return !space.isPrivate;
-  if (filter === 'private') return space.isPrivate;
+  if (filter === 'public') return space.isPrivate === false;
+  if (filter === 'private') return space.isPrivate === true;
   return true;
 };
 

@@ -759,6 +759,8 @@
       "title": "Visibilité",
       "public": "Public",
       "publicDescription": "Cet espace et son contenu sont visibles par tous sur la plateforme. Les utilisateurs ne peuvent contribuer que s'ils sont membres.",
+      "registered": "Utilisateurs connectés",
+      "registeredDescription": "Cet espace et son contenu sont visibles par toutes les personnes connectées à la plateforme ; les visiteurs non connectés ne peuvent pas voir son contenu. Les utilisateurs ne peuvent contribuer que s’ils sont membres.",
       "private": "Privé",
       "privateDescription": "Cet espace est visible par tous sur la plateforme, mais le contenu n'est visible que par les membres.",
       "hint": "Tenez compte de l'objectif et du public de votre espace lorsque vous choisissez la visibilité."

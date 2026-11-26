@@ -17,6 +17,8 @@ type VirtualContributorsSectionProps = {
   onContributorClick?: (href: string) => void;
   /** When provided, an "Invite Virtual Contributor" entry is shown (admins only). */
   onInviteVc?: () => void;
+  /** Shown in place of the list while the consumer cannot provide it yet. */
+  unavailableMessage?: string;
   className?: string;
 };
 
@@ -24,13 +26,14 @@ export function VirtualContributorsSection({
   contributors,
   onContributorClick,
   onInviteVc,
+  unavailableMessage,
   className,
 }: VirtualContributorsSectionProps) {
   const { t } = useTranslation('crd-space');
 
   // Render even with zero VCs when the user can invite — so the first VC can be
   // added (mirrors MUI's VirtualContributorsBlock).
-  if (contributors.length === 0 && !onInviteVc) return null;
+  if (contributors.length === 0 && !onInviteVc && !unavailableMessage) return null;
 
   return (
     <div className={cn('bg-card border border-border rounded-lg p-4', className)}>
@@ -38,6 +41,7 @@ export function VirtualContributorsSection({
         <Bot className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
         <h3 className="uppercase text-label text-muted-foreground">{t('sidebar.virtualContributors')}</h3>
       </div>
+      {unavailableMessage && <p className="text-caption text-muted-foreground mb-2">{unavailableMessage}</p>}
       <div className="space-y-2">
         {contributors.map(vc => {
           const body = (

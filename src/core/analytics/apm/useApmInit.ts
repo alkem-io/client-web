@@ -125,7 +125,7 @@ const useCustomContext = (user: CurrentUserModel | undefined) => {
 
   if (user) {
     context.authenticated = user.isAuthenticated;
-    context.domain = user.userModel?.email.split('@')?.[1];
+    context.domain = user.userModel?.email?.split('@')?.[1];
   }
 
   context.screen = getScreenInfo();

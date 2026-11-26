@@ -4,7 +4,7 @@ import { useKratosClient } from '@/core/auth/authentication/hooks/useKratosClien
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { ErrorCard } from '@/crd/components/auth/ErrorCard';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
-import { AuthShellWrapper } from './AuthShellWrapper';
+import { AuthFlowContext, AuthShellWrapper } from './AuthShellWrapper';
 
 type ResolvedError = {
   loading: boolean;
@@ -18,6 +18,14 @@ type ResolvedError = {
  * Resolves the Kratos error referenced by the `?id=` query parameter.
  */
 export function ErrorCrdRoute() {
+  return (
+    <AuthFlowContext>
+      <CrdErrorPage />
+    </AuthFlowContext>
+  );
+}
+
+function CrdErrorPage() {
   useTransactionScope({ type: 'authentication' });
 
   const client = useKratosClient();

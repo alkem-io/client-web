@@ -38,7 +38,8 @@ export type SpaceCardData = {
    * canonical visual-fields rule do not show an avatar in cards (cards = title + cardBanner only).
    */
   hideAvatar?: boolean;
-  isPrivate: boolean;
+  isPrivate?: boolean;
+  isLocked?: boolean;
   isMember?: boolean;
   isPinned?: boolean;
   tags: string[];

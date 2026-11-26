@@ -1,11 +1,7 @@
-import type { ApolloError } from '@apollo/client';
-import { useLocation } from 'react-router-dom';
-import { useDeepCompareMemoize } from 'use-deep-compare-effect';
-import { useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
-import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/locationState';
-import { useCalloutsSetAuthorization } from '../../calloutsSet/authorization/useCalloutsSetAuthorization';
+import { type ApolloError, useFragment } from '@apollo/client';
+import { PostBodyFragmentDoc, usePostDetailQuery } from '@/core/apollo/generated-v2/apollo-hooks';
+import type { PostBodyFragment } from '@/core/apollo/generated-v2/graphql-schema';
+import { isPostNode } from '@/domain/space/hooks/useSpacePage';
 import type { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 import type { CalloutModelExtension } from '../models/CalloutModelLight';
 
@@ -21,63 +17,38 @@ export interface useCalloutDetailsProps {
   calloutsSetId: string | undefined;
   withClassification: boolean;
   overrideCalloutSettings?: Partial<CalloutModelExtension<{}>>;
+  /** The page layer's mapper from the post to the callout model (dependencies point main → domain). */
+  toCallout?: (post: PostBodyFragment) => CalloutDetailsModelExtended;
   skip?: boolean;
 }
 
+/** The post a feed card, a post URL load or an earlier read already put in the cache; no request. */
+export const useCachedPost = (id: string | undefined): PostBodyFragment | undefined => {
+  const { data, complete } = useFragment<PostBodyFragment>({
+    fragment: PostBodyFragmentDoc,
+    fragmentName: 'PostBody',
+    from: { __typename: 'Post', id: id ?? '' },
+  });
+  return id && complete ? (data as PostBodyFragment) : undefined;
+};
+
+/** 021 D4: the post from the cache when the page holds it, else one PostDetail. */
 const useCalloutDetails = ({
   calloutId,
-  calloutsSetId,
-  withClassification,
   overrideCalloutSettings,
+  toCallout,
   skip,
 }: useCalloutDetailsProps): useCalloutDetailsProvided => {
-  const { entitlements, permissions } = useSpacePermissionsAndEntitlements();
-  const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
-
-  const canBeSavedAsTemplate = permissions.canSaveAsTemplate && entitlements.entitledToSaveAsTemplate;
-  const { canMoveCallouts } = useCalloutsSetAuthorization({ calloutsSetId });
-
-  const { data, loading, refetch, error } = useCalloutDetailsQuery({
-    variables: {
-      calloutId: calloutId!,
-      withClassification,
-    },
-    skip: skip || !calloutId,
+  const cached = useCachedPost(calloutId);
+  const { data, loading, refetch, error } = usePostDetailQuery({
+    variables: { id: calloutId ?? '' },
+    skip: skip || !calloutId || Boolean(cached),
   });
-
-  // Use deep comparison for overrideCalloutSettings to avoid unnecessary rerenders
-  const memoizedOverrideCalloutSettings = useDeepCompareMemoize(overrideCalloutSettings);
-
-  const result: CalloutDetailsModelExtended | undefined = (() => {
-    const calloutDetails = data?.lookup.callout;
-
-    // Only use cached data if we don't have fresh data yet
-    if (!calloutDetails && locationState[LocationStateKeyCachedCallout]) {
-      return locationState[LocationStateKeyCachedCallout];
-    }
-
-    if (!calloutDetails) {
-      return;
-    }
-
-    return {
-      ...calloutDetails,
-      calloutsSetId,
-      draft: calloutDetails.settings.visibility === CalloutVisibility.Draft,
-      editable: calloutDetails.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
-      movable: canMoveCallouts,
-      // Every framing is templatable, Poll and Form included: a template captures only their
-      // definition, never votes or responses.
-      canBeSavedAsTemplate,
-      classificationTagsets: [],
-      publishedDate: calloutDetails.publishedDate ? new Date(calloutDetails.publishedDate) : undefined,
-      createdDate: calloutDetails.createdDate ? new Date(calloutDetails.createdDate) : undefined,
-      ...memoizedOverrideCalloutSettings,
-    };
-  })();
+  const node = data?.post;
+  const post = cached ?? (node && isPostNode(node) ? node : undefined);
 
   return {
-    callout: result,
+    callout: post && toCallout && { ...toCallout(post), ...overrideCalloutSettings },
     loading,
     refetch,
     error,

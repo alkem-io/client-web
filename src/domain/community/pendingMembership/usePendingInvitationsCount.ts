@@ -1,17 +1,18 @@
-import { usePendingInvitationsCountQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useV2PendingMembershipsQuery } from '@/core/apollo/generated-v2/apollo-hooks';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 export const usePendingInvitationsCount = () => {
   const { userModel, isAuthenticated } = useCurrentUserContext();
-  const { data: invitesData, loading } = usePendingInvitationsCountQuery({
+  const { data, loading, error } = useV2PendingMembershipsQuery({
     skip: !isAuthenticated || !userModel,
     fetchPolicy: 'cache-first',
   });
+  if (error) throw error;
 
   return {
-    // Sums the Space-shaped and organization-shaped counts (062) — the top-bar badge
-    // and dialog title show one number covering both pending-invitation kinds.
-    count: (invitesData?.me?.communityInvitationsCount || 0) + (invitesData?.me?.organizationInvitationsCount || 0),
+    // screens-dispositions.tsv:10984: the count is the length of Viewer.pendingInvitations, which carries the space and
+    // the organization invitations this viewer may act on (legacy summed both counts, 062).
+    count: data?.viewer.pendingInvitations.length ?? 0,
     loading,
   };
 };

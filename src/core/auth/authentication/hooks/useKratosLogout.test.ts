@@ -27,18 +27,22 @@ describe('useKratosLogout', () => {
   });
 
   describe('getKratosLogoutUrl', () => {
-    it('returns the logout URL when a session is live', async () => {
-      mockCreateBrowserLogoutFlow.mockResolvedValue({ data: { logout_url: 'https://identity.test/logout?token=1' } });
-      const { result } = renderHook(() => useKratosLogout());
-
-      await expect(result.current.getKratosLogoutUrl()).resolves.toBe('https://identity.test/logout?token=1');
+    it('returns the actual issued browser URL without fetching it or replacing its destination', async () => {
+      mockCreateBrowserLogoutFlow.mockResolvedValue({ data: { logout_url: 'https://identity.test/issued-logout' } });
+      const { result } = renderHook(useKratosLogout);
+      await expect(result.current.getKratosLogoutUrl()).resolves.toEqual({
+        kind: 'redirect',
+        url: 'https://identity.test/issued-logout',
+      });
+      expect(globalThis.fetch).not.toHaveBeenCalled();
     });
 
-    it('returns undefined on any failure (401 no-session, or otherwise) — best-effort', async () => {
+    it('distinguishes a missing issued URL from an actual no-session response', async () => {
+      mockCreateBrowserLogoutFlow.mockResolvedValue({ data: {} });
+      const { result } = renderHook(useKratosLogout);
+      await expect(result.current.getKratosLogoutUrl()).resolves.toEqual({ kind: 'failed' });
       mockCreateBrowserLogoutFlow.mockRejectedValue({ response: { status: 401 } });
-      const { result } = renderHook(() => useKratosLogout());
-
-      await expect(result.current.getKratosLogoutUrl()).resolves.toBeUndefined();
+      await expect(result.current.getKratosLogoutUrl()).resolves.toEqual({ kind: 'no-session' });
     });
   });
 

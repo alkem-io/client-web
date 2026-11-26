@@ -1,38 +1,27 @@
 import { useTranslation } from 'react-i18next';
 import { useOutletContext } from 'react-router-dom';
-import { AuthorizationPrivilege, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
 import { SubspaceFlowTabs } from '@/crd/components/space/SubspaceFlowTabs';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
-import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { CalloutListConnector } from '../../space/callout/CalloutListConnector';
 import { LazyCalloutItem } from '../../space/callout/LazyCalloutItem';
+import { useSpaceFeed } from '../../space/hooks/useCrdCalloutList';
 import { useCrdSubspaceFlow } from '../hooks/useCrdSubspaceFlow';
 import type { SubspaceOutletContext } from '../layout/CrdSubspacePageLayout';
 
 export default function CrdSubspaceCalloutsPage() {
   const { t } = useTranslation('crd-space');
   const { data, mobileMenu, headerActionIcons, search } = useOutletContext<SubspaceOutletContext>();
-  const { phases, currentPhaseId, calloutsSetId, canEditFlow, subspaceUrl } = data;
+  const { phases, currentPhaseId, calloutsSetId, canEditFlow, canUpdate, subspaceId, subspaceUrl } = data;
   const { activePhaseId, setActivePhaseId } = useCrdSubspaceFlow(phases, currentPhaseId);
   const isSmallScreen = useMediaQuery('(max-width: 639px)');
 
   const activePhase = phases.find(p => p.id === activePhaseId);
-  const classificationTagsets = activePhase ? [{ name: TagsetReservedName.FlowState, tags: [activePhase.label] }] : [];
 
-  const {
-    callouts,
-    loading: calloutsLoading,
-    calloutsSetAuthorization,
-  } = useCalloutsSet({
-    calloutsSetId,
-    classificationTagsets,
-    skip: !calloutsSetId || phases.length === 0,
-  });
-  // Reordering callouts requires Update on the calloutsSet (not the callout).
-  const canReorderCallouts = calloutsSetAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  // The active phase's feed, which the layout's page request loads (021 FR-005).
+  const feed = useSpaceFeed(activePhase && subspaceId, activePhase?.id);
   // Add Post moved to the sidebar — the layout owns the button and its dialog
   // (gated on the calloutsSet's CreateCallout privilege, same as the L0 tabs).
 
@@ -40,7 +29,9 @@ export default function CrdSubspaceCalloutsPage() {
 
   const flowTabs = (
     <SubspaceFlowTabs
-      phases={phases}
+      // Stage visibility is not served yet (021 S01): configured phases show as unavailable, never all of them.
+      phases={[]}
+      emptyMessage={phases.length > 0 ? t('tabs.unavailable') : undefined}
       activePhaseId={activePhaseId}
       onPhaseChange={setActivePhaseId}
       canEditFlow={canEditFlow}
@@ -66,7 +57,7 @@ export default function CrdSubspaceCalloutsPage() {
       {activePhase?.description && <TabStateHeader description={activePhase.description} />}
 
       {/* While the sidebar search is active, its matches (active phase only) replace the feed. */}
-      {phases.length > 0 &&
+      {activePhase &&
         (search?.isSearching ? (
           <FlowStateSearchResults
             status={search.status}
@@ -94,13 +85,16 @@ export default function CrdSubspaceCalloutsPage() {
               />
             ))}
           </FlowStateSearchResults>
+        ) : feed.notServed ? (
+          // The space tree is not served yet: the feed says so in place.
+          <p className="text-body text-muted-foreground py-6 text-center">{t('tabs.unavailable')}</p>
         ) : (
           <CalloutListConnector
-            callouts={callouts ?? []}
+            callouts={feed.posts}
             calloutsSetId={calloutsSetId}
             canCreate={false}
-            canReorder={canReorderCallouts}
-            loading={calloutsLoading}
+            canReorder={canUpdate}
+            loading={feed.loading}
           />
         ))}
 

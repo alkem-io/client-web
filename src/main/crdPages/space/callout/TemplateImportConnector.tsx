@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSpaceTemplatesManagerQuery, useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import { useSpace } from '@/domain/space/context/useSpace';
 import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
-import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
+import { servedSpaceTemplatesSetId, useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 
 type TemplateImportConnectorProps = {
   open: boolean;
@@ -39,12 +40,17 @@ export function TemplateImportConnector({
   const {
     space: { accountId, levelZeroSpaceId },
   } = useSpace();
-  const { data: tmData } = useSpaceTemplatesManagerQuery({
-    variables: { spaceId: levelZeroSpaceId ?? '' },
-    skip: !levelZeroSpaceId,
+  // In a space, its templates are not served yet (servedSpaceTemplatesSetId): the import says so in place, sending
+  // nothing. Outside a space the picker offers its other sources, as legacy.
+  const spaceTemplatesSetId = servedSpaceTemplatesSetId(levelZeroSpaceId);
+  const pickerAvailable = !levelZeroSpaceId || Boolean(spaceTemplatesSetId);
+  const picker = useTemplatePicker({
+    allowedTypes: ['callout'],
+    accountId,
+    spaceTemplatesSetId,
+    open: pickerAvailable ? open : false,
+    onOpenChange,
   });
-  const spaceTemplatesSetId = tmData?.lookup.space?.templatesManager?.templatesSet?.id;
-  const picker = useTemplatePicker({ allowedTypes: ['callout'], accountId, spaceTemplatesSetId, open, onOpenChange });
   const [getTemplateContent] = useTemplateContentLazyQuery();
   const [pendingValues, setPendingValues] = useState<Partial<CalloutFormValues> | null>(null);
   // 2026-05-19 — use a ref (not state) to track "which selectedId has the effect already fetched for".
@@ -110,6 +116,19 @@ export function TemplateImportConnector({
     setPendingValues(null);
     consumeSelection();
   };
+
+  if (!pickerAvailable) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('forms.findTemplate')}</DialogTitle>
+          </DialogHeader>
+          <p className="text-body text-muted-foreground py-6 text-center">{t('tabs.unavailable')}</p>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <>

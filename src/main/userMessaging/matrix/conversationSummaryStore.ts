@@ -10,13 +10,14 @@ import {
   fullyReadEventId,
   homeserverOf,
   liveEvents,
+  nativeEntityId,
+  nativeMatrixId,
   notificationCount,
   ownUserId,
   ROOM_ACCOUNT_DATA,
   ROOM_LOCAL_ECHO_UPDATED,
   ROOM_REDACTION,
   ROOM_TIMELINE,
-  resolveMatrixRoomId,
 } from './matrixRooms';
 import { BATCH_SIZES, computeUnreadCount } from './unreadCount';
 
@@ -38,8 +39,6 @@ const MAX_CONCURRENT_ROOMS = 10;
  */
 class ConversationSummaryStore {
   private readonly watchers = new Map<string, number>();
-  private readonly alkemioByMatrixId = new Map<string, string>();
-  private readonly matrixByAlkemioId = new Map<string, string>();
   private summaries: Summaries = new Map();
   private readonly listeners = new Set<() => void>();
   private readonly queue: string[] = [];
@@ -78,8 +77,7 @@ class ConversationSummaryStore {
         }
       }) as never
     );
-    // A watched room may resolve before the client has it (first sync, or a
-    // conversation created after sync started).
+    // A watched room can first appear after the watch starts.
     client.on(
       CLIENT_ROOM as never,
       ((room: Room) => {
@@ -91,13 +89,7 @@ class ConversationSummaryStore {
       ((state: string) => {
         if (state === 'PREPARED') {
           for (const alkemioRoomId of this.watchers.keys()) {
-            // A lookup that failed before the first sync (homeserver not yet
-            // reachable) left no mapping; look it up again now.
-            if (this.matrixByAlkemioId.has(alkemioRoomId)) {
-              this.schedule(alkemioRoomId);
-            } else {
-              void this.resolve(alkemioRoomId);
-            }
+            this.schedule(alkemioRoomId);
           }
         }
       }) as never
@@ -106,7 +98,7 @@ class ConversationSummaryStore {
 
   /** The Alkemio room id of a watched conversation's Matrix room, if any. */
   alkemioRoomIdFor(matrixRoomId: string): string | undefined {
-    const alkemioRoomId = this.alkemioByMatrixId.get(matrixRoomId);
+    const alkemioRoomId = nativeEntityId(matrixRoomId, '!', this.client);
     return alkemioRoomId && this.watchers.has(alkemioRoomId) ? alkemioRoomId : undefined;
   }
 
@@ -128,9 +120,7 @@ class ConversationSummaryStore {
       }
       // Watchers re-subscribe whenever the conversation list changes; a room
       // is computed again only if it is new or changed while unwatched.
-      if (!this.matrixByAlkemioId.has(alkemioRoomId)) {
-        void this.resolve(alkemioRoomId);
-      } else if (!this.summaries.has(alkemioRoomId) || this.stale.has(alkemioRoomId)) {
+      if (!this.summaries.has(alkemioRoomId) || this.stale.has(alkemioRoomId)) {
         this.schedule(alkemioRoomId);
       }
     }
@@ -146,24 +136,14 @@ class ConversationSummaryStore {
     };
   }
 
-  private async resolve(alkemioRoomId: string): Promise<void> {
-    const matrixRoomId = await resolveMatrixRoomId(this.client, alkemioRoomId);
-    if (!matrixRoomId || !this.watchers.has(alkemioRoomId)) {
-      return;
-    }
-    this.alkemioByMatrixId.set(matrixRoomId, alkemioRoomId);
-    this.matrixByAlkemioId.set(alkemioRoomId, matrixRoomId);
-    this.schedule(alkemioRoomId);
-  }
-
   private touchMatrixRoom(matrixRoomId: string): void {
-    const alkemioRoomId = this.alkemioByMatrixId.get(matrixRoomId);
+    const alkemioRoomId = nativeEntityId(matrixRoomId, '!', this.client);
     if (!alkemioRoomId) {
       return;
     }
     if (this.watchers.has(alkemioRoomId)) {
       this.schedule(alkemioRoomId);
-    } else {
+    } else if (this.summaries.has(alkemioRoomId)) {
       this.stale.add(alkemioRoomId);
     }
   }
@@ -198,7 +178,7 @@ class ConversationSummaryStore {
   }
 
   private async compute(alkemioRoomId: string): Promise<void> {
-    const matrixRoomId = this.matrixByAlkemioId.get(alkemioRoomId);
+    const matrixRoomId = nativeMatrixId(alkemioRoomId, '!', this.client);
     const room = matrixRoomId ? this.client.getRoom(matrixRoomId) : null;
     if (!matrixRoomId || !room) {
       return;

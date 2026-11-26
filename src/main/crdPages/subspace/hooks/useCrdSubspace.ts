@@ -1,10 +1,5 @@
-import {
-  useInnovationFlowDetailsQuery,
-  useSpaceAboutDetailsQuery,
-  useSpaceDefaultTemplatesQuery,
-  useSubspacePageQuery,
-} from '@/core/apollo/generated/apollo-hooks';
-import { SpaceLevel, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, type SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import type { ParentSpaceStackItem } from '@/crd/components/space/ParentSpaceStack';
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceHeader';
@@ -14,24 +9,21 @@ import {
   type SidebarWidgetId,
 } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
 import { getInitials } from '@/crd/lib/getInitials';
-import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
-import { useCalloutsSetAuthorization } from '@/domain/collaboration/calloutsSet/authorization/useCalloutsSetAuthorization';
-import { selectFirstFlowState } from '@/domain/collaboration/InnovationFlow/selectFirstFlowState';
-import { filterVisibleStates } from '@/domain/collaboration/InnovationFlow/utils/filterVisibleStates';
-import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { useSpace } from '@/domain/space/context/useSpace';
+import { pageSpace, rootFaceAbout } from '@/domain/space/context/spacePageShellMapper';
+import { orderedStages, treeSubspaces, useSpacePageData, useSpaceTree } from '@/domain/space/hooks/useSpacePage';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
-import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useNativeRouteSpace } from '@/main/routing/urlResolver/native/useNativeRouteSpace';
 import { mapSpaceVisibility, type SpaceVisibilityData } from '../../space/dataMappers/spacePageDataMapper';
 import {
   deriveWidgetSkips,
   resolveSidebarPlan,
   type SidebarWidgetSkipFlags,
+  toWireSidebar,
 } from '../../space/layout/sidebarWidgetPlan';
 import {
+  mapAncestorCrumbs,
   mapInnovationFlowPhases,
+  mapParentSpaceStack,
   mapSubspaceBanner,
   mapSubspaceHeaderActions,
   mapSubspaceSidebar,
@@ -49,23 +41,15 @@ export type CrdSubspacePageData = {
   /** This subspace's AVATAR visual — breadcrumb identity image. */
   subspaceAvatarUrl: string | undefined;
   parentSpaceId: string | undefined;
-  parentSpaceUrl: string | undefined;
-  parentSpaceName: string | undefined;
-  /** Parent's identity image: its avatar at L1, or its cardBanner when the parent is the L0 (which has no avatar). */
-  parentSpaceAvatarUrl: string | undefined;
-  /** L0 in the chain — only distinct from parent when viewing an L2 (else identical to parent). */
+  /** The returned depth-0 ancestor (021 D1), when the resolver returns it. */
   levelZeroSpaceId: string | undefined;
-  levelZeroSpaceUrl: string | undefined;
-  levelZeroSpaceName: string | undefined;
-  /** L0 identity image — the cardBanner (L0 has no avatar visual). */
-  levelZeroSpaceAvatarUrl: string | undefined;
+  /** Breadcrumb hops above this space: exactly the ancestors D1 returns, root-first. */
+  ancestorCrumbs: BreadcrumbTrailItem[];
+  /** A native space has no role set, community, collaboration or callouts set wrapper: each id is the space's own. */
   roleSetId: string | undefined;
   communityId: string | undefined;
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
-  /** Templates set + default subspace template — feed the Create-Subspace picker (FR-031, D21). */
-  templatesSetId: string | undefined;
-  defaultSubspaceTemplateId: string | undefined;
 
   /** Render data */
   banner: SubspaceBannerProps;
@@ -73,6 +57,8 @@ export type CrdSubspacePageData = {
   sidebar: SubspaceSidebarData;
   /** Ancestor spaces (outermost first) for the sidebar's stacked parent cards. */
   parentSpaceStack: ParentSpaceStackItem[];
+  /** The space tree is not served yet: the subspaces widget says so in place. */
+  subspacesUnavailable: boolean;
   /** Nested subspaces of the current subspace — fed into the sidebar widget. */
   subspaces: Array<{
     name: string;
@@ -84,16 +70,14 @@ export type CrdSubspacePageData = {
   }>;
   visibility: SpaceVisibilityData;
 
-  /** Innovation flow */
-  innovationFlowId: string | undefined;
+  /** Phases are the space's stages; the current stage is not served yet (021 tasks.md S01). */
   phases: SubspaceFlowPhase[];
   currentPhaseId: string | undefined;
   canEditFlow: boolean;
 
-  /** Sidebar configuration — a subspace has ONE sidebar for all its phases: the list stored
-   *  on its first phase (hidden phases included), resolved with the level's vocabulary. */
+  /** The subspace sidebar is `settings.subspace_sidebar`, resolved with the subspace vocabulary at every depth:
+   *  where no child can exist the data hides the subspace widgets (021 FR-015). */
   level: 'L1' | 'L2';
-  firstStateId: string | undefined;
   sidebarPlan: SidebarWidgetId[];
   sidebarSkips: SidebarWidgetSkipFlags;
 
@@ -101,172 +85,69 @@ export type CrdSubspacePageData = {
   canRead: boolean;
   canUpdate: boolean;
   canCreateSubspace: boolean;
-  /** CreateCallout on the calloutsSet — the Add Post gate (same as the L0 tabs). */
+  /** The Add Post gate (SpaceCan.createPost, legacy CreateCallout on the calloutsSet). */
   canCreateCallout: boolean;
-
-  /** Apply / Join CTA — pass-through from useApplicationButton */
-  applicationButtonProps: ReturnType<typeof useApplicationButton>['applicationButtonProps'];
-  applicationLoading: boolean;
 };
+
+type SpaceSettings = {
+  subspace_sidebar?: SidebarWidgetId[];
+  sort_mode?: string;
+  permissions?: { members_video_call?: boolean };
+} | null;
 
 export function useCrdSubspace(): CrdSubspacePageData {
   const { subspace, parentSpaceId, permissions, loading: subspaceContextLoading } = useSubSpace();
-  // L0 visibility flows down to subspaces — they share the level-zero space's status.
-  const { visibility } = useSpace();
+  const { space: routeSpace, ancestors, root } = useNativeRouteSpace();
 
   const subspaceId = subspace.id;
-  const subspaceNameId = subspace.nameId;
-  const roleSetId = subspace.about.membership?.roleSetID || undefined;
-  const communityId = subspace.about.membership?.communityID || undefined;
-
-  // Video call enablement & URL for the banner action icon (FR: show video icon when enabled).
-  const { isVideoCallEnabled, videoCallUrl } = useVideoCall(subspaceId, subspaceNameId);
-
-  // Subspace-specific page query (collaboration + calloutsSet IDs, templatesManager).
-  const { data: subspacePageData, loading: subspacePageLoading } = useSubspacePageQuery({
-    variables: { spaceId: subspaceId },
-    skip: !subspaceId,
-  });
-  const collaborationId = subspacePageData?.lookup.space?.collaboration.id;
-  const calloutsSetId = subspacePageData?.lookup.space?.collaboration.calloutsSet.id;
-  // Same gate every L0 space tab uses for Add Post: CreateCallout on the calloutsSet.
-  // Single source of truth — the same query useCalloutsSet fires on the callouts
-  // page, so Apollo serves both from one request/cache entry.
-  const { canCreateCallout, loading: calloutsSetAuthLoading } = useCalloutsSetAuthorization({ calloutsSetId });
-  // The SubspacePage query already fetches templatesManager.templatesSet.id — surface it
-  // so the Create-Subspace picker shows this space's own Space templates (D21).
-  const templatesSetId = subspacePageData?.lookup.space?.templatesManager?.templatesSet?.id;
-
-  // Configured default subspace template for FR-031 pre-selection — light query, non-blocking.
-  const { data: defaultTemplatesData } = useSpaceDefaultTemplatesQuery({
-    variables: { spaceId: subspaceId },
-    skip: !subspaceId,
-  });
-  const defaultSubspaceTemplateId = defaultTemplatesData?.lookup.space?.templatesManager?.templateDefaults?.find(
-    td => td.type === TemplateDefaultType.SpaceSubspace
-  )?.template?.id;
-
-  // Innovation flow phases + currentState (for default tab resolution).
-  const { data: flowData, loading: flowLoading } = useInnovationFlowDetailsQuery({
-    variables: { collaborationId: collaborationId ?? '' },
-    skip: !collaborationId,
-  });
-  const flow = flowData?.lookup.collaboration?.innovationFlow;
-  const innovationFlowId = flow?.id;
-  const canEditFlow = permissions.canUpdate;
-  // Hidden phases are removed from the live tab strip for everyone, including admins; admins
-  // still manage/unhide them in Settings → Layout. UI-only: hidden phases stay reachable by URL.
-  // No-op until the server exposes per-phase `visible` (graceful degradation).
-  const phases = mapInnovationFlowPhases(filterVisibleStates(flow?.states ?? []));
-  const currentPhaseId = flow?.currentState?.id;
-
-  // The subspace sidebar is the first phase's stored list. "First" is resolved over ALL
-  // states — a hidden first phase stays authoritative — never over the visibility-filtered
-  // tab strip above.
-  const level: 'L1' | 'L2' = subspace.level === SpaceLevel.L2 ? 'L2' : 'L1';
-  const firstState = selectFirstFlowState(flow?.states);
-  const sidebarPlan = resolveSidebarPlan(firstState?.settings.sidebar ?? [], SIDEBAR_WIDGET_IDS_BY_LEVEL[level]);
+  const space = pageSpace(useSpacePageData(subspaceId, 'space')?.node, subspaceId);
+  const settings = routeSpace?.settings as SpaceSettings;
+  const sidebarPlan = resolveSidebarPlan(
+    toWireSidebar(settings?.subspace_sidebar ?? []),
+    SIDEBAR_WIDGET_IDS_BY_LEVEL.L1
+  );
   const sidebarSkips = deriveWidgetSkips(sidebarPlan);
 
-  // Parent's banner image — fetched via the same about-details query the parent
-  // space already uses, so Apollo dedupes / serves from cache when navigating
-  // between sibling subspaces (per research R3).
-  const { data: parentAboutData, loading: parentAboutLoading } = useSpaceAboutDetailsQuery({
-    variables: { spaceId: parentSpaceId ?? '' },
-    skip: !parentSpaceId,
-  });
-  const parentSpace = parentAboutData?.lookup.space;
-  const parentProfile = parentSpace?.about.profile;
-
-  // L0 (top-level) ancestor — only fetched when viewing an L2 (where L0 differs from
-  // the immediate parent). Needed to render the full L0 → L1 → L2 breadcrumb chain.
-  const { levelZeroSpaceId } = useUrlResolver();
-  const needL0Lookup = !!levelZeroSpaceId && levelZeroSpaceId !== parentSpaceId;
-  const { data: levelZeroAboutData, loading: levelZeroAboutLoading } = useSpaceAboutDetailsQuery({
-    variables: { spaceId: levelZeroSpaceId ?? '' },
-    skip: !needL0Lookup,
-  });
-  const levelZeroProfile = needL0Lookup ? levelZeroAboutData?.lookup.space?.about.profile : parentProfile;
-
-  // Ancestor chain for the sidebar's stacked parent cards, outermost first:
-  // L1 page → [L0]; L2 page → [L0, L1]. Card banners with the deterministic
-  // gradient as fallback; taglines are plain text (never markdown descriptions).
-  const parentStackItem = (id: string | undefined, profile: typeof parentProfile): ParentSpaceStackItem | undefined =>
-    profile?.url
-      ? {
-          name: profile.displayName,
-          initials: getInitials(profile.displayName),
-          href: profile.url,
-          bannerUrl: profile.cardBanner?.uri || undefined,
-          color: pickColorFromId(id ?? profile.displayName),
-          tagline: profile.tagline ?? undefined,
-        }
-      : undefined;
-  const parentSpaceStack = [
-    ...(needL0Lookup ? [parentStackItem(levelZeroSpaceId, levelZeroProfile)] : []),
-    parentStackItem(parentSpaceId, parentProfile),
-  ].filter((item): item is ParentSpaceStackItem => Boolean(item));
-
-  // Apply / Join CTA — useApplicationButton handles parent-membership requirement
-  // when parentSpaceId is supplied (per research R8).
-  const { applicationButtonProps, loading: applicationLoading } = useApplicationButton({
-    spaceId: subspaceId,
-    parentSpaceId,
-    loading: subspaceContextLoading,
-  });
+  // The collapsed rail and the 7 rows read the subspaces of the page's space tree.
+  const spaceTree = useSpaceTree(subspaceId);
+  const subspaces = treeSubspaces(spaceTree.tree).map(child => ({
+    name: child.about.displayName,
+    initials: getInitials(child.about.displayName),
+    href: child.url ?? '',
+    avatarUrl: child.about.avatar?.file.url,
+    isPrivate: !child.isContentPublic,
+    isPinned: settings?.sort_mode === 'alphabetical' && Boolean(child.pinned),
+  }));
 
   const subspaceProfile = subspace.about.profile;
   const subspaceUrl = subspaceProfile.url ?? '';
-
+  const hops = ancestors.filter(ancestor => ancestor.id !== subspaceId);
   const banner = mapSubspaceBanner({
     subspaceProfile,
-    levelZeroSpaceId,
-    levelZeroProfile,
+    levelZeroSpaceId: root?.id,
+    levelZeroProfile: root && rootFaceAbout(root).profile,
   });
 
+  // L062: the room exists for every readable space; members may use it when the space allows it.
+  const videoCallUrl =
+    settings?.permissions?.members_video_call === true ? (space?.videoCallUrl ?? undefined) : undefined;
   const bannerActions = mapSubspaceHeaderActions({
     shareUrl: subspaceUrl || undefined,
     canUpdate: permissions.canUpdate,
-    videoCallEnabled: isVideoCallEnabled,
-    videoCallUrl: videoCallUrl || undefined,
+    videoCallEnabled: Boolean(videoCallUrl),
+    videoCallUrl,
   });
 
   const sidebar = mapSubspaceSidebar({
     description: subspaceProfile.description,
     leadUsers: subspace.about.membership?.leadUsers,
     leadOrganizations: subspace.about.membership?.leadOrganizations,
-    // Virtual contributor data isn't part of SubspaceContext today.
-    // Plan D13: hide section when none — keep undefined here, surface follow-up.
+    // Subspaces never render the virtual-contributors widget (021 data-model.md "The page needs").
     virtualContributor: undefined,
   });
 
-  // Nested subspaces (L2s) shown by the sidebar widget. Reuses the same hook the
-  // L0 dashboard uses for its children list — it works for any space level.
-  // Skipped when the `subspaceLinks` widget is not configured — no fetch for an unrendered widget.
-  const { dashboardNavigation } = useSpaceDashboardNavigation({
-    spaceId: subspaceId,
-    skip: sidebarSkips.subspaceLinks,
-  });
-  const subspaces =
-    dashboardNavigation?.children?.map(child => ({
-      name: child.displayName,
-      initials: getInitials(child.displayName),
-      href: child.url,
-      avatarUrl: child.avatar?.uri,
-      isPrivate: child.private,
-      isPinned: child.pinned,
-    })) ?? [];
-
-  const visibilityData = mapSpaceVisibility(visibility);
-
   return {
-    loading:
-      subspaceContextLoading ||
-      subspacePageLoading ||
-      flowLoading ||
-      parentAboutLoading ||
-      levelZeroAboutLoading ||
-      calloutsSetAuthLoading,
+    loading: subspaceContextLoading,
     notFound: !subspaceContextLoading && !subspaceId,
 
     subspaceId,
@@ -274,48 +155,39 @@ export function useCrdSubspace(): CrdSubspacePageData {
     subspaceUrl,
     subspaceAvatarUrl: subspaceProfile.avatar?.uri || undefined,
     parentSpaceId,
-    parentSpaceUrl: parentProfile?.url ?? undefined,
-    parentSpaceName: parentProfile?.displayName ?? undefined,
-    // When the immediate parent IS the L0 (viewing an L1), it has no avatar —
-    // its cardBanner is the identity image. An L1 parent (viewing an L2) uses
-    // its own avatar.
-    parentSpaceAvatarUrl: (needL0Lookup ? parentProfile?.avatar?.uri : parentProfile?.cardBanner?.uri) || undefined,
-    levelZeroSpaceId,
-    levelZeroSpaceUrl: levelZeroProfile?.url ?? undefined,
-    levelZeroSpaceName: levelZeroProfile?.displayName ?? undefined,
-    levelZeroSpaceAvatarUrl: levelZeroProfile?.cardBanner?.uri || undefined,
-    roleSetId,
-    communityId,
-    collaborationId,
-    calloutsSetId,
-    templatesSetId,
-    defaultSubspaceTemplateId,
+    levelZeroSpaceId: root?.id,
+    ancestorCrumbs: mapAncestorCrumbs(hops),
+    roleSetId: subspaceId || undefined,
+    communityId: subspaceId || undefined,
+    collaborationId: subspaceId || undefined,
+    calloutsSetId: subspaceId || undefined,
 
     banner,
     bannerActions,
     sidebar,
-    parentSpaceStack,
+    parentSpaceStack: mapParentSpaceStack(hops),
     subspaces,
-    visibility: visibilityData,
+    subspacesUnavailable: spaceTree.notServed,
+    // The status notice is the space's own status (SpaceStatus shares the legacy SpaceVisibility values).
+    visibility: mapSpaceVisibility(space?.status as SpaceVisibility | undefined),
 
-    innovationFlowId,
-    phases,
-    currentPhaseId,
-    canEditFlow,
+    phases: mapInnovationFlowPhases(
+      orderedStages(space?.stages).map(stage => ({
+        id: stage.id,
+        displayName: stage.name,
+        description: stage.description,
+      }))
+    ),
+    currentPhaseId: undefined,
+    canEditFlow: permissions.canUpdate,
 
-    level,
-    firstStateId: firstState?.id,
+    level: subspace.level === SpaceLevel.L2 ? 'L2' : 'L1',
     sidebarPlan,
     sidebarSkips,
 
     canRead: permissions.canRead,
     canUpdate: permissions.canUpdate,
-    // Spaces are capped at 3 levels (L0 → L1 → L2). An L2 cannot have children,
-    // so creation is offered only on L1 even if the backend grants the privilege.
-    canCreateSubspace: permissions.canCreateSubspace && subspace.level !== SpaceLevel.L2,
-    canCreateCallout,
-
-    applicationButtonProps,
-    applicationLoading,
+    canCreateSubspace: permissions.canCreateSubspace,
+    canCreateCallout: space?.can.createPost ?? false,
   };
 }

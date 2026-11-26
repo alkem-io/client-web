@@ -10,6 +10,8 @@
   "license": "EUPL-1.2",
   "author": "Alkemio",
   "scripts": {
+    "check:legacy-pages": "node scripts/parity/no-new-pages.mjs",
+    "test:legacy-pages": "vitest run --config scripts/parity/vitest.config.mts",
     "analyze": "ANALYZE=true pnpm build",
     "analyze:dev": "ANALYZE=true pnpm build:dev",
     "analyze:sentry": "ANALYZE=true pnpm build:sentry",
@@ -39,7 +41,10 @@
     "test:upload:coverage": "pnpm run test:coverage && cat ./coverage/lcov.info ",
     "typecheck:native": "tsc -p tsconfig.json --noEmit",
     "ts:watch": "tsc --noEmit --watch",
-    "prepare": "husky"
+    "prepare": "husky",
+    "codegen:v2": "graphql-codegen --require dotenv-flow/config --config codegen.v2.yml",
+    "codegen:native-vocabulary": "node scripts/native/generate-vocabulary.mjs codegen/native/vocabulary.source.json && biome format --write src/core/apollo/generated-v2/legacy-vocabulary.ts src/core/apollo/generated/graphql-schema.ts",
+    "codegen:way-back": "pnpm run codegen:v2 && pnpm run codegen:native-vocabulary"
   },
   "browserslist": {
     "production": [
@@ -219,7 +224,8 @@
     "vite": "^7.3.0",
     "vite-plugin-svgr": "^4.2.0",
     "vite-tsconfig-paths": "^4.2.0",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.16",
+    "@graphql-codegen/fragment-matcher": "^5.1.0"
   },
   "optionalDependencies": {
     "@rollup/rollup-win32-x64-msvc": "^4.40.0"

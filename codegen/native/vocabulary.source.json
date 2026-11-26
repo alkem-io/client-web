@@ -1,0 +1,31 @@
+{
+  "vocabulary": {
+    "path": "codegen/native/vocabulary.input.json",
+    "sha256": "78e02b1af95585967082a0355b242b00ed5ee310e69f14e8665e9ca1fc509d99"
+  },
+  "clientDeclarations": {
+    "path": "codegen/native/legacy-client-enums.ts.txt",
+    "sha256": "2a927aa6217221b842abc0eb0e375b41c0849cf56394de6f8b8746d7b29db2e0"
+  },
+  "roleDeclarations": {
+    "path": "codegen/native/role.name.ts.txt",
+    "sha256": "f7374215e76e49067015c24c662851bd12a1aab5944e07880d03c3567fb8fa2d"
+  },
+  "entitlementDeclarations": {
+    "path": "codegen/native/license.entitlement.type.ts.txt",
+    "sha256": "1845375f21f1e963bad73aab41454b42e213588711bf1a85ff861fa93c7dc907"
+  },
+  "serverCommit": "47aa8abaa7548b68b1ce10362d8ee61c102d6c48",
+  "legacyServerCommit": "29df1a67b2421922058e3d20bf95e957e69f9f03",
+  "legacyClientCommit": "fed85e3fea9dc8daf0e777589d3236472e8271a6",
+  "state": "KERNEL-BOUND until item02 lands",
+  "output": "src/core/apollo/generated-v2/legacy-vocabulary.ts",
+  "legacyModule": {
+    "path": "src/core/apollo/generated/graphql-schema.ts",
+    "targetModule": "../generated-v2/legacy-vocabulary"
+  },
+  "declaredExclusions": {
+    "Anonymous": "Legacy audience pseudo-role, never a credential (Fable cye8zoe6wdp9)",
+    "Guest": "Legacy audience pseudo-role, never a credential (Fable cye8zoe6wdp9)"
+  }
+}

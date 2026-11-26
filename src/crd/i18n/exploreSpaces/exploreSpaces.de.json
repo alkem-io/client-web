@@ -29,6 +29,8 @@
     "loading": "Räume werden geladen",
     "moreLeads": "{{count}} weitere Leiter",
     "moreTags": "{{count}} weitere Tags",
-    "removeFilter": "Filter entfernen"
+    "removeFilter": "Filter entfernen",
+    "rootBrowseOnly": "Haupträume sind verfügbar. Suche, Filter, Unterräume, Bilder und Leitende sind noch nicht verfügbar.",
+    "locked": "Gesperrt"
   }
 }

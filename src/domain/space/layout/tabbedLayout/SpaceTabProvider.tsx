@@ -1,12 +1,11 @@
-import { useEffect, useRef } from 'react';
-import { useSpaceTabQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, type SpaceTabQuery, TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import type { InnovationFlowStateModel } from '@/domain/collaboration/InnovationFlow/models/InnovationFlowStateModel';
 import type { UrlResolverContextValue } from '@/main/routing/urlResolver/UrlResolverProvider';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import type { SpaceAboutLightModel } from '../../about/model/spaceAboutLight.model';
 import { useSpace } from '../../context/useSpace';
+import { orderedStages, useSpacePageData } from '../../hooks/useSpacePage';
 
 interface SpaceTabProvided {
   urlInfo: UrlResolverContextValue;
@@ -27,80 +26,39 @@ type useSpaceTabProviderParams = {
   skip?: boolean;
 };
 
+/**
+ * 021 F028: the tab's stage from the D2 Space document the layout loaded; natively there is no calloutsSet or
+ * innovation-flow wrapper, so the set id is the space id. Stage settings (sidebar, visibility) and the stage
+ * editing capability are not served yet (S01): the sidebar is unknown and the flow is not editable.
+ */
 const useSpaceTabProvider = ({ tabPosition, skip }: useSpaceTabProviderParams): SpaceTabProvided => {
   const urlInfo = useUrlResolver();
   const {
     space: { id: spaceId },
   } = useSpace();
-  const lastQueriedIdRef = useRef<string | null>(null);
-  const lastSpaceTabDataRef = useRef<SpaceTabQuery | undefined>(undefined);
-  const shouldSkip = skip || !spaceId || lastQueriedIdRef.current === spaceId;
-
-  const {
-    data: spaceTabData,
-    loading: loadingSpaceTab,
-    refetch: refetchSpaceTab,
-  } = useSpaceTabQuery({
-    variables: { spaceId: spaceId },
-    skip: shouldSkip,
-  });
-
-  useEffect(() => {
-    if (spaceId && !loadingSpaceTab && !skip) {
-      lastQueriedIdRef.current = spaceId;
-      lastSpaceTabDataRef.current = spaceTabData;
-    }
-  }, [spaceId, loadingSpaceTab, skip]);
-
-  const dataToUse = spaceTabData || lastSpaceTabDataRef.current;
-
-  const memoizedData = (() => {
-    const space = dataToUse?.lookup.space;
-
-    const myPrivileges = space?.authorization?.myPrivileges;
-    const canReadSpace = myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
-    const innovationFlow = space?.collaboration.innovationFlow;
-    const innovationFlowStates = innovationFlow?.states;
-    const canEditInnovationFlow =
-      innovationFlow?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateInnovationFlow) ?? false;
-    const about: SpaceAboutLightModel | undefined = space?.about;
-    const calloutsSetId = space?.collaboration.calloutsSet.id;
-
-    let flowState: InnovationFlowStateModel | undefined;
-    if (innovationFlowStates && innovationFlowStates?.length >= tabPosition) {
-      flowState = innovationFlowStates[tabPosition];
-    }
-
-    let classificationTagsets: ClassificationTagsetModel[] = [];
-    if (flowState) {
-      classificationTagsets = [
-        {
-          name: TagsetReservedName.FlowState,
-          tags: [flowState.displayName],
-        },
-      ];
-    }
-
-    const tabDescription = space?.collaboration.innovationFlow.states[tabPosition]?.description ?? '';
-
-    return {
-      canReadSpace,
-      innovationFlowStates,
-      flowStateForNewCallouts: flowState,
-      about,
-      tabDescription,
-      calloutsSetId,
-      classificationTagsets,
-      canEditInnovationFlow,
-    };
-  })();
+  const node = useSpacePageData(skip ? undefined : spaceId || undefined, 'space')?.node;
+  const stages = node && 'stages' in node ? orderedStages(node.stages) : undefined;
+  const innovationFlowStates = stages?.map(stage => ({
+    id: stage.id,
+    displayName: stage.name,
+    description: stage.description ?? undefined,
+    settings: { allowNewCallouts: true },
+    sortOrder: stage.sortOrder,
+  }));
+  const flowState = innovationFlowStates?.[tabPosition];
 
   return {
     urlInfo,
-    refetch: refetchSpaceTab,
-    loading: loadingSpaceTab,
+    innovationFlowStates,
+    flowStateForNewCallouts: flowState,
+    about: undefined,
+    classificationTagsets: flowState ? [{ name: TagsetReservedName.FlowState, tags: [flowState.displayName] }] : [],
+    calloutsSetId: node?.id,
+    tabDescription: flowState?.description ?? '',
+    canEditInnovationFlow: false,
+    refetch: () => Promise.resolve(),
+    loading: !skip && !node,
     updating: false,
-    ...memoizedData,
   };
 };
 

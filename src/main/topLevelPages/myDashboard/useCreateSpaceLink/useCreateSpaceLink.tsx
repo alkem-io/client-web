@@ -1,31 +1,22 @@
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildUserAccountUrl } from '@/main/routing/urlBuilders';
 
+/**
+ * Sidebar 'Create my own space' (screens-dispositions.tsv:4920 / :16193): the account page when the viewer's account
+ * may create a space (AccountSummary.canCreate kind `space`, which aggregates the CREATE_SPACE verdict and an available
+ * account-space-* entitlement, client-repoint.md Licensing), else the static page.
+ */
 export const useCreateSpaceLink = () => {
   const { t } = useTranslation();
-  const { userModel, accountPrivileges, loading, accountEntitlements } = useCurrentUserContext();
+  const { userModel, loading, accountCanCreate } = useCurrentUserContext();
 
   const STATIC_PAGE_LINK = t('pages.home.sections.startingSpace.url');
 
-  const link = (() => {
-    if (loading) {
-      return STATIC_PAGE_LINK;
-    }
-
-    const isEntitledToCreateSpace = [
-      LicenseEntitlementType.AccountSpaceFree,
-      LicenseEntitlementType.AccountSpacePlus,
-      LicenseEntitlementType.AccountSpacePremium,
-    ].some(entitlement => accountEntitlements.includes(entitlement));
-
-    if (accountPrivileges.includes(AuthorizationPrivilege.CreateSpace) && isEntitledToCreateSpace) {
-      return buildUserAccountUrl(userModel?.profile?.url);
-    }
-
-    return STATIC_PAGE_LINK;
-  })();
+  const link =
+    !loading && accountCanCreate?.some(verdict => verdict.kind === 'space' && verdict.allowed)
+      ? buildUserAccountUrl(userModel?.profile?.url)
+      : STATIC_PAGE_LINK;
 
   return { loading, link };
 };

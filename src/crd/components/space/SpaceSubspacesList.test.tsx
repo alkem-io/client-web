@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 
@@ -32,6 +32,34 @@ function card(id: string, name: string, extra: Partial<SpaceCardData> = {}): Spa
 }
 
 describe('SpaceSubspacesList — variant', () => {
+  test('continues at the end of the visible children without a Load more button', () => {
+    mockUseElementWidth.mockReturnValue([undefined, vi.fn()]);
+    let intersect: IntersectionObserverCallback | undefined;
+    const disconnect = vi.fn();
+    vi.stubGlobal(
+      'IntersectionObserver',
+      class {
+        constructor(callback: IntersectionObserverCallback) {
+          intersect = callback;
+        }
+        observe() {}
+        disconnect = disconnect;
+      }
+    );
+    try {
+      const onLoadMore = vi.fn();
+      const props = { subspaces: [card('a', 'Alpha')], initialVisibleCount: 1, onLoadMore, hasMore: true };
+      const view = render(<SpaceSubspacesList {...props} />);
+      expect(screen.queryByText(/subspaces.showMore/)).toBeNull();
+      act(() => intersect?.([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver));
+      expect(onLoadMore).toHaveBeenCalledOnce();
+      view.rerender(<SpaceSubspacesList {...props} hasMore={false} />);
+      expect(disconnect).toHaveBeenCalledOnce();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   test('default (no variant) is unchanged: 3-up grid, 6 visible of 8, SpaceCards', () => {
     mockUseElementWidth.mockReturnValue([undefined, vi.fn()]);
     const cards = Array.from({ length: 8 }, (_, i) => card(`s${i}`, `Space ${i}`));

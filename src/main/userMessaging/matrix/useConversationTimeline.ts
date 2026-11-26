@@ -4,13 +4,12 @@ import { useMatrixClient, useMatrixSessionEstablishing } from '@/core/matrix/act
 import { newestMessageLikeId, type ParsedMessage, projectMessages } from './matrixEvents';
 import {
   CLIENT_ROOM,
-  CLIENT_SYNC,
   homeserverOf,
   liveEvents,
+  nativeMatrixId,
   ROOM_LOCAL_ECHO_UPDATED,
   ROOM_REDACTION,
   ROOM_TIMELINE,
-  resolveMatrixRoomId,
 } from './matrixRooms';
 
 // The GraphQL history this replaces returned the room's last 1,000 events;
@@ -61,9 +60,14 @@ const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineSta
     if (!client || !roomKey) {
       return;
     }
+    const matrixRoomId = nativeMatrixId(roomKey, '!', client);
+    if (!matrixRoomId) {
+      setState({ roomKey, messages: [], readUpToEventId: null, isLoading: false });
+      return;
+    }
     let cancelled = false;
     let loading = true;
-    let room: Room | null = null;
+    let room = client.getRoom(matrixRoomId);
     const homeserver = homeserverOf(client);
 
     const refresh = () => {
@@ -108,7 +112,6 @@ const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineSta
         void load();
       }
     };
-    let matrixRoomId: string | null = null;
     const onRoom = (newRoom: Room) => {
       if (!room && newRoom.roomId === matrixRoomId) {
         room = newRoom;
@@ -116,39 +119,13 @@ const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineSta
       }
     };
 
-    let lookupFailed = false;
-    const lookUp = () =>
-      resolveMatrixRoomId(client, roomKey).then(resolved => {
-        if (cancelled) {
-          return;
-        }
-        matrixRoomId = resolved;
-        lookupFailed = !resolved;
-        room = resolved ? client.getRoom(resolved) : null;
-        if (room) {
-          void load();
-        } else if (!resolved) {
-          setState({ roomKey, messages: [], readUpToEventId: null, isLoading: false });
-        }
-      });
-    // A lookup that failed before the first sync (homeserver not yet reachable)
-    // left the conversation empty; look it up again now.
-    const onSync = (syncState: string) => {
-      if (syncState === 'PREPARED' && lookupFailed) {
-        lookupFailed = false;
-        void lookUp();
-      }
-    };
-
-    setState({ roomKey, messages: [], readUpToEventId: null, isLoading: true });
+    setState({ roomKey, messages: [], readUpToEventId: null, isLoading: Boolean(room) });
     client.on(ROOM_TIMELINE as never, onTimeline as never);
     client.on(ROOM_REDACTION as never, onTimeline as never);
     client.on(ROOM_LOCAL_ECHO_UPDATED as never, onLocalEcho as never);
     client.on(ROOM_TIMELINE_RESET as never, onReset as never);
     client.on(CLIENT_ROOM as never, onRoom as never);
-    client.on(CLIENT_SYNC as never, onSync as never);
-
-    void lookUp();
+    if (room) void load();
 
     return () => {
       cancelled = true;
@@ -157,7 +134,6 @@ const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineSta
       client.removeListener(ROOM_LOCAL_ECHO_UPDATED as never, onLocalEcho as never);
       client.removeListener(ROOM_TIMELINE_RESET as never, onReset as never);
       client.removeListener(CLIENT_ROOM as never, onRoom as never);
-      client.removeListener(CLIENT_SYNC as never, onSync as never);
     };
   }, [client, roomKey]);
 

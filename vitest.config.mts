@@ -23,6 +23,7 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    globalSetup: ['scripts/vitest-global-setup.mjs'],
     setupFiles: ['src/setupTests.ts'],
     globals: true,
     // Unit/component tests live under src/. Both Playwright e2e suites run on

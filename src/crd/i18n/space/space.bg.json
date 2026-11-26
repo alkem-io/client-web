@@ -13,7 +13,8 @@
     "dashboard": "Табло",
     "community": "Общност",
     "subspaces": "Подпространства",
-    "knowledgeBase": "База знания"
+    "knowledgeBase": "База знания",
+    "unavailable": "Това съдържание все още не е налично."
   },
   "visibility": {
     "archived": "Това пространство е архивирано и е само за четене.",

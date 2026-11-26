@@ -6,6 +6,7 @@ import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import type { Severity } from '@/core/state/global/notifications/useNotifications';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
+import { isNativeErrorCode, NativeErrorCode, nativeErrorKey } from './nativeErrorWording';
 
 /**
  * Attempts to translate using the server-provided userMessage as an i18n key.
@@ -61,6 +62,12 @@ export const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction
   const numericCode = error.extensions?.numericCode as number | undefined;
   const meta = { code, message, errorId: numericCode };
 
+  // The native server's codes, in the legacy wording of the same situation (nativeErrorWording.ts).
+  const nativeKey = nativeErrorKey(error);
+  if (nativeKey) {
+    return t(nativeKey as TranslationKey, meta);
+  }
+
   // First, try to use userMessage as an i18n key (server-provided translation key)
   const userMessageTranslation = getTranslationForUserMessage(userMessage, t, i18n, meta);
   if (userMessageTranslation) {
@@ -97,7 +104,9 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
 
     const code = graphqlError.extensions?.code as string | undefined;
     const detail = stripIdsFromMessage(graphqlError.message);
-    if (detail && detail !== translation && code !== AlkemioGraphqlErrorCode.UNSPECIFIED) {
+    // A native code's server text is its bare classification ("forbidden", "conflict"); the wording above already
+    // says it. A VALIDATION field message is the wording itself (badUserInput's {{message}}).
+    if (detail && detail !== translation && code !== AlkemioGraphqlErrorCode.UNSPECIFIED && !isNativeErrorCode(code)) {
       notify(detail, severity, numericCode);
     }
   };
@@ -153,7 +162,10 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
 export const isApolloNotFoundError = (error: ApolloError | undefined) => {
   if (error?.graphQLErrors) {
     const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
-    return extensions.some(extension => extension?.code === AlkemioGraphqlErrorCode.ENTITY_NOT_FOUND);
+    return extensions.some(
+      extension =>
+        extension?.code === AlkemioGraphqlErrorCode.ENTITY_NOT_FOUND || extension?.code === NativeErrorCode.NOT_FOUND
+    );
   }
   return false;
 };

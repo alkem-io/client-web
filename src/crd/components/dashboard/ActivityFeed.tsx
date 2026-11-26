@@ -39,6 +39,8 @@ type ActivityFeedProps = {
   hasMore?: boolean;
   /** When true, renders a loading skeleton at the bottom while the next page is being fetched. */
   loadingMore?: boolean;
+  /** Shown in place of the filters and the list while the feed is not served. */
+  unavailableText?: string;
   className?: string;
 };
 
@@ -60,6 +62,7 @@ export function ActivityFeed({
   onLoadMore,
   hasMore,
   loadingMore,
+  unavailableText,
   className,
 }: ActivityFeedProps) {
   const { t } = useTranslation('crd-dashboard');
@@ -82,19 +85,29 @@ export function ActivityFeed({
     return () => observer.disconnect();
   }, [lazyLoadEnabled, onLoadMore]);
 
+  const container = cn(
+    'flex flex-col overflow-hidden',
+    !embedded && 'h-full rounded-lg border border-border bg-card p-4 shadow-sm',
+    className
+  );
+  const heading = title && (
+    <div className="mb-4 flex items-center justify-between shrink-0">
+      <h3 className="text-subsection-title">{title}</h3>
+    </div>
+  );
+
+  if (unavailableText) {
+    return (
+      <div className={container}>
+        {heading}
+        <p className="text-body text-muted-foreground">{unavailableText}</p>
+      </div>
+    );
+  }
+
   return (
-    <div
-      className={cn(
-        'flex flex-col overflow-hidden',
-        !embedded && 'h-full rounded-lg border border-border bg-card p-4 shadow-sm',
-        className
-      )}
-    >
-      {title && (
-        <div className="mb-4 flex items-center justify-between shrink-0">
-          <h3 className="text-subsection-title">{title}</h3>
-        </div>
-      )}
+    <div className={container}>
+      {heading}
 
       {/* Filter row — render only when at least one filter has options. Dialog usage scoped
           to a single space passes no options and we hide the row entirely (avoiding the

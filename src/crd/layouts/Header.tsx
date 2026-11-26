@@ -5,6 +5,7 @@ import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import { PlatformNavigationMenu } from '@/crd/layouts/components/PlatformNavigationMenu';
 import { UserMenu } from '@/crd/layouts/components/UserMenu';
 import type {
+  CrdAuthenticationState,
   CrdLanguageOption,
   CrdNavigationHrefs,
   CrdPlatformNavigationItem,
@@ -37,6 +38,12 @@ function HeaderIconButton({ onClick, href, ariaLabel, icon, badge }: HeaderIconB
       </Button>
     );
   }
+  if (!href)
+    return (
+      <Button variant="ghost" size="icon" disabled={true} aria-label={ariaLabel}>
+        {icon}
+      </Button>
+    );
   return (
     <Button
       variant="ghost"
@@ -55,7 +62,7 @@ function HeaderIconButton({ onClick, href, ariaLabel, icon, badge }: HeaderIconB
 
 type HeaderProps = {
   user?: CrdUserInfo;
-  authenticated: boolean;
+  authenticated?: CrdAuthenticationState;
   navigationHrefs: CrdNavigationHrefs;
   isAdmin?: boolean;
   pendingInvitationsCount?: number;
@@ -183,9 +190,10 @@ export function Header({
                 icon={<Search aria-hidden="true" className="w-5 h-5" />}
               />
 
-              {authenticated && (
+              {authenticated === true && user && (onMessagesClick || navigationHrefs.messages) && (
                 <HeaderIconButton
                   onClick={onMessagesClick}
+                  href={navigationHrefs.messages}
                   ariaLabel={t('header.messages')}
                   icon={<MessageCircle aria-hidden="true" className="w-5 h-5" />}
                   badge={
@@ -199,7 +207,7 @@ export function Header({
                 />
               )}
 
-              {authenticated && (
+              {authenticated === true && user && (onNotificationsClick || navigationHrefs.notifications) && (
                 <HeaderIconButton
                   onClick={onNotificationsClick}
                   href={navigationHrefs.notifications}
@@ -236,20 +244,39 @@ export function Header({
 
               <div className={cn('h-6 w-px hidden md:block', isTransparent ? 'bg-foreground/20' : 'bg-border')} />
 
-              <UserMenu
-                user={user}
-                authenticated={authenticated}
-                navigationHrefs={navigationHrefs}
-                isAdmin={isAdmin}
-                pendingInvitationsCount={pendingInvitationsCount}
-                languages={languages}
-                currentLanguage={currentLanguage}
-                onLogout={onLogout}
-                onPendingMembershipsClick={onPendingMembershipsClick}
-                onHelpClick={onHelpClick}
-                onLanguageChange={onLanguageChange}
-                showGridToggle={showGridToggle}
-              />
+              {authenticated === 'loading' ? (
+                <output>{t('loading', { ns: 'crd-common' })}</output>
+              ) : authenticated === 'unavailable' ? null : authenticated && !user ? (
+                <Button variant="ghost" size="sm" onClick={onLogout} disabled={!onLogout}>
+                  {t('header.logout')}
+                </Button>
+              ) : authenticated === undefined ? (
+                <>
+                  <Button variant="ghost" size="sm" asChild={true}>
+                    <a href={navigationHrefs.login}>{t('header.login')}</a>
+                  </Button>
+                  {onLogout && (
+                    <Button variant="ghost" size="sm" onClick={onLogout}>
+                      {t('header.logout')}
+                    </Button>
+                  )}
+                </>
+              ) : (
+                <UserMenu
+                  user={user}
+                  authenticated={authenticated}
+                  navigationHrefs={navigationHrefs}
+                  isAdmin={isAdmin}
+                  pendingInvitationsCount={pendingInvitationsCount}
+                  languages={languages}
+                  currentLanguage={currentLanguage}
+                  onLogout={onLogout}
+                  onPendingMembershipsClick={onPendingMembershipsClick}
+                  onHelpClick={onHelpClick}
+                  onLanguageChange={onLanguageChange}
+                  showGridToggle={showGridToggle}
+                />
+              )}
             </nav>
           </div>
         </div>

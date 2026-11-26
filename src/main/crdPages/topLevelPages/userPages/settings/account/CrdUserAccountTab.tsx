@@ -214,13 +214,10 @@ const CrdUserAccountTab = () => {
         onCancel={() => setNoEntitlementResource(null)}
       />
       {/* CRD create dialogs (specs 105 + 109); VC wizard below is the remaining fallback (spec 097). */}
+      {/* Reads its own hosting account (viewer.account, 023 FR-020), not this tab's legacy account read. */}
+      <CrdCreateSpaceDialog open={createSpaceOpen} onClose={() => setCreateSpaceOpen(false)} />
       {account?.id && (
         <>
-          <CrdCreateSpaceDialog
-            accountId={account.id}
-            open={createSpaceOpen}
-            onClose={() => setCreateSpaceOpen(false)}
-          />
           {/* No accountName on the user's own account → "…in your account" subtitle (matches Create Space). */}
           <CrdCreateInnovationPackDialog
             accountId={account.id}

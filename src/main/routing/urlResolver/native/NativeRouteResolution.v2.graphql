@@ -1,0 +1,48 @@
+# replaces: UrlResolver's entity/hierarchy facts, not its legacy layouts.
+# specs/021-space-pages data-model.md D1: the owning space's page inputs and the ancestors' faces ride the resolution.
+query NativeRouteResolution($url: String!) {
+  resolve(url: $url) {
+    matchedPrefix
+    remainder
+    state
+    node {
+      id
+      entityType
+      __typename
+      ... on Space { kind ...SpaceInputs }
+      ... on Post { url contentKind parentPost { id } }
+    }
+    ancestors {
+      id
+      entityType
+      __typename
+      ... on Space {
+        kind
+        depth
+        url
+        about {
+          displayName
+          tagline
+          avatar { alt file { id url } }
+          card { alt file { id url } }
+          banner { alt aspectRatio file { id url } }
+        }
+      }
+    }
+    closestReadable {
+      id
+      entityType
+      __typename
+      ... on Space { url }
+    }
+    space { id entityType kind ...SpaceInputs }
+    homepage { id }
+  }
+}
+
+fragment SpaceInputs on Space {
+  depth
+  url
+  settings
+  stages { id sortOrder }
+}

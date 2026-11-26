@@ -33,6 +33,8 @@ type SubspacesSectionProps = {
    * instead of appearing later and pushing the widgets below it down.
    */
   loading?: boolean;
+  /** Shown under the heading in place of the list while the subspaces are not available; the section stays visible. */
+  unavailableMessage?: string;
   className?: string;
 };
 
@@ -43,10 +45,22 @@ export function SubspacesSection({
   onSubspaceClick,
   onCreateClick,
   loading = false,
+  unavailableMessage,
   className,
 }: SubspacesSectionProps) {
   const { t } = useTranslation('crd-space');
   const { t: tCommon } = useTranslation('crd-common');
+
+  if (unavailableMessage) {
+    return (
+      <div className={className}>
+        <div className="flex items-center justify-between mb-3 px-1">
+          <h3 className="uppercase text-label text-muted-foreground">{t('sidebar.subspaces')}</h3>
+        </div>
+        <p className="px-1 text-body text-muted-foreground">{unavailableMessage}</p>
+      </div>
+    );
+  }
 
   if (loading && subspaces.length === 0) {
     return (

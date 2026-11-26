@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import type {
   PendingMembership,
@@ -13,6 +12,7 @@ import type {
   CommunityVC,
 } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
 import { useResendPlatformInvitationAction } from '@/domain/access/ApplicationsAndInvitations/useResendPlatformInvitationAction';
+import { REQUEST_CANCEL_EVENT } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import type { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import {
   ApplicationEvent,
@@ -21,7 +21,9 @@ import {
   InvitationState,
 } from '@/domain/community/invitations/InvitationApplicationConstants';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import useCommunityAdmin from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
+import useCommunityAdmin, {
+  type CommunityGates,
+} from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
 import useCommunityPolicyChecker from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityPolicyChecker';
 
 export type CommunityPendingRemoval =
@@ -63,10 +65,11 @@ export type UseCommunityTabDataResult = {
     canAddVirtualContributors: boolean;
   };
   /**
-   * Raw role-set privileges plus the privilege-query loading flag, forwarded so the page
-   * can derive per-control gating that distinguishes checking / denied / unverifiable.
+   * The native verdicts (SpaceCan.invite / SpaceCan.manageMembers / the add-VC picker) plus their
+   * loading flag, forwarded so the page can derive per-control gating that distinguishes
+   * checking / denied / unverifiable.
    */
-  myPrivileges: AuthorizationPrivilege[] | undefined;
+  gates: CommunityGates;
   /**
    * Aggregate lead-role policy: derived from `leadRoleDefinition.{user,organization}Policy`
    * and the current count of leads. Per-user disabled state is `(!canAddLead && !row.isLead) ||
@@ -154,8 +157,8 @@ const mapInvitationState = (state: string): PendingMembershipState | null => {
   }
 };
 
-export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResult {
-  const community = useCommunityAdmin({ roleSetId });
+export function useCommunityTabData(spaceId: string, roleSetId: string): UseCommunityTabDataResult {
+  const community = useCommunityAdmin({ spaceId, roleSetId });
   const { userModel } = useCurrentUserContext();
   const [pendingRemoval, setPendingRemoval] = useState<CommunityPendingRemoval | null>(null);
 
@@ -169,10 +172,10 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     const roleLabel = heldRoles.length > 0 ? heldRoles.join(', ') : 'Member';
     return {
       id: u.id,
-      displayName: u.profile?.displayName ?? '',
+      displayName: u.displayName,
       email: u.email,
-      avatarUrl: u.profile?.avatar?.uri,
-      url: u.profile?.url,
+      avatarUrl: u.avatarUrl,
+      url: u.url,
       roleLabel,
       isLead: u.isLead,
       isAdmin: u.isAdmin,
@@ -211,9 +214,13 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         email: app.actor.profile?.email,
         url: app.actor.profile?.url,
         createdDate: toIsoString(app.createdDate),
-        canApprove: state === 'new',
-        canReject: state === 'new',
-        canDelete: state !== 'approved',
+        // The request's own viewer-specific events (MembershipRequest.availableEvents) gate each action.
+        canApprove: state === 'new' && app.nextEvents.includes(ApplicationEvent.APPROVE),
+        canReject: state === 'new' && app.nextEvents.includes(ApplicationEvent.REJECT),
+        // Deleting a new application rejects then archives it; a rejected one is archived.
+        canDelete:
+          (state === 'new' && app.nextEvents.includes(ApplicationEvent.REJECT)) ||
+          (state === 'rejected' && app.nextEvents.includes(ApplicationEvent.ARCHIVE)),
         canResend: false,
       };
     })
@@ -240,8 +247,10 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
         createdDate: toIsoString(inv.createdDate),
         canApprove: false,
         canReject: false,
-        // Deleting an accepted invitation fails server-side — hidden like an approved application.
-        canDelete: state !== 'accepted',
+        // An open invitation is revoked (CANCEL); a declined one is archived. An accepted one stays.
+        canDelete:
+          (state === 'invited' && inv.nextEvents.includes(REQUEST_CANCEL_EVENT)) ||
+          (state === 'rejected' && inv.nextEvents.includes(InvitationEvent.ARCHIVE)),
         canResend: false,
       };
     })
@@ -255,7 +264,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
       organizationUrl: inv.actor.profile?.url,
       role: inv.extraRoles.includes(RoleName.Lead) ? ('memberLead' as const) : ('member' as const),
       createdDate: toIsoString(inv.createdDate),
-      canRevoke: inv.state === InvitationState.INVITED,
+      canRevoke: inv.state === InvitationState.INVITED && inv.nextEvents.includes(REQUEST_CANCEL_EVENT),
     }));
 
   // Revoking a pending organization invitation is destructive — the organization's
@@ -295,17 +304,17 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
 
   const organizations: CommunityOrg[] = community.organizationAdmin.members.map(o => ({
     id: o.id,
-    displayName: o.profile?.displayName ?? '',
-    avatarUrl: o.profile?.avatar?.uri,
-    url: o.profile?.url,
+    displayName: o.displayName,
+    avatarUrl: o.avatarUrl,
+    url: o.url,
     isMember: o.isMember,
     isLead: o.isLead,
   }));
 
   const virtualContributors: CommunityVC[] = community.virtualContributorAdmin.members.map(vc => ({
     id: vc.id,
-    displayName: vc.profile?.displayName ?? '',
-    url: vc.profile?.url,
+    displayName: vc.displayName,
+    url: vc.url,
   }));
 
   const findName = (list: { id: string; displayName: string }[], id: string) =>
@@ -357,31 +366,15 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     const target = pendingRemoval;
     setPendingRemoval(null);
     switch (target.kind) {
-      case 'user': {
-        // Removing a user from the community means stripping every role they hold
-        // on this role set. The legacy `userAdmin.onRemove` only removes MEMBER,
-        // which leaves a user with LEAD or ADMIN visible in the members list
-        // (the role-set membership query returns anyone with any role). Cascade
-        // ADMIN → LEAD → MEMBER so a leader/admin gets fully purged.
-        const user = community.userAdmin.members.find(u => u.id === target.id);
-        if (user?.isAdmin) {
-          await community.userAdmin.onAuthorizationChange(target.id, false);
-        }
-        if (user?.isLead) {
-          await community.userAdmin.onLeadChange(target.id, false);
-        }
+      // Removing a user or organization from the community strips every role it holds on
+      // the space: one `setRoles` with the empty set (role-assign-remove,
+      // community-roles-screens.tsv:184), replacing the client ADMIN → LEAD → MEMBER cascade.
+      case 'user':
         await community.userAdmin.onRemove(target.id);
         return;
-      }
-      case 'organization': {
-        // Same cascade for organizations — strip LEAD before MEMBER.
-        const org = community.organizationAdmin.members.find(o => o.id === target.id);
-        if (org?.isLead) {
-          await community.organizationAdmin.onLeadChange(target.id, false);
-        }
+      case 'organization':
         await community.organizationAdmin.onRemove(target.id);
         return;
-      }
       case 'virtualContributor':
         await community.virtualContributorAdmin.onRemove(target.id);
         return;
@@ -427,17 +420,8 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     virtualContributors,
     pendingOrganizationInvitations,
     onOrgInvitationRevoke,
-    permissions: {
-      canInvite: community.permissions.canInvite,
-      canInviteOrganizations: community.permissions.canInviteOrganizations,
-      // Mirror MUI (`SpaceAdminCommunityPage`): a space admin may add a VC via
-      // EITHER the role-set assign privilege OR the account-assign privilege.
-      // The CRD gate previously checked only the former, hiding the VC add
-      // buttons for admins (e.g. space Admin/Lead) who only hold the latter.
-      canAddVirtualContributors:
-        community.permissions.canAddVirtualContributors || community.permissions.canAddVirtualContributorsFromAccount,
-    },
-    myPrivileges: community.myPrivileges,
+    permissions: community.permissions,
+    gates: community.gates,
     leadPolicy,
     onUserRemove,
     onUserLeadChange,

@@ -759,6 +759,8 @@
       "title": "Visibilidad",
       "public": "Público",
       "publicDescription": "Este espacio y su contenido son visibles para todos en la plataforma. Los usuarios solo pueden contribuir si son miembros.",
+      "registered": "Usuarios con sesión iniciada",
+      "registeredDescription": "Este espacio y su contenido son visibles para todas las personas que han iniciado sesión en la plataforma; los visitantes sin sesión iniciada no pueden ver su contenido. Los usuarios solo pueden contribuir si son miembros.",
       "private": "Privado",
       "privateDescription": "Este espacio es visible para todos en la plataforma, pero el contenido solo es visible para los miembros.",
       "hint": "Considera el propósito y el público de tu espacio al elegir la visibilidad."

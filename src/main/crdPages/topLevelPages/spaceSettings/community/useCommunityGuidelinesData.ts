@@ -5,8 +5,7 @@ import type {
   CommunityGuidelinesReferenceRow,
 } from '@/crd/components/space/settings/CommunityGuidelinesEditor';
 import useCommunityGuidelines from '@/domain/community/community/CommunityGuidelines/useCommunityGuidelines';
-import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
+import { useNativeReferenceFileUpload } from '@/main/crdPages/utils/useNativeReferenceFileUpload';
 
 export type UseCommunityGuidelinesDataResult = {
   value: CommunityGuidelinesEditorValue;
@@ -53,9 +52,7 @@ export function useCommunityGuidelinesData(
   // file uploads land in the space's own bucket. The space already exists, so the context resolves
   // `temporaryLocation: false` and the upload is permanent (propagated to `file_backup_outbox`,
   // issue #10126) — same path as the About tab references and the Innovation Pack form (spec 098 D24 / FR-038).
-  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
-    useStorageConfigContext()
-  );
+  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useNativeReferenceFileUpload();
 
   const serverValue: CommunityGuidelinesEditorValue = communityGuidelines
     ? {

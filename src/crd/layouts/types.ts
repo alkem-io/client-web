@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+export type CrdAuthenticationState = boolean | 'loading' | 'unavailable';
+
 export type CrdUserInfo = {
   name: string;
   avatarUrl?: string;
@@ -13,10 +15,10 @@ export type CrdUserInfo = {
 export type CrdNavigationHrefs = {
   home: string;
   spaces: string;
-  messages: string;
-  notifications: string;
-  profile: string;
-  account: string;
+  messages?: string;
+  notifications?: string;
+  profile?: string;
+  account?: string;
   admin: string;
   login: string;
 };

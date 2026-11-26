@@ -129,7 +129,7 @@ export function TreeNode({
           className="flex-1 flex items-center gap-3 min-w-0 no-underline text-inherit focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
           onClick={e => {
             e.preventDefault();
-            onNavigate(item.href);
+            if (item.href) onNavigate(item.href);
           }}
         >
           <PrivacyIcon isPrivate={item.isPrivate} t={t} />

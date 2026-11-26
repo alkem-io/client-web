@@ -1,6 +1,11 @@
 import type { ReactNode } from 'react';
+import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
 import { AuthShell } from '@/crd/layouts/AuthShell';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
+
+export function AuthFlowContext({ children }: { children: ReactNode }) {
+  return <SentryTransactionScopeContextProvider>{children}</SentryTransactionScopeContextProvider>;
+}
 
 /**
  * Mounts the CRD `AuthShell` for the auth screens, wiring the footer's

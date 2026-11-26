@@ -1,19 +1,21 @@
 import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { CreateSpaceAccountFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { CreateSpaceDialog } from '@/crd/components/space/CreateSpaceDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { useCreateSpaceAccount } from '@/domain/space/components/CreateSpace/hooks/spacePlans/useCreateSpaceAccount';
+import { useCreateDialogMarkdown } from '@/domain/space/components/CreateSpace/hooks/useCreateDialogMarkdown';
 import { type CreatedSpaceResult, useCreateSpace } from './useCreateSpace';
 
 export type CrdCreateSpaceDialogProps = {
   open: boolean;
   onClose: () => void;
-  accountId: string;
+  /** The organisation whose account hosts the Space; the viewer's own account when omitted. */
+  organizationId?: string;
   /** Organization account display name — passed from the org tab; omitted on the user's own account. */
   accountName?: string;
   onSpaceCreated?: (space: CreatedSpaceResult) => void;
@@ -21,20 +23,21 @@ export type CrdCreateSpaceDialogProps = {
 
 /**
  * Integration connector for the CRD Create Space dialog. Replaces the MUI
- * `<CreateSpace />` at the account-tab entry points. Provides the account-scoped
- * storage context the markdown editor needs (temporary-location uploads before
- * the Space exists), wires the terms URL from platform config, and mounts the
- * dialog + template picker + overwrite-confirm.
+ * `<CreateSpace />` at the entry points. Reads the hosting account natively, wires the
+ * terms URL from platform config, and mounts the dialog + template picker +
+ * overwrite-confirm. Inline description images have no designed pre-creation path
+ * (useCreateDialogMarkdown).
  */
 export function CrdCreateSpaceDialog({
   open,
   onClose,
-  accountId,
+  organizationId,
   accountName,
   onSpaceCreated,
 }: CrdCreateSpaceDialogProps) {
+  const { account } = useCreateSpaceAccount({ organizationId, skip: !open });
   return (
-    <StorageConfigContextProvider locationType="account" accountId={accountId} skip={!open}>
+    <Suspense fallback={null}>
       {/*
        * Local Suspense boundary. The connector calls useTranslation('crd-createSpace')
        * — a lazily-loaded i18n namespace — and hosts the lazy markdown editor. Without
@@ -43,32 +46,34 @@ export function CrdCreateSpaceDialog({
        * used). `null` fallback: the dialog is a modal, so nothing should show until it
        * is ready. Mirrors the self-contained pattern in MarkdownEditor.
        */}
-      <Suspense fallback={null}>
-        <CreateSpaceDialogConnector
-          open={open}
-          onClose={onClose}
-          accountId={accountId}
-          accountName={accountName}
-          onSpaceCreated={onSpaceCreated}
-        />
-      </Suspense>
-    </StorageConfigContextProvider>
+      <CreateSpaceDialogConnector
+        open={open}
+        onClose={onClose}
+        account={account}
+        accountName={accountName}
+        onSpaceCreated={onSpaceCreated}
+      />
+    </Suspense>
   );
 }
+
+type CreateSpaceDialogConnectorProps = Omit<CrdCreateSpaceDialogProps, 'organizationId'> & {
+  account: CreateSpaceAccountFragment | undefined;
+};
 
 function CreateSpaceDialogConnector({
   open,
   onClose,
-  accountId,
+  account,
   accountName,
   onSpaceCreated,
-}: CrdCreateSpaceDialogProps) {
+}: CreateSpaceDialogConnectorProps) {
   const { t } = useTranslation('crd-createSpace');
   const config = useConfig();
   const origin = usePlatformOrigin();
   const urlPrefix = origin ? `${origin.toLowerCase()}/` : undefined;
-  const create = useCreateSpace({ open, accountId, onClose, onSpaceCreated });
-  const md = useMarkdownEditorIntegration({ temporaryLocation: true });
+  const create = useCreateSpace({ open, account, onClose, onSpaceCreated });
+  const md = useCreateDialogMarkdown();
 
   return (
     <>

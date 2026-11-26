@@ -1,7 +1,9 @@
+import { useLocation } from 'react-router-dom';
+import { useNativeRouteResolutionQuery } from '@/core/apollo/generated-v2/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
-import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { useNativeRouteSpace } from '@/main/routing/urlResolver/native/useNativeRouteSpace';
 import { CrdSubspaceAbout } from './CrdSubspaceAbout';
 
 /**
@@ -16,28 +18,27 @@ import { CrdSubspaceAbout } from './CrdSubspaceAbout';
  * URL and trap the user in a redirect loop. We navigate to the most specific
  * place the viewer can actually open:
  *  - the subspace itself when they can read it (member),
- *  - else the parent space when they can read that,
+ *  - else the root space when they can read it (D1's closest readable node is the returned depth-0 ancestor),
  *  - else home — so a user with only a pending invitation (no access to either
  *    the subspace or its private parent) can still escape the About dialog
  *    instead of bouncing between two blocking About dialogs.
  */
 export default function CrdSubspaceAboutPage() {
   const { subspace, permissions } = useSubSpace();
-  const {
-    space: {
-      about: {
-        profile: { url: parentSpaceUrl },
-      },
-    },
-    permissions: parentPermissions,
-  } = useSpace();
+  const { root } = useNativeRouteSpace();
+  const { pathname } = useLocation();
+  const { data } = useNativeRouteResolutionQuery({
+    variables: { url: new URL(pathname, globalThis.location.origin).href },
+    fetchPolicy: 'cache-only',
+  });
+  const rootUrl = root && data?.resolve.closestReadable?.id === root.id ? root.url : undefined;
   const navigate = useNavigate();
 
   const handleClose = () => {
     if (permissions.canRead) {
       navigate(subspace.about.profile.url);
-    } else if (parentPermissions.canRead && parentSpaceUrl) {
-      navigate(parentSpaceUrl);
+    } else if (rootUrl) {
+      navigate(rootUrl);
     } else {
       navigate(ROUTE_HOME);
     }

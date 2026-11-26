@@ -27,6 +27,6 @@ export const useConfig = () => {
     serverMetadata: context.serverMetadata,
     loading: context.loading,
     error: context.error,
-    isFeatureEnabled: (name: string) => context.config?.featureFlags.find(x => x.name === name)?.enabled || false,
+    isFeatureEnabled: (name: string) => context.config?.featureFlags?.find(x => x.name === name)?.enabled || false,
   };
 };

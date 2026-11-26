@@ -4,7 +4,7 @@
 # every rebuild can silently pick up different content. Resolve a new digest with
 #   docker buildx imagetools inspect <image>:<tag> --format '{{.Manifest.Digest}}'
 # and update the pin together with the tag it corresponds to.
-FROM node:24.14.0-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 as builder
+FROM --platform=$BUILDPLATFORM node:24.14.0-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 as builder
 
 # Create app directory
 WORKDIR /app

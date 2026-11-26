@@ -1,78 +1,59 @@
 import { useTranslation } from 'react-i18next';
-import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useAttachVisualMutation, useRequestVisualUploadMutation } from '@/core/apollo/generated-v2/apollo-hooks';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import type { VisualUploadModel } from '@/core/ui/upload/VisualUpload/VisualUpload.model';
-import type { Identifiable } from '@/core/utils/Identifiable';
 
-const VisualTypes = ['avatar', 'cardBanner', 'banner'] as const;
+/** The file roles of a space's root visuals (023 FR-003; the visual_constraints names). */
+export type SpaceVisualRole = 'avatar' | 'banner' | 'card';
 
-interface ProfileWithVisuals {
-  avatar?: Identifiable;
-  cardBanner?: Identifiable;
-  banner?: Identifiable;
-}
+/** A cropped image picked in a create dialog, with the alt text entered in the crop step. */
+export type PendingVisual = { file: File; altText?: string };
 
-interface VisualsForm {
-  avatar?: VisualUploadModel;
-  cardBanner?: VisualUploadModel;
-  banner?: VisualUploadModel;
-}
+export type SpaceVisuals = Partial<Record<SpaceVisualRole, PendingVisual>>;
 
-interface UseUploadVisualsOnCreateProvided {
-  uploadVisuals: (
-    createResult: ProfileWithVisuals | undefined,
-    data: VisualsForm | undefined
-  ) => Promise<unknown> | undefined;
-}
+type UploadedFile = { id: string };
 
-interface UseUploadVisualsOnCreateProps {
-  /**
-   * The name of the entity just created (space/subspace...), to show in the error message to the user if the upload fails.
-   */
-  entityName?: string;
-}
 /**
- * Helper to upload visuals after creating an entity like a Space or Subspace.
- * It handles the upload of visuals like avatar, cardBanner, and banner.
- * The form data needs to be compatible, use the VisualUploadModel for visuals
- * And the response from the mutation should include the created visuals with their IDs.
+ * Uploads the visuals chosen in a create dialog once the space exists (023 FR-020), through the file contract
+ * (022 FR-001/FR-002/FR-004, contracts/http.md): requestUpload on the new space, PUT the bytes to the token's
+ * url, then attachFile under the role. The space is created either way; a failed upload is reported with the
+ * existing "created, but the images failed" notice and logged, never dropped silently.
  */
-const useUploadVisualsOnCreate = ({
-  entityName,
-}: UseUploadVisualsOnCreateProps = {}): UseUploadVisualsOnCreateProvided => {
+const useUploadVisualsOnCreate = ({ entityName }: { entityName: string }) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const [uploadVisual] = useUploadVisualMutation();
+  const [requestUpload] = useRequestVisualUploadMutation();
+  const [attachFile] = useAttachVisualMutation();
 
-  const uploadVisuals = (createResult: ProfileWithVisuals | undefined, data: VisualsForm | undefined) => {
-    try {
-      const uploadPromises: Promise<unknown>[] = [];
-      for (const visualType of VisualTypes) {
-        if (data?.[visualType]?.file && createResult?.[visualType]?.id) {
-          uploadPromises.push(
-            uploadVisual({
-              variables: {
-                file: data[visualType].file,
-                uploadData: {
-                  visualID: createResult[visualType].id,
-                  alternativeText: data[visualType].altText,
-                },
-              },
-            })
-          );
-        }
-      }
+  const uploadVisual = async (owner: string, role: SpaceVisualRole, { file, altText }: PendingVisual) => {
+    const { data } = await requestUpload({ variables: { owner, mime: file.type, size: file.size, role } });
+    if (!data) throw new Error(`requestUpload returned no token for the ${role} of ${owner}`);
+    const response = await fetch(data.requestUpload.url, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${data.requestUpload.token}`,
+        'Content-Type': file.type,
+        'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(file.name)}`,
+      },
+      body: file,
+    });
+    if (!response.ok) throw new Error(`Upload of the ${role} of ${owner} failed with HTTP ${response.status}`);
+    const uploaded = (await response.json()) as UploadedFile;
+    await attachFile({
+      variables: { owner, file: uploaded.id, role, displayName: file.name, alt: altText || undefined },
+    });
+  };
 
-      return Promise.all(uploadPromises);
-    } catch (error) {
-      // Space/Subspace is created anyway, just the images failed. Log the error and continue
-      notify(t('components.visual-upload.entityCreatedErrorUploading', { entity: entityName }), 'error');
-      if (error instanceof Error) {
-        logError(error);
-      } else {
-        logError(`Error uploading visuals for space: ${error}`, { label: 'TempStorage' });
-      }
+  const uploadVisuals = async (owner: string, visuals: SpaceVisuals) => {
+    const pending = (Object.entries(visuals) as [SpaceVisualRole, PendingVisual | undefined][]).filter(
+      (entry): entry is [SpaceVisualRole, PendingVisual] => entry[1] !== undefined
+    );
+    const results = await Promise.allSettled(pending.map(([role, visual]) => uploadVisual(owner, role, visual)));
+    const failures = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+    if (failures.length === 0) return;
+    notify(t('components.visual-upload.entityCreatedErrorUploading', { entity: entityName }), 'error');
+    for (const failure of failures) {
+      logError(failure.reason instanceof Error ? failure.reason : new Error(String(failure.reason)));
     }
   };
 

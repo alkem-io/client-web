@@ -1,0 +1,43 @@
+// Generated from pinned server vocabulary and original legacy declarations. DO NOT EDIT.
+// KERNEL-BOUND: identifier names only; this file never grants authority.
+export enum RoleName {
+  Admin = 'admin',
+  Associate = 'associate',
+  FeatureBetaTester = 'feature-beta-tester',
+  FeatureOrganizationCreator = 'feature-organization-creator',
+  FeatureVcCampaign = 'feature-vc-campaign',
+  FeatureVirtualAssistant = 'feature-virtual-assistant',
+  Lead = 'lead',
+  Member = 'member',
+  Owner = 'owner',
+  PlatformAuditReader = 'audit-reader',
+  PlatformContentFullAccess = 'content-full-access',
+  PlatformLicenseManager = 'license-manager',
+  PlatformOperationsAdmin = 'operations-admin',
+  PlatformResourceAdmin = 'resource-admin',
+  PlatformRolesAdmin = 'roles-admin',
+  PlatformSettingsAdmin = 'settings-admin',
+  PlatformSpacesReader = 'spaces-reader',
+  PlatformSupport = 'support',
+  PlatformUsersAdmin = 'users-admin',
+  Registered = 'registered',
+}
+
+export enum LicenseEntitlementType {
+  AccountAiAssistantTokensMonth = 'account-ai-assistant-tokens-month',
+  AccountInnovationHub = 'account-innovation-hub',
+  AccountInnovationPack = 'account-innovation-pack',
+  AccountSpaceFree = 'account-space-free',
+  AccountSpacePlus = 'account-space-plus',
+  AccountSpacePremium = 'account-space-premium',
+  AccountVirtualContributor = 'account-virtual-contributor',
+  SpaceFlagMemoMultiUser = 'space-flag-memo-multi-user',
+  SpaceFlagMemoSigning = 'space-flag-memo-signing',
+  SpaceFlagOfficeDocuments = 'space-flag-office-documents',
+  SpaceFlagSaveAsTemplate = 'space-flag-save-as-template',
+  SpaceFlagVirtualContributorAccess = 'space-flag-virtual-contributor-access',
+  SpaceFlagWhiteboardMultiUser = 'space-flag-whiteboard-multi-user',
+  SpaceFree = 'space-free',
+  SpacePlus = 'space-plus',
+  SpacePremium = 'space-premium',
+}

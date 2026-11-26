@@ -1,4 +1,4 @@
-import { act, render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const h = vi.hoisted(() => ({
@@ -6,6 +6,11 @@ const h = vi.hoisted(() => ({
   selectedTemplateContent: null as { type: 'whiteboard'; sourceWhiteboardId: string } | null,
   clearSelection: vi.fn(),
   onImport: vi.fn(async () => {}),
+  // The space's templates set: not served yet (undefined) unless a test serves it.
+  spaceTemplatesSetId: undefined as string | undefined,
+  // The space the button sits in (undefined: outside a space, e.g. the public whiteboard route).
+  levelZeroSpaceId: undefined as string | undefined,
+  openPicker: vi.fn(),
 }));
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
@@ -13,14 +18,15 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useSpaceTemplatesManagerQuery: () => ({ data: undefined }),
 }));
 vi.mock('@/domain/space/context/useSpace', () => ({
-  useSpace: () => ({ space: { accountId: undefined, levelZeroSpaceId: undefined } }),
+  useSpace: () => ({ space: { accountId: undefined, levelZeroSpaceId: h.levelZeroSpaceId } }),
 }));
 vi.mock('@/main/crdPages/templates/useTemplatePicker', () => ({
+  servedSpaceTemplatesSetId: () => h.spaceTemplatesSetId,
   useTemplatePicker: () => ({
     selectedTemplateId: h.selectedTemplateId,
     selectedTemplateContent: h.selectedTemplateContent,
     clearSelection: h.clearSelection,
-    openPicker: vi.fn(),
+    openPicker: h.openPicker,
     pickerProps: {},
   }),
 }));
@@ -41,6 +47,8 @@ describe('WhiteboardTemplatePickerButton', () => {
     vi.clearAllMocks();
     h.selectedTemplateId = null;
     h.selectedTemplateContent = null;
+    h.spaceTemplatesSetId = 'templates-set';
+    h.levelZeroSpaceId = 'space';
   });
 
   it('consumes each selection independently, including selecting the same template twice', async () => {
@@ -63,5 +71,29 @@ describe('WhiteboardTemplatePickerButton', () => {
 
     await waitFor(() => expect(h.onImport).toHaveBeenCalledTimes(2));
     expect(h.clearSelection).toHaveBeenCalledTimes(2);
+  });
+
+  it('with the space templates served the button opens the picker', () => {
+    render(<WhiteboardTemplatePickerButton onImport={h.onImport} />);
+    fireEvent.click(screen.getByRole('button', { name: 'buttons.find-template' }));
+    expect(h.openPicker).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText('tabs.unavailable')).not.toBeInTheDocument();
+  });
+
+  it('outside a space the picker opens as legacy, with its other sources', () => {
+    h.spaceTemplatesSetId = undefined;
+    h.levelZeroSpaceId = undefined;
+    render(<WhiteboardTemplatePickerButton onImport={h.onImport} />);
+    fireEvent.click(screen.getByRole('button', { name: 'buttons.find-template' }));
+    expect(h.openPicker).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText('tabs.unavailable')).not.toBeInTheDocument();
+  });
+
+  it('in a space whose templates are not served yet the button says so in a dialog instead of the picker', () => {
+    h.spaceTemplatesSetId = undefined;
+    render(<WhiteboardTemplatePickerButton onImport={h.onImport} />);
+    fireEvent.click(screen.getByRole('button', { name: 'buttons.find-template' }));
+    expect(screen.getByText('tabs.unavailable')).toBeInTheDocument();
+    expect(h.openPicker).not.toHaveBeenCalled();
   });
 });

@@ -9,7 +9,7 @@ import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/us
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import type { LocationStateWithKratosErrors } from '@/core/auth/authentication/pages/LocationStateWithKratosErrors';
 import { useReturnUrl, useSignUpRoundTrip } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
-import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
+import { useNativeFoundation } from '@/core/foundation/NativeFoundationProvider';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { GuestReturnNotice } from '@/crd/components/auth/GuestReturnNotice';
@@ -18,8 +18,9 @@ import { cn } from '@/crd/lib/utils';
 import { useGuestSessionReturn } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn';
 import { markSignupInitiated } from '@/domain/language/useAnonymousLanguageCarry';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
-import { AuthShellWrapper } from './AuthShellWrapper';
+import { AuthFlowContext, AuthShellWrapper } from './AuthShellWrapper';
 import { CrdEmailVerificationRequiredPage } from './CrdEmailVerificationRequiredPage';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger } from './passkeyTrigger';
@@ -291,26 +292,23 @@ function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
 
 /** CRD `/sign_up` route — the curated quick-registration entry point. */
 export function SignUpCrdRoute() {
-  return <CrdSignUpPage />;
+  // As legacy IdentityRoute's NotAuthenticatedRoute: a signed-in visitor goes home.
+  if (useNativeFoundation().data?.viewer.session.authenticated) return <Navigate to={ROUTE_HOME} />;
+  return (
+    <AuthFlowContext>
+      <CrdSignUpPage />
+    </AuthFlowContext>
+  );
 }
 
 /** CRD `/registration` route — the full Kratos registration flow + success handler. */
 export function RegistrationCrdRoute() {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <NotAuthenticatedRoute>
-            {/* Reached from `/sign_up` on the same Kratos flow id (e.g. after a
-                validation error on a later field) — lock the checkbox once it
-                re-hydrates as already accepted, instead of leaving it a live
-                toggle a stray click can silently uncheck (see `lockAcceptedTerms`). */}
-            <CrdSignUpPage lockAcceptedTerms={true} />
-          </NotAuthenticatedRoute>
-        }
-      />
-      <Route path="success" element={<CrdEmailVerificationRequiredPage pageTitleKey="pages.titles.signUp" />} />
-    </Routes>
+    <AuthFlowContext>
+      <Routes>
+        <Route path="/" element={<CrdSignUpPage lockAcceptedTerms={true} />} />
+        <Route path="success" element={<CrdEmailVerificationRequiredPage pageTitleKey="pages.titles.signUp" />} />
+      </Routes>
+    </AuthFlowContext>
   );
 }

@@ -1,18 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import { classifyInvitations, resolveInvitationSpaceUri } from './CrdPendingMembershipsDialog';
 
-type Fixture = { id: string; invitation: { actor?: { type: ActorType } } };
+// MembershipRequest.actor.actorType is the invited actor's type (user | organization | virtual_contributor).
+type Fixture = { id: string; actor: { actorType: string } | null };
 
-const invitation = (id: string, type: ActorType): Fixture => ({ id, invitation: { actor: { type } } });
+const invitation = (id: string, actorType: string): Fixture => ({ id, actor: { actorType } });
 
 describe('classifyInvitations (T014 — three buckets)', () => {
   it('splits a mixed list into user / organization / virtualContributor buckets', () => {
     const invitations = [
-      invitation('u1', ActorType.User),
-      invitation('o1', ActorType.Organization),
-      invitation('vc1', ActorType.VirtualContributor),
-      invitation('u2', ActorType.User),
+      invitation('u1', 'user'),
+      invitation('o1', 'organization'),
+      invitation('vc1', 'virtual_contributor'),
+      invitation('u2', 'user'),
     ];
 
     const { userInvitations, organizationInvitations, virtualContributorInvitations } =
@@ -33,14 +33,18 @@ describe('classifyInvitations (T014 — three buckets)', () => {
 
 describe('resolveInvitationSpaceUri (T014 — org accept does not navigate)', () => {
   it('returns the space url for a user invitation', () => {
-    expect(resolveInvitationSpaceUri(ActorType.User, '/space/green-energy')).toBe('/space/green-energy');
+    expect(resolveInvitationSpaceUri('user', '/space/green-energy')).toBe('/space/green-energy');
   });
 
   it('returns undefined for an organization invitation — accept returns to the list, no navigation', () => {
-    expect(resolveInvitationSpaceUri(ActorType.Organization, '/space/green-energy')).toBeUndefined();
+    expect(resolveInvitationSpaceUri('organization', '/space/green-energy')).toBeUndefined();
   });
 
   it('returns undefined for a virtual contributor invitation (existing behavior, unchanged)', () => {
-    expect(resolveInvitationSpaceUri(ActorType.VirtualContributor, '/space/green-energy')).toBeUndefined();
+    expect(resolveInvitationSpaceUri('virtual_contributor', '/space/green-energy')).toBeUndefined();
+  });
+
+  it('returns undefined when the space has no route for the viewer', () => {
+    expect(resolveInvitationSpaceUri('user', null)).toBeUndefined();
   });
 });

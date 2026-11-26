@@ -13,7 +13,8 @@
       "generic-with-code": "Възникна грешка с код {{code}}",
       "network": {
         "session_store_unavailable": "Услугата е временно недостъпна. Моля, опитайте отново след момент.",
-        "generic": "Възникна проблем с връзката. Моля, проверете връзката си и опитайте отново."
+        "generic": "Възникна проблем с връзката. Моля, проверете връзката си и опитайте отново.",
+        "retry": "Опитайте отново"
       },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -63,6 +64,7 @@
           "messagingNotEnabled": "Messaging not enabled.",
           "noAgentForUser": "No agent for user.",
           "notEnabled": "Feature not enabled.",
+          "notAvailableYet": "Това действие все още не е налично.",
           "operationNotAllowed": "Operation not allowed.",
           "roleLimitsViolated": "Role limits exceeded.",
           "roleSetAlreadyMember": "You're already a member of this space.",
@@ -1424,7 +1426,11 @@
       "fullName": "$t(common.templateLibrary)"
     },
     "logout": {
-      "loading": "Излизане..."
+      "loading": "Излизане...",
+      "unavailable": "Излизането не можа да бъде завършено. Моля, опитайте отново.",
+      "unknown": "Излизането не може да бъде потвърдено. Сесията при доставчика на самоличност може все още да е активна.",
+      "cleanupUnavailable": "Излязохте от профила си, но локалните данни не можаха да бъдат изчистени. Моля, опитайте отново.",
+      "pushCleanupUnavailable": "Излязохте от профила си, но изчистването на известията на това устройство не е завършено."
     },
     "recovery": {
       "cooldown": {

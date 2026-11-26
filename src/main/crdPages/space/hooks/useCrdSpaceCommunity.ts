@@ -1,13 +1,14 @@
-import { useCommunityGuidelinesQuery } from '@/core/apollo/generated/apollo-hooks';
-import { ActorType, LicenseEntitlementType, RoleName, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
-import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import { pageSpace } from '@/domain/space/context/spacePageShellMapper';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { useSpacePageData, useSpaceVirtualContributors } from '@/domain/space/hooks/useSpacePage';
 import {
   mapRoleSetMemberToSidebarLead,
   mapVirtualContributorToSidebar,
   type SidebarLeadData,
   type SidebarVirtualContributorData,
 } from '../dataMappers/communityDataMapper';
+import { actorProfile, actorsOfType, nativeGuidelines } from '../dataMappers/spacePageDataMapper';
 
 type UseCrdSpaceCommunityParams = {
   /** Suppresses the contributor-roster fetch (roleSet leads + virtual
@@ -24,74 +25,51 @@ export function useCrdSpaceCommunity({ skipContributors, skipGuidelines }: UseCr
   const { space, permissions, entitlements } = useSpace();
 
   const roleSetId = space.about.membership?.roleSetID;
+  // 021 F045/F047/F048: leads and guidelines from the page's D2 Space document, read from the cache, so the widgets
+  // add no request; the VC members are their widget's members read (SpaceVirtualContributors).
+  const spaceId = space.id || undefined;
+  const doc = pageSpace(useSpacePageData(spaceId, 'space')?.node, spaceId);
+  const leads = skipContributors ? undefined : doc?.leads;
 
-  // Fetch contributors across all relevant roles for the SIDEBAR only. The
-  // per-role `usersByRole[Lead]` + `organizationsByRole[Lead]` feeds the sidebar
-  // lead block, and `virtualContributorsByRole[Member]` feeds the sidebar VC
-  // section. The full member grid that the hard-coded `SpaceMembers` widget used
-  // to render was removed (feature 008, US6) — the community tab now relies on a
-  // contributor-collection callout instead, so the flat `users` / `organizations`
-  // arrays are no longer fetched/mapped here.
-  const {
-    usersByRole,
-    organizationsByRole,
-    virtualContributorsByRole,
-    loading: roleSetLoading,
-  } = useRoleSetManager({
-    roleSetId,
-    relevantRoles: [RoleName.Admin, RoleName.Lead, RoleName.Member],
-    contributorTypes: [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
-    fetchContributors: true,
-    skip: skipContributors,
-  });
-
-  // Sidebar leads (users + organizations with the Lead role)
-  const leadUsers: SidebarLeadData[] = (usersByRole[RoleName.Lead] ?? [])
+  const leadUsers: SidebarLeadData[] = actorsOfType(leads, 'user')
     .map(u => mapRoleSetMemberToSidebarLead(u, 'person'))
     .filter((l): l is SidebarLeadData => l !== undefined);
 
-  const leadOrganizations: SidebarLeadData[] = (organizationsByRole[RoleName.Lead] ?? [])
+  const leadOrganizations: SidebarLeadData[] = actorsOfType(leads, 'organization')
     .map(o => mapRoleSetMemberToSidebarLead(o, 'org'))
     .filter((l): l is SidebarLeadData => l !== undefined);
 
-  // Sidebar VCs (hidden-search VCs filtered out) — only rendered when the
-  // space has the VC entitlement.
+  // Sidebar VCs — only rendered (and read) when the space has the VC entitlement; the list continues past its first page
+  // with no control (S23-LIST-PAGE-500).
   const hasVcEntitlement = entitlements?.includes(LicenseEntitlementType.SpaceFlagVirtualContributorAccess) ?? false;
+  const { members: vcs, notServed: vcsNotServed } = useSpaceVirtualContributors(
+    skipContributors || !hasVcEntitlement ? undefined : spaceId
+  );
 
-  const virtualContributors: SidebarVirtualContributorData[] = (virtualContributorsByRole[RoleName.Member] ?? [])
-    .filter(vc => vc?.searchVisibility !== SearchVisibility.Hidden)
-    .map(mapVirtualContributorToSidebar)
+  const virtualContributors: SidebarVirtualContributorData[] = (vcs?.edges ?? [])
+    .map(edge => mapVirtualContributorToSidebar(actorProfile(edge.node.actor)))
     .filter((vc): vc is SidebarVirtualContributorData => vc !== undefined);
 
-  // Community guidelines (markdown title + description + references) for the
-  // sidebar block. The SpaceContext only carries the id, so fetch the content.
-  const guidelinesId = space.about.guidelines?.id || undefined;
-  const { data: guidelinesData, loading: guidelinesLoading } = useCommunityGuidelinesQuery({
-    variables: { communityGuidelinesId: guidelinesId ?? '' },
-    skip: skipGuidelines || !guidelinesId,
-  });
-  const guidelinesProfile = guidelinesData?.lookup.communityGuidelines?.profile;
+  const guidelinesJson = skipGuidelines ? undefined : nativeGuidelines(doc);
   const guidelines = {
-    id: guidelinesId,
-    displayName: guidelinesProfile?.displayName,
-    description: guidelinesProfile?.description ?? undefined,
-    references: (guidelinesProfile?.references ?? []).map(r => ({
-      name: r.name,
-      uri: r.uri,
-      description: r.description ?? undefined,
-    })),
-    loading: guidelinesLoading,
+    id: space.about.guidelines?.id || undefined,
+    displayName: guidelinesJson?.displayName,
+    description: guidelinesJson?.description,
+    references: [],
+    loading: false,
   };
 
   return {
     leadUsers,
     leadOrganizations,
     virtualContributors,
+    /** The server does not serve the VC members read yet: the widget says so in place. */
+    virtualContributorsUnavailable: vcsNotServed,
     hasVcEntitlement,
     guidelines,
     roleSetId,
     communityId: space.about.membership?.communityID,
     canInvite: permissions.canUpdate,
-    loading: roleSetLoading,
+    loading: !skipContributors && !doc,
   };
 }

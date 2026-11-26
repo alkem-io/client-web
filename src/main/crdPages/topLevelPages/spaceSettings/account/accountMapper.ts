@@ -1,39 +1,40 @@
-import type { SpaceAccountQuery } from '@/core/apollo/generated/graphql-schema';
-import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
+import { PlanScope, type SpaceSettingsAccountQuery } from '@/core/apollo/generated-v2/graphql-schema';
 import type { AccountHost, AccountPlan } from '@/crd/components/space/settings/SpaceSettingsAccountView';
 
-type SpaceData = NonNullable<SpaceAccountQuery['lookup']['space']>;
-type PlatformData = SpaceAccountQuery['platform'];
+export type AccountSpace = Extract<NonNullable<SpaceSettingsAccountQuery['node']>, { __typename?: 'Space' }>;
 
-export function mapAccountPlan(space: SpaceData, platform: PlatformData): AccountPlan | null {
-  const subscription = space.activeSubscription;
-  if (!subscription) return null;
-
-  const plans = platform.licensingFramework.plans.filter(p => p.type === LicensingCredentialBasedPlanType.SpacePlan);
-
-  const matchedPlan = plans.find(p => p.licenseCredential === subscription.name);
-  if (!matchedPlan) return null;
+/**
+ * The space's active subscription, as legacy derives it: the unexpired SPACE plan assignment with the highest plan
+ * sortOrder (screens-dispositions.tsv:16351; H-licensing-8: plans are matched by `assignment.plan`).
+ */
+export function mapAccountPlan(space: AccountSpace, now = Date.now()): AccountPlan | null {
+  const active = (space.planAssignments ?? [])
+    .filter(assignment => assignment.plan.scope === PlanScope.Space)
+    .filter(assignment => !assignment.expiresAt || new Date(assignment.expiresAt).getTime() > now)
+    .sort((a, b) => b.plan.sortOrder - a.plan.sortOrder)[0];
+  if (!active) return null;
 
   let daysLeft: number | null = null;
-  if (subscription.expires) {
-    const diff = new Date(subscription.expires).getTime() - Date.now();
+  if (active.expiresAt) {
+    const diff = new Date(active.expiresAt).getTime() - now;
     daysLeft = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
   }
 
   return {
-    name: matchedPlan.name,
+    name: active.plan.name,
     features: [],
     daysLeft,
   };
 }
 
-export function mapAccountHost(space: SpaceData): AccountHost | null {
-  const provider = space.about.provider;
-  if (!provider?.profile) return null;
+/** The host card (screens-dispositions.tsv:5165): Space.host's About and its actorType. */
+export function mapAccountHost(space: AccountSpace): AccountHost | null {
+  const host = space.host;
+  if (!host?.about) return null;
 
   return {
-    displayName: provider.profile.displayName,
-    avatarUrl: provider.profile.avatar?.uri ?? null,
-    type: provider.type,
+    displayName: host.about.displayName,
+    avatarUrl: host.about.avatar?.file.url ?? null,
+    type: host.actorType,
   };
 }

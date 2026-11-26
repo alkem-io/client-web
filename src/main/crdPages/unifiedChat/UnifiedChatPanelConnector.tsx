@@ -76,6 +76,7 @@ export const UnifiedChatPanelConnector = () => {
   const selectedConversation = conversations.find(conversation => conversation.id === selectedConversationId);
   const {
     messages: rawMessages,
+    replyTargets,
     readUpToEventId,
     isLoading: messagesLoading,
   } = useConversationMessages(selectedConversation ?? null);
@@ -152,7 +153,11 @@ export const UnifiedChatPanelConnector = () => {
       }
     : undefined;
 
-  let chatMessages = rawMessages.map(message => mapMessageToChatMessage(message, { currentUserId }));
+  let chatMessages = rawMessages.map(message => {
+    const mapped = mapMessageToChatMessage(message, { currentUserId });
+    const replyTo = replyTargets?.get(message.id);
+    return replyTo ? { ...mapped, replyTo } : mapped;
+  });
   if (isGuidanceThread && selectedConversation) {
     const vcMember = selectedConversation.members.find(member => member.id === guidanceVcId);
     const author: CommentAuthor = vcMember
@@ -327,7 +332,7 @@ export const UnifiedChatPanelConnector = () => {
             key={selectedConversationId}
             conversationId={selectedConversationId}
             roomId={selectedConversation?.roomId}
-            attachmentsAllowed={!isGuidanceThread}
+            attachmentsAllowed={!isGuidanceThread && Boolean(selectedConversation?.attachmentBucketId)}
             conversation={threadHeader}
             messages={chatMessages}
             messagesLoading={messagesLoading}
@@ -346,9 +351,9 @@ export const UnifiedChatPanelConnector = () => {
                 setDraft(selectedConversationId, value);
               }
             }}
-            sendEvent={async (message, attachmentUpload) => {
+            sendEvent={async (message, attachmentUpload, replyTo) => {
               if (isGuidanceThread) guidanceResponse.markSent();
-              return handleSendMessage(message, attachmentUpload);
+              return handleSendMessage(message, attachmentUpload, replyTo);
             }}
             onClearDraft={() => clearDraft(selectedConversationId)}
             onRestoreDraft={text => setDraft(selectedConversationId, text)}

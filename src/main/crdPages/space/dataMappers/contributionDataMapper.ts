@@ -1,8 +1,11 @@
 import type { Locale } from 'date-fns';
+import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import type { ResponseCardFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import { isFileAttachmentUrl } from '@/core/utils/links';
 import type { CollaboraDocumentPreviewType } from '@/crd/lib/collaboraDocumentPreview';
 import { formatShortDate } from '@/crd/lib/dateTimeFormat';
 import { toCollaboraPreviewType } from '@/main/crdPages/space/callout/collaboraDocumentTypeMap';
+import { collaboraDocumentType, documentContributionType } from './calloutDataMapper';
 
 type ContributionCardData = {
   id: string;
@@ -219,4 +222,66 @@ export function mapAnyContributionToCardData(
   }
 
   return undefined;
+}
+
+type ResponseContent = NonNullable<ResponseCardFragment['content']>;
+type DocumentResponse = Extract<ResponseContent, { __typename: 'DocumentContent' }> | null | undefined;
+type LinkResponse = Extract<ResponseContent, { __typename: 'LinkContent' }> | null | undefined;
+
+/** 021 FR-009: one response of a post's preview or window, by its content kind, as the card it renders. */
+export function mapResponseToCardData(response: ResponseCardFragment, locale?: Locale): ContributionCardData {
+  const base = {
+    id: response.id,
+    title: response.about.displayName,
+    href: response.url ?? undefined,
+    author: response.author?.about
+      ? { name: response.author.about.displayName, avatarUrl: response.author.about.avatar?.file.url }
+      : undefined,
+    createdDate: toDateString(response.createdAt, locale),
+  };
+  if (response.contentKind === 'link') {
+    const link = (response.content as LinkResponse)?.link;
+    return {
+      id: response.id,
+      type: 'link',
+      title: link?.title ?? response.about.displayName,
+      linkUrl: link?.uri,
+      linkDescription: link?.description ?? undefined,
+      linkId: link?.id,
+      canEditLink: response.can.update,
+      canDeleteLink: response.can.delete,
+      linkIsFile: Boolean(link?.file) || isFileAttachmentUrl(link?.uri ?? ''),
+    };
+  }
+  const document = response.contentKind === 'document' ? (response.content as DocumentResponse)?.document : undefined;
+  if (!document) {
+    return {
+      ...base,
+      type: 'post',
+      description: response.about.description ?? undefined,
+      tags: response.tags,
+      commentCount: response.room?.messageCount,
+      postId: response.id,
+    };
+  }
+  const type = documentContributionType(document.docType);
+  if (type === CalloutContributionType.Whiteboard) {
+    return { ...base, type: 'whiteboard', previewUrl: document.preview?.url };
+  }
+  if (type === CalloutContributionType.Memo) {
+    return {
+      ...base,
+      type: 'memo',
+      markdownContent: document.textSnapshot ?? undefined,
+      memoId: document.id,
+      signedCopiesCount: 0,
+    };
+  }
+  return {
+    ...base,
+    type: 'document',
+    documentId: document.id,
+    documentType: toCollaboraPreviewType(collaboraDocumentType(document.docType)),
+    previewUrl: document.preview?.url,
+  };
 }

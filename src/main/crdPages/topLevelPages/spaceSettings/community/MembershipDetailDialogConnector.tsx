@@ -1,9 +1,15 @@
+import { useFragment } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import { useCommunityApplicationQuery, useCommunityInvitationQuery } from '@/core/apollo/generated/apollo-hooks';
+import { MembershipRequestRowFragmentDoc } from '@/core/apollo/generated-v2/apollo-hooks';
+import type { MembershipRequestRowFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import type { MembershipDetailDialogProps } from '@/crd/components/space/settings/MembershipDetailDialog';
 import { MembershipDetailDialog } from '@/crd/components/space/settings/MembershipDetailDialog';
 import type { PendingMembershipType } from '@/crd/components/space/settings/PendingMembershipsTable';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import {
+  extraRoles,
+  toQuestions,
+} from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 
 export type ViewingMembership = { id: string; type: PendingMembershipType };
@@ -18,11 +24,12 @@ type MembershipDetailDialogConnectorProps = {
   showOfferedRole?: boolean;
 };
 
+type Location = { city?: string; country?: string } | null | undefined;
+
 /**
- * Fetches the application / invitation detail (questions+answers or welcome message) on demand and
- * maps it onto the presentational `MembershipDetailDialog`. Reuses the same detail queries the legacy
- * MUI dialogs use (`CommunityApplication` / `CommunityInvitation`) — the list query never carries this
- * data, so it's fetched only when the admin opens the dialog.
+ * Maps one pending request onto the presentational `MembershipDetailDialog`. The dialog takes the row of the
+ * `requests` list that opened it — answers, message, created and last-decided dates (A9.25, community-roles-screens.tsv
+ * "request-detail"): no read of its own.
  */
 export function MembershipDetailDialogConnector({
   membership,
@@ -31,63 +38,57 @@ export function MembershipDetailDialogConnector({
 }: MembershipDetailDialogConnectorProps) {
   const { t } = useTranslation('crd-contributorSettings');
   const open = membership !== null;
-  const isApplication = membership?.type === 'application';
-  const isPlatform = membership?.type === 'platformInvitation';
-  const isInvitationLike = membership?.type === 'invitation' || isPlatform;
-
-  const applicationResult = useCommunityApplicationQuery({
-    variables: { applicationId: membership?.id ?? '' },
-    skip: !open || !isApplication,
+  const { data, complete } = useFragment<MembershipRequestRowFragment>({
+    fragment: MembershipRequestRowFragmentDoc,
+    fragmentName: 'MembershipRequestRow',
+    from: { __typename: 'MembershipRequest', id: membership?.id ?? '' },
   });
-  const invitationResult = useCommunityInvitationQuery({
-    variables: { invitationId: membership?.id ?? '', isPlatformInvitation: Boolean(isPlatform) },
-    skip: !open || !isInvitationLike,
-  });
+  const request = open && complete ? (data as MembershipRequestRowFragment) : undefined;
+  const actor = request?.actor;
+  const location = actor?.about?.location as Location;
+  const updatedDate = request ? (request.decidedAt ?? request.createdAt) : undefined;
 
   const detailProps = ((): Omit<MembershipDetailDialogProps, 'open' | 'onOpenChange'> => {
-    if (isApplication) {
-      const application = applicationResult.data?.lookup.application;
-      const profile = application?.actor.profile;
+    if (membership?.type === 'application') {
       return {
         kind: 'application',
-        loading: applicationResult.loading,
-        displayName: profile?.displayName,
-        avatarUrl: profile?.avatar?.uri,
-        avatarColor: pickColorFromId(application?.actor.id ?? membership?.id ?? ''),
-        city: profile?.location?.city,
-        country: profile?.location?.country,
-        createdDate: application?.createdDate,
-        updatedDate: application?.updatedDate,
-        questions: application?.questions.map(q => ({ id: q.id, question: q.name, answer: q.value })),
+        loading: open && !request,
+        displayName: actor?.about?.displayName,
+        avatarUrl: actor?.about?.avatar?.file.url,
+        avatarColor: pickColorFromId(actor?.id ?? membership.id),
+        city: location?.city,
+        country: location?.country,
+        createdDate: request?.createdAt,
+        updatedDate,
+        questions: request
+          ? toQuestions(request.answers).map(q => ({ id: q.id, question: q.name, answer: q.value }))
+          : undefined,
       };
     }
-    if (isPlatform) {
-      const platformInvitation = invitationResult.data?.lookup.platformInvitation;
+    if (membership?.type === 'platformInvitation') {
       return {
         kind: 'invitation',
-        loading: invitationResult.loading,
-        email: platformInvitation?.email,
-        createdDate: platformInvitation?.createdDate,
-        updatedDate: platformInvitation?.updatedDate,
-        welcomeMessage: platformInvitation?.welcomeMessage,
+        loading: open && !request,
+        email: request?.email ?? undefined,
+        createdDate: request?.createdAt,
+        updatedDate,
+        welcomeMessage: request?.message ?? undefined,
       };
     }
-    const invitation = invitationResult.data?.lookup.invitation;
-    const profile = invitation?.actor.profile;
     return {
       kind: 'invitation',
-      loading: invitationResult.loading,
-      displayName: profile?.displayName,
-      avatarUrl: profile?.avatar?.uri,
-      avatarColor: pickColorFromId(invitation?.actor.id ?? membership?.id ?? ''),
-      city: profile?.location?.city,
-      country: profile?.location?.country,
-      createdDate: invitation?.createdDate,
-      updatedDate: invitation?.updatedDate,
-      welcomeMessage: invitation?.welcomeMessage,
+      loading: open && !request,
+      displayName: actor?.about?.displayName,
+      avatarUrl: actor?.about?.avatar?.file.url,
+      avatarColor: pickColorFromId(actor?.id ?? membership?.id ?? ''),
+      city: location?.city,
+      country: location?.country,
+      createdDate: request?.createdAt,
+      updatedDate,
+      welcomeMessage: request?.message ?? undefined,
       offeredRoleLabel:
-        showOfferedRole && invitation
-          ? t(`org.associates.pending.offeredRole.${offeredRoleLabelKey(invitation.extraRoles)}`)
+        showOfferedRole && request
+          ? t(`org.associates.pending.offeredRole.${offeredRoleLabelKey(extraRoles(request.roles))}`)
           : undefined,
     };
   })();

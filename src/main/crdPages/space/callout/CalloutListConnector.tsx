@@ -4,7 +4,7 @@ import { LazyCalloutItem } from './LazyCalloutItem';
 
 type CalloutListConnectorProps = {
   title?: string;
-  // The feed reads only id + sortOrder; each card lazy-loads its own content.
+  /** The feed's posts in server order (021 FR-007); every card renders from its own PostCard. */
   callouts: CrdFeedCallout[];
   calloutsSetId: string | undefined;
   canCreate?: boolean;
@@ -23,11 +23,10 @@ export function CalloutListConnector({
   loading,
   onCreateClick,
 }: CalloutListConnectorProps) {
-  const sorted = [...callouts].sort((a, b) => a.sortOrder - b.sortOrder);
   // The move-actions hook (plan D9 / T066) needs the ordered id list to
   // derive each callout's top/bottom neighbour state. We compute it once here
   // and pass it through so every item shares the same view of the feed.
-  const orderedCalloutIds = sorted.map(c => c.id);
+  const orderedCalloutIds = callouts.map(c => c.id);
 
   return (
     <SpaceFeed
@@ -36,7 +35,7 @@ export function CalloutListConnector({
       onCreateClick={onCreateClick}
       loading={loading && callouts.length === 0}
     >
-      {sorted.map(callout => (
+      {callouts.map(callout => (
         <LazyCalloutItem
           key={callout.id}
           calloutId={callout.id}

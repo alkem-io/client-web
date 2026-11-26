@@ -4,14 +4,9 @@ import {
   refetchSpaceCalendarEventsQuery,
   useCreateCalendarEventMutation,
   useDeleteCalendarEventMutation,
-  useSpaceCalendarEventsQuery,
   useUpdateCalendarEventMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  type CalendarEvent,
-  type CalendarEventInfoFragment,
-} from '@/core/apollo/generated/graphql-schema';
+import type { CalendarEvent, CalendarEventInfoFragment } from '@/core/apollo/generated/graphql-schema';
 import { isSameDay } from '@/core/utils/time/utils';
 import { toWholeDayWire, wholeDaySpanMinutes } from '@/core/utils/time/wholeDayDate';
 import type { LocationModel } from '@/domain/common/location/LocationModel';
@@ -110,25 +105,13 @@ type UseCalendarEventsResult = {
   state: CalendarEventsState;
 };
 
+// 021 F041/F074: spaceEvents is not served yet (WP-RF4, tasks.md S04), so the calendar renders as legacy renders an
+// absent events read: no events and no create, edit or delete privilege. The write steps stay as they are.
+const NO_EVENTS: CalendarEventInfoFragment[] = [];
+const NO_PRIVILEGES = { canCreateEvents: false, canEditEvents: false, canDeleteEvents: false };
+
 const useCalendarEvents = ({ spaceId, parentSpaceId }: UseCalendarEventsParams): UseCalendarEventsResult => {
-  const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
-    variables: { spaceId: spaceId ?? '', includeSubspace: !parentSpaceId },
-    skip: !spaceId,
-  });
-
-  const collaboration = spaceData?.lookup.space?.collaboration;
-
-  const myPrivileges = collaboration?.timeline?.calendar.authorization?.myPrivileges;
-
-  const privileges = {
-    canCreateEvents: (myPrivileges ?? []).includes(AuthorizationPrivilege.Create),
-    canEditEvents: (myPrivileges ?? []).includes(AuthorizationPrivilege.Update),
-    canDeleteEvents: (myPrivileges ?? []).includes(AuthorizationPrivilege.Delete),
-  };
-
-  const events = collaboration?.timeline?.calendar.events ?? [];
-
-  const calendarId = collaboration?.timeline?.calendar.id;
+  const calendarId: string | undefined = undefined;
 
   const [createCalendarEvent, { loading: creatingCalendarEvent }] = useCreateCalendarEventMutation();
 
@@ -224,9 +207,9 @@ const useCalendarEvents = ({ spaceId, parentSpaceId }: UseCalendarEventsParams):
   };
 
   return {
-    entities: { events, privileges },
+    entities: { events: NO_EVENTS, privileges: NO_PRIVILEGES },
     actions: { createEvent, updateEvent, deleteEvent },
-    state: { loading, creatingCalendarEvent, updatingCalendarEvent },
+    state: { loading: false, creatingCalendarEvent, updatingCalendarEvent },
   };
 };
 

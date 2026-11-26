@@ -1,7 +1,7 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { createClient, MatrixEvent, Room, RoomEvent } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ActorType, type RoomMessageAttachmentInput } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { UserConversation } from './models';
 import { useConversationView } from './useConversationView';
 
@@ -19,6 +19,8 @@ const matrixClient = {
   redactEvent: redactEventMock,
   cancelPendingEvent: cancelPendingEventMock,
   makeTxnId: () => 'txn-1',
+  getUserId: () => '@me:hs',
+  getDeviceId: () => 'device-1',
   getRoom: () => ({ getLiveTimeline: () => ({ getEvents: () => pendingEvents }) }),
 };
 const session = vi.hoisted(() => ({ client: null as unknown }));
@@ -42,7 +44,7 @@ vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => k
 vi.mock('@/core/matrix/activeClient', () => ({ useMatrixClient: () => session.client }));
 
 vi.mock('./matrix/matrixRooms', () => ({
-  resolveMatrixRoomId: (_client: unknown, alkemioRoomId: string) => Promise.resolve(`!matrix-${alkemioRoomId}`),
+  nativeMatrixId: (alkemioRoomId: string) => `!matrix-${alkemioRoomId}`,
 }));
 
 // Marking resolves the Matrix room first; let that settle before asserting.
@@ -217,99 +219,40 @@ const dm = (counterpartType: ActorType | null): UserConversation => ({
     ...(counterpartType ? [{ id: 'other', type: counterpartType, displayName: 'Other' }] : []),
   ],
 });
-const contactable = (isContactable: boolean) => ({
-  data: { actor: { __typename: 'User', type: ActorType.User, isContactable } },
-});
-
-describe('useConversationView — DM consent is checked per text send', () => {
-  const send = async (target: UserConversation, text = 'hello', attachmentUpload?: RoomMessageAttachmentInput) => {
-    const { result } = renderHook(() => useConversationView(target, null));
-    let sent: boolean | undefined;
-    await act(async () => {
-      sent = await result.current.handleSendMessage(text, attachmentUpload);
-    });
-    return sent;
-  };
-
-  it('blocks a send to a non-contactable user, notifies, and resolves false', async () => {
-    actorDetailsMock.mockResolvedValue(contactable(false));
-
-    expect(await send(dm(ActorType.User))).toBe(false);
-    expect(sendEventMock).not.toHaveBeenCalled();
-    expect(notifyMock).toHaveBeenCalledWith('apollo.errors.MESSAGING_NOT_ENABLED', 'error');
-  });
-
-  it('sends to a contactable user', async () => {
-    actorDetailsMock.mockResolvedValue(contactable(true));
-
-    expect(await send(dm(ActorType.User))).toBe(true);
-    expect(sendEventMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('looks up on every send, network-only, so withdrawn consent blocks the next one', async () => {
-    actorDetailsMock.mockResolvedValueOnce(contactable(true)).mockResolvedValueOnce(contactable(false));
+describe('useConversationView — plain Matrix replies', () => {
+  it('lets the Matrix verdict authorize the plain rich reply and reuses the transaction on retry', async () => {
+    const makeTxn = vi.spyOn(matrixClient, 'makeTxnId').mockReturnValueOnce('reply-1').mockReturnValue('reply-2');
+    sendEventMock.mockRejectedValueOnce({ errcode: 'M_FORBIDDEN' });
     const { result } = renderHook(() => useConversationView(dm(ActorType.User), null));
 
-    let first: boolean | undefined;
-    let second: boolean | undefined;
     await act(async () => {
-      first = await result.current.handleSendMessage('one');
-      second = await result.current.handleSendMessage('two');
+      expect(await result.current.handleSendMessage('  reply  ', undefined, '$target')).toBe(false);
+      expect(await result.current.handleSendMessage('reply', undefined, '$target')).toBe(true);
+      expect(await result.current.handleSendMessage('reply', undefined, '$target')).toBe(true);
     });
 
-    expect([first, second]).toEqual([true, false]);
-    expect(actorDetailsMock).toHaveBeenCalledTimes(2);
-    expect(actorDetailsMock).toHaveBeenCalledWith({ variables: { actorId: 'other' }, fetchPolicy: 'network-only' });
-    expect(sendEventMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('starts no send before a delayed lookup resolves, and isSending is true meanwhile', async () => {
-    let resolveLookup: (value: unknown) => void = () => {};
-    actorDetailsMock.mockImplementationOnce(() => new Promise(resolve => (resolveLookup = resolve)));
-    const { result } = renderHook(() => useConversationView(dm(ActorType.User), null));
-
-    let sendPromise: Promise<boolean | undefined> = Promise.resolve(undefined);
-    await act(async () => {
-      sendPromise = result.current.handleSendMessage('hello');
-    });
-    expect(sendEventMock).not.toHaveBeenCalled();
-    expect(result.current.isSending).toBe(true);
-
-    await act(async () => {
-      resolveLookup(contactable(true));
-      await sendPromise;
-    });
-    expect(sendEventMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('a failed lookup makes no send and resolves false', async () => {
-    actorDetailsMock.mockResolvedValue({ error: new Error('boom') });
-
-    expect(await send(dm(ActorType.User))).toBe(false);
-    expect(sendEventMock).not.toHaveBeenCalled();
-  });
-
-  it('a null actor proceeds', async () => {
-    expect(await send(dm(ActorType.User))).toBe(true);
-    expect(sendEventMock).toHaveBeenCalledTimes(1);
-  });
-
-  it.each([
-    ['a virtual-contributor counterpart', dm(ActorType.VirtualContributor)],
-    ['no other member', dm(null)],
-    ['a group', { ...dm(ActorType.User), isGroup: true }],
-  ])('%s sends without a lookup', async (_name, target) => {
-    expect(await send(target)).toBe(true);
+    const content = { msgtype: 'm.text', body: 'reply', 'm.relates_to': { 'm.in_reply_to': { event_id: '$target' } } };
+    expect(sendEventMock.mock.calls).toEqual([
+      ['!matrix-room-1', 'm.room.message', content, 'reply-1'],
+      ['!matrix-room-1', 'm.room.message', content, 'reply-1'],
+      ['!matrix-room-1', 'm.room.message', content, 'reply-2'],
+    ]);
+    expect(makeTxn).toHaveBeenCalledTimes(2);
     expect(actorDetailsMock).not.toHaveBeenCalled();
-    expect(sendEventMock).toHaveBeenCalledTimes(1);
+    expect(sendMessageMutationMock).not.toHaveBeenCalled();
   });
 
-  it('an attachment send in a DM with a user goes through sendMessageToRoom with no lookup', async () => {
-    await send(dm(ActorType.User), 'hello', { externalReference: 'media-1', displayName: 'photo.png' });
+  it('allocates a different transaction when the reply target changes', async () => {
+    vi.spyOn(matrixClient, 'makeTxnId').mockReturnValueOnce('reply-1').mockReturnValue('reply-2');
+    sendEventMock.mockRejectedValueOnce(new Error('connection lost'));
+    const { result } = renderHook(() => useConversationView(conversation, null));
 
-    expect(actorDetailsMock).not.toHaveBeenCalled();
-    expect(sendMessageMutationMock).toHaveBeenCalledTimes(1);
-    expect(sendEventMock).not.toHaveBeenCalled();
+    await act(async () => {
+      expect(await result.current.handleSendMessage('reply', undefined, '$first')).toBe(false);
+      expect(await result.current.handleSendMessage('reply', undefined, '$second')).toBe(true);
+    });
+
+    expect(sendEventMock.mock.calls.map(args => args[3])).toEqual(['reply-1', 'reply-2']);
   });
 });
 
@@ -376,10 +319,13 @@ describe('useConversationView — writes go straight to Synapse', () => {
     expect(result.current.isSending).toBe(false);
   });
 
-  it('a rejected direct send resolves false and cancels the local echo', async () => {
-    sendEventMock.mockImplementationOnce(() => Promise.reject(new Error('M_FORBIDDEN')));
+  it('discards the hidden failed echo when the user changes the text', async () => {
     const echo = { getTxnId: () => 'txn-1', status: 'not_sent' };
-    pendingEvents.push(echo);
+    vi.spyOn(matrixClient, 'makeTxnId').mockReturnValueOnce('txn-1').mockReturnValue('txn-2');
+    sendEventMock.mockImplementationOnce(() => {
+      pendingEvents.push(echo);
+      return Promise.reject(new Error('M_FORBIDDEN'));
+    });
     const { result } = renderHook(() => useConversationView(conversation, null));
 
     let sent: boolean | undefined;
@@ -388,6 +334,10 @@ describe('useConversationView — writes go straight to Synapse', () => {
     });
 
     expect(sent).toBe(false);
+    expect(cancelPendingEventMock).not.toHaveBeenCalled();
+    await act(async () => {
+      expect(await result.current.handleSendMessage('changed')).toBe(true);
+    });
     expect(cancelPendingEventMock).toHaveBeenCalledWith(echo);
   });
 
@@ -417,13 +367,14 @@ describe('useConversationView — local echoes on a real matrix-js-sdk Room', ()
   const USER_ID = '@me:hs';
   let respond: (status: number, body: object) => void = () => {};
 
-  const realClient = () => {
+  const realClient = (requests: string[] = []) => {
     const client = createClient({
       baseUrl: 'http://synapse.test',
       userId: USER_ID,
       accessToken: 'token',
-      fetchFn: (() =>
+      fetchFn: ((input: RequestInfo | URL) =>
         new Promise<Response>(resolve => {
+          requests.push(String(input));
           respond = (status, body) =>
             resolve(new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } }));
         })) as typeof fetch,
@@ -433,21 +384,22 @@ describe('useConversationView — local echoes on a real matrix-js-sdk Room', ()
     return { client, room };
   };
 
-  it('a rejected consent-checked text send cancels the NOT_SENT echo, leaves the live timeline empty and resolves false', async () => {
-    const { client, room } = realClient();
+  it('retries a Matrix-refused reply through the same real SDK event and transaction', async () => {
+    const requests: string[] = [];
+    const { client, room } = realClient(requests);
     session.client = client;
-    actorDetailsMock.mockResolvedValue(contactable(true));
     const { result } = renderHook(() => useConversationView(dm(ActorType.User), null));
 
     let outcome: Promise<boolean | undefined> = Promise.resolve(undefined);
     await act(async () => {
-      outcome = result.current.handleSendMessage('hello');
+      outcome = result.current.handleSendMessage('hello', undefined, '$target');
     });
     await vi.waitFor(() => expect(room.getLiveTimeline().getEvents()).toHaveLength(1));
     const echo = room.getLiveTimeline().getEvents()[0];
     expect(echo.status).toBe('sending');
     expect(echo.getType()).toBe('m.room.message');
     expect(echo.getContent().body).toBe('hello');
+    expect(echo.getContent()['m.relates_to']).toEqual({ 'm.in_reply_to': { event_id: '$target' } });
 
     await act(async () => {
       respond(403, { errcode: 'M_FORBIDDEN', error: 'no' });
@@ -455,9 +407,21 @@ describe('useConversationView — local echoes on a real matrix-js-sdk Room', ()
     });
 
     expect(await outcome).toBe(false);
-    expect(actorDetailsMock).toHaveBeenCalledTimes(1);
-    expect(actorDetailsMock).toHaveBeenCalledWith({ variables: { actorId: 'other' }, fetchPolicy: 'network-only' });
-    expect(room.getLiveTimeline().getEvents()).toHaveLength(0);
+    expect(actorDetailsMock).not.toHaveBeenCalled();
+    expect(echo.status).toBe('not_sent');
+
+    await act(async () => {
+      outcome = result.current.handleSendMessage('hello', undefined, '$target');
+    });
+    await waitFor(() => expect(requests).toHaveLength(2));
+    expect(requests[0]).toBe(requests[1]);
+    expect(room.getLiveTimeline().getEvents()).toEqual([echo]);
+
+    await act(async () => {
+      respond(200, { event_id: '$server' });
+      expect(await outcome).toBe(true);
+    });
+    expect(echo.getId()).toBe('$server');
   });
 
   it('the remote echo swaps the local echo in place and emits Room.localEchoUpdated, not Room.timeline', async () => {

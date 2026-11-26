@@ -1,22 +1,21 @@
 import { Suspense } from 'react';
 import { Route } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 
 const LoginCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
   import('@/main/crdPages/auth/LoginCrdRoute').then(m => ({ default: m.LoginCrdRoute }))
-);
-const RecoveryCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
-  import('@/main/crdPages/auth/RecoveryCrdRoute').then(m => ({ default: m.RecoveryCrdRoute }))
-);
-const SettingsCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
-  import('@/main/crdPages/auth/SettingsCrdRoute').then(m => ({ default: m.SettingsCrdRoute }))
 );
 const SignUpCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
   import('@/main/crdPages/auth/SignUpCrdRoute').then(m => ({ default: m.SignUpCrdRoute }))
 );
 const RegistrationCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
   import('@/main/crdPages/auth/SignUpCrdRoute').then(m => ({ default: m.RegistrationCrdRoute }))
+);
+const RecoveryCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
+  import('@/main/crdPages/auth/RecoveryCrdRoute').then(m => ({ default: m.RecoveryCrdRoute }))
+);
+const SettingsCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
+  import('@/main/crdPages/auth/SettingsCrdRoute').then(m => ({ default: m.SettingsCrdRoute }))
 );
 const VerifyCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
   import('@/main/crdPages/auth/VerifyCrdRoute').then(m => ({ default: m.VerifyCrdRoute }))
@@ -44,20 +43,11 @@ export enum IdentityRoutes {
 export const IdentityRoute = () => {
   return (
     <>
-      {/* Auth screens are un-gated: the CRD screens render for every visitor (see spec 101). */}
       <Route
-        path={`${IdentityRoutes.Login}/*`}
+        path={IdentityRoutes.SignUp}
         element={
           <Suspense fallback={null}>
-            <LoginCrdRoute />
-          </Suspense>
-        }
-      />
-      <Route
-        path={`${IdentityRoutes.Logout}`}
-        element={
-          <Suspense fallback={null}>
-            <LogoutRoute />
+            <SignUpCrdRoute />
           </Suspense>
         }
       />
@@ -66,6 +56,22 @@ export const IdentityRoute = () => {
         element={
           <Suspense fallback={null}>
             <RegistrationCrdRoute />
+          </Suspense>
+        }
+      />
+      <Route
+        path={IdentityRoutes.Login}
+        element={
+          <Suspense fallback={null}>
+            <LoginCrdRoute />
+          </Suspense>
+        }
+      />
+      <Route
+        path={IdentityRoutes.Logout}
+        element={
+          <Suspense fallback={null}>
+            <LogoutRoute />
           </Suspense>
         }
       />
@@ -101,31 +107,12 @@ export const IdentityRoute = () => {
           </Suspense>
         }
       />
-      {/*
-        Un-gated like the other identity screens. Password recovery reaches
-        /settings carrying a Kratos settings flow (`?flow=`) but NO OIDC/BFF
-        session — the user is locked out, that is the whole point of recovery.
-        Wrapping this in NoIdentityRedirect (isAuthenticated = kratos && oidc)
-        bounces the recovery link to /required. SettingsCrdRoute already requires
-        the `?flow=` param, and Kratos validates that flow server-side against the
-        recovery session cookie, so that is the real authorization here.
-      */}
       <Route
         path={`${IdentityRoutes.Settings}`}
         element={
           <Suspense fallback={null}>
             <SettingsCrdRoute />
           </Suspense>
-        }
-      />
-      <Route
-        path={`${IdentityRoutes.SignUp}`}
-        element={
-          <NotAuthenticatedRoute>
-            <Suspense fallback={null}>
-              <SignUpCrdRoute />
-            </Suspense>
-          </NotAuthenticatedRoute>
         }
       />
     </>

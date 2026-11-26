@@ -759,6 +759,8 @@
       "title": "Visibility",
       "public": "Public",
       "publicDescription": "This Space and its contents are visible to everyone on the platform. Users can only contribute if they are a member.",
+      "registered": "Signed-in users",
+      "registeredDescription": "This Space and its contents are visible to everyone who is signed in to the platform; visitors who are not signed in cannot see its content. Users can only contribute if they are a member.",
       "private": "Private",
       "privateDescription": "This Space is visible to everyone on the platform, but the content is only visible to members.",
       "hint": "Consider your space's purpose and audience when choosing visibility."

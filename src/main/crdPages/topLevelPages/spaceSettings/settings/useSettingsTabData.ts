@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useSpaceSettingsQuery, useUpdateSpaceSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
+import { NotFoundError } from '@/core/40XErrorHandler/40XErrors';
 import {
-  ActorType,
-  type CommunityMembershipPolicy,
-  type SpacePrivacyMode,
-  type UserInformationVisibility,
-} from '@/core/apollo/generated/graphql-schema';
+  useSpaceSettingsSetAudienceMutation,
+  useSpaceSettingsSetTrustedOrganizationsMutation,
+  useSpaceSettingsSettingsQuery,
+  useSpaceSettingsUpdateSettingsMutation,
+} from '@/core/apollo/generated-v2/apollo-hooks';
+import type { SpaceSettingsSettingsQuery } from '@/core/apollo/generated-v2/graphql-schema';
 import type {
   AllowedActionKey,
   AllowedActionToggle,
@@ -13,17 +14,23 @@ import type {
   SpacePrivacy,
   UserInfoVisibility,
 } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
-import { defaultSpaceSettings } from '@/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings';
 import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
 import {
+  allowedActionsToSettings,
   mapAllowedActions,
   mapMembershipPolicy,
-  mapMembershipPolicyToBackend,
+  mapMembershipPolicyToSettings,
   mapPrivacy,
-  mapPrivacyToBackend,
+  mapPrivacyToAudience,
   mapUserInfoVisibility,
-  mapUserInfoVisibilityToBackend,
+  mapUserInfoVisibilityToSettings,
+  type NativeSpaceSettings,
 } from './settingsMapper';
+
+type SettingsSpace = Extract<NonNullable<SpaceSettingsSettingsQuery['node']>, { __typename?: 'Space' }>;
+
+/** The trusted organizations are the space's `trusted_org` references (canonical-mechanisms M25). */
+const TRUSTED_ORG_ROLE = 'trusted_org';
 
 /** Buffered (unsaved) Settings values — a key is present only while it differs from the server. */
 type SettingsDraft = {
@@ -34,18 +41,9 @@ type SettingsDraft = {
   allowedActions?: Partial<Record<AllowedActionKey, boolean>>;
 };
 
-const COLLABORATION_KEY_MAP: Partial<Record<AllowedActionKey, string>> = {
-  memberCreatePosts: 'allowMembersToCreateCallouts',
-  videoCalls: 'allowMembersToVideoCall',
-  guestContributions: 'allowGuestContributions',
-  memberCreateSubspaces: 'allowMembersToCreateSubspaces',
-  inheritMembershipRights: 'inheritMembershipRights',
-  subspaceEvents: 'allowEventsFromSubspaces',
-};
-
 export type UseSettingsTabDataResult = {
-  /** Displayed values — the buffered value where one exists, else the server value. */
-  privacy: SpacePrivacy;
+  /** Displayed values — the buffered value where one exists, else the server value (none for REGISTERED). */
+  privacy: SpacePrivacy | undefined;
   userInfoVisibility: UserInfoVisibility;
   membershipPolicy: MembershipPolicy;
   allowedActions: AllowedActionToggle[];
@@ -53,7 +51,6 @@ export type UseSettingsTabDataResult = {
   /** Trusting the host only makes sense when the space is hosted by an organization, not a user. */
   hostIsOrganization: boolean;
   providerDisplayName: string;
-  roleSetId: string | undefined;
   loading: boolean;
   onPrivacyChange: (next: SpacePrivacy) => void;
   onUserInfoVisibilityChange: (next: UserInfoVisibility) => void;
@@ -65,29 +62,43 @@ export type UseSettingsTabDataResult = {
 };
 
 export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
-  const { data, loading } = useSpaceSettingsQuery({
-    variables: { spaceId },
+  const {
+    data,
+    loading,
+    error: queryError,
+  } = useSpaceSettingsSettingsQuery({
+    variables: { id: spaceId },
     skip: !spaceId,
   });
+  if (spaceId && queryError) throw queryError;
+  if (spaceId && data && !loading && !data.node) throw new NotFoundError();
 
-  const settings = data?.lookup.space?.settings;
-  const provider = data?.lookup.space?.about.provider;
-  const hostId = provider?.id;
-  const hostIsOrganization = provider?.type === ActorType.Organization;
-  const providerDisplayName = provider?.profile?.displayName ?? '';
-  const roleSetId = data?.lookup.space?.about.membership?.roleSetID;
+  const space =
+    data?.node?.id === spaceId && data.node.entityType === 'space' ? (data.node as SettingsSpace) : undefined;
+  const settings = (space?.settings ?? {}) as NativeSpaceSettings;
+  const host = space?.host;
+  const hostId = host?.id;
+  const hostIsOrganization = host?.actorType === 'organization';
+  const providerDisplayName = host?.about?.displayName ?? '';
 
-  const hostOrganizationTrusted = (!!hostId && settings?.membership?.trustedOrganizations?.includes(hostId)) ?? false;
+  // Every trust link is kept, the non-host ones included (H-space-v2); setReferences replaces the ordered list.
+  const trustedOrganizationIds = (space?.curated ?? [])
+    .filter(item => item.role === TRUSTED_ORG_ROLE)
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map(item => item.node.id);
+  const hostOrganizationTrusted = !!hostId && trustedOrganizationIds.includes(hostId);
 
-  const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
+  const [updateSettings] = useSpaceSettingsUpdateSettingsMutation();
+  const [setAudience] = useSpaceSettingsSetAudienceMutation();
+  const [setTrustedOrganizations] = useSpaceSettingsSetTrustedOrganizationsMutation();
   const [draft, setDraft] = useState<SettingsDraft>({});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const serverPrivacy = mapPrivacy(settings?.privacy);
-  const serverUserInfoVisibility = mapUserInfoVisibility(settings?.privacy?.userInformationVisibility);
-  const serverMembershipPolicy = mapMembershipPolicy(settings?.membership);
-  const serverAllowedActions = mapAllowedActions(settings?.collaboration, settings?.membership, settings?.privacy);
+  const serverPrivacy = mapPrivacy(space?.audience);
+  const serverUserInfoVisibility = mapUserInfoVisibility(settings.user_information_visibility);
+  const serverMembershipPolicy = mapMembershipPolicy(settings.membership_policy);
+  const serverAllowedActions = mapAllowedActions(settings);
 
   const privacy = draft.privacy ?? serverPrivacy;
   const userInfoVisibility = draft.userInfoVisibility ?? serverUserInfoVisibility;
@@ -98,85 +109,13 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
   }));
   const displayedHostOrganizationTrusted = draft.hostOrganizationTrusted ?? hostOrganizationTrusted;
 
-  const buildFullSettings = (overrides: {
-    privacyMode?: SpacePrivacyMode;
-    userInformationVisibility?: UserInformationVisibility;
-    membershipPolicy?: CommunityMembershipPolicy;
-    allowSubspaceAdminsToInviteMembers?: boolean;
-    allowPlatformSupportAsAdmin?: boolean;
-    collaboration?: Record<string, boolean>;
-    hostOrganizationTrusted?: boolean;
-  }) => {
-    // Compute trustedOrganizations based on toggle
-    const trustedOrganizations = [...(settings?.membership?.trustedOrganizations ?? [])];
-    if (overrides.hostOrganizationTrusted !== undefined && hostId) {
-      if (overrides.hostOrganizationTrusted && !trustedOrganizations.includes(hostId)) {
-        trustedOrganizations.push(hostId);
-      } else if (!overrides.hostOrganizationTrusted) {
-        const idx = trustedOrganizations.indexOf(hostId);
-        if (idx >= 0) trustedOrganizations.splice(idx, 1);
-      }
-    }
-
-    return {
-      privacy: {
-        mode: overrides.privacyMode ?? settings?.privacy?.mode ?? defaultSpaceSettings.privacy.mode,
-        allowPlatformSupportAsAdmin:
-          overrides.allowPlatformSupportAsAdmin ??
-          settings?.privacy?.allowPlatformSupportAsAdmin ??
-          defaultSpaceSettings.privacy.allowPlatformSupportAsAdmin,
-        // Preserve the existing user-info-visibility unless this change targets it
-        // (feature 008). Omitting it would otherwise reset to the server default on
-        // every other settings change.
-        ...((overrides.userInformationVisibility ?? settings?.privacy?.userInformationVisibility)
-          ? {
-              userInformationVisibility:
-                overrides.userInformationVisibility ?? settings?.privacy?.userInformationVisibility,
-            }
-          : {}),
-      },
-      membership: {
-        policy: overrides.membershipPolicy ?? settings?.membership?.policy ?? defaultSpaceSettings.membership.policy,
-        trustedOrganizations,
-        allowSubspaceAdminsToInviteMembers:
-          overrides.allowSubspaceAdminsToInviteMembers ??
-          settings?.membership?.allowSubspaceAdminsToInviteMembers ??
-          defaultSpaceSettings.membership.allowSubspaceAdminsToInviteMembers,
-      },
-      collaboration: {
-        allowMembersToCreateCallouts:
-          settings?.collaboration?.allowMembersToCreateCallouts ??
-          defaultSpaceSettings.collaboration.allowMembersToCreateCallouts,
-        allowMembersToCreateSubspaces:
-          settings?.collaboration?.allowMembersToCreateSubspaces ??
-          defaultSpaceSettings.collaboration.allowMembersToCreateSubspaces,
-        inheritMembershipRights:
-          settings?.collaboration?.inheritMembershipRights ??
-          defaultSpaceSettings.collaboration.inheritMembershipRights,
-        allowEventsFromSubspaces:
-          settings?.collaboration?.allowEventsFromSubspaces ??
-          defaultSpaceSettings.collaboration.allowEventsFromSubspaces,
-        allowMembersToVideoCall:
-          settings?.collaboration?.allowMembersToVideoCall ??
-          defaultSpaceSettings.collaboration.allowMembersToVideoCall,
-        allowGuestContributions:
-          settings?.collaboration?.allowGuestContributions ??
-          defaultSpaceSettings.collaboration.allowGuestContributions,
-        ...overrides.collaboration,
-      },
-      layout: {
-        calloutDescriptionDisplayMode:
-          settings?.layout?.calloutDescriptionDisplayMode ?? defaultSpaceSettings.layout.calloutDescriptionDisplayMode,
-      },
-    };
-  };
-
   // Each setter keeps a key in the draft only while it differs from the server, so
   // flipping a control back to its saved value drops it from the count (FR-025b).
   const setField = <K extends Exclude<keyof SettingsDraft, 'allowedActions'>>(
     key: K,
     next: NonNullable<SettingsDraft[K]>,
-    serverValue: NonNullable<SettingsDraft[K]>
+    // undefined when the server value has no option here (a REGISTERED audience): any pick is then a change.
+    serverValue: SettingsDraft[K]
   ) => {
     setError(null);
     setDraft(prev => {
@@ -215,41 +154,71 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
 
   const saveAll = async (): Promise<boolean> => {
     if (count === 0) return true;
-    const actions = draft.allowedActions ?? {};
-    const collaboration: Record<string, boolean> = {};
-    for (const [key, value] of Object.entries(actions) as [AllowedActionKey, boolean][]) {
-      const backendKey = COLLABORATION_KEY_MAP[key];
-      if (backendKey) collaboration[backendKey] = value;
-    }
     setSaving(true);
     setError(null);
-    try {
-      // The mutation takes the whole settings object, so every buffered change goes in one call.
-      await updateSpaceSettings({
-        variables: {
-          settingsData: {
-            spaceID: spaceId,
-            settings: buildFullSettings({
-              privacyMode: draft.privacy && mapPrivacyToBackend(draft.privacy),
-              userInformationVisibility:
-                draft.userInfoVisibility && mapUserInfoVisibilityToBackend(draft.userInfoVisibility),
-              membershipPolicy: draft.membershipPolicy && mapMembershipPolicyToBackend(draft.membershipPolicy),
-              allowPlatformSupportAsAdmin: actions.alkemioSupportAccess,
-              allowSubspaceAdminsToInviteMembers: actions.subspaceAdminInvitations,
-              collaboration,
-              hostOrganizationTrusted: draft.hostOrganizationTrusted,
-            }),
-          },
-        },
-      });
-      setDraft({});
-      setSaving(false);
-      return true;
-    } catch (err) {
-      setError(errorMessage(err));
-      setSaving(false);
-      return false;
+    // Only the changed values are written, each through the intent that owns it: the settings keys in one
+    // updateSpace, privacy through setSpaceAudience, the trust list through setReferences (screens-dispositions.tsv:19534).
+    const settingsPatch: NativeSpaceSettings = allowedActionsToSettings(draft.allowedActions ?? {}, settings);
+    if (draft.userInfoVisibility !== undefined) {
+      settingsPatch.user_information_visibility = mapUserInfoVisibilityToSettings(draft.userInfoVisibility);
     }
+    if (draft.membershipPolicy !== undefined) {
+      settingsPatch.membership_policy = mapMembershipPolicyToSettings(draft.membershipPolicy);
+    }
+    const saved: SettingsDraft = {};
+    const errors: string[] = [];
+    const run = async (write: () => Promise<unknown>, onSaved: () => void) => {
+      try {
+        await write();
+        onSaved();
+      } catch (err) {
+        errors.push(errorMessage(err));
+      }
+    };
+    if (Object.keys(settingsPatch).length > 0) {
+      await run(
+        () => updateSettings({ variables: { id: spaceId, settings: settingsPatch } }),
+        () => {
+          saved.allowedActions = draft.allowedActions;
+          saved.userInfoVisibility = draft.userInfoVisibility;
+          saved.membershipPolicy = draft.membershipPolicy;
+        }
+      );
+    }
+    if (draft.privacy !== undefined) {
+      const nextPrivacy = draft.privacy;
+      await run(
+        () => setAudience({ variables: { id: spaceId, audience: mapPrivacyToAudience(nextPrivacy) } }),
+        () => {
+          saved.privacy = nextPrivacy;
+        }
+      );
+    }
+    if (draft.hostOrganizationTrusted !== undefined && hostId) {
+      const trust = draft.hostOrganizationTrusted;
+      const targets = trust
+        ? [...trustedOrganizationIds.filter(id => id !== hostId), hostId]
+        : trustedOrganizationIds.filter(id => id !== hostId);
+      await run(
+        () =>
+          // The space's whole curated list comes back with the write and replaces the cached one.
+          setTrustedOrganizations({ variables: { owner: spaceId, targets } }),
+        () => {
+          saved.hostOrganizationTrusted = trust;
+        }
+      );
+    }
+    // What was written leaves the buffer; what failed stays counted so Save retries it.
+    setDraft(prev => {
+      const next: SettingsDraft = { ...prev };
+      for (const key of Object.keys(saved) as (keyof SettingsDraft)[]) {
+        if (saved[key] !== undefined) delete next[key];
+      }
+      return next;
+    });
+    setSaving(false);
+    setError(errors[0] ?? null);
+    return errors.length === 0;
   };
 
   const reset = () => {
@@ -265,7 +234,6 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
     hostOrganizationTrusted: displayedHostOrganizationTrusted,
     hostIsOrganization,
     providerDisplayName,
-    roleSetId,
     loading,
     onPrivacyChange,
     onUserInfoVisibilityChange,

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { CalloutMemoPreview } from '@/crd/components/callout/CalloutMemoPreview';
 import { Button } from '@/crd/primitives/button';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
-import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
 
 type MemoFramingConnectorProps = {
   callout: CalloutDetailsModelExtended;
@@ -21,14 +20,14 @@ type MemoFramingConnectorProps = {
 export function MemoFramingConnector({ callout, onOpen, onOpenSignedCopies }: MemoFramingConnectorProps) {
   const { t } = useTranslation('crd-space');
   const memoId = callout.framing.memo?.id;
-  const { memo } = useMemoManager({ id: memoId });
 
   if (!callout.framing.memo) {
     return null;
   }
 
-  const content = memo?.markdown ?? callout.framing.memo.markdown ?? '';
-  const signatures = memo?.signatures ?? callout.framing.memo.signatures ?? [];
+  // The memo's text is the post's document snapshot (021 F087); its attestations are not served yet.
+  const content = callout.framing.memo.markdown ?? '';
+  const signatures = callout.framing.memo.signatures ?? [];
   const signedCopiesCount = signatures.filter(signature => signature.document).length;
 
   return (

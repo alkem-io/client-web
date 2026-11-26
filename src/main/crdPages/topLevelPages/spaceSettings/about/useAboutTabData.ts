@@ -1,19 +1,22 @@
 import { ApolloError } from '@apollo/client';
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
+import { NotFoundError } from '@/core/40XErrorHandler/40XErrors';
 import {
-  useAddClassificationEntryFromTemplateMutation,
-  useCreateReferenceOnProfileMutation,
-  useDefaultVisualTypeConstraintsQuery,
-  useDeleteClassificationEntryMutation,
-  useDeleteReferenceMutation,
-  useSpaceAboutDetailsQuery,
-  useUpdateClassificationEntryDisplayMutation,
-  useUpdateClassificationEntrySelectionMutation,
-  useUpdateSpaceMutation,
-  useUploadVisualMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import { type UpdateSpaceInput, VisualType } from '@/core/apollo/generated/graphql-schema';
+  useSpaceSettingsAboutQuery,
+  useSpaceSettingsAddClassificationMutation,
+  useSpaceSettingsAttachVisualMutation,
+  useSpaceSettingsDeleteLinkMutation,
+  useSpaceSettingsRemoveClassificationMutation,
+  useSpaceSettingsRequestVisualUploadMutation,
+  useSpaceSettingsUpdateAboutMutation,
+  useSpaceSettingsUpdateClassificationMutation,
+  useSpaceSettingsUpsertLinkMutation,
+} from '@/core/apollo/generated-v2/apollo-hooks';
+import type { UpdateAboutInput } from '@/core/apollo/generated-v2/graphql-schema';
+import { NativeErrorCode } from '@/core/apollo/hooks/nativeErrorWording';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { ClassificationEntryData, ClassificationTemplateOptionData } from '@/crd/components/classification/types';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
@@ -25,10 +28,17 @@ import type {
 } from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { MAX_BANNER_ASPECT_RATIO, MIN_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
-import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
-import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
-import { buildPreviewCard, mapClassificationEntries, mapSpaceToAboutFormValues } from './aboutMapper';
+import { useNativeReferenceFileUpload } from '@/main/crdPages/utils/useNativeReferenceFileUpload';
+import {
+  type AboutSpace,
+  buildPreviewCard,
+  type ClassificationSettings,
+  mapNativeClassificationEntries,
+  mapSpaceToAboutFormValues,
+  mapVisual,
+  PURPOSE_FACET,
+} from './aboutMapper';
 
 export type { AboutFormValues };
 
@@ -92,15 +102,27 @@ type StagedClassificationAdd = {
 };
 
 /**
- * FR-011a/FR-011b's server-side display-label conflict has no dedicated error
- * code — it is a `ValidationException` (`BAD_USER_INPUT`) like any other
- * classification validation failure, so it is identified by its stable
- * message text rather than a code alone.
+ * FR-011a/FR-011b: the normalized label is the owner-local choice set name, checked atomically when the add is
+ * written (surface.graphql:542), so a collision comes back as the native CONFLICT refusal of addClassification.
  */
 function isDisplayLabelConflictError(err: unknown): boolean {
   if (!(err instanceof ApolloError)) return false;
-  return err.graphQLErrors.some(gqlErr => /display label already exists/i.test(gqlErr.message));
+  return err.graphQLErrors.some(gqlErr => gqlErr.extensions?.code === NativeErrorCode.CONFLICT);
 }
+
+type VisualKey = 'avatar' | 'pageBanner' | 'cardBanner';
+
+/** Each About visual and its file role, which is also its Config.visualConstraints name (schema.sql file_roles). */
+const VISUAL_ROLE: Record<VisualKey, 'avatar' | 'banner' | 'card'> = {
+  avatar: 'avatar',
+  pageBanner: 'banner',
+  cardBanner: 'card',
+};
+
+/** A space's own references are links of role `reference` (screens-dispositions.tsv:3198). */
+const REFERENCE_LINK_ROLE = 'reference';
+
+type UploadedFile = { id: string };
 
 const TEMP_PREFIX = 'temp-';
 function isTempId(id: string) {
@@ -132,41 +154,45 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     loading: queryLoading,
     error: queryError,
     refetch,
-  } = useSpaceAboutDetailsQuery({ variables: { spaceId }, skip: !spaceId });
-
-  const space = data?.lookup.space;
+  } = useSpaceSettingsAboutQuery({ variables: { id: spaceId }, skip: !spaceId });
+  const space: AboutSpace | undefined =
+    data?.node?.id === spaceId && data.node.entityType === 'space' ? (data.node as AboutSpace) : undefined;
   /** Server-saved view of the form — recomputed on every render from the cache. */
   const saved: AboutFormValues | null = space ? mapSpaceToAboutFormValues(space) : null;
 
   const [values, setValues] = useState<AboutFormValues | null>(null);
   const valuesRef = useRef<AboutFormValues | null>(null);
+  // A read that fails before the form is seeded is shown, never an endless spinner; once seeded, a failed refresh
+  // after Save is reported through the save-failed dialog instead.
+  if (spaceId && values === null && queryError) throw queryError;
+  if (spaceId && values === null && data && !queryLoading && !data.node) throw new NotFoundError();
   const [, startTransition] = useTransition();
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const { t } = useTranslation('crd-spaceSettings');
+  const { t: tCommon } = useTranslation('crd-common');
   const notify = useNotification();
+  const handleError = useApolloErrorHandler();
 
-  const [updateSpace] = useUpdateSpaceMutation();
-  const [uploadVisual] = useUploadVisualMutation();
-  const [createReference] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
-  const [addClassificationEntryFromTemplate] = useAddClassificationEntryFromTemplateMutation();
-  const [updateClassificationEntrySelection] = useUpdateClassificationEntrySelectionMutation();
-  const [updateClassificationEntryDisplay] = useUpdateClassificationEntryDisplayMutation();
-  const [deleteClassificationEntry] = useDeleteClassificationEntryMutation();
+  const [updateAbout] = useSpaceSettingsUpdateAboutMutation();
+  const [upsertLink] = useSpaceSettingsUpsertLinkMutation();
+  const [deleteLink] = useSpaceSettingsDeleteLinkMutation();
+  const [requestUpload] = useSpaceSettingsRequestVisualUploadMutation();
+  const [attachVisual] = useSpaceSettingsAttachVisualMutation();
+  const [addClassification] = useSpaceSettingsAddClassificationMutation();
+  const [updateClassification] = useSpaceSettingsUpdateClassificationMutation();
+  const [removeClassificationEntry] = useSpaceSettingsRemoveClassificationMutation();
 
-  // The allowed ratio range is a property of the visual TYPE, so it comes from
-  // the platform config rather than from this space's own visual row.
-  const { data: bannerConstraintsData } = useDefaultVisualTypeConstraintsQuery({
-    variables: { visualType: VisualType.Banner },
-    skip: level !== 'L0',
-  });
-  const bannerConstraints = bannerConstraintsData?.platform.configuration.defaultVisualTypeConstraints;
+  // The allowed ratio range is a property of the visual's slot type, so it comes from Config.visualConstraints
+  // (one row per file role) rather than from this space's own image.
+  const constraintOf = (key: VisualKey) =>
+    data?.config.visualConstraints.find(constraint => constraint.name === VISUAL_ROLE[key]);
+  const bannerConstraints = level === 'L0' ? constraintOf('pageBanner') : undefined;
   // Fall back to the local mirror of the server defaults rather than to `null`.
   // `null` reads as "this visual has no adjustable shape" and silently removes
-  // the slider, so a failed or still-loading platform-config query would take
-  // the whole feature away for the session with nothing shown to explain it.
+  // the slider, so a still-loading config read would take the whole feature away
+  // for the session with nothing shown to explain it.
   const pageBannerAspectRatioBounds: AboutVisualAspectRatioBounds | null =
     level === 'L0'
       ? {
@@ -177,9 +203,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   // Reference file upload (paperclip) — the space settings tab is always rendered inside the
   // ambient space StorageConfigContextProvider, so the bucket resolves from context.
-  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
-    useStorageConfigContext()
-  );
+  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useNativeReferenceFileUpload();
 
   // Seed once when the query first resolves. Subsequent cache updates are
   // picked up via `saved` (for dirty detection) without overwriting user edits.
@@ -249,44 +273,72 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   // ────────────────── Image uploads (immediate) ──────────────────
 
+  /**
+   * Replaces the image in a slot through the file contract, as useUploadVisualsOnCreate: requestUpload on the space
+   * under the slot's role, PUT the bytes to the token's url, then attachFile under that role with the alt text; the
+   * server takes the ratio from the cropped image. A failure is shown, never dropped silently.
+   */
+  const uploadVisual = async (key: VisualKey, file: File, altText: string) => {
+    const role = VISUAL_ROLE[key];
+    const { data: token } = await requestUpload({
+      variables: { owner: spaceId, mime: file.type, size: file.size, role },
+    });
+    if (!token) throw new Error(`requestUpload returned no token for the ${role} of ${spaceId}`);
+    const response = await fetch(token.requestUpload.url, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token.requestUpload.token}`,
+        'Content-Type': file.type,
+        'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(file.name)}`,
+      },
+      body: file,
+    });
+    if (!response.ok) throw new Error(`Upload of the ${role} of ${spaceId} failed with HTTP ${response.status}`);
+    const uploaded = (await response.json()) as UploadedFile;
+    const { data: attached } = await attachVisual({
+      variables: {
+        owner: spaceId,
+        file: uploaded.id,
+        role,
+        displayName: file.name,
+        alt: altText || undefined,
+      },
+    });
+    const node = attached?.attachFile;
+    return node && node.entityType === 'space' && 'about' in node ? node.about[role] : undefined;
+  };
+
   const uploadVisualForField = async (
-    key: 'avatar' | 'pageBanner' | 'cardBanner',
+    key: VisualKey,
     file: File,
     // Passed explicitly rather than read back off `valuesRef`: the caller queues
     // a `setValues` for this same alt text, and that updater runs at render, not
     // at dispatch, so the ref still holds the pre-edit value at this point.
     altText: string
   ) => {
-    const current = valuesRef.current;
-    const visual = current?.[key];
-    if (!visual?.id) return;
     startTransition(() => {
-      void uploadVisual({
-        variables: { file, uploadData: { visualID: visual.id, alternativeText: altText || undefined } },
-      }).then(result => {
-        const uploaded = result.data?.uploadImageOnVisual;
-        if (uploaded) {
+      void uploadVisual(key, file, altText)
+        .then(uploaded => {
+          if (!uploaded) return;
           setValues(prev => {
             const base = prev ?? valuesRef.current;
             if (!base) return prev;
-            const next: AboutFormValues = {
-              ...base,
-              [key]: {
-                ...base[key],
-                uri: uploaded.uri,
-                altText: uploaded.alternativeText ?? null,
-                // The server derives the stored ratio from the uploaded pixels
-                // (the crop is cut to the slider's ratio, so they agree to the
-                // 0.1 the DB keeps); take its value as the truth so local state
-                // and the Apollo cache never disagree.
-                aspectRatio: uploaded.aspectRatio,
-              },
-            };
+            // The server derives the stored ratio from the uploaded pixels (the crop is cut to the slider's
+            // ratio); take its value as the truth so local state and the Apollo cache never disagree.
+            const next: AboutFormValues = { ...base, [key]: mapVisual(uploaded, key === 'pageBanner') };
             valuesRef.current = next;
             return next;
           });
-        }
-      });
+        })
+        .catch(err => {
+          if (err instanceof ApolloError) {
+            handleError(err);
+            return;
+          }
+          // The byte PUT to the file service failed: shown with the transport wording, and logged.
+          notify(tCommon('apollo.errors.network.generic'), 'error');
+          logError(err instanceof Error ? err : new Error(String(err)));
+        });
     });
   };
 
@@ -294,7 +346,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   const [pendingCrop, setPendingCrop] = useState<PendingCrop | null>(null);
 
-  const buildCropConfig = (key: 'avatar' | 'pageBanner' | 'cardBanner'): CropConfig => {
+  const buildCropConfig = (key: VisualKey): CropConfig => {
     // Read aspectRatio from local form state (values) if available,
     // which ensures slider changes are immediately used in the crop dialog.
     let aspectRatio: number | undefined;
@@ -303,27 +355,24 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
       aspectRatio = visual.aspectRatio;
     }
 
-    // Read min/max constraints from Apollo cache (they never change during editing).
-    const profile = space?.about.profile;
-    const visualRaw = key === 'avatar' ? profile?.avatar : key === 'pageBanner' ? profile?.banner : profile?.cardBanner;
+    // The slot's limits come from its Config.visualConstraints row (they never change during editing).
+    const constraint = constraintOf(key);
 
     // Page banner is the only visual with adjustable aspect ratio.
     const aspectRatioBounds = key === 'pageBanner' ? (pageBannerAspectRatioBounds ?? undefined) : undefined;
 
     // A stored banner ratio describes an uploaded image's shape — the server
-    // derives it from the pixels the crop dialog cut. With no image the row
-    // still carries the server's creation default (10 today, 6 on legacy
-    // rows), chosen by nobody; passing it through would open the first-ever
-    // crop on that value instead of the dialog's own default (the bounds'
-    // max, 10).
-    const hasImage = Boolean(values?.[key]?.uri ?? visualRaw?.uri);
+    // derives it from the pixels the crop dialog cut. With no image there is
+    // no ratio chosen by anybody, so the first-ever crop opens on the dialog's
+    // own default (the bounds' max) instead.
+    const hasImage = Boolean(values?.[key]?.uri);
 
     return {
-      aspectRatio: key === 'pageBanner' && !hasImage ? undefined : (aspectRatio ?? visualRaw?.aspectRatio ?? 1),
-      maxHeight: visualRaw?.maxHeight,
-      minHeight: visualRaw?.minHeight,
-      maxWidth: visualRaw?.maxWidth,
-      minWidth: visualRaw?.minWidth,
+      aspectRatio: key === 'pageBanner' && !hasImage ? undefined : (aspectRatio ?? constraint?.aspectRatio ?? 1),
+      maxHeight: constraint?.maxHeight,
+      minHeight: constraint?.minHeight,
+      maxWidth: constraint?.maxWidth,
+      minWidth: constraint?.minWidth,
       aspectRatioBounds,
       // Only the page banner refuses an undersized source: it is the page's
       // largest image, where upscaling is most visible. The avatar and card
@@ -441,7 +490,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     attemptedLabel: string;
   } | null>(null);
 
-  const serverClassifications = space ? mapClassificationEntries(space) : [];
+  const serverClassifications = space ? mapNativeClassificationEntries(space) : [];
   const keptClassifications = serverClassifications.filter(entry => !stagedRemovals.includes(entry.id));
   // Only removals of entries the server still holds are pending: one already deleted elsewhere
   // (a failed removal, refetched) has nothing left to save, so it must not stay counted.
@@ -531,18 +580,22 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     setClassificationConflict(null);
   };
 
+  /** The stored instance settings of each served entry, so a display toggle rewrites only `visible`. */
+  const settingsOf = (entryId: string): ClassificationSettings =>
+    ((space?.classifications ?? []).find(entry => entry.id === entryId)?.settings ?? {}) as ClassificationSettings;
+
   /** Writes the staged classification changes; returns the error of the first failure, if any. */
   const saveClassifications = async (): Promise<string | null> => {
-    let firstError: string | null = null;
+    const errors: string[] = [];
     const fail = (err: unknown) => {
-      firstError ??= isDisplayLabelConflictError(err) ? t('classifications.picker.conflict.title') : errorMessage(err);
+      errors.push(isDisplayLabelConflictError(err) ? t('classifications.picker.conflict.title') : errorMessage(err));
     };
 
     // Removals first, so a label freed by a removal is free for an add in the same Save.
     const failedRemovals: string[] = [];
     for (const entryId of pendingRemovals) {
       try {
-        await deleteClassificationEntry({ variables: { classificationData: { ID: entryId } } });
+        await removeClassificationEntry({ variables: { id: entryId } });
       } catch (err) {
         failedRemovals.push(entryId);
         fail(err);
@@ -550,36 +603,54 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     }
 
     const failedAdds: StagedClassificationAdd[] = [];
+    const createdAdds: StagedClassificationAdd[] = [];
     for (const add of stagedAdds) {
       try {
-        const result = await addClassificationEntryFromTemplate({
-          variables: {
-            classificationData: { spaceID: spaceId, templateID: add.templateId, displayLabel: add.displayLabel },
-          },
+        await addClassification({
+          variables: { space: spaceId, template: add.templateId, label: add.displayLabel },
         });
-        const createdId = result.data?.addClassificationEntryFromTemplate.id;
-        // The entry now exists; a failed follow-up write is retried as an ordinary override.
-        if (createdId && add.selectedValueIDs.length > 0) {
-          await updateClassificationEntrySelection({
-            variables: {
-              classificationData: { classificationEntryID: createdId, selectedValueIDs: add.selectedValueIDs },
-            },
-          }).catch(err => {
-            setSelectionOverrides(prev => ({ ...prev, [createdId]: add.selectedValueIDs }));
-            fail(err);
-          });
-        }
-        if (createdId && !add.display) {
-          await updateClassificationEntryDisplay({
-            variables: { classificationData: { classificationEntryID: createdId, display: false } },
-          }).catch(err => {
-            setDisplayOverrides(prev => ({ ...prev, [createdId]: false }));
-            fail(err);
-          });
-        }
+        createdAdds.push(add);
       } catch (err) {
         failedAdds.push(add);
         fail(err);
+      }
+    }
+
+    // The add copies the template's vocabulary into the space; the staged picks and the hidden flag are written on
+    // the created entry, found by its label, its values matched to the picked template values by their text.
+    const pendingCreated = createdAdds.filter(add => add.selectedValueIDs.length > 0 || !add.display);
+    const createdSelections: Record<string, string[]> = {};
+    const createdDisplays: Record<string, boolean> = {};
+    if (pendingCreated.length > 0) {
+      const fresh = await refetch().catch(err => {
+        fail(err);
+        return null;
+      });
+      const freshSpace = fresh?.data?.node?.entityType === 'space' ? (fresh.data.node as AboutSpace) : undefined;
+      for (const add of pendingCreated) {
+        const created = (freshSpace?.classifications ?? []).find(
+          entry => normalizeDisplayLabel(entry.label) === normalizeDisplayLabel(add.displayLabel)
+        );
+        if (!created) {
+          fail(new Error(`The added classification "${add.displayLabel}" is not on the space after the add`));
+          continue;
+        }
+        const pickedLabels = add.values.filter(v => add.selectedValueIDs.includes(v.id)).map(v => v.label);
+        const selected = created.values.filter(v => pickedLabels.includes(v.value)).map(v => v.id);
+        try {
+          await updateClassification({
+            variables: {
+              id: created.id,
+              selected: add.selectedValueIDs.length > 0 ? selected : undefined,
+              settings: add.display ? undefined : { ...(created.settings as ClassificationSettings), visible: false },
+            },
+          });
+        } catch (err) {
+          // The entry now exists; a failed follow-up write is retried as an ordinary override.
+          if (add.selectedValueIDs.length > 0) createdSelections[created.id] = selected;
+          if (!add.display) createdDisplays[created.id] = false;
+          fail(err);
+        }
       }
     }
 
@@ -587,34 +658,29 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     const failedDisplays: Record<string, boolean> = {};
     for (const entry of changedClassifications) {
       const selection = selectionOverrides[entry.id];
-      if (selection && !sameIds(selection, entry.selectedValueIDs)) {
-        try {
-          await updateClassificationEntrySelection({
-            variables: { classificationData: { classificationEntryID: entry.id, selectedValueIDs: selection } },
-          });
-        } catch (err) {
-          failedSelections[entry.id] = selection;
-          fail(err);
-        }
-      }
       const display = displayOverrides[entry.id];
-      if (display !== undefined && display !== entry.display) {
-        try {
-          await updateClassificationEntryDisplay({
-            variables: { classificationData: { classificationEntryID: entry.id, display } },
-          });
-        } catch (err) {
-          failedDisplays[entry.id] = display;
-          fail(err);
-        }
+      const selectionChanged = !!selection && !sameIds(selection, entry.selectedValueIDs);
+      const displayChanged = display !== undefined && display !== entry.display;
+      try {
+        await updateClassification({
+          variables: {
+            id: entry.id,
+            selected: selectionChanged ? selection : undefined,
+            settings: displayChanged ? { ...settingsOf(entry.id), visible: display } : undefined,
+          },
+        });
+      } catch (err) {
+        if (selectionChanged) failedSelections[entry.id] = selection;
+        if (displayChanged) failedDisplays[entry.id] = display;
+        fail(err);
       }
     }
 
     setStagedRemovals(failedRemovals);
     setStagedAdds(failedAdds);
-    setSelectionOverrides(prev => ({ ...failedSelections, ...pickCreatedIds(prev, serverClassifications) }));
-    setDisplayOverrides(prev => ({ ...failedDisplays, ...pickCreatedIds(prev, serverClassifications) }));
-    return firstError;
+    setSelectionOverrides({ ...failedSelections, ...createdSelections });
+    setDisplayOverrides({ ...failedDisplays, ...createdDisplays });
+    return errors[0] ?? null;
   };
 
   // ────────────────── Save / Discard (the unsaved-changes bar) ──────────────────
@@ -639,39 +705,49 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     setSaveError(null);
     let firstError: string | null = null;
 
-    // 1) One updateSpace for every changed text / location / tag field and every edited reference.
+    // 1) One updateSpace for every changed text / location / purpose / tag field.
     let coreFailed = false;
-    const profile: NonNullable<NonNullable<UpdateSpaceInput['about']>['profile']> = {};
-    const about: NonNullable<UpdateSpaceInput['about']> = {};
-    if (current.name !== saved.name) profile.displayName = current.name;
-    if (current.tagline !== saved.tagline) profile.tagline = current.tagline;
-    if (current.what !== saved.what) profile.description = current.what;
+    const about: UpdateAboutInput = {};
+    if (current.name !== saved.name) about.displayName = current.name;
+    if (current.tagline !== saved.tagline) about.tagline = current.tagline;
+    if (current.what !== saved.what) about.description = current.what;
     if (current.city !== saved.city || current.country !== saved.country) {
-      profile.location = { country: current.country, city: current.city };
+      about.location = { country: current.country, city: current.city };
     }
-    if (tagsChanged && current.tagsetId) profile.tagsets = [{ ID: current.tagsetId, tags: current.tags }];
-    if (edited.length) {
-      profile.references = edited.map(r => ({ ID: r.id, name: r.title, uri: r.uri, description: r.description }));
+    // core.purpose requires both keys, so a change to either writes the pair.
+    if (current.why !== saved.why || current.who !== saved.who) {
+      about.facets = [{ ...PURPOSE_FACET, value: { why: current.why, who: current.who } }];
     }
-    if (current.why !== saved.why) about.why = current.why;
-    if (current.who !== saved.who) about.who = current.who;
-    if (Object.keys(profile).length) about.profile = profile;
-    if (Object.keys(about).length) {
+    const aboutChanged = Object.keys(about).length > 0;
+    if (aboutChanged || tagsChanged) {
       try {
-        await updateSpace({ variables: { input: { ID: spaceId, about } } });
+        await updateAbout({
+          variables: {
+            id: spaceId,
+            about: aboutChanged ? about : undefined,
+            tags: tagsChanged ? current.tags : undefined,
+          },
+        });
       } catch (err) {
         coreFailed = true;
         firstError ??= errorMessage(err);
       }
     }
 
-    // 2) New and removed references — each its own mutation.
+    // 2) References are the space's links: each created, edited or removed one is its own write; an edited link
+    // keeps its role.
+    const roleOf = new Map((space?.links ?? []).map(link => [link.id, link.role] as const));
     const failedCreates: AboutReference[] = [];
+    const failedEdits = new Map<string, AboutReference>();
     for (const ref of created) {
       try {
-        await createReference({
+        await upsertLink({
           variables: {
-            input: { profileID: current.profileId, name: ref.title, uri: ref.uri, description: ref.description },
+            owner: spaceId,
+            role: REFERENCE_LINK_ROLE,
+            uri: ref.uri,
+            title: ref.title,
+            description: ref.description,
           },
         });
       } catch (err) {
@@ -679,9 +755,26 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
         firstError ??= errorMessage(err);
       }
     }
+    for (const ref of edited) {
+      try {
+        await upsertLink({
+          variables: {
+            owner: spaceId,
+            id: ref.id,
+            role: roleOf.get(ref.id) ?? REFERENCE_LINK_ROLE,
+            uri: ref.uri,
+            title: ref.title,
+            description: ref.description,
+          },
+        });
+      } catch (err) {
+        failedEdits.set(ref.id, ref);
+        firstError ??= errorMessage(err);
+      }
+    }
     for (const ref of removed) {
       try {
-        await deleteReference({ variables: { input: { ID: ref.id } } });
+        await deleteLink({ variables: { id: ref.id } });
       } catch (err) {
         firstError ??= errorMessage(err);
       }
@@ -700,11 +793,10 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
         firstError ??= errorMessage(err);
         return null;
       })
-    )?.data?.lookup.space;
-    if (fresh) {
-      const freshValues = mapSpaceToAboutFormValues(fresh);
+    )?.data?.node;
+    if (fresh && fresh.entityType === 'space') {
+      const freshValues = mapSpaceToAboutFormValues(fresh as AboutSpace);
       const removedIds = new Set(removed.map(r => r.id));
-      const editedById = new Map(edited.map(r => [r.id, r] as const));
       const next: AboutFormValues = {
         ...current,
         ...(coreFailed ? {} : pickSavedFields(freshValues)),
@@ -712,7 +804,8 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
           ...freshValues.references
             // A removal that failed stays removed in the buffer.
             .filter(r => !removedIds.has(r.id))
-            .map(r => (coreFailed ? (editedById.get(r.id) ?? r) : r)),
+            // An edit that failed stays edited.
+            .map(r => failedEdits.get(r.id) ?? r),
           ...failedCreates,
         ],
       };
@@ -782,12 +875,6 @@ function pickSavedFields(fresh: AboutFormValues): Partial<AboutFormValues> {
   return { name, tagline, what, why, who, city, country, tags, tagsetId };
 }
 
-/** Keeps only the overrides queued during Save for entries that did not exist before it (just created). */
-function pickCreatedIds<T>(overrides: Record<string, T>, existing: ClassificationEntryData[]): Record<string, T> {
-  const existingIds = new Set(existing.map(entry => entry.id));
-  return Object.fromEntries(Object.entries(overrides).filter(([id]) => !existingIds.has(id)));
-}
-
 /**
  * Alias rather than a re-declaration: this value goes straight into
  * `ImageCropDialog`'s `config` prop, and the hand-copied version this replaces
@@ -796,7 +883,7 @@ function pickCreatedIds<T>(overrides: Record<string, T>, existing: Classificatio
 export type CropConfig = ImageCropConfig;
 
 export type PendingCrop = {
-  key: 'avatar' | 'pageBanner' | 'cardBanner';
+  key: VisualKey;
   file: File;
   config: CropConfig;
   /** The visual's current alt text, so the dialog opens with it instead of blank. */

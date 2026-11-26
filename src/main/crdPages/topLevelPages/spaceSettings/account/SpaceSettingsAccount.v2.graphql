@@ -1,0 +1,37 @@
+# Account tab (screens-dispositions.tsv:19545, :5165, :16351): status, host card, the space plan assignments and the
+# delete verdict, all from the one space read.
+query SpaceSettingsAccount($id: UUID!) {
+  node(id: $id) {
+    id
+    entityType
+    ... on Space {
+      url
+      status
+      host {
+        id
+        actorType
+        about {
+          displayName
+          avatar {
+            file {
+              url
+            }
+          }
+        }
+      }
+      planAssignments {
+        id
+        expiresAt
+        plan {
+          id
+          name
+          scope
+          sortOrder
+        }
+      }
+      can {
+        delete
+      }
+    }
+  }
+}

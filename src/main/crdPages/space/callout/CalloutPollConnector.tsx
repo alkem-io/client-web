@@ -7,7 +7,6 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { MAX_POLL_OPTIONS } from '@/crd/forms/callout/PollOptionsEditor';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
-import { usePollSubscriptions } from '@/domain/collaboration/poll/hooks/usePollSubscriptions';
 import { usePollVote } from '@/domain/collaboration/poll/hooks/usePollVote';
 import type { PollDetailsModel } from '@/domain/collaboration/poll/models/PollModels';
 
@@ -101,9 +100,8 @@ type CalloutPollConnectorProps = {
 };
 
 export function CalloutPollConnector({ callout }: CalloutPollConnectorProps) {
+  // The poll renders from the post's PollContent (021 F091); the legacy live-vote subscriptions are not served.
   const poll = callout.framing.poll;
-
-  usePollSubscriptions({ pollId: poll?.id });
 
   if (!poll) return null;
 

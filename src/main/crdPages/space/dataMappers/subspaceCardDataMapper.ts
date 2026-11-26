@@ -1,4 +1,5 @@
 import { CommunityMembershipStatus, SpaceSortMode, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import type { NativeSubspaceCardFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import type { SpaceCardData, SpaceLead } from '@/crd/components/space/SpaceCard';
 import { excerptVisibility } from '@/crd/lib/markdownExcerpt';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
@@ -123,4 +124,36 @@ function mapVisibilityToStatus(visibility?: SpaceVisibility): string {
 export function mapSubspacesToCardDataList(subspaces: SubspaceQueryData[], sortMode?: SpaceSortMode): SpaceCardData[] {
   const showPinIndicator = sortMode === SpaceSortMode.Alphabetical;
   return subspaces.map(s => mapSubspaceToCardData(s, showPinIndicator));
+}
+
+export function nativeSubspaceCard(space: NativeSubspaceCardFragment, showPins: boolean): SpaceCardData {
+  if (!space.url) throw new Error(`Subspace ${space.id} has no canonical destination`);
+  return {
+    id: space.id,
+    name: space.about.displayName,
+    description: space.about.tagline ?? '',
+    avatarUrl: space.about.avatar?.file.url,
+    bannerImageUrl: space.about.card?.file.url,
+    initials: getInitials(space.about.displayName),
+    avatarColor: pickColorFromId(space.id),
+    href: space.url,
+    isLocked: !space.can.read,
+    isPrivate: !space.isContentPublic,
+    isMember: space.membership?.roles.includes('member'),
+    isPinned: showPins && Boolean(space.pinned),
+    status: space.status.toLowerCase(),
+    visibility: space.status.toLowerCase() as SpaceCardData['visibility'],
+    tags: space.tags,
+    leads: (space.leads ?? []).flatMap(lead =>
+      lead?.about
+        ? [
+            {
+              name: lead.about.displayName,
+              avatarUrl: lead.about.avatar?.file.url ?? '',
+              type: lead.actorType === 'organization' ? ('org' as const) : ('person' as const),
+            },
+          ]
+        : []
+    ),
+  };
 }

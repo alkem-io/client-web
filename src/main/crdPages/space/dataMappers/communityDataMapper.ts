@@ -1,6 +1,7 @@
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import type { SpaceCommunityQuery } from '@/core/apollo/generated-v2/graphql-schema';
 import type { MemberCardData, MemberRoleKey, MemberRoleType } from '@/crd/components/space/SpaceMembers';
-import { getInitials } from './spacePageDataMapper';
+import { actorProfile, getInitials } from './spacePageDataMapper';
 
 type RoleSetMember = {
   id: string;
@@ -11,7 +12,7 @@ type RoleSetMember = {
     avatar?: { uri: string } | null;
     tagline?: string | null;
     description?: string | null;
-    location?: { city?: string; country?: string } | null;
+    location?: { city?: string | null; country?: string | null } | null;
     tagsets?: Array<{ tags: string[] }> | null;
   };
 };
@@ -92,6 +93,24 @@ export function mapRoleSetToMemberCards(users: RoleSetMember[], organizations: R
   const userCards = users.map(toUserCard).filter((c): c is MemberCardData => c !== undefined);
   const orgCards = organizations.map(toOrgCard).filter((c): c is MemberCardData => c !== undefined);
   return [...userCards, ...orgCards];
+}
+
+type NativeMember = SpaceCommunityQuery['members']['edges'][number]['node'];
+
+/** D6 roster rows as legacy's role-set members: users and organizations, as legacy's roster (no VCs). */
+export function mapNativeMembersToMemberCards(members: readonly NativeMember[]): MemberCardData[] {
+  const toMember = ({ roles, actor }: NativeMember): RoleSetMember => {
+    const { id, profile } = actorProfile(actor);
+    const tags = 'skills' in actor ? [actor.skills, actor.keywords] : 'tags' in actor ? [actor.tags] : [];
+    const description = actor.actorType === 'organization' ? actor.about?.description : undefined;
+    return {
+      id,
+      roles: roles as RoleName[],
+      profile: profile && { ...profile, description, tagsets: tags.map(t => ({ tags: t })) },
+    };
+  };
+  const ofType = (actorType: string) => members.filter(m => m.actor.actorType === actorType).map(toMember);
+  return mapRoleSetToMemberCards(ofType('user'), ofType('organization'));
 }
 
 // ── Sidebar data mappers ───────────────────────────────

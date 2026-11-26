@@ -1,0 +1,23 @@
+query V2Foundation($origin: String!, $resolveHomepage: Boolean!) {
+  resolve(url: $origin) @include(if: $resolveHomepage) { homepage { id } }
+  viewer {
+    id
+    actor {
+      id
+      actorType
+      url
+      about { displayName tagline avatar { file { url } } }
+      settings
+      notificationPrefs
+      ... on User { firstName lastName }
+    }
+    session { authenticated issuedAt fresh authMethods }
+    matrix { userId sessionBaseUrl expiresAt }
+    language
+    homeSpace { id url }
+    # CurrentUserContext (surface.graphql Viewer :88-96): one viewer document serves every current-user observer.
+    account { id canCreate { kind allowed reason } entitlements { name limit usage } }
+    platformRoles
+    platformPrivileges
+  }
+}

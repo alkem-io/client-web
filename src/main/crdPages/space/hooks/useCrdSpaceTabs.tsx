@@ -1,9 +1,8 @@
-import { BookOpen, FileText, Layers, LayoutDashboard, Users } from 'lucide-react';
+import { BookOpen, Layers, LayoutDashboard, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSpaceTabsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { filterVisibleStates } from '@/domain/collaboration/InnovationFlow/utils/filterVisibleStates';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { orderedStages, useSpacePageData } from '@/domain/space/hooks/useSpacePage';
 
 export type CrdTabDefinition = {
   index: number;
@@ -30,15 +29,12 @@ type UseCrdSpaceTabsProvided = {
    * `undefined` means "unknown", never "configured empty".
    */
   stateSidebars: ReadonlyArray<readonly string[]>;
+  /**
+   * The space has stages but the server does not serve their visibility, sidebar and the current stage yet
+   * (021 tasks.md S01): the strip, the default tab and the per-tab widgets are unavailable, never guessed.
+   */
+  unavailable: boolean;
 };
-
-const tabsDefaultNames: Record<string, 'tabs.dashboard' | 'tabs.community' | 'tabs.subspaces' | 'tabs.knowledgeBase'> =
-  {
-    dashboard: 'tabs.dashboard',
-    community: 'tabs.community',
-    subspaces: 'tabs.subspaces',
-    'knowledge base': 'tabs.knowledgeBase',
-  };
 
 const defaultIcons = [LayoutDashboard, Users, Layers, BookOpen];
 
@@ -52,40 +48,9 @@ export function useCrdSpaceTabs({
   const { t } = useTranslation('crd-space');
   const { permissions } = useSpace();
 
-  const { data } = useSpaceTabsQuery({
-    variables: { spaceId: spaceId! },
-    skip: !spaceId || skip,
-  });
-
-  // Hidden phases are removed from the live tab strip for everyone, including admins; admins
-  // still manage/unhide them in Settings → Layout. UI-only — hidden tabs stay reachable by
-  // direct URL. No-op until the server exposes per-phase `visible` (graceful degradation).
-  const allStates = data?.lookup.space?.collaboration?.innovationFlow.states ?? [];
-  const innovationFlowStates = filterVisibleStates(allStates);
-  const currentStateId = data?.lookup.space?.collaboration?.innovationFlow.currentState?.id;
-
-  const tabs: CrdTabDefinition[] = innovationFlowStates.map(state => {
-    // Preserve each state's original position in the full flow. The L0 content dispatcher
-    // (CrdSpaceTabbedPages) and SpaceTabProvider key Dashboard/Community/Subspaces/custom tabs
-    // off this fixed index, so hidden tabs must not shift the indices of the remaining ones.
-    const index = allStates.indexOf(state);
-    const defaultKey = tabsDefaultNames[state.displayName.toLowerCase()] as
-      | 'tabs.dashboard'
-      | 'tabs.community'
-      | 'tabs.subspaces'
-      | 'tabs.knowledgeBase'
-      | undefined;
-    const label = defaultKey ? String(t(defaultKey)) : state.displayName;
-    const IconComponent = index < 4 ? defaultIcons[index] : FileText;
-
-    return {
-      index,
-      label,
-      description: state.description ?? '',
-      icon: <IconComponent className="h-4 w-4" />,
-      isCustom: index >= 4,
-    };
-  });
+  const space = useSpacePageData(skip ? undefined : spaceId, 'space')?.node;
+  const allStates = orderedStages(space && 'stages' in space ? space.stages : undefined);
+  const tabs: CrdTabDefinition[] = [];
 
   // Provide defaults only when the space genuinely has no flow states — not when every phase
   // has been hidden (in that case the strip stays empty rather than resurrecting default tabs).
@@ -103,13 +68,8 @@ export function useCrdSpaceTabs({
     });
   }
 
-  // Default to the current state when it's visible, otherwise the first visible tab. Indices are
-  // original positions (see above), so a hidden current/first tab never offsets the selection.
-  let defaultTabIndex = tabs.length > 0 ? tabs[0].index : 0;
-  const currentState = currentStateId ? innovationFlowStates.find(state => state.id === currentStateId) : undefined;
-  if (currentState) {
-    defaultTabIndex = allStates.indexOf(currentState);
-  }
+  const unavailable = allStates.length > 0;
+  const defaultTabIndex = unavailable ? -1 : 0;
 
   // Full section count (including hidden ones) so direct-URL access to a hidden section still
   // resolves. Falls back to the default-tab count when the flow has no states.
@@ -120,6 +80,7 @@ export function useCrdSpaceTabs({
     defaultTabIndex,
     sectionCount,
     showSettings: permissions.canUpdate,
-    stateSidebars: allStates.map(state => state.settings.sidebar),
+    stateSidebars: [],
+    unavailable,
   };
 }

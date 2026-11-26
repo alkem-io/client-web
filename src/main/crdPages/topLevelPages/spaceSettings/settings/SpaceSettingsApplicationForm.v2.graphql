@@ -1,0 +1,19 @@
+# Application form editor (screens-dispositions.tsv:12042): Space.applicationForm, core.application_form
+# {description, questions:[{question, explanation, required, max_length, sort_order}]}, written by
+# updateSpace(id, applicationForm) (surface.graphql:171, :534).
+query SpaceSettingsApplicationForm($id: UUID!) {
+  node(id: $id) {
+    id
+    entityType
+    ... on Space {
+      applicationForm
+    }
+  }
+}
+
+mutation SpaceSettingsUpdateApplicationForm($id: UUID!, $applicationForm: JSON!) {
+  updateSpace(id: $id, applicationForm: $applicationForm) {
+    id
+    applicationForm
+  }
+}

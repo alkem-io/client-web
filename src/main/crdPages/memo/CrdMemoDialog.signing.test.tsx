@@ -41,7 +41,7 @@ const mocks = vi.hoisted(() => ({
   requestDurability: vi.fn(),
   returnAttempt: { loading: false, error: undefined, data: undefined } as Record<string, unknown>,
   returnAttemptQuery: vi.fn(),
-  spaceEntitlements: ['SPACE_FLAG_MEMO_SIGNING'] as LicenseEntitlementType[],
+  spaceEntitlements: [] as LicenseEntitlementType[],
   verificationQuery: vi.fn(),
   verificationQueryOptions: vi.fn(),
   verificationResult: { data: undefined, error: undefined, loading: false, variables: undefined } as Record<

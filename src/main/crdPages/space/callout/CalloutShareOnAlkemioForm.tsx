@@ -1,8 +1,8 @@
 import { Send } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSendDirectMessageToUsersMutation, useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { DirectMessageDeliveryStatus } from '@/core/apollo/generated/graphql-schema';
+import { useReportedQueryError } from '@/core/apollo/hooks/useReportedQueryError';
+import { useMatrixClient } from '@/core/matrix/activeClient';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { SendConfirmationDialog } from '@/crd/components/chat/SendConfirmationDialog';
@@ -11,9 +11,11 @@ import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import { Textarea } from '@/crd/primitives/textarea';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { useChatRecipientDirectory } from '@/main/crdPages/unifiedChat/useChatRecipientDirectory';
+import { openNativeConversation } from '@/main/crdPages/unifiedChat/useStartDirectChat';
+import { nativeMatrixId } from '@/main/userMessaging/matrix/matrixRooms';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
-
-const SEARCH_PAGE_SIZE = 20;
 
 type CalloutShareOnAlkemioFormProps = {
   url: string;
@@ -26,31 +28,12 @@ type CalloutShareOnAlkemioFormProps = {
   onClose?: () => void;
 };
 
-type SearchedUser = {
-  id: string;
-  profile?: {
-    displayName: string;
-    location?: { city?: string; country?: string };
-    visual?: { uri?: string };
-  };
-};
-
-function mapToShareUser(user: SearchedUser): ShareUser | null {
-  if (!user.profile) return null;
-  return {
-    id: user.id,
-    displayName: user.profile.displayName,
-    avatarUrl: user.profile.visual?.uri || undefined,
-    city: user.profile.location?.city || undefined,
-    country: user.profile.location?.country || undefined,
-  };
-}
-
 export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: CalloutShareOnAlkemioFormProps) {
   const { t } = useTranslation('crd-common');
   const notify = useNotification();
   const { userModel: currentUser } = useCurrentUserContext();
-  const { setIsOpen, setSelectedConversationId } = useUserMessagingContext();
+  const client = useMatrixClient();
+  const { setIsOpen, setSelectedConversationId, setSelectedRoomId } = useUserMessagingContext();
 
   const initialMessage = t('share.alkemio.defaultMessage', { entity: entityLabel, url });
 
@@ -62,21 +45,8 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: Callout
   const [notReached, setNotReached] = useState<string[]>([]);
   const [sentConversationIds, setSentConversationIds] = useState<string[]>([]);
 
-  const trimmedQuery = searchQuery.trim();
-  const { data: searchData, loading: searching } = useUserSelectorQuery({
-    variables: {
-      filter: { displayName: trimmedQuery, email: trimmedQuery },
-      first: SEARCH_PAGE_SIZE,
-    },
-    skip: trimmedQuery.length === 0,
-  });
-
-  const searchResults = (searchData?.usersPaginated.users ?? [])
-    .filter(user => user.id !== currentUser?.id)
-    .map(mapToShareUser)
-    .filter((u): u is ShareUser => u !== null);
-
-  const [sendDirectMessage, { loading: sending }] = useSendDirectMessageToUsersMutation();
+  const { searchResults, loading: searching, error } = useChatRecipientDirectory(searchQuery, currentUser?.id);
+  useReportedQueryError(error);
 
   const userError = selectedUsers.length === 0 ? t('share.alkemio.errors.atLeastOneUser') : null;
   const messageError =
@@ -96,51 +66,43 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: Callout
     setSelectedUsers(prev => prev.filter(u => u.id !== userId));
   };
 
-  const handleSend = async () => {
+  const [handleSend, sending] = useLoadingState(async () => {
     setShowErrors(true);
     if (hasErrors) return;
+    if (!client) {
+      notify(t('share.alkemio.errors.sendFailed'), 'error');
+      return;
+    }
 
     const finalMessage = message.includes(url) ? message : `${message}\n\n${url}`;
-    const recipients = selectedUsers;
-
-    try {
-      const { data } = await sendDirectMessage({
-        variables: {
-          messageData: {
-            receiverIDs: recipients.map(u => u.id),
-            message: finalMessage,
-          },
-        },
-      });
-
-      const results = data?.sendDirectMessageToUsers ?? [];
-      const byReceiver = new Map(results.map(result => [result.receiverID, result]));
-
-      // Recipients the server reports as not SENT (no consent / failed) are
-      // surfaced individually rather than as a blanket success (FR-013).
-      const failedNames = recipients
-        .filter(u => byReceiver.get(u.id)?.status !== DirectMessageDeliveryStatus.Sent)
-        .map(u => u.displayName);
-
-      // Collect every successfully created/reused conversation so "open chat"
-      // can focus the single one (if there was just one recipient) or fall back
-      // to the conversation list when several were messaged (FR-005).
-      const sentIds = results
-        .filter(result => result.status === DirectMessageDeliveryStatus.Sent && result.conversationID)
-        .map(result => result.conversationID as string);
-
-      setNotReached(failedNames);
-      setSentConversationIds(sentIds);
-      setConfirmationOpen(true);
-
-      setSelectedUsers([]);
-      setMessage(initialMessage);
-      setSearchQuery('');
-      setShowErrors(false);
-    } catch {
-      notify(t('share.alkemio.errors.sendFailed'), 'error');
+    const results = await Promise.allSettled(
+      selectedUsers.map(async recipient => {
+        const roomId = await openNativeConversation(client, [recipient.id]);
+        const matrixRoomId = nativeMatrixId(roomId, '!', client);
+        if (!matrixRoomId) throw new Error('Conversation could not be opened.');
+        await client.sendTextMessage(matrixRoomId, null, finalMessage);
+        return roomId;
+      })
+    );
+    const failedNames: string[] = [];
+    const sentIds: string[] = [];
+    for (const [index, result] of results.entries()) {
+      if (result.status === 'fulfilled') {
+        sentIds.push(result.value);
+      } else {
+        failedNames.push(selectedUsers[index].displayName);
+      }
     }
-  };
+
+    setNotReached(failedNames);
+    setSentConversationIds(sentIds);
+    setConfirmationOpen(true);
+
+    setSelectedUsers([]);
+    setMessage(initialMessage);
+    setSearchQuery('');
+    setShowErrors(false);
+  });
 
   const handleConfirmationOpenChange = (next: boolean) => {
     setConfirmationOpen(next);
@@ -149,9 +111,9 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: Callout
   };
 
   const handleOpenChat = () => {
-    // Several recipients were messaged individually → open the conversation list
-    // (null selection); focus the single conversation only when there was one.
-    setSelectedConversationId(sentConversationIds.length === 1 ? sentConversationIds[0] : null);
+    const roomId = sentConversationIds.length === 1 ? sentConversationIds[0] : null;
+    setSelectedConversationId(roomId);
+    setSelectedRoomId(roomId);
     setIsOpen(true);
     setConfirmationOpen(false);
     onClose?.();

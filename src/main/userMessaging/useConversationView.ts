@@ -1,16 +1,9 @@
-import type { EventType, MatrixClient, MsgType, RelationType } from 'matrix-js-sdk';
+import type { EventType, MatrixClient, MsgType, RelationType, Room } from 'matrix-js-sdk';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  useActorDetailsLazyQuery,
-  useLeaveConversationMutation,
-  useSendMessageToRoomMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import { ActorType, type RoomMessageAttachmentInput } from '@/core/apollo/generated/graphql-schema';
+import { useLeaveConversationMutation, useSendMessageToRoomMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { RoomMessageAttachmentInput } from '@/core/apollo/generated/graphql-schema';
 import { useMatrixClient } from '@/core/matrix/activeClient';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { resolveMatrixRoomId } from './matrix/matrixRooms';
+import { nativeMatrixId } from './matrix/matrixRooms';
 import type { UserConversation } from './models';
 import { useIsDocumentActive } from './useIsDocumentActive';
 
@@ -23,6 +16,14 @@ const ANNOTATION = 'm.annotation' as RelationType.Annotation;
 // Synapse's answer to a second identical reaction from the same user.
 const DUPLICATE_ANNOTATION = 'M_DUPLICATE_ANNOTATION';
 
+type TextAttempt = { key: string; txnId: string; discard?: () => void };
+
+const localEcho = (room: Room | null, txnId: string) =>
+  room
+    ?.getLiveTimeline()
+    .getEvents()
+    .find(event => event.getTxnId() === txnId);
+
 export const useConversationView = (
   conversation: UserConversation | null,
   /** The newest message-like event of the open thread, rendered or not. */
@@ -31,12 +32,9 @@ export const useConversationView = (
 ) => {
   const [leaveConversation] = useLeaveConversationMutation();
   const [sendMessage, { loading: isSendingAttachments }] = useSendMessageToRoomMutation();
-  const [getActorDetails] = useActorDetailsLazyQuery();
   const [isSendingDirect, setIsSendingDirect] = useState(false);
-  const { userModel } = useCurrentUserContext();
-  const currentUserId = userModel?.id;
-  const notify = useNotification();
-  const { t } = useTranslation();
+  const sendingText = useRef(false);
+  const pendingText = useRef<TextAttempt | null>(null);
   const matrixClient = useMatrixClient();
   const lastMarkedRef = useRef<string | null>(null);
   const isDocumentActive = useIsDocumentActive();
@@ -69,19 +67,15 @@ export const useConversationView = (
     if (lastMarkedRef.current === key) return;
     lastMarkedRef.current = key;
 
-    void resolveMatrixRoomId(matrixClient, conversation.roomId)
-      .then(matrixRoomId => {
-        if (matrixRoomId) {
-          return matrixClient.setRoomReadMarkersHttpRequest(matrixRoomId, readUpToEventId, readUpToEventId);
-        }
-      })
-      .catch(_error => {
-        // Not marked: the next run of this effect (a new client after a
-        // rejected token, among others) writes it again.
-        if (lastMarkedRef.current === key) {
-          lastMarkedRef.current = null;
-        }
-      });
+    const matrixRoomId = nativeMatrixId(conversation.roomId, '!', matrixClient);
+    if (!matrixRoomId) return;
+    void matrixClient.setRoomReadMarkersHttpRequest(matrixRoomId, readUpToEventId, readUpToEventId).catch(() => {
+      // Not marked: the next run of this effect (a new client after a
+      // rejected token, among others) writes it again.
+      if (lastMarkedRef.current === key) {
+        lastMarkedRef.current = null;
+      }
+    });
   }, [conversation?.roomId, readUpToEventId, matrixClient, isDocumentActive]);
 
   const handleLeaveGroup = async () => {
@@ -92,38 +86,49 @@ export const useConversationView = (
     onLeaveConversation?.();
   };
 
-  // Sends straight to Synapse and resolves once the server has accepted the
-  // event. A rejected send leaves no local echo behind in the timeline.
   const sendDirect = async (
     roomId: string,
-    send: (client: MatrixClient, matrixRoomId: string, txnId: string) => Promise<unknown>
+    send: (client: MatrixClient, matrixRoomId: string, txnId: string) => Promise<unknown>,
+    attempt?: TextAttempt
   ) => {
     if (!matrixClient) {
       throw new Error('No Matrix session');
     }
-    const matrixRoomId = await resolveMatrixRoomId(matrixClient, roomId);
+    const matrixRoomId = nativeMatrixId(roomId, '!', matrixClient);
     if (!matrixRoomId) {
       throw new Error('No Matrix room for the conversation');
     }
-    const txnId = matrixClient.makeTxnId();
+    const txnId = attempt?.txnId ?? matrixClient.makeTxnId();
+    const room = matrixClient.getRoom(matrixRoomId);
     try {
+      const echo = attempt && localEcho(room, txnId);
+      if (echo && room) {
+        if (echo.status === NOT_SENT) await matrixClient.resendEvent(echo, room);
+        return;
+      }
       await send(matrixClient, matrixRoomId, txnId);
     } catch (error) {
-      // The client runs with chronological pending-event ordering, so local
-      // echoes live in the live timeline (getPendingEvents would throw).
-      const echo = matrixClient
-        .getRoom(matrixRoomId)
-        ?.getLiveTimeline()
-        .getEvents()
-        .find(event => event.getTxnId() === txnId);
+      const echo = localEcho(room, txnId);
       if (echo?.status === NOT_SENT) {
-        matrixClient.cancelPendingEvent(echo);
+        if (attempt) {
+          // The SDK keeps the transaction registered even after cancel. Retain
+          // the hidden echo for resendEvent unless the user changes the message.
+          attempt.discard = () => {
+            if (echo.status === NOT_SENT) matrixClient.cancelPendingEvent(echo);
+          };
+        } else {
+          matrixClient.cancelPendingEvent(echo);
+        }
       }
       throw error;
     }
   };
 
-  const handleSendMessage = async (message: string, attachmentUpload?: RoomMessageAttachmentInput) => {
+  const handleSendMessage = async (
+    message: string,
+    attachmentUpload?: RoomMessageAttachmentInput,
+    replyTo?: string
+  ) => {
     const text = message.trim();
     if (!conversation?.roomId || (!text && !attachmentUpload)) return;
     const roomId = conversation.roomId;
@@ -140,35 +145,36 @@ export const useConversationView = (
           },
         });
       } else {
-        setIsSendingDirect(true);
-        // Direct messages honour the counterpart's "allow messages" setting, read fresh on every send.
-        const counterpart = conversation.isGroup
-          ? undefined
-          : conversation.members.find(member => member.id !== currentUserId);
-        if (counterpart?.type === ActorType.User) {
-          const { data, error } = await getActorDetails({
-            variables: { actorId: counterpart.id },
-            fetchPolicy: 'network-only',
-          });
-          if (error) return false;
-          if (
-            data?.actor?.type === ActorType.User &&
-            'isContactable' in data.actor &&
-            data.actor.isContactable === false
-          ) {
-            notify(t('apollo.errors.MESSAGING_NOT_ENABLED'), 'error');
-            return false;
-          }
+        if (!matrixClient || sendingText.current) return false;
+        const key = JSON.stringify([matrixClient.getUserId(), matrixClient.getDeviceId(), roomId, text, replyTo]);
+        let attempt = pendingText.current;
+        if (attempt?.key !== key) {
+          attempt?.discard?.();
+          attempt = { key, txnId: matrixClient.makeTxnId() };
+          pendingText.current = attempt;
         }
-        await sendDirect(roomId, (client, matrixRoomId, txnId) =>
-          client.sendEvent(matrixRoomId, ROOM_MESSAGE, { msgtype: TEXT, body: text }, txnId)
-        );
+        sendingText.current = true;
+        setIsSendingDirect(true);
+        try {
+          const content = {
+            msgtype: TEXT,
+            body: text,
+            ...(replyTo ? { 'm.relates_to': { 'm.in_reply_to': { event_id: replyTo } } } : {}),
+          };
+          await sendDirect(
+            roomId,
+            (client, matrixRoomId, txnId) => client.sendEvent(matrixRoomId, ROOM_MESSAGE, content, txnId),
+            attempt
+          );
+          pendingText.current = null;
+        } finally {
+          sendingText.current = false;
+          setIsSendingDirect(false);
+        }
       }
       return true;
     } catch (_error) {
       return false;
-    } finally {
-      setIsSendingDirect(false);
     }
   };
 

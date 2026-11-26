@@ -1,0 +1,167 @@
+fragment SpaceSettingsAboutVisual on FileRef {
+  alt
+  aspectRatio
+  file {
+    id
+    url
+  }
+}
+
+# About tab read (screens-dispositions.tsv:3496): Space.about (text, location, the core.purpose why/who facet,
+# H-about-meta-8), the visuals by role, tags, links (references) and classifications (H-about-meta-1: entry
+# visible/order in the instance settings); the per-role image limits come from Config.visualConstraints
+# (screens-dispositions.tsv:3156).
+query SpaceSettingsAbout($id: UUID!) {
+  node(id: $id) {
+    id
+    entityType
+    ... on Space {
+      tags
+      about {
+        displayName
+        tagline
+        description
+        location
+        facets {
+          namespace
+          name
+          value
+        }
+        avatar {
+          ...SpaceSettingsAboutVisual
+        }
+        banner {
+          ...SpaceSettingsAboutVisual
+        }
+        card {
+          ...SpaceSettingsAboutVisual
+        }
+      }
+      links {
+        id
+        role
+        uri
+        title
+        description
+        sortOrder
+      }
+      classifications {
+        id
+        label
+        settings
+        values {
+          id
+          value
+          sortOrder
+        }
+        selected {
+          id
+        }
+      }
+    }
+  }
+  config {
+    visualConstraints {
+      name
+      minWidth
+      maxWidth
+      minHeight
+      maxHeight
+      aspectRatio
+      minAspectRatio
+      maxAspectRatio
+    }
+  }
+}
+
+# screens-dispositions.tsv:3202 — updateSpace(about, tags); why/who travel as the core.purpose facet.
+mutation SpaceSettingsUpdateAbout($id: UUID!, $about: UpdateAboutInput, $tags: [String!]) {
+  updateSpace(id: $id, about: $about, tags: $tags) {
+    id
+  }
+}
+
+# screens-dispositions.tsv:3198 — references are the space's links.
+mutation SpaceSettingsUpsertLink(
+  $owner: UUID!
+  $id: UUID
+  $role: String!
+  $uri: String!
+  $title: String
+  $description: String
+) {
+  upsertLink(owner: $owner, id: $id, role: $role, uri: $uri, title: $title, description: $description) {
+    id
+    entityType
+  }
+}
+
+mutation SpaceSettingsDeleteLink($id: UUID!) {
+  deleteLink(id: $id) {
+    id
+    entityType
+  }
+}
+
+# screens-dispositions.tsv:3180, :3191, :3186; display (visible) per H-about-meta-1.
+mutation SpaceSettingsAddClassification($space: UUID!, $template: UUID!, $label: String) {
+  addClassification(space: $space, template: $template, label: $label) {
+    node {
+      id
+      entityType
+    }
+  }
+}
+
+mutation SpaceSettingsUpdateClassification($id: UUID!, $settings: JSON, $selected: [UUID!]) {
+  updateClassification(id: $id, settings: $settings, selected: $selected) {
+    id
+  }
+}
+
+mutation SpaceSettingsRemoveClassification($id: UUID!) {
+  removeClassification(id: $id) {
+    id
+  }
+}
+
+# Visual replacement through the file contract (requestUpload, PUT token.url, attachFile under the role), as
+# useUploadVisualsOnCreate; without an aspectRatio argument attachFile takes the ratio from the image (surface.graphql:581).
+mutation SpaceSettingsRequestVisualUpload($owner: UUID!, $mime: String!, $size: Long!, $role: String!) {
+  requestUpload(owner: $owner, mime: $mime, size: $size, role: $role) {
+    token
+    url
+  }
+}
+
+mutation SpaceSettingsAttachVisual(
+  $owner: UUID!
+  $file: UUID!
+  $role: String!
+  $displayName: String!
+  $alt: String
+) {
+  attachFile(
+    owner: $owner
+    file: $file
+    role: $role
+    displayName: $displayName
+    alt: $alt
+  ) {
+    id
+    entityType
+    ... on Space {
+      about {
+        avatar {
+          ...SpaceSettingsAboutVisual
+        }
+        banner {
+          ...SpaceSettingsAboutVisual
+        }
+        card {
+          ...SpaceSettingsAboutVisual
+        }
+      }
+    }
+  }
+}

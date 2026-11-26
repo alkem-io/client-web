@@ -1,0 +1,27 @@
+query ExplorerRootSpaces($first: Int!, $after: String) {
+  spaces(filter: { kind: SPACE, depths: [0], status: [ACTIVE] }, first: $first, after: $after) {
+    edges {
+      node {
+        id
+        depth
+        status
+        url
+        about {
+          displayName
+          tagline
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query ExplorerSpaceTree($platform: UUID!, $after: String) {
+  subtree(root: $platform, maxDepth: 2, types: ["space"], first: 500, after: $after) {
+    edges { node { id ... on Space { ...NativeSubspaceCard depth parent { id } } } }
+    pageInfo { hasNextPage endCursor }
+  }
+}

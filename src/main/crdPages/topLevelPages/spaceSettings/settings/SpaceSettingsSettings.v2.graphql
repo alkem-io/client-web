@@ -1,0 +1,61 @@
+# Settings tab read (screens-dispositions.tsv:19527): Space.settings carries the core.space_settings keys and the space
+# facts as flat fact-id keys (S24-SPACE-SETTINGS-FACT-MAPPING); privacy is Space.audience, written by setSpaceAudience
+# (H-space-6); the trusted organizations are the space's trusted_org references, read through Space.curated and
+# replaced by setReferences (screens-dispositions.tsv:12192; canonical-mechanisms.tsv M25; H-community-roles-6).
+query SpaceSettingsSettings($id: UUID!) {
+  node(id: $id) {
+    id
+    entityType
+    ... on Space {
+      settings
+      audience
+      host {
+        id
+        actorType
+        about {
+          displayName
+        }
+      }
+      curated {
+        role
+        sortOrder
+        node {
+          id
+          entityType
+        }
+      }
+    }
+  }
+}
+
+# screens-dispositions.tsv:19534 — updateSpace(id, settings) + setSpaceAudience + setReferences (trusted orgs).
+mutation SpaceSettingsUpdateSettings($id: UUID!, $settings: JSON!) {
+  updateSpace(id: $id, settings: $settings) {
+    id
+    settings
+  }
+}
+
+mutation SpaceSettingsSetAudience($id: UUID!, $audience: Audience!) {
+  setSpaceAudience(id: $id, audience: $audience) {
+    id
+    audience
+  }
+}
+
+mutation SpaceSettingsSetTrustedOrganizations($owner: UUID!, $targets: [UUID!]!) {
+  setReferences(owner: $owner, role: "trusted_org", targets: $targets) {
+    id
+    entityType
+    ... on Space {
+      curated {
+        role
+        sortOrder
+        node {
+          id
+          entityType
+        }
+      }
+    }
+  }
+}

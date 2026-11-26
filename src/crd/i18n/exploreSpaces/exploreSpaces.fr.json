@@ -29,6 +29,8 @@
     "loading": "Chargement des espaces",
     "moreLeads": "{{count}} responsables de plus",
     "moreTags": "{{count}} étiquettes de plus",
-    "removeFilter": "supprimer le filtre"
+    "removeFilter": "supprimer le filtre",
+    "rootBrowseOnly": "Les espaces principaux sont disponibles. La recherche, les filtres, les sous-espaces, les images et les responsables ne sont pas encore disponibles.",
+    "locked": "Verrouillé"
   }
 }

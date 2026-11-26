@@ -281,7 +281,7 @@ const pack = (
   templateCount: number,
   providerName: string,
   bannerUrl?: string
-): InnovationPackCardData => ({
+) => ({
   id,
   name,
   description,
@@ -293,9 +293,9 @@ const pack = (
   providerName,
   providerAvatarUrl: undefined,
   providerUrl: `/organization/${providerName.toLowerCase().replace(/\s+/g, '-')}`,
-});
+} satisfies InnovationPackCardData);
 
-export const MOCK_INNOVATION_PACKS: InnovationPackCardData[] = [
+export const MOCK_INNOVATION_PACKS = [
   pack(
     'pack-1',
     'Design Sprint Kit',

@@ -193,14 +193,17 @@ const CrdOrgAccountTab = () => {
         }}
         onCancel={() => setNoEntitlementResource(null)}
       />
+      {/* Reads the organisation's own Actor.account (023 FR-020), not this tab's legacy account read. */}
+      {organizationId && (
+        <CrdCreateSpaceDialog
+          organizationId={organizationId}
+          accountName={accountHostName}
+          open={createSpaceOpen}
+          onClose={() => setCreateSpaceOpen(false)}
+        />
+      )}
       {account?.id && (
         <>
-          <CrdCreateSpaceDialog
-            accountId={account.id}
-            accountName={accountHostName}
-            open={createSpaceOpen}
-            onClose={() => setCreateSpaceOpen(false)}
-          />
           <CrdCreateInnovationPackDialog
             accountId={account.id}
             accountName={accountHostName}

@@ -1,0 +1,5 @@
+# specs/021-space-pages data-model.md D4: one post outside the page's space tree, through node(id) (the space tree's
+# single-node read; spaces 2026-11-26). Its responses and form responses are tree rows (SpacePage `tree`, depth 2).
+query PostDetail($id: UUID!) {
+  post: node(id: $id) { id entityType ...PostDetail }
+}

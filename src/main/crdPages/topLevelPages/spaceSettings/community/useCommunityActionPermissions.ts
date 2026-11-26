@@ -1,71 +1,51 @@
-import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import useActionPermission, { type ActionPermission } from '@/domain/access/permissions/useActionPermission';
-import {
-  ROLE_SET_ASSIGN_PRIVILEGES,
-  ROLE_SET_GRANT_PRIVILEGES,
-  ROLE_SET_INVITE_PRIVILEGES,
-  VC_FROM_ACCOUNT_PRIVILEGES,
-} from '@/main/crdPages/permissions/roleAssignmentPrivileges';
+import type { ActionPermission } from '@/domain/access/permissions/useActionPermission';
+import type { CommunityGates } from '@/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin';
 
 /**
  * One permission decision per control on the space Community settings surface.
  *
- * Which privilege gates which control is the whole point of this hook: the backend
- * resolver enforces a different token for inviting a member than for changing an existing
- * member's roles, and pointing a control at the wrong one silently disables it for every
- * space admin. Keeping the map in one place makes each control's gate assertable instead
- * of being spread across the page's JSX.
+ * Each control is gated on the native verdict of the intent it runs (roleset-privileges,
+ * community-roles-screens.tsv:186): `setRoles` on an existing holder needs GRANT on the space,
+ * served as `SpaceCan.manageMembers`; `invite` needs INVITE, served as `SpaceCan.invite`; adding a
+ * virtual contributor directly is admitted by the `candidates(entry: DIRECT)` picker verdict, which
+ * the server decides (account agency is never inferred in the client).
  */
 export type CommunityActionPermissions = {
-  /** Lead toggle, admin toggle and remove-from-space on a USER row. */
+  /** Lead toggle, admin toggle and remove-from-space on a USER row — `SpaceCan.manageMembers`. */
   userRoleChange: ActionPermission;
   /**
-   * Ticking the lead toggle on an ORGANIZATION row.
-   *
-   * GRANT alone. `authorizeAssignOrganization` demands the organization assign token only
-   * when the organization does NOT already hold the entry role; for one that is already in
-   * the space it asks for grant alone (server ruling R32). Consent is about ENTERING the
-   * space, not about which role the organization holds once it is in. Gating this on the
-   * organization assign token disabled the toggle for every space admin, so an organization
-   * that accepted an invitation could never be given Lead — the organization-shaped twin of
-   * the user bug #10280 fixed.
+   * Ticking the lead toggle on an ORGANIZATION row — `SpaceCan.manageMembers`. Elevation of an actor
+   * that already holds the entry role is gated by GRANT alone.
    */
   organizationLeadAssign: ActionPermission;
-  /**
-   * Every `removeRoleFromOrganization` call: removing an ORGANIZATION from the space and
-   * un-leading one alike. That resolver asks for grant alone, unlike its assign twin.
-   */
+  /** Removing an ORGANIZATION from the space and un-leading one — `SpaceCan.manageMembers`. */
   organizationRemove: ActionPermission;
-  /** Add a virtual contributor — permitted by either token, never by both being required. */
+  /** Add a virtual contributor — the add-VC picker verdict. */
   addVirtualContributor: ActionPermission;
-  /**
-   * Inviting an actor to the space — `inviteForEntryRoleOnRoleSet`. Invitation is the only
-   * way a user or organization joins a Space from this surface (alkem-io/server#6623).
-   */
+  /** Inviting an actor to the space — `SpaceCan.invite`. */
   invite: ActionPermission;
 };
 
-const useCommunityActionPermissions = (
-  myPrivileges: AuthorizationPrivilege[] | undefined,
-  loading: boolean
-): CommunityActionPermissions => {
-  const roleSetAssign = useActionPermission(myPrivileges, ROLE_SET_ASSIGN_PRIVILEGES, loading);
-  const grantAction = useActionPermission(myPrivileges, ROLE_SET_GRANT_PRIVILEGES, loading);
-  const vcFromAccount = useActionPermission(myPrivileges, VC_FROM_ACCOUNT_PRIVILEGES, loading);
-  const invite = useActionPermission(myPrivileges, ROLE_SET_INVITE_PRIVILEGES, loading);
+/**
+ * Precedence mirrors `useActionPermission`: a read still in flight is `checking`, a verdict that
+ * could not be read is `unverifiable`, otherwise the verdict decides. Every non-affirmative input
+ * fails closed.
+ */
+const decide = (verdict: boolean | undefined, loading: boolean): ActionPermission => {
+  if (loading) return { allowed: false, reason: 'checking' };
+  if (verdict === undefined) return { allowed: false, reason: 'unverifiable' };
+  return verdict ? { allowed: true, reason: 'allowed' } : { allowed: false, reason: 'denied' };
+};
 
-  // Virtual contributors are permitted by EITHER the role-set assign privilege or the
-  // account-assign privilege — space admins may hold only the latter. Mirrors the union in
-  // `useCommunityAdmin`; requiring both would lock those admins out. The assign decision
-  // supplies the reason so a still-loading union reads as "checking", not "denied".
-  const addVirtualContributor = vcFromAccount.allowed ? vcFromAccount : roleSetAssign;
+const useCommunityActionPermissions = (gates: CommunityGates): CommunityActionPermissions => {
+  const manageMembers = decide(gates.manageMembers, gates.loading);
 
   return {
-    userRoleChange: grantAction,
-    organizationLeadAssign: grantAction,
-    organizationRemove: grantAction,
-    addVirtualContributor,
-    invite,
+    userRoleChange: manageMembers,
+    organizationLeadAssign: manageMembers,
+    organizationRemove: manageMembers,
+    addVirtualContributor: decide(gates.virtualContributorPicker, gates.virtualContributorPickerLoading),
+    invite: decide(gates.invite, gates.loading),
   };
 };
 

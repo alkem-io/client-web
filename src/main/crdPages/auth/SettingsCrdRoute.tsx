@@ -5,7 +5,7 @@ import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/us
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { SettingsCard } from '@/crd/components/auth/SettingsCard';
-import { AuthShellWrapper } from './AuthShellWrapper';
+import { AuthFlowContext, AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { securitySettingsResumeTarget } from './settingsFlowSecurityReturn';
 import { useTranslateDescriptor } from './useKratosMessageCopy';
@@ -16,6 +16,14 @@ import { useTranslateDescriptor } from './useKratosMessageCopy';
  * link from their email; the user lands here to set a new password.
  */
 export function SettingsCrdRoute() {
+  return (
+    <AuthFlowContext>
+      <SettingsCrdFlow />
+    </AuthFlowContext>
+  );
+}
+
+function SettingsCrdFlow() {
   useTransactionScope({ type: 'authentication' });
   const { t } = useTranslation();
   usePageTitle(t('pages.settings.header'));

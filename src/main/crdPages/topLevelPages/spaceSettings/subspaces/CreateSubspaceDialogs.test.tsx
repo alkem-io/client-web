@@ -27,6 +27,7 @@ import { CreateSubspaceDialogs } from './CreateSubspaceDialogs';
 
 function createSubspaceResult(overrides: Partial<UseCreateSubspaceResult> = {}): UseCreateSubspaceResult {
   return {
+    markdown: { onImageUpload: vi.fn(), iframeAllowedUrls: [], onError: vi.fn() },
     open: true,
     openDialog: vi.fn(),
     closeDialog: vi.fn(),

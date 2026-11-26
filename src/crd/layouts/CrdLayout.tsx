@@ -5,6 +5,7 @@ import { GridOverlay } from '@/crd/layouts/components/GridOverlay';
 import { Footer } from '@/crd/layouts/Footer';
 import { Header } from '@/crd/layouts/Header';
 import type {
+  CrdAuthenticationState,
   CrdFooterLinks,
   CrdLanguageOption,
   CrdNavigationHrefs,
@@ -14,7 +15,7 @@ import type {
 
 type CrdLayoutProps = {
   user?: CrdUserInfo;
-  authenticated: boolean;
+  authenticated?: CrdAuthenticationState;
   navigationHrefs: CrdNavigationHrefs;
   isAdmin?: boolean;
   pendingInvitationsCount?: number;

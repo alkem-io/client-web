@@ -29,6 +29,8 @@
     "loading": "Loading spaces",
     "moreLeads": "{{count}} more leads",
     "moreTags": "{{count}} more tags",
-    "removeFilter": "remove filter"
+    "removeFilter": "remove filter",
+    "rootBrowseOnly": "Root spaces are available. Search, filters, subspaces, images and leads are not available yet.",
+    "locked": "Locked"
   }
 }

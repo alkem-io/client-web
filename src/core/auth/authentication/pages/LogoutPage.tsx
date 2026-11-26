@@ -1,104 +1,138 @@
-import { useMutation } from '@apollo/client';
-import { useEffect } from 'react';
+import { useApolloClient } from '@apollo/client';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUnsubscribeFromPushNotificationsMutation } from '@/core/apollo/generated/apollo-hooks';
+import { isInvalidSession } from '@/core/apollo/v2/isSessionStoreUnavailable';
+import { useRetireV2ForNavigation } from '@/core/apollo/v2/V2ApolloProvider';
+import {
+  OIDC_RECOVERY_ATTEMPTED_KEY,
+  STORAGE_KEY_RETURN_URL,
+} from '@/core/auth/authentication/constants/authentication.constants';
 import { useLogoutUrl } from '@/core/auth/authentication/hooks/useLogoutUrl';
 import { useReturnUrl, useSignUpRoundTrip } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
+import { useNativeFoundation } from '@/core/foundation/NativeFoundationProvider';
+import { runMatrixLogoutCleanup } from '@/core/matrix/logoutCleanup';
 import Loading from '@/core/ui/loading/Loading';
+import { AuthCard } from '@/crd/components/auth/AuthCard';
+import { Button } from '@/crd/primitives/button';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
+import { AuthShellWrapper } from '@/main/crdPages/auth/AuthShellWrapper';
 import {
   DEVICE_PUSH_TOKEN_KEY,
   PUSH_SUBSCRIPTION_ID_KEY,
   PUSH_USER_DISABLED_KEY,
 } from '@/main/pushNotifications/constants';
-import {
-  UnregisterDevicePushTokenDocument,
-  type UnregisterDevicePushTokenVariables,
-} from '@/main/pushNotifications/devicePushTokenMutations';
 import { clearMessagingDrafts } from '@/main/userMessaging/messagingDrafts';
 
-async function cleanupPushSubscription(
-  unsubscribeMutation: ReturnType<typeof useUnsubscribeFromPushNotificationsMutation>[0],
-  unregisterDeviceToken: (options: { variables: UnregisterDevicePushTokenVariables }) => Promise<unknown>
-) {
+async function cleanupPushSubscription(): Promise<boolean> {
   try {
-    const subscriptionId = localStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
-
-    if (subscriptionId) {
-      await unsubscribeMutation({
-        variables: { subscriptionData: { subscriptionID: subscriptionId } },
-      }).catch(() => {});
-    }
-
-    // The native device binding (app mode only — in a browser the key is never
-    // written, so this leg is a no-op by construction). This is the
-    // cross-user-leak control: an unbound token keeps delivering this user's
-    // notifications to a device the next person signs in on.
-    const deviceToken = localStorage.getItem(DEVICE_PUSH_TOKEN_KEY);
-
-    if (deviceToken) {
-      await unregisterDeviceToken({ variables: { token: deviceToken } }).catch(() => {});
-    }
-
+    const nativeBinding = localStorage.getItem(DEVICE_PUSH_TOKEN_KEY) !== null;
+    let browserBinding = localStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY) !== null;
     if ('serviceWorker' in navigator) {
-      // getRegistration() resolves immediately (undefined when no SW), unlike
-      // navigator.serviceWorker.ready, which NEVER resolves without an active
-      // service worker — the SW only registers in PROD builds, so awaiting
-      // `.ready` hung the logout redirect forever on dev stacks (and would in
-      // prod for any user whose SW failed to activate).
       const registration = await navigator.serviceWorker.getRegistration();
       const subscription = await registration?.pushManager.getSubscription();
-      if (subscription) {
-        await subscription.unsubscribe();
+      if (!subscription || (await subscription.unsubscribe())) {
+        localStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
+        localStorage.removeItem(PUSH_USER_DISABLED_KEY);
+        browserBinding = false;
+      } else {
+        browserBinding = true;
       }
     }
-  } finally {
-    // Always clear cached state, even if cleanup partially fails
-    localStorage.removeItem(PUSH_SUBSCRIPTION_ID_KEY);
-    localStorage.removeItem(PUSH_USER_DISABLED_KEY);
-    localStorage.removeItem(DEVICE_PUSH_TOKEN_KEY);
+    return nativeBinding || browserBinding;
+  } catch {
+    return true;
   }
 }
 
 const LogoutPage = () => {
   const { t } = useTranslation();
-
-  const { getLogoutUrl, outcome } = useLogoutUrl();
+  const foundation = useNativeFoundation();
+  const client = useApolloClient();
+  const retireForNavigation = useRetireV2ForNavigation();
+  const { getLogoutUrl, outcome, error } = useLogoutUrl();
   const { clearReturnUrl } = useReturnUrl();
   const { clearArmed } = useSignUpRoundTrip();
-  const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
-  const [unregisterDeviceToken] = useMutation<
-    { unregisterDevicePushToken: boolean },
-    UnregisterDevicePushTokenVariables
-  >(UnregisterDevicePushTokenDocument);
+  const [starting, setStarting] = useState(true);
+  const [cleanup, setCleanup] = useState({ local: false, push: false });
+  const started = useRef(false);
+  const invalidSession = isInvalidSession(foundation.error);
+  const foundationUnavailable = !invalidSession && (foundation.error || (!foundation.loading && !foundation.data));
 
-  useEffect(() => {
-    if (!outcome) {
-      getLogoutUrl();
-      return;
-    }
-    if (outcome.kind === 'redirect') {
-      // Wait for push cleanup before redirecting to avoid leaving stale subscriptions.
-      // The target is whichever logout leg useLogoutUrl picked next — the Hydra
-      // end_session URL or the Kratos SSO logout URL.
-      cleanupPushSubscription(unsubscribeMutation, unregisterDeviceToken).finally(() => {
+  const begin = async () => {
+    const session = invalidSession ? 'invalid-session' : foundation.data?.viewer.session.authenticated;
+    if (foundation.loading || foundationUnavailable || session === undefined) return;
+    setStarting(true);
+    const local = await Promise.allSettled([
+      client.clearStore(),
+      runMatrixLogoutCleanup(),
+      Promise.resolve().then(() => {
         clearReturnUrl();
         clearArmed();
         clearMessagingDrafts();
-        window.location.replace(outcome.url);
-      });
-      return;
+        sessionStorage.removeItem(STORAGE_KEY_RETURN_URL);
+        sessionStorage.removeItem(OIDC_RECOVERY_ATTEMPTED_KEY);
+      }),
+    ]);
+    const push = await cleanupPushSubscription();
+    const localIncomplete = local.some(result => result.status === 'rejected');
+    setCleanup({ local: localIncomplete, push });
+    const next = await getLogoutUrl(session);
+    setStarting(false);
+    const destination =
+      next?.kind === 'redirect'
+        ? next.url
+        : next?.kind === 'cleared' && !localIncomplete && !push
+          ? ROUTE_HOME
+          : undefined;
+    if (destination) {
+      await Promise.allSettled([retireForNavigation()]);
+      window.location.replace(destination);
     }
-    // outcome.kind === 'cleared' — nothing left to end (no BFF session, no Kratos
-    // session). Land on the public home page instead of the bare placeholder.
-    cleanupPushSubscription(unsubscribeMutation, unregisterDeviceToken).finally(() => {
-      clearReturnUrl();
-      clearArmed();
-      clearMessagingDrafts();
-      window.location.replace('/home');
-    });
-  }, [outcome]);
+  };
 
-  return <Loading text={t('pages.logout.loading')} />;
+  useEffect(() => {
+    if (started.current || foundation.loading || foundationUnavailable || (!invalidSession && !foundation.data)) return;
+    started.current = true;
+    void begin();
+  }, [begin, foundation.loading, foundationUnavailable, invalidSession, foundation.data]);
+
+  return (
+    <AuthShellWrapper>
+      {foundationUnavailable ||
+      (!starting &&
+        (error || outcome?.kind === 'unknown' || (outcome?.kind === 'cleared' && (cleanup.local || cleanup.push)))) ? (
+        <AuthCard title={t('pages.logout.loading')}>
+          <p role="alert">
+            {t(
+              outcome?.kind === 'unknown'
+                ? 'pages.logout.unknown'
+                : foundationUnavailable || error
+                  ? 'pages.logout.unavailable'
+                  : cleanup.push
+                    ? 'pages.logout.pushCleanupUnavailable'
+                    : 'pages.logout.cleanupUnavailable'
+            )}
+          </p>
+          {outcome?.kind !== 'unknown' && (
+            <Button
+              onClick={() => {
+                if (foundationUnavailable) {
+                  started.current = false;
+                  void foundation.refetch().catch(() => undefined);
+                } else {
+                  void begin();
+                }
+              }}
+            >
+              {t('apollo.errors.network.retry')}
+            </Button>
+          )}
+        </AuthCard>
+      ) : (
+        <Loading text={t('pages.logout.loading')} />
+      )}
+    </AuthShellWrapper>
+  );
 };
 
 export default LogoutPage;

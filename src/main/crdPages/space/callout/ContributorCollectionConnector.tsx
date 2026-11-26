@@ -1,15 +1,21 @@
 import { ApolloError } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { type ActorType, ContributorCollectionView } from '@/core/apollo/generated/graphql-schema';
+import type { PostBodyFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import type { ContributorCardData } from '@/crd/components/callout/ContributorCollection/ContributorCard';
 import { ContributorCollection } from '@/crd/components/callout/ContributorCollection/ContributorCollection';
 import { MessageDialog } from '@/crd/components/common/MessageDialog';
 import type { ContributorTypeId } from '@/crd/forms/callout/types';
+import { useCachedPost } from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { formatJoinedMonth } from '@/main/crdPages/space/dataMappers/contributorCollectionDataMapper';
-import { useCrdSpaceContributors } from '@/main/crdPages/space/hooks/useCrdSpaceContributors';
+import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
+import {
+  formatJoinedMonth,
+  mapActorToContributorCard,
+} from '@/main/crdPages/space/dataMappers/contributorCollectionDataMapper';
 import { useCrdSpaceLocale } from '@/main/crdPages/space/hooks/useCrdSpaceLocale';
 import { useSendMessageToOrganizationHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { useStartDirectChat } from '@/main/crdPages/unifiedChat/useStartDirectChat';
@@ -28,6 +34,17 @@ import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingConte
 // so this is handled on click rather than by hiding the action ahead of time.
 const CODE_MESSAGING_NOT_ENABLED = 'MESSAGING_NOT_ENABLED';
 
+type ContributorsContent = Extract<NonNullable<PostBodyFragment['content']>, { __typename: 'ContributorsContent' }>;
+/** The post's contributors settings (post_kind contributors setting). */
+type ContributorsSettings = {
+  types: string[];
+  default_type?: string;
+  view?: string;
+  map?: { longitude: number; latitude: number; zoom: number };
+  selection?: { mode?: string };
+};
+const toActorType = (type: string) => type.toUpperCase() as ActorType;
+
 type ContributorCollectionConnectorProps = {
   calloutId: string;
   className?: string;
@@ -36,18 +53,30 @@ type ContributorCollectionConnectorProps = {
 export function ContributorCollectionConnector({ calloutId, className }: ContributorCollectionConnectorProps) {
   const navigate = useNavigate();
   const { t } = useTranslation('crd-profilePages');
-  const {
-    types,
-    defaultType,
-    defaultView,
-    fixedView,
-    counts,
-    getCards,
-    ensureLoaded,
-    isLoading,
-    loading,
-    isCustomSelection,
-  } = useCrdSpaceContributors(calloutId);
+  // 021 F081-F099: settings, counts and contributors arrive in the post's ContributorsContent; no request. The
+  // contributors and counts stay null until the server declares them (FC-C6); role and joined date wait for S09.
+  const post = useCachedPost(calloutId);
+  const content = post?.contentKind === 'contributors' ? (post.content as ContributorsContent | null) : undefined;
+  const settings = (content?.settings ?? null) as ContributorsSettings | null;
+  const config = contributorCollectionFromServer(
+    settings && {
+      contributorTypes: settings.types.map(toActorType),
+      defaultContributorType: toActorType(settings.default_type ?? settings.types[0] ?? 'user'),
+      defaultView: settings.view === 'map' ? ContributorCollectionView.Map : ContributorCollectionView.List,
+      mapView: settings.map,
+    }
+  );
+  const { types, defaultType, defaultView, mapView: fixedView } = config;
+  const countOf = (type: string) => content?.counts?.find(entry => entry.type === type)?.count ?? 0;
+  const counts = {
+    users: countOf('user'),
+    organizations: countOf('organization'),
+    virtualContributors: countOf('virtual_contributor'),
+  };
+  const contributorCards = content?.contributors?.map(mapActorToContributorCard);
+  const getCards = (type: ContributorTypeId) => contributorCards?.filter(card => card.type === type);
+  const loading = !post;
+  const isCustomSelection = settings?.selection?.mode === 'custom';
 
   const [activeType, setActiveType] = useState<ContributorTypeId | null>(null);
 
@@ -73,14 +102,8 @@ export function ContributorCollectionConnector({ calloutId, className }: Contrib
   // already-idempotent `ensureLoaded` (guarded by `requestedRef` in the
   // hook), so it cannot race the child's own auto-heal write the way the
   // removed effect above did.
-  useEffect(() => {
-    if (loading) return;
-    ensureLoaded(resolvedType);
-  }, [resolvedType, ensureLoaded, loading]);
-
   const handleActiveTypeChange = (type: ContributorTypeId) => {
     setActiveType(type);
-    ensureLoaded(type); // lazy-fetch this type's full set once (FR-008)
   };
 
   // Render-time decoration only — never stored in state, so a live language
@@ -131,7 +154,7 @@ export function ContributorCollectionConnector({ calloutId, className }: Contrib
         fixedView={fixedView}
         counts={counts}
         cards={cards}
-        loading={loading || isLoading(resolvedType)}
+        loading={loading}
         isCustomSelection={isCustomSelection}
         onContributorClick={href => navigate(href)}
         onMessage={handleMessage}

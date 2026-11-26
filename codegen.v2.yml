@@ -1,0 +1,45 @@
+overwrite: true
+# The v2 client targets the server-go API. Like codegen.yml, the schema is fetched from a running server by default:
+# a server-go core on :8080 (poc-up), which serves introspection with DEV_MODE=true. Override CODEGEN_V2_SCHEMA in
+# .env.local, e.g. with another core URL or server-go's own landed SDL files
+# (../server-go/internal/adapter/graphql/schema/*.graphql). No schema snapshot is ever committed here.
+schema: '${CODEGEN_V2_SCHEMA:http://localhost:8080/api/private/graphql}'
+documents: 'src/**/*.v2.graphql'
+hooks:
+  afterAllFileWrite:
+    - biome check --fix --unsafe
+    - biome format --write
+generates:
+  src/core/apollo/generated-v2/graphql-schema.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      preResolveTypes: true
+      enumsAsConst: true
+      scalars:
+        UUID: string
+        DateTime: string
+        Date: string
+        Long: number
+        JSON: unknown
+      strictScalars: true
+  src/core/apollo/generated-v2/apollo-hooks.ts:
+    preset: import-types
+    presetConfig:
+      typesPath: ./graphql-schema
+      importTypesNamespace: SchemaTypes
+    plugins:
+      - typescript-react-apollo
+    config:
+      withHooks: true
+      withRefetchFn: true
+  src/core/apollo/generated-v2/apollo-helpers.ts:
+    plugins:
+      - typescript-apollo-client-helpers
+  src/core/apollo/generated-v2/possible-types.ts:
+    plugins:
+      - fragment-matcher
+    config:
+      apolloClientVersion: 3
+      useExplicitTyping: true

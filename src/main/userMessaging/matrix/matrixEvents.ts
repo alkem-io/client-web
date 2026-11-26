@@ -40,6 +40,7 @@ type ParsedReaction = {
 type ParsedMessage = {
   readonly eventId: string;
   readonly body: string;
+  readonly replyTo?: string;
   readonly timestamp: number;
   readonly sender: string;
   readonly media?: MediaRef;
@@ -125,7 +126,20 @@ const parseMessage = (event: RawEvent, homeserver: string): ParsedMessage | unde
   if (body === '' && !media) {
     return undefined;
   }
-  return { eventId: event.eventId, body, timestamp: event.timestamp, sender: event.sender, media, reactions: [] };
+  const relation = event.content['m.relates_to'] as
+    | { rel_type?: unknown; 'm.in_reply_to'?: { event_id?: unknown } }
+    | undefined;
+  const target = relation?.rel_type === undefined ? relation?.['m.in_reply_to']?.event_id : undefined;
+  const replyTo = typeof target === 'string' ? target : undefined;
+  return {
+    eventId: event.eventId,
+    body,
+    ...(replyTo ? { replyTo } : {}),
+    timestamp: event.timestamp,
+    sender: event.sender,
+    media,
+    reactions: [],
+  };
 };
 
 /** The newest non-blank message among `events` (oldest first), if any. */

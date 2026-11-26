@@ -6,7 +6,6 @@ import type { Identifiable } from '@/core/utils/Identifiable';
 import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';
 import type { Visual } from '@/domain/common/visual/Visual';
 import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import { mapSpacesToCardDataList } from './spaceCardDataMapper';
 import useSpaceExplorer from './useSpaceExplorer';
 
 export type SpaceWithParent = Space & WithParent<ParentSpace>;
@@ -39,32 +38,13 @@ const SpaceExplorerPage = () => {
   const navigate = useNavigate();
   usePageTitle(t('pages.titles.spaces'));
 
-  const {
-    spaces,
-    loading,
-    searchTerms,
-    setSearchTerms,
-    membershipFilter,
-    onMembershipFilterChange,
-    fetchMore,
-    hasMore,
-    authenticated,
-    loadingSearchResults,
-  } = useSpaceExplorer();
-
-  const cardData = mapSpacesToCardDataList(spaces, authenticated);
+  const { spaces, loading, hasMore, fetchMore } = useSpaceExplorer();
 
   return (
     <SpaceExplorer
-      spaces={cardData}
+      spaces={spaces ?? []}
       loading={loading}
       hasMore={hasMore}
-      searchTerms={searchTerms}
-      membershipFilter={membershipFilter}
-      authenticated={authenticated}
-      loadingSearchResults={loadingSearchResults}
-      onSearchTermsChange={terms => setSearchTerms(terms)}
-      onMembershipFilterChange={onMembershipFilterChange}
       onLoadMore={fetchMore}
       onParentClick={parent => navigate(parent.href)}
     />

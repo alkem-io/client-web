@@ -1,9 +1,8 @@
 import { Columns3 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTaskBoardDataQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { Button } from '@/crd/primitives/button';
+import { useCachedPost } from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
 import { TaskBoardColumnsConnector } from './TaskBoardColumnsConnector';
 
 type TaskBoardManageColumnsButtonProps = {
@@ -14,19 +13,16 @@ type TaskBoardManageColumnsButtonProps = {
 
 /**
  * Header icon button that opens the Tasks board column-management dialog without
- * leaving the board view. Shown only to callout admins (UPDATE privilege). It
+ * leaving the board view. Shown only to those who may manage the board's columns. It
  * complements the same action in the callout 3-dots settings menu, giving admins
  * a way to manage columns while the board is open in its dialog / expanded view.
- * The `TaskBoardData` query is deduped by Apollo, so it adds no extra network cost.
  */
 export function TaskBoardManageColumnsButton({ calloutId, className }: TaskBoardManageColumnsButtonProps) {
   const { t } = useTranslation('crd-taskBoard');
-  const { data } = useTaskBoardDataQuery({ variables: { calloutId } });
+  // The board post is in the cache (its card or its URL load); managing its columns is its `can.manageColumns`.
+  const canEditColumns = useCachedPost(calloutId)?.can.manageColumns ?? false;
   const [open, setOpen] = useState(false);
 
-  const canEditColumns = (data?.lookup.callout?.authorization?.myPrivileges ?? []).includes(
-    AuthorizationPrivilege.Update
-  );
   if (!canEditColumns) return null;
 
   return (

@@ -13,7 +13,8 @@
       "generic-with-code": "Ein Fehler ist aufgetreten mit Code {{code}}",
       "network": {
         "session_store_unavailable": "Der Dienst ist vorübergehend nicht verfügbar. Bitte versuchen Sie es in einem Moment erneut.",
-        "generic": "Es ist ein Verbindungsproblem aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
+        "generic": "Es ist ein Verbindungsproblem aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+        "retry": "Erneut versuchen"
       },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -63,6 +64,7 @@
           "messagingNotEnabled": "Messaging not enabled.",
           "noAgentForUser": "No agent for user.",
           "notEnabled": "Feature not enabled.",
+          "notAvailableYet": "Diese Aktion ist noch nicht verfügbar.",
           "operationNotAllowed": "Operation not allowed.",
           "roleLimitsViolated": "Role limits exceeded.",
           "roleSetAlreadyMember": "You're already a member of this space.",
@@ -1424,7 +1426,11 @@
       "fullName": "$t(common.templateLibrary)"
     },
     "logout": {
-      "loading": "Abmelden"
+      "loading": "Abmelden",
+      "unavailable": "Die Abmeldung konnte nicht abgeschlossen werden. Bitte versuche es erneut.",
+      "unknown": "Die Abmeldung konnte nicht bestätigt werden. Die Sitzung beim Identitätsanbieter ist möglicherweise noch aktiv.",
+      "cleanupUnavailable": "Du bist abgemeldet, aber lokale Daten konnten nicht gelöscht werden. Bitte versuche es erneut.",
+      "pushCleanupUnavailable": "Du bist abgemeldet, aber die Bereinigung der Benachrichtigungen auf diesem Gerät ist unvollständig."
     },
     "recovery": {
       "cooldown": {

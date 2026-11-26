@@ -1,0 +1,5 @@
+# 023 FR-020 + item9 "Who sends what": the subspace dialog's library account source is the root space's hosting
+# account, read as the root's host actor's account (surface.graphql Space.host, Actor.account).
+query CreateSubspaceRoot($root: UUID!) {
+  node(id: $root) { id ... on Space { host { id account { id } } } }
+}

@@ -1,36 +1,27 @@
-import { useSpacePrivilegesQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
+import { useLocation } from 'react-router-dom';
+import { NotAuthorizedError } from '@/core/40XErrorHandler/40XErrors';
+import { AUTH_REQUIRED_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { buildReturnUrlParam } from '@/main/routing/urlBuilders';
 
 /**
- * Gates the entire CRD Space Settings page on the user's `Update` privilege
- * for the resolved space:
+ * Gates the entire CRD Space Settings page on the viewer's `SpaceCan.update` verdict for the resolved space
+ * (space-screens.tsv "space about: … privileges" → Space.can; it replaces the legacy `Update` privilege):
  *
- * - **Anonymous users** → the privileges query returns `FORBIDDEN_POLICY` and
- *   `useRestrictedRedirect` throws a `NotAuthorizedError` whose `redirectUrl`
- *   the boundary's redirectUrl branch consumes — silent redirect to the
- *   sign-in page with `returnUrl` preserved.
- * - **Authenticated non-admins** → the query resolves with the user's
- *   privileges, `Update` is missing, and `useRestrictedRedirect` throws
- *   `NotAuthorizedError` (no redirect) — boundary renders the CRD forbidden
- *   page.
- * - **Authenticated admins** → privileges include `Update`, no throw, the
- *   page renders.
+ * - **Anonymous viewers** → `NotAuthorizedError` with a `redirectUrl`: silent redirect to the sign-in page with the
+ *   `returnUrl` preserved.
+ * - **Authenticated viewers without update** → `NotAuthorizedError` (no redirect): the CRD forbidden page.
+ * - **Viewers with update** → no throw, the page renders.
  *
- * Without this guard, the Space Settings chrome (URL field, Visibility, etc.)
- * renders for unauthorized users while the underlying tab queries silently
- * fail with `data: null`. See spec §"FR-019, FR-021" and the screenshot in
- * the original bug report.
+ * A space the viewer may not even read never gets here: the URL resolver refuses it (NOT_FOUND / FORBIDDEN).
  */
-export function useSpaceSettingsAccessGuard(spaceId: string, scopeLoading: boolean): void {
-  const { data, error } = useSpacePrivilegesQuery({
-    variables: { spaceId },
-    skip: !spaceId,
-  });
+export function useSpaceSettingsAccessGuard(canUpdate: boolean | undefined, scopeLoading: boolean): void {
+  const { pathname } = useLocation();
+  const { isAuthenticated, loading: viewerLoading } = useCurrentUserContext();
 
-  useRestrictedRedirect(
-    { data, error, skip: scopeLoading || !spaceId },
-    data => data.lookup.space?.authorization?.myPrivileges,
-    { requiredPrivilege: AuthorizationPrivilege.Update }
-  );
+  if (scopeLoading || viewerLoading || canUpdate !== false) return;
+  if (!isAuthenticated) {
+    throw new NotAuthorizedError({ redirectUrl: `${AUTH_REQUIRED_PATH}${buildReturnUrlParam(pathname)}` });
+  }
+  throw new NotAuthorizedError();
 }

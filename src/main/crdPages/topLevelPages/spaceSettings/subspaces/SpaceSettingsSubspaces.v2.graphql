@@ -1,0 +1,51 @@
+# Settings → Subspaces tab. The list itself is NativeSubspaces (023 FR-020: the parent's subspace list, server-ordered
+# by the parent's sort_mode). Rows: map/dispositions/space-screens.tsv for /:spaceNameId/settings/subspaces and
+# templates-screens.tsv.
+
+# "pin/unpin a subspace" → pinSubspace(id, pinned) (L061).
+mutation PinSpaceSettingsSubspace($id: UUID!, $pinned: Boolean!) {
+  pinSubspace(id: $id, pinned: $pinned) {
+    id
+    pinned
+    sortOrder
+  }
+}
+
+# "reorder subspaces (custom order)" → reorderSubspaces(input{parent, ids}) (L061).
+mutation ReorderSpaceSettingsSubspaces($parent: UUID!, $ids: [UUID!]!) {
+  reorderSubspaces(input: { parent: $parent, ids: $ids }) {
+    id
+  }
+}
+
+# "delete space/subspace" → deleteSpace(id) (L068; A5.2: refused while the subspace has children).
+mutation DeleteSpaceSettingsSubspace($id: UUID!) {
+  deleteSpace(id: $id) {
+    deletedId
+  }
+}
+
+# "settings tab write (… sortMode-only write from subspaces tab)" → updateSpace(id, settings), key sort_mode.
+mutation UpdateSpaceSettingsSubspacesSortMode($id: UUID!, $settings: JSON!) {
+  updateSpace(id: $id, settings: $settings) {
+    id
+    settings
+  }
+}
+
+# templates-screens "subspace default template: current default, choices" → Query.templates (kind SPACE); the current
+# default is CreateSubspaceTemplateDefault (Query.templateDefaults, slot subspace_default).
+query SpaceSettingsSubspaceTemplates($space: UUID!) {
+  templates(scope: $space, kind: SPACE) {
+    id
+    about { displayName }
+  }
+}
+
+# templates-screens "set subspace default template" → setTemplateDefault(scope, slot, template) (L053/L136).
+mutation SetSpaceSettingsSubspaceDefaultTemplate($scope: UUID!, $template: UUID!) {
+  setTemplateDefault(scope: $scope, slot: "subspace_default", template: $template) {
+    slot
+    template { id about { displayName } }
+  }
+}

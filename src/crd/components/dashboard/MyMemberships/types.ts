@@ -3,7 +3,7 @@ export type MembershipRole = 'admin' | 'lead' | 'member';
 export type MembershipItem = {
   id: string;
   name: string;
-  href: string;
+  href?: string;
   tagline?: string;
   isPrivate: boolean;
   roles: MembershipRole[];

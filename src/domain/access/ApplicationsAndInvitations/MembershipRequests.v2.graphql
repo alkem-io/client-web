@@ -1,0 +1,55 @@
+# Pending applications, invitations and email invitations of one resource (space or organization).
+# Rows: map/dispositions/community-roles-screens.tsv for /:spaceNameId/settings/* — pending-requests :178
+# (Query.requests), request-detail :180 (the dialog takes the row from this list, A9.25), respond-application :182 and
+# revoke-pending :183 (Mutation.respondToRequest; revoke = CANCEL, B2.6), resend-invitation :181
+# (Mutation.resendInvitation), csv-export :166 (answers, createdAt; the client pages to the end, A5.17).
+
+fragment MembershipRequestRow on MembershipRequest {
+  id
+  direction
+  state
+  roles
+  email
+  message
+  answers
+  createdAt
+  decidedAt
+  availableEvents
+  actor {
+    id
+    actorType
+    url
+    about {
+      displayName
+      location
+      avatar { file { url } }
+    }
+  }
+}
+
+query MembershipRequests($resource: UUID!, $first: Int!, $after: String) {
+  requests(resource: $resource, first: $first, after: $after) {
+    edges {
+      node {
+        ...MembershipRequestRow
+      }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}
+
+mutation RespondToMembershipRequest($id: UUID!, $event: String!) {
+  respondToRequest(id: $id, event: $event) {
+    request {
+      id
+      state
+      availableEvents
+    }
+  }
+}
+
+mutation ResendMembershipInvitation($id: UUID!) {
+  resendInvitation(id: $id) {
+    id
+  }
+}

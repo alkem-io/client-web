@@ -2,9 +2,26 @@ import { ApolloError } from '@apollo/client';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import CrdAdminGlobalRolesPage from '../CrdAdminGlobalRolesPage';
+
+const roleLabelKeys = {
+  [RoleName.PlatformRolesAdmin]: 'PLATFORM_ROLES_ADMIN',
+  [RoleName.PlatformContentFullAccess]: 'PLATFORM_CONTENT_FULL_ACCESS',
+  [RoleName.PlatformResourceAdmin]: 'PLATFORM_RESOURCE_ADMIN',
+  [RoleName.PlatformSettingsAdmin]: 'PLATFORM_SETTINGS_ADMIN',
+  [RoleName.PlatformOperationsAdmin]: 'PLATFORM_OPERATIONS_ADMIN',
+  [RoleName.PlatformUsersAdmin]: 'PLATFORM_USERS_ADMIN',
+  [RoleName.PlatformSupport]: 'PLATFORM_SUPPORT',
+  [RoleName.PlatformLicenseManager]: 'PLATFORM_LICENSE_MANAGER',
+  [RoleName.PlatformSpacesReader]: 'PLATFORM_SPACES_READER',
+  [RoleName.PlatformAuditReader]: 'PLATFORM_AUDIT_READER',
+  [RoleName.FeatureBetaTester]: 'FEATURE_BETA_TESTER',
+  [RoleName.FeatureVirtualAssistant]: 'FEATURE_VIRTUAL_ASSISTANT',
+  [RoleName.FeatureOrganizationCreator]: 'FEATURE_ORGANIZATION_CREATOR',
+  [RoleName.FeatureVcCampaign]: 'FEATURE_VC_CAMPAIGN',
+};
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -12,7 +29,7 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-let mockPathname = '/admin/authorization/roles/PLATFORM_ROLES_ADMIN';
+let mockPathname = `/admin/authorization/roles/${RoleName.PlatformRolesAdmin}`;
 vi.mock('react-router-dom', () => ({
   useLocation: () => ({ pathname: mockPathname }),
 }));
@@ -56,11 +73,11 @@ let mockHoldersUnavailable = false;
 
 type MockUsersByRole = Record<string, Array<{ id: string; profile: { displayName: string }; email?: string }>>;
 const baseUsersByRole: MockUsersByRole = {
-  PLATFORM_ROLES_ADMIN: [{ id: 'u1', profile: { displayName: 'Alice' }, email: 'alice@x.io' }],
+  [RoleName.PlatformRolesAdmin]: [{ id: 'u1', profile: { displayName: 'Alice' }, email: 'alice@x.io' }],
 };
 const usersByRole: MockUsersByRole = baseUsersByRole;
 const organizationsByRole = {
-  FEATURE_BETA_TESTER: [{ id: 'o1', profile: { displayName: 'Acme Org' } }],
+  [RoleName.FeatureBetaTester]: [{ id: 'o1', profile: { displayName: 'Acme Org' } }],
 };
 
 const assignPlatformRoleToUser = vi.fn();
@@ -131,7 +148,7 @@ vi.mock('@/domain/access/AvailableContributors/useRoleSetAvailableOrganizationsO
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mockPathname = '/admin/authorization/roles/PLATFORM_ROLES_ADMIN';
+  mockPathname = `/admin/authorization/roles/${RoleName.PlatformRolesAdmin}`;
   mockMyPrivileges = [AuthorizationPrivilege.PlatformRolesAssign, AuthorizationPrivilege.FeatureRoleAssign];
   mockLoadingPrivileges = false;
   mockHoldersUnavailable = false;
@@ -145,7 +162,7 @@ describe('CrdAdminGlobalRolesPage', () => {
     const nav = screen.getByRole('navigation');
     expect(within(nav).getAllByRole('button')).toHaveLength(14);
     for (const role of RELEVANT_ROLES.Platform) {
-      expect(within(nav).getByRole('button', { name: `roles.${role}` })).toBeInTheDocument();
+      expect(within(nav).getByRole('button', { name: `roles.${roleLabelKeys[role]}` })).toBeInTheDocument();
     }
   });
 
@@ -154,14 +171,17 @@ describe('CrdAdminGlobalRolesPage', () => {
       mockPathname = `/admin/authorization/roles/${role}`;
       const { unmount } = render(<CrdAdminGlobalRolesPage />);
       const nav = screen.getByRole('navigation');
-      expect(within(nav).getByRole('button', { name: `roles.${role}` })).toHaveAttribute('aria-pressed', 'true');
-      expect(screen.getByText(`roleDescriptions.${role}`)).toBeInTheDocument();
+      expect(within(nav).getByRole('button', { name: `roles.${roleLabelKeys[role]}` })).toHaveAttribute(
+        'aria-pressed',
+        'true'
+      );
+      expect(screen.getByText(`roleDescriptions.${roleLabelKeys[role]}`)).toBeInTheDocument();
       unmount();
     }
   });
 
   test('renders the Platform Operations Admin label and its role description when selected', () => {
-    mockPathname = '/admin/authorization/roles/PLATFORM_OPERATIONS_ADMIN';
+    mockPathname = `/admin/authorization/roles/${RoleName.PlatformOperationsAdmin}`;
     render(<CrdAdminGlobalRolesPage />);
     const nav = screen.getByRole('navigation');
     const tab = within(nav).getByRole('button', { name: 'roles.PLATFORM_OPERATIONS_ADMIN' });
@@ -179,13 +199,13 @@ describe('CrdAdminGlobalRolesPage', () => {
     render(<CrdAdminGlobalRolesPage />);
     const nav = screen.getByRole('navigation');
     await userEvent.click(within(nav).getByRole('button', { name: 'roles.PLATFORM_CONTENT_FULL_ACCESS' }));
-    expect(navigateMock).toHaveBeenCalledWith('/admin/authorization/roles/PLATFORM_CONTENT_FULL_ACCESS');
+    expect(navigateMock).toHaveBeenCalledWith(`/admin/authorization/roles/${RoleName.PlatformContentFullAccess}`);
   });
 
   test('adding an available user assigns the selected role', async () => {
     render(<CrdAdminGlobalRolesPage />);
     await userEvent.click(screen.getByRole('button', { name: 'roleMembers.add' }));
-    expect(assignPlatformRoleToUser).toHaveBeenCalledWith('u2', 'PLATFORM_ROLES_ADMIN');
+    expect(assignPlatformRoleToUser).toHaveBeenCalledWith('u2', RoleName.PlatformRolesAdmin);
   });
 
   test('removing a member (after confirm) revokes the selected role', async () => {
@@ -193,7 +213,7 @@ describe('CrdAdminGlobalRolesPage', () => {
     await userEvent.click(screen.getByRole('button', { name: 'roleMembers.remove' }));
     const dialog = screen.getByRole('alertdialog');
     await userEvent.click(within(dialog).getByRole('button', { name: 'roleMembers.remove' }));
-    expect(removePlatformRoleFromUser).toHaveBeenCalledWith('u1', 'PLATFORM_ROLES_ADMIN');
+    expect(removePlatformRoleFromUser).toHaveBeenCalledWith('u1', RoleName.PlatformRolesAdmin);
   });
 
   test('filtering current members narrows the list client-side without refetching', async () => {
@@ -215,7 +235,7 @@ describe('CrdAdminGlobalRolesPage', () => {
   describe('assigner-capability filter (FR-012)', () => {
     test('a holder of only FEATURE_ROLE_ASSIGN is offered exactly the 4 Feature roles', () => {
       mockMyPrivileges = [AuthorizationPrivilege.FeatureRoleAssign];
-      mockPathname = '/admin/authorization/roles/FEATURE_BETA_TESTER';
+      mockPathname = `/admin/authorization/roles/${RoleName.FeatureBetaTester}`;
       render(<CrdAdminGlobalRolesPage />);
       const nav = screen.getByRole('navigation');
       const buttons = within(nav).getAllByRole('button');
@@ -284,7 +304,7 @@ describe('CrdAdminGlobalRolesPage', () => {
   describe('holder read unavailable (sec-client-web-2)', () => {
     test('renders an explicit unavailable message instead of the misleading noMembers state', () => {
       mockHoldersUnavailable = true;
-      mockPathname = '/admin/authorization/roles/PLATFORM_AUDIT_READER';
+      mockPathname = `/admin/authorization/roles/${RoleName.PlatformAuditReader}`;
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.getByRole('alert')).toHaveTextContent('roleMembers.holdersUnavailable');
       expect(screen.queryByText('roleMembers.noMembers')).toBeNull();
@@ -292,7 +312,7 @@ describe('CrdAdminGlobalRolesPage', () => {
 
     test('renders the normal noMembers state when the read is not flagged unavailable', () => {
       mockHoldersUnavailable = false;
-      mockPathname = '/admin/authorization/roles/PLATFORM_AUDIT_READER';
+      mockPathname = `/admin/authorization/roles/${RoleName.PlatformAuditReader}`;
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.getByText('roleMembers.noMembers')).toBeInTheDocument();
       expect(screen.queryByText('roleMembers.holdersUnavailable')).toBeNull();
@@ -303,7 +323,7 @@ describe('CrdAdminGlobalRolesPage', () => {
   // 3 `Feature …` roles — never on a `Platform …` role.
   describe('organization holder kind (SC-009)', () => {
     test('shows the organization section for a Feature role', () => {
-      mockPathname = '/admin/authorization/roles/FEATURE_BETA_TESTER';
+      mockPathname = `/admin/authorization/roles/${RoleName.FeatureBetaTester}`;
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.getByText('roleMembers.organizations')).toBeInTheDocument();
       expect(screen.getByText('Acme Org')).toBeInTheDocument();
@@ -311,7 +331,7 @@ describe('CrdAdminGlobalRolesPage', () => {
     });
 
     test('hides the organization section for a Platform role', () => {
-      mockPathname = '/admin/authorization/roles/PLATFORM_ROLES_ADMIN';
+      mockPathname = `/admin/authorization/roles/${RoleName.PlatformRolesAdmin}`;
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.queryByText('roleMembers.organizations')).toBeNull();
     });
@@ -323,18 +343,18 @@ describe('CrdAdminGlobalRolesPage', () => {
   // that neither falls through to the user mutation.
   describe('organization holder kind — mutation wiring (qual-clientweb-3)', () => {
     test('adding an available organization calls assignPlatformRoleToOrganization, never the user mutation', async () => {
-      mockPathname = '/admin/authorization/roles/FEATURE_BETA_TESTER';
+      mockPathname = `/admin/authorization/roles/${RoleName.FeatureBetaTester}`;
       render(<CrdAdminGlobalRolesPage />);
       const addOrganizationsHeading = screen.getByText('roleMembers.addOrganizations');
       const addOrganizationsSection = addOrganizationsHeading.closest('section');
       if (!addOrganizationsSection) throw new Error('organization "add" section not found');
       await userEvent.click(within(addOrganizationsSection).getByRole('button', { name: 'roleMembers.add' }));
-      expect(assignPlatformRoleToOrganization).toHaveBeenCalledWith('o2', 'FEATURE_BETA_TESTER');
+      expect(assignPlatformRoleToOrganization).toHaveBeenCalledWith('o2', RoleName.FeatureBetaTester);
       expect(assignPlatformRoleToUser).not.toHaveBeenCalled();
     });
 
     test('removing an organization (after confirm) calls removePlatformRoleFromOrganization, never the user mutation', async () => {
-      mockPathname = '/admin/authorization/roles/FEATURE_BETA_TESTER';
+      mockPathname = `/admin/authorization/roles/${RoleName.FeatureBetaTester}`;
       render(<CrdAdminGlobalRolesPage />);
       // FEATURE_BETA_TESTER has no mocked user holders, so the sole "remove"
       // button rendered in this scenario belongs to the organization column.
@@ -344,7 +364,7 @@ describe('CrdAdminGlobalRolesPage', () => {
       // label (RoleMembersEditor.tsx:~254) — pinning it here also guards
       // that the confirm dialog's holder-kind discrimination stays wired.
       await userEvent.click(within(dialog).getByRole('button', { name: 'roleMembers.removeOrganization' }));
-      expect(removePlatformRoleFromOrganization).toHaveBeenCalledWith('o1', 'FEATURE_BETA_TESTER');
+      expect(removePlatformRoleFromOrganization).toHaveBeenCalledWith('o1', RoleName.FeatureBetaTester);
       expect(removePlatformRoleFromUser).not.toHaveBeenCalled();
     });
   });
@@ -480,7 +500,7 @@ describe('CrdAdminGlobalRolesPage', () => {
     });
 
     test('keeps rendering the selected role editor for a known role in the URL', () => {
-      mockPathname = '/admin/authorization/roles/PLATFORM_ROLES_ADMIN';
+      mockPathname = `/admin/authorization/roles/${RoleName.PlatformRolesAdmin}`;
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.queryByText('roles.notFound')).toBeNull();
       expect(screen.getByText('Alice (alice@x.io)')).toBeInTheDocument();
@@ -521,7 +541,7 @@ describe('CrdAdminGlobalRolesPage', () => {
 
     test('leaves both controls interactive for a FEATURE_ROLE_ASSIGN-only holder on a Feature role', () => {
       mockMyPrivileges = [AuthorizationPrivilege.FeatureRoleAssign];
-      mockPathname = '/admin/authorization/roles/FEATURE_BETA_TESTER';
+      mockPathname = `/admin/authorization/roles/${RoleName.FeatureBetaTester}`;
       render(<CrdAdminGlobalRolesPage />);
 
       // Both holder kinds render on a Feature role (SC-009): the user and the

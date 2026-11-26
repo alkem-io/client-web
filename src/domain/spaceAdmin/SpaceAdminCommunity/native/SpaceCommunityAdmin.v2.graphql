@@ -1,0 +1,120 @@
+# Space community admin (settings Community tab + invite dialog).
+# Rows: map/dispositions/community-roles-screens.tsv for /:spaceNameId/settings/* —
+# roster :187, role-bounds :185, roleset-privileges :186, invite-candidates :173,
+# invite-send :174, role-assign-remove :184, direct-add-vc :167.
+
+fragment SpaceCommunityActor on Actor {
+  id
+  actorType
+  url
+  about {
+    displayName
+    avatar { file { url } }
+  }
+  ... on User {
+    firstName
+    # READ_USER_PII: a space admin reads its members' email; null without the privilege (api-second-pass.md:301-302).
+    email
+  }
+}
+
+# roleset-privileges (:186): SpaceCan.invite / SpaceCan.manageMembers; role-bounds (:185): Query.rolePolicies.
+query SpaceCommunityAdmin($space: UUID!) {
+  node(id: $space) {
+    id
+    entityType
+    ... on Space {
+      can { invite manageMembers }
+    }
+  }
+  rolePolicies(resource: $space) {
+    role
+    actorType
+    minHolders
+    maxHolders
+    holders
+  }
+}
+
+# roster (:187): Member.actor + Member.roles. Member.id is the actor id (not per space), so the
+# Member is left unnormalized: its roles stay with this space's members list.
+query SpaceCommunityMembers($space: UUID!, $first: Int!, $after: String) {
+  members(resource: $space, first: $first, after: $after) {
+    edges {
+      node {
+        roles
+        actor { ...SpaceCommunityActor }
+      }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}
+
+# The space the invite dialog targets (wrapper-ids :190 — the space id itself is the target).
+query SpaceCommunityInviteTarget($space: UUID!) {
+  node(id: $space) {
+    id
+    entityType
+    ... on Space {
+      about { displayName }
+    }
+  }
+}
+
+# invite-candidates (:173): Query.candidates — DIRECT and INVITE keep separate server verdicts.
+query SpaceCommunityCandidates(
+  $space: UUID!
+  $role: String!
+  $entry: CandidateEntry!
+  $actorType: String
+  $terms: String
+  $first: Int!
+  $after: String
+) {
+  candidates(resource: $space, role: $role, entry: $entry, actorType: $actorType, terms: $terms, first: $first, after: $after) {
+    edges {
+      node {
+        id
+        actorType
+        url
+        about {
+          displayName
+          description
+          location
+          avatar { file { url } }
+        }
+        ... on Agent {
+          keywords
+        }
+      }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}
+
+# The add-VC picker's verdict (roleset-privileges :186 via invite-candidates :173). The server
+# admits the directory when the space's INVITE answer or an admitted DIRECT path exists, and
+# refuses it (FORBIDDEN) otherwise; account agency is never inferred in the client.
+query SpaceCommunityVirtualContributorPicker($space: UUID!) {
+  candidates(resource: $space, role: "member", entry: DIRECT, actorType: "virtual_contributor", first: 1) {
+    edges { node { id } }
+  }
+}
+
+# role-assign-remove (:184) and direct-add-vc (:167): one exact desired role set per actor.
+mutation SetSpaceCommunityRoles($space: UUID!, $actor: UUID!, $roles: [String!]!) {
+  setRoles(resource: $space, actor: $actor, roles: $roles) {
+    node { id }
+  }
+}
+
+# invite-send (:174): one outcome per submitted actor or email (C2.2 vocabulary + noOrganizationAdmin).
+mutation InviteToSpaceCommunity($space: UUID!, $input: InviteInput!) {
+  invite(resource: $space, input: $input) {
+    actor
+    email
+    outcome
+    noOrganizationAdmin
+    request { id }
+  }
+}

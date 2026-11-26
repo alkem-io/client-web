@@ -1,6 +1,6 @@
-import { usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { canUseAdminArea } from './adminSectionAccess';
+import { usePlatformAdminData } from './usePlatformAdminData';
 
 /**
  * The current viewer's admin-area standing.
@@ -18,14 +18,8 @@ import { canUseAdminArea } from './adminSectionAccess';
  * platform's own. Reading only the platform policy denies half the model.
  */
 export const useAdminAccessGuard = () => {
-  const { data, loading } = usePlatformLevelAuthorizationQuery();
-
-  const privileges = [
-    ...(data?.platform.authorization?.myPrivileges ?? []),
-    ...(data?.platform.roleSet.authorization?.myPrivileges ?? []),
-  ];
-
-  const isPlatformAdmin = canUseAdminArea({ privileges, roles: data?.platform.roleSet.myRoles });
+  const { privileges, roles, loading } = usePlatformAdminData();
+  const isPlatformAdmin = canUseAdminArea({ privileges, roles });
 
   /**
    * May the viewer change another user's login email?

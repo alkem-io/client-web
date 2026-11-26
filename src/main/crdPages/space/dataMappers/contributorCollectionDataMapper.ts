@@ -1,5 +1,6 @@
 import { format, type Locale, parseISO } from 'date-fns';
-import type { ContributorCollectionByTypeQuery } from '@/core/apollo/generated/graphql-schema';
+import type { ActorType, ContributorCollectionByTypeQuery } from '@/core/apollo/generated/graphql-schema';
+import type { ContributorCardFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import type { ContributorCardData } from '@/crd/components/callout/ContributorCollection/ContributorCard';
 import { contributorTypeFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 
@@ -65,6 +66,29 @@ export function mapContributorItemToCard(item: ContributorItem): ContributorCard
     // a plain, serialisable value for `formatJoinedMonth` and the
     // cache-identity checks.
     joinedDate: (item.joinedDate as unknown as string | undefined) ?? undefined,
+  };
+}
+
+type NativeLocation = { city?: string; country?: string; latitude?: number; longitude?: number } | null | undefined;
+
+/** 021 F081-F099: a contributor of the post's ContributorsContent; role label and joined date wait for S09. */
+export function mapActorToContributorCard(actor: ContributorCardFragment): ContributorCardModel {
+  const location = actor.about?.location as NativeLocation;
+  const hasValidCoordinates = typeof location?.latitude === 'number' && typeof location?.longitude === 'number';
+  return {
+    id: actor.id,
+    type: contributorTypeFromServer(actor.actorType.toUpperCase() as ActorType),
+    name: actor.about?.displayName ?? '',
+    avatarUrl: actor.about?.avatar?.file.url,
+    href: actor.url ?? undefined,
+    locationLabel: [location?.city, location?.country].filter(Boolean).join(', ') || undefined,
+    latitude: hasValidCoordinates ? location?.latitude : undefined,
+    longitude: hasValidCoordinates ? location?.longitude : undefined,
+    hasValidCoordinates,
+    tagline: actor.about?.tagline ?? undefined,
+    tags: 'tags' in actor ? actor.tags : 'skills' in actor ? actor.skills : [],
+    associatesCount: 'associateCount' in actor ? (actor.associateCount ?? undefined) : undefined,
+    websiteUrl: 'website' in actor ? (actor.website ?? undefined) : undefined,
   };
 }
 

@@ -111,6 +111,13 @@ export interface StorageConfigProvided {
   storageConfig: StorageConfig | undefined;
 }
 
+/**
+ * A space's storage bucket config is not served: the native server refuses the legacy SpaceStorageConfig read (422)
+ * and no v2 read carries it (uploads take their limits from requestUpload). A space's config is therefore not asked,
+ * and its uploads end in the central "not available yet" notice (spaces 2026-11-26).
+ */
+const SPACE_STORAGE_CONFIG_SERVED = false;
+
 const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptions): StorageConfigProvided => {
   const spaceOptions = options as UseStorageConfigOptionsSpace;
   const { data: spaceStorageConfigData } = useSpaceStorageConfigQuery({
@@ -121,7 +128,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
       // for anonymous visitors / non-members on private spaces.
       includeSpaceProfile: locationType === 'space' && Boolean(spaceOptions.temporaryLocation),
     },
-    skip: skip || locationType !== 'space' || !spaceOptions.spaceId,
+    skip: skip || !SPACE_STORAGE_CONFIG_SERVED || locationType !== 'space' || !spaceOptions.spaceId,
   });
 
   const calloutOptions = options as UseStorageConfigOptionsCallout;

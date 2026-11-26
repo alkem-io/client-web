@@ -11,6 +11,7 @@ import {
   Share2,
   Shield,
   Trash2,
+  UserCheck,
   UserPlus,
   Video,
   Zap,
@@ -24,7 +25,7 @@ import { RadioGroup, RadioGroupItem } from '@/crd/primitives/radio-group';
 import { Separator } from '@/crd/primitives/separator';
 import { Switch } from '@/crd/primitives/switch';
 
-export type SpacePrivacy = 'public' | 'private';
+export type SpacePrivacy = 'public' | 'registered' | 'private';
 export type MembershipPolicy = 'open' | 'application' | 'invitation';
 /** Space-level user-information visibility (feature 008). */
 export type UserInfoVisibility = 'followSpace' | 'membersOnly';
@@ -85,7 +86,8 @@ export type SpaceSettingsSettingsViewProps = {
    *   (a sub-subspace cannot have child subspaces).
    */
   level: 'L0' | 'L1' | 'L2';
-  privacy: SpacePrivacy;
+  /** No option is selected when undefined. */
+  privacy: SpacePrivacy | undefined;
   /** User-information visibility (feature 008). Admin-gated; enforcement is server-side. */
   userInfoVisibility: UserInfoVisibility;
   onUserInfoVisibilityChange: (next: UserInfoVisibility) => void;
@@ -188,7 +190,7 @@ export function SpaceSettingsSettingsView({
     <div className={cn('flex flex-col gap-4', className)}>
       <SettingsSection title={t('settings.visibility.title')} icon={<Eye className="size-4" />} iconColor="blue">
         <RadioGroup
-          value={privacy}
+          value={privacy ?? ''}
           onValueChange={v => onPrivacyChange(v as SpacePrivacy)}
           className="space-y-4"
           disabled={disabled}
@@ -207,6 +209,22 @@ export function SpaceSettingsSettingsView({
                 {t('settings.visibility.public')}
               </span>
               <p className="text-body text-muted-foreground">{t('settings.visibility.publicDescription')}</p>
+            </div>
+          </label>
+          <label
+            htmlFor="visibility-registered"
+            className={cn(
+              'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
+              disabled ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+            )}
+          >
+            <RadioGroupItem value="registered" id="visibility-registered" className="mt-1" />
+            <div className="space-y-1">
+              <span className="text-card-title flex items-center gap-2">
+                <UserCheck className="size-4 text-primary" />
+                {t('settings.visibility.registered')}
+              </span>
+              <p className="text-body text-muted-foreground">{t('settings.visibility.registeredDescription')}</p>
             </div>
           </label>
           <label

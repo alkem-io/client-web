@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useMyResourcesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useV2DashboardHostedResourcesQuery } from '@/core/apollo/generated-v2/apollo-hooks';
 import type { SidebarMenuItemData, SidebarResourceSection } from '@/crd/components/dashboard/DashboardSidebar';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -32,10 +32,12 @@ export function useDashboardSidebar({
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { link: createSpaceLink } = useCreateSpaceLink();
 
-  const { data: accountData, loading: loadingResources } = useMyResourcesQuery({
-    variables: { accountId: accountId ?? '' },
-    skip: !accountId,
-  });
+  const {
+    data: accountData,
+    loading: loadingResources,
+    error: resourcesError,
+  } = useV2DashboardHostedResourcesQuery({ skip: !accountId });
+  if (resourcesError) throw resourcesError;
 
   const menuItems: SidebarMenuItemData[] = [
     {
@@ -85,15 +87,7 @@ export function useDashboardSidebar({
     },
   ];
 
-  const account = accountData?.lookup.account;
-  const resources = account
-    ? mapResourcesToSidebarItems({
-        spaces: account.spaces ?? [],
-        virtualContributors: account.virtualContributors ?? [],
-        innovationHubs: account.innovationHubs ?? [],
-        innovationPacks: account.innovationPacks ?? [],
-      })
-    : { spaces: [], virtualContributors: [], innovationHubs: [], innovationPacks: [] };
+  const resources = mapResourcesToSidebarItems(accountData?.viewer.account?.hosted);
 
   const resourceSections: SidebarResourceSection[] = [
     { title: t('sidebar.mySpaces'), items: resources.spaces, square: true },

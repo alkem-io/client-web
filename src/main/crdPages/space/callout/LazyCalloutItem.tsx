@@ -1,24 +1,28 @@
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { useFragment } from '@apollo/client';
+import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CalloutContributionType,
   CalloutFramingType,
 } from '@/core/apollo/generated/graphql-schema';
+import { PostCardFragmentDoc } from '@/core/apollo/generated-v2/apollo-hooks';
+import type { PostCardFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoard';
 import { PostCard } from '@/crd/components/space/PostCard';
 import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
-import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/canRenameCollaboraDocument';
-import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import { usePostResponses } from '@/domain/space/hooks/useSpacePage';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
-import { getCalloutContributionType, mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
+import {
+  getCalloutContributionType,
+  mapCalloutDetailsToPostCard,
+  mapPostToCallout,
+} from '../dataMappers/calloutDataMapper';
 import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
-import { useFlowStateLayout } from '../hooks/useFlowStateLayout';
 import { useMediaGalleryDirectUpload } from '../hooks/useMediaGalleryDirectUpload';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
@@ -62,39 +66,39 @@ export function LazyCalloutItem({
   onClick,
   onExpandClick,
 }: LazyCalloutItemProps) {
-  // `withClassification: true` is required — the per-phase layout resolution reads
-  // `callout.classification.flowState.tags[0]` (the phase display name) to look up the
-  // state's descriptionDisplayMode / showPublishDetails. Without it the classification
-  // is omitted, `flowStateTagValue` is undefined, and every callout silently falls back
-  // to the layout DEFAULTS (expanded, publish details shown) regardless of admin settings.
-  const { ref, inView, callout, loading } = useCalloutInView({
-    calloutId,
-    calloutsSetId,
-    withClassification: true,
+  // 021 FR-008: the card renders from the PostCard the page's feed request put in the cache; no request of its own.
+  const { data, complete } = useFragment<PostCardFragment>({
+    fragment: PostCardFragmentDoc,
+    fragmentName: 'PostCard',
+    from: { __typename: 'Post', id: calloutId },
   });
+  if (!complete) {
+    return (
+      <div id={calloutId}>
+        <PostCardSkeleton />
+      </div>
+    );
+  }
+  const post = data as PostCardFragment;
 
   return (
-    <div ref={ref} id={calloutId}>
-      {inView && !loading && callout ? (
-        /* Own Suspense boundary: the card subtree pulls in lazily-loaded i18n namespaces
-           (crd-reactions, crd-taskBoard) and chunks. Without a boundary here the first
-           card to mount suspends up to the tab-level boundary, which swaps the ENTIRE
-           feed for a spinner for a frame — the biggest single layout jump on the page
-           (issue #10043). The fallback is the same skeleton, so nothing moves. */
-        <Suspense fallback={<PostCardSkeleton />}>
-          <LazyCalloutItemContent
-            callout={callout}
-            calloutsSetId={calloutsSetId}
-            orderedCalloutIds={orderedCalloutIds}
-            canReorder={canReorder}
-            forceDescriptionCollapsed={forceDescriptionCollapsed}
-            onClick={onClick}
-            onExpandClick={onExpandClick}
-          />
-        </Suspense>
-      ) : (
-        <PostCardSkeleton />
-      )}
+    <div id={calloutId}>
+      {/* Own Suspense boundary: the card subtree pulls in lazily-loaded i18n namespaces
+          (crd-reactions, crd-taskBoard) and chunks. Without a boundary here the first
+          card to mount suspends up to the tab-level boundary, which swaps the ENTIRE
+          feed for a spinner for a frame — the biggest single layout jump on the page
+          (issue #10043). The fallback is the same skeleton, so nothing moves. */}
+      <Suspense fallback={<PostCardSkeleton />}>
+        <LazyCalloutItemContent
+          post={post}
+          calloutsSetId={calloutsSetId}
+          orderedCalloutIds={orderedCalloutIds}
+          canReorder={canReorder}
+          forceDescriptionCollapsed={forceDescriptionCollapsed}
+          onClick={onClick}
+          onExpandClick={onExpandClick}
+        />
+      </Suspense>
     </div>
   );
 }
@@ -104,7 +108,7 @@ export function LazyCalloutItem({
  * Separated so hooks can be called unconditionally.
  */
 function LazyCalloutItemContent({
-  callout,
+  post,
   calloutsSetId,
   orderedCalloutIds,
   canReorder,
@@ -112,7 +116,7 @@ function LazyCalloutItemContent({
   onClick,
   onExpandClick,
 }: {
-  callout: CalloutDetailsModelExtended;
+  post: PostCardFragment;
   calloutsSetId: string | undefined;
   orderedCalloutIds: string[];
   canReorder: boolean;
@@ -121,10 +125,11 @@ function LazyCalloutItemContent({
   onExpandClick?: () => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  // A Tasks board opens to the board dialog (like a whiteboard/memo), not the
-  // post-detail dialog. `isBoard` is confirmed asynchronously by the board
-  // connector's query; until then a click falls back to the normal dialog.
-  const [isBoard, setIsBoard] = useState(false);
+  // A Tasks board (content kind task_board, H19) opens to the board dialog, not the post-detail dialog.
+  const isBoard = post.contentKind === 'task_board' && isTaskBoardEnabled();
+  // The card's response preview: the post's first 4 responses, its child posts in the page's space tree (no request).
+  const preview = (usePostResponses(calloutsSetId, post.id).responses ?? []).slice(0, 4);
+  const callout = mapPostToCallout(post, preview, calloutsSetId);
   const [boardDialogOpen, setBoardDialogOpen] = useState(false);
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
@@ -137,23 +142,14 @@ function LazyCalloutItemContent({
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
   const [signedCopiesMemoId, setSignedCopiesMemoId] = useState<string>();
   const [framingWhiteboardOpen, setFramingWhiteboardOpen] = useState(false);
-  const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
-  const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { t } = useTranslation('crd-space');
-  // Resolve per-phase layout from the FLOW_STATE classification tag.
-  // `flowState.tags[0]` is the phase display name the callout is tagged under.
-  // `useFlowStateLayout` reads from the cached SpaceTabsQuery (zero extra round-trips)
-  // and falls back to defaults (Expanded, publish details shown) on any miss.
-  const flowStateTagValue = callout.classification?.flowState?.tags[0];
-  const { descriptionCollapsed, showPublishDetails } = useFlowStateLayout(flowStateTagValue);
 
+  // The per-phase display mode and publish-details setting are Stage.settings, not served yet (021 S01):
+  // every card takes the layout defaults (expanded, publish details shown), as legacy does for a miss.
   const postData = {
     ...mapCalloutDetailsToPostCard(callout, t),
-    // Scoped search forces compact ("Read more") AND ignores the per-phase settings entirely
-    // (FR-016: per-phase layout does not override the forced-compact surface) — so publish
-    // details fall back to the default (shown), not the phase's showPublishDetails value.
-    descriptionExpanded: forceDescriptionCollapsed ? false : !descriptionCollapsed,
-    showPublishDetails: forceDescriptionCollapsed ? true : showPublishDetails,
+    descriptionExpanded: !forceDescriptionCollapsed,
+    showPublishDetails: true,
   };
 
   // The hook must run unconditionally (rules of hooks), but the move menu items
@@ -215,32 +211,7 @@ function LazyCalloutItemContent({
     }
   };
 
-  // Mirror CalloutDetailDialogConnector.handleFramingMemoClose: refresh the
-  // framing memo's markdown after the collab room has had a chance to persist
-  // its snapshot (~2.5s), so the feed preview reflects the latest content.
-  const handleFramingMemoClose = () => {
-    const fmId = callout.framing.memo?.id;
-    if (framingRefreshRef.current) {
-      clearTimeout(framingRefreshRef.current);
-      framingRefreshRef.current = null;
-    }
-    if (fmId) {
-      framingRefreshRef.current = setTimeout(() => {
-        void fetchFramingMarkdown({ variables: { id: fmId } });
-        framingRefreshRef.current = null;
-      }, 2500);
-    }
-    setFramingMemoOpen(false);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (framingRefreshRef.current) {
-        clearTimeout(framingRefreshRef.current);
-        framingRefreshRef.current = null;
-      }
-    };
-  }, []);
+  const handleFramingMemoClose = () => setFramingMemoOpen(false);
 
   const framingMemoId = callout.framing.memo?.id;
   const framingWhiteboard = callout.framing.whiteboard;
@@ -291,19 +262,11 @@ function LazyCalloutItemContent({
       />
     );
 
-  // POSTS-only callouts may be Tasks boards. Gate the (extra) board query on the
-  // cheap, already-loaded signals — POSTS-only contribution config and the build
-  // kill switch — so non-board callouts never fetch it. The connector confirms
-  // the board marker from its own query and falls back to the plain preview when
-  // absent, keeping every non-board callout byte-identical.
-  const allowedContributionTypes = callout.settings.contribution.allowedTypes;
-  const isPostsOnly =
-    allowedContributionTypes.length === 1 && allowedContributionTypes[0] === CalloutContributionType.Post;
-  const maybeTaskBoard = isPostsOnly && isTaskBoardEnabled();
-
   const plainContributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
       callout={callout}
+      responses={preview}
+      total={post.responseCount}
       onShowAll={() => openDialog()}
       onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
       onOpenMemoSignedCopies={setSignedCopiesMemoId}
@@ -311,10 +274,9 @@ function LazyCalloutItemContent({
     />
   ) : undefined;
 
-  const contributionsPreview = maybeTaskBoard ? (
+  const contributionsPreview = isBoard ? (
     <TaskBoardConnector
       calloutId={callout.id}
-      onBoardResolved={setIsBoard}
       fallback={plainContributionsPreview}
       onOpenTask={contributionId => {
         // Clicking a task in the inline preview presents it on top of the board

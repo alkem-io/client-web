@@ -1,5 +1,5 @@
 import { createContext, type ReactNode, useContext, useState } from 'react';
-import { useGuidanceVcId } from '@/main/guidance/chatWidget/useGuidanceVcId';
+import { useNativeGuidancePointerQuery } from '@/core/apollo/generated-v2/apollo-hooks';
 import { ConversationDraftsProvider } from '@/main/userMessaging/ConversationDraftsContext';
 import { UserMessagingProvider, useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
@@ -26,7 +26,8 @@ const UnifiedChatContext = createContext<UnifiedChatContextProps>({
 
 const UnifiedChatGuidanceProvider = ({ children }: { children: ReactNode }) => {
   const { isEnabled, isOpen } = useUserMessagingContext();
-  const { guidanceVcId } = useGuidanceVcId({ skip: !isEnabled || !isOpen });
+  const { data } = useNativeGuidancePointerQuery({ skip: !isEnabled || !isOpen });
+  const guidanceVcId = data?.config.pointers?.guidanceVirtualContributor ?? null;
   const [guidanceConversationId, setGuidanceConversationId] = useState<string | null>(null);
 
   // Detection is based on the platform-level well-known guidance VC id (null when

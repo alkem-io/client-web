@@ -1,4 +1,5 @@
 import type { SpaceAboutDetailsQuery } from '@/core/apollo/generated/graphql-schema';
+import type { SpaceSettingsAboutQuery } from '@/core/apollo/generated-v2/graphql-schema';
 import type { ClassificationEntryData } from '@/crd/components/classification/types';
 import type {
   AboutFormValues,
@@ -12,10 +13,28 @@ import { mapGqlClassificationCardinality } from '@/domain/space/about/model/clas
 
 export type { AboutFormValues, AboutReference, AboutVisual, SpaceCardPreview };
 
-/** The subset of the SpaceAboutDetailsQuery the mapper consumes. */
-export type AboutSpace = NonNullable<SpaceAboutDetailsQuery['lookup']['space']>;
+/** The native Space face the About tab reads (SpaceSettingsAbout.v2.graphql). */
+export type AboutSpace = Extract<NonNullable<SpaceSettingsAboutQuery['node']>, { __typename?: 'Space' }>;
+type AboutVisualRef = AboutSpace['about']['avatar'];
 
-/** Empty visual used when the backend returns no avatar / banner / cardBanner. */
+/** The About facet carrying why/who: the core.purpose section (H-about-meta-8; schema.sql core.purpose). */
+export const PURPOSE_FACET = { namespace: 'core', name: 'purpose' } as const;
+
+type Purpose = { why?: string | null; who?: string | null };
+type Location = { country?: string | null; city?: string | null };
+
+/**
+ * The classification instance settings the tab reads (schema.sql choice_set.settings for classification:
+ * display_label, selection one|many, max; H-about-meta-1 adds visible (default true) and order).
+ */
+export type ClassificationSettings = {
+  selection?: string;
+  visible?: boolean;
+  order?: number;
+  [key: string]: unknown;
+};
+
+/** Empty visual used when the space has no image in a slot yet. */
 const EMPTY_VISUAL: AboutVisual = { id: '', uri: null, altText: null };
 
 /** Generate 2-character fallback initials from a name. */
@@ -29,56 +48,78 @@ export function computeInitials(name: string): string {
   return trimmed.slice(0, 2).toUpperCase();
 }
 
+export function mapVisual(ref: AboutVisualRef | null | undefined, withRatio = false): AboutVisual {
+  if (!ref) return EMPTY_VISUAL;
+  return {
+    id: ref.file.id,
+    uri: ref.file.url,
+    altText: ref.alt ?? null,
+    ...(withRatio ? { aspectRatio: ref.aspectRatio ?? undefined } : {}),
+  };
+}
+
+export function readPurpose(space: AboutSpace): Purpose {
+  const facet = space.about.facets.find(f => f.namespace === PURPOSE_FACET.namespace && f.name === PURPOSE_FACET.name);
+  return (facet?.value ?? {}) as Purpose;
+}
+
 export function mapSpaceToAboutFormValues(space: AboutSpace): AboutFormValues {
-  const profile = space.about.profile;
-  const tagset = profile.tagset;
+  const about = space.about;
+  const location = (about.location ?? {}) as Location;
+  const purpose = readPurpose(space);
 
   return {
-    name: profile.displayName ?? '',
-    tagline: profile.tagline ?? '',
-    country: profile.location?.country ?? '',
-    city: profile.location?.city ?? '',
-    avatar: profile.avatar
-      ? { id: profile.avatar.id, uri: profile.avatar.uri ?? null, altText: profile.avatar.alternativeText ?? null }
-      : EMPTY_VISUAL,
-    pageBanner: profile.banner
-      ? {
-          id: profile.banner.id,
-          uri: profile.banner.uri ?? null,
-          altText: profile.banner.alternativeText ?? null,
-          aspectRatio: profile.banner.aspectRatio ?? undefined,
-        }
-      : EMPTY_VISUAL,
-    cardBanner: profile.cardBanner
-      ? {
-          id: profile.cardBanner.id,
-          uri: profile.cardBanner.uri ?? null,
-          altText: profile.cardBanner.alternativeText ?? null,
-        }
-      : EMPTY_VISUAL,
-    tagsetId: tagset?.id ?? '',
-    tags: tagset?.tags ?? [],
-    profileId: profile.id,
-    references:
-      profile.references?.map(reference => ({
-        id: reference.id,
-        title: reference.name ?? '',
-        uri: reference.uri ?? '',
-        description: reference.description ?? '',
-      })) ?? [],
-    what: profile.description ?? '',
-    why: space.about.why ?? '',
-    who: space.about.who ?? '',
+    name: about.displayName ?? '',
+    tagline: about.tagline ?? '',
+    country: location.country ?? '',
+    city: location.city ?? '',
+    avatar: mapVisual(about.avatar),
+    pageBanner: mapVisual(about.banner, true),
+    cardBanner: mapVisual(about.card),
+    // Tags are Space.tags and links are owned by the space itself: no tagset or profile wrapper ids.
+    tagsetId: '',
+    tags: space.tags,
+    profileId: space.id,
+    references: [...(space.links ?? [])]
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map(link => ({
+        id: link.id,
+        title: link.title ?? '',
+        uri: link.uri,
+        description: link.description ?? '',
+      })),
+    what: about.description ?? '',
+    why: purpose.why ?? '',
+    who: purpose.who ?? '',
   };
 }
 
 /**
- * `about.classifications` (the `ClassificationEntryFull` fragment) → the CRD
- * plain-TS shape. The read path is `about.classifications[].values[]` (D1) —
- * there is no container hop, and the array is `[]` (never null) when the
- * Space carries none.
+ * `Space.classifications` → the CRD plain-TS shape. The vocabulary keeps its served (authored) order; cardinality,
+ * the shown/hidden flag and the entry order are the instance settings `selection`, `visible` and `order`.
  */
-export function mapClassificationEntries(space: AboutSpace): ClassificationEntryData[] {
+export function mapNativeClassificationEntries(space: AboutSpace): ClassificationEntryData[] {
+  return (space.classifications ?? []).map((entry, index) => {
+    const settings = (entry.settings ?? {}) as ClassificationSettings;
+    return {
+      id: entry.id,
+      displayLabel: entry.label,
+      cardinality: settings.selection === 'one' ? 'SINGLE_SELECT' : 'MULTI_SELECT',
+      values: entry.values.map(v => ({ id: v.id, label: v.value })),
+      selectedValueIDs: entry.selected.map(v => v.id),
+      display: settings.visible ?? true,
+      sortOrder: settings.order ?? index,
+    };
+  });
+}
+
+/**
+ * The legacy `about.classifications` read of the Space and Subspace About pages (CrdSpaceAbout, CrdSubspaceAbout),
+ * which still read SpaceAboutDetails; the settings tab reads `mapNativeClassificationEntries`.
+ */
+export function mapClassificationEntries(
+  space: NonNullable<SpaceAboutDetailsQuery['lookup']['space']>
+): ClassificationEntryData[] {
   return (space.about.classifications ?? []).map(entry => ({
     id: entry.id,
     displayLabel: entry.displayLabel,

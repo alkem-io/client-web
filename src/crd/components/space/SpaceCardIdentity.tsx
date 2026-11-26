@@ -94,19 +94,29 @@ export function SpaceCardIdentity({ space, onParentClick, nameSlot, bannerClassN
               <span className="sr-only">{t('crd-common:pinned')}</span>
             </span>
           )}
-          <div
-            className={cn(
-              'flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm text-badge',
-              space.isPrivate ? 'bg-foreground/50 text-primary-foreground' : 'bg-background/85 text-foreground'
-            )}
-          >
-            {space.isPrivate ? (
-              <Lock aria-hidden="true" className="size-2.5" />
-            ) : (
-              <Globe aria-hidden="true" className="size-2.5" />
-            )}
-            <span>{space.isPrivate ? t('crd-common:private') : t('crd-common:public')}</span>
-          </div>
+          {(space.isLocked || typeof space.isPrivate === 'boolean') && (
+            <div
+              className={cn(
+                'flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-sm text-badge',
+                space.isLocked || space.isPrivate
+                  ? 'bg-foreground/50 text-primary-foreground'
+                  : 'bg-background/85 text-foreground'
+              )}
+            >
+              {space.isLocked || space.isPrivate ? (
+                <Lock aria-hidden="true" className="size-2.5" />
+              ) : (
+                <Globe aria-hidden="true" className="size-2.5" />
+              )}
+              <span>
+                {space.isLocked
+                  ? t('spaces.locked')
+                  : space.isPrivate
+                    ? t('crd-common:private')
+                    : t('crd-common:public')}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Space avatar — overlaps banner and card body. L0 cards (hideAvatar=true) suppress

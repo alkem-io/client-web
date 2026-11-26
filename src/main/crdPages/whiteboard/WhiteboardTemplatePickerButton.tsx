@@ -1,11 +1,11 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import { Skeleton } from '@/crd/primitives/skeleton';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
+import { servedSpaceTemplatesSetId, useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 
 type WhiteboardTemplatePickerButtonProps = {
   disabled?: boolean;
@@ -22,14 +22,15 @@ type WhiteboardTemplatePickerButtonProps = {
  */
 export function WhiteboardTemplatePickerButton({ disabled, onImport }: WhiteboardTemplatePickerButtonProps) {
   const { t } = useTranslation();
+  const { t: tSpace } = useTranslation('crd-space');
   const {
     space: { accountId, levelZeroSpaceId },
   } = useSpace();
-  const { data: tmData } = useSpaceTemplatesManagerQuery({
-    variables: { spaceId: levelZeroSpaceId ?? '' },
-    skip: !levelZeroSpaceId,
-  });
-  const spaceTemplatesSetId = tmData?.lookup.space?.templatesManager?.templatesSet?.id;
+  // In a space, its templates are not served yet (servedSpaceTemplatesSetId): the picker says so in place, sending
+  // nothing. Outside a space the picker offers its other sources, as legacy.
+  const spaceTemplatesSetId = servedSpaceTemplatesSetId(levelZeroSpaceId);
+  const pickerAvailable = !levelZeroSpaceId || Boolean(spaceTemplatesSetId);
+  const [unavailableOpen, setUnavailableOpen] = useState(false);
   const picker = useTemplatePicker({ allowedTypes: ['whiteboard'], accountId, spaceTemplatesSetId });
   const [importing, setImporting] = useState(false);
   const consumedSelection = useRef<typeof picker.selectedTemplateContent>(null);
@@ -62,10 +63,26 @@ export function WhiteboardTemplatePickerButton({ disabled, onImport }: Whiteboar
     // Excalidraw's componentWillUnmount resets its scene, so the collaboratively
     // loaded elements are lost on remount. Keeping the suspension local protects the canvas.
     <Suspense fallback={<Skeleton role="status" aria-label={t('common.loading')} className="h-8 w-28" />}>
-      <Button variant="outline" size="sm" disabled={disabled || importing} onClick={picker.openPicker}>
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={disabled || importing}
+        onClick={pickerAvailable ? picker.openPicker : () => setUnavailableOpen(true)}
+      >
         {t('buttons.find-template')}
       </Button>
-      <TemplatePicker {...picker.pickerProps} />
+      {pickerAvailable ? (
+        <TemplatePicker {...picker.pickerProps} />
+      ) : (
+        <Dialog open={unavailableOpen} onOpenChange={setUnavailableOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t('buttons.find-template')}</DialogTitle>
+            </DialogHeader>
+            <p className="text-body text-muted-foreground py-6 text-center">{tSpace('tabs.unavailable')}</p>
+          </DialogContent>
+        </Dialog>
+      )}
     </Suspense>
   );
 }

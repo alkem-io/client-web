@@ -1,0 +1,246 @@
+fragment V2DashboardSpaceCard on Space {
+  id
+  url
+  depth
+  isContentPublic
+  about {
+    displayName
+    tagline
+    avatar {
+      ...V2FileRef
+    }
+    card {
+      ...V2FileRef
+    }
+  }
+}
+
+query V2DashboardMembershipProbe {
+  spaces(filter: {membership: true}, first: 1) {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}
+
+# screens-dispositions.tsv:19303 (L011 Viewer.recentSpaces) and :19297 (home space card = Viewer.homeSpace).
+query V2DashboardRecentSpaces($first: Int!) {
+  viewer {
+    id
+    recentSpaces(first: $first) {
+      lastParticipatedAt
+      space {
+        ...V2DashboardSpaceCard
+      }
+    }
+    homeSpace {
+      ...V2DashboardSpaceCard
+    }
+  }
+}
+
+# screens-dispositions.tsv:19298 / :11961 (flat User.memberships) and :5216 (Space.activityScore for lead/admin).
+query V2DashboardMemberships {
+  viewer {
+    id
+    actor {
+      id
+      ... on User {
+        memberships {
+          roles
+          space {
+            ...V2DashboardSpaceCard
+            activityScore
+            parent {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# screens-dispositions.tsv:19293 / :5214; ranking predicate per H-activity-8 (applied-A10-D3.tsv:35, A10.17).
+query V2DashboardMostActiveSpaces($days: Int!, $first: Int!) {
+  spaces(filter: {mostActiveDays: $days, depths: [0, 1], status: [ACTIVE]}, first: $first) {
+    edges {
+      node {
+        ...V2DashboardSpaceCard
+      }
+    }
+  }
+}
+
+# screens-dispositions.tsv:4917 (sidebar resources) and :4923 / :19302 (host section with activityScore).
+# The VC campaign block (screens-dispositions.tsv:16196) reads CanCreate.byEntitlement of the same account; the
+# selection is the superset of the foundation's canCreate so both documents read one cached list.
+query V2DashboardHostedResources {
+  viewer {
+    id
+    account {
+      id
+      canCreate {
+        kind
+        allowed
+        reason
+        byEntitlement {
+          name
+          allowed
+        }
+      }
+      hosted {
+        spaces {
+          ...V2DashboardSpaceCard
+          activityScore
+        }
+        agents {
+          id
+          url
+          about {
+            displayName
+            avatar {
+              ...V2FileRef
+            }
+          }
+        }
+        packs {
+          id
+          url
+          about {
+            displayName
+            avatar {
+              ...V2FileRef
+            }
+          }
+        }
+        homepages {
+          id
+          url
+          about {
+            displayName
+            avatar {
+              ...V2FileRef
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# screens-dispositions.tsv:5208 (feed filter options: the viewer's member spaces, flat).
+query V2DashboardFeedSpaces {
+  spaces(filter: {membership: true}) {
+    edges {
+      node {
+        id
+        about {
+          displayName
+        }
+      }
+    }
+  }
+}
+
+# screens-dispositions.tsv:5206 (space activity, mine false) and :5207 (my activity, mine true); L015/L176.
+query V2DashboardActivity(
+  $space: UUID
+  $mine: Boolean!
+  $roles: [String!]
+  $excludeTypes: [String!]
+  $first: Int!
+  $after: String
+) {
+  activity(space: $space, mine: $mine, roles: $roles, excludeTypes: $excludeTypes, first: $first, after: $after) {
+    edges {
+      cursor
+      node {
+        id
+        type
+        createdAt
+        actor {
+          id
+          about {
+            displayName
+            avatar {
+              ...V2FileRef
+            }
+          }
+        }
+        space {
+          id
+          url
+          about {
+            displayName
+          }
+        }
+        subject {
+          id
+          entityType
+          ... on Post {
+            url
+            about {
+              displayName
+            }
+            parentPost {
+              id
+              url
+              about {
+                displayName
+              }
+            }
+          }
+          ... on Document {
+            url
+            documentAbout: about {
+              displayName
+            }
+          }
+          ... on Space {
+            url
+            about {
+              displayName
+            }
+          }
+          ... on Actor {
+            url
+            actorAbout: about {
+              displayName
+            }
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# screens-dispositions.tsv:5213 / :21715 (L009): persist dashboard.activity_view; the returned actor settings refresh the
+# foundation viewer's actor in the cache.
+mutation V2DashboardSaveUserSettings($id: UUID!, $value: JSON!) {
+  setSettings(id: $id, namespace: "core", name: "user_settings", value: $value) {
+    id
+    settings
+  }
+}
+
+# screens-dispositions.tsv:19295 (L016): the welcome space is the entity with handle `welcome-space`, read by resolve(url).
+query V2DashboardWelcomeSpace($url: String!) {
+  resolve(url: $url) {
+    state
+    remainder
+    node {
+      id
+      entityType
+      ... on Space {
+        ...V2DashboardSpaceCard
+      }
+    }
+  }
+}

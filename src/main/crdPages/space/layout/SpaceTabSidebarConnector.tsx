@@ -165,7 +165,9 @@ export function SpaceTabSidebarConnector({
 
   const { leads: sidebarLeads, loading: leadsLoading } = useCrdSpaceLeads(space.id, skips.intent);
 
-  const { dashboardNavigation, navigationLoading } = useCrdSpaceDashboard({ skip: skips.subspaceLinks });
+  const { dashboardNavigation, navigationLoading, navigationUnavailable } = useCrdSpaceDashboard({
+    skip: skips.subspaceLinks,
+  });
   // Only an L0 reliably has children (L2s can't; L1s mostly don't), so only there is the
   // placeholder more likely to be replaced by the list than to vanish.
   const subspacesLoading = navigationLoading && space.level === SpaceLevel.L0 && hasWidgetsBelow('subspaceLinks');
@@ -205,6 +207,7 @@ export function SpaceTabSidebarConnector({
   const {
     leadUsers,
     virtualContributors,
+    virtualContributorsUnavailable,
     hasVcEntitlement,
     canInvite,
     communityId,
@@ -261,11 +264,13 @@ export function SpaceTabSidebarConnector({
     ),
     // Also rendered (as a placeholder) while the navigation query is in flight, so the
     // widgets below don't get pushed down when the list lands (issue #10043).
-    subspaceLinks: (subspaces.length > 0 || subspacesLoading) && (
+    subspaceLinks: (subspaces.length > 0 || subspacesLoading || navigationUnavailable) && (
       <SubspacesSection
         key="subspaceLinks"
         subspaces={subspaces}
         loading={subspacesLoading}
+        // The space tree is not served yet: the links say so in place.
+        unavailableMessage={navigationUnavailable ? t('tabs.unavailable') : undefined}
         // A dialog instead of a link to the Subspaces tab: the Subspaces callout
         // can be moved to any tab, so a hardcoded tab redirect may land the user
         // on a page without it (alkem-io/alkemio#2023).
@@ -289,6 +294,7 @@ export function SpaceTabSidebarConnector({
         total={communityUpdates.total}
         onSeeAll={() => setUpdatesOpen(true)}
         locale={locale}
+        unavailableMessage={communityUpdates.unavailable ? t('tabs.unavailable') : undefined}
       />
     ),
     contactLeads: canContactLeads ? (
@@ -301,14 +307,16 @@ export function SpaceTabSidebarConnector({
       )
     ),
     addUser: canInvite && <InviteButton key="addUser" onClick={() => setInviteOpen(true)} />,
-    virtualContributors: hasVcEntitlement && (virtualContributors.length > 0 || canInviteVc) && (
-      <VirtualContributorsSection
-        key="virtualContributors"
-        contributors={virtualContributors}
-        onContributorClick={href => navigate(href)}
-        onInviteVc={canInviteVc ? () => setVcInviteOpen(true) : undefined}
-      />
-    ),
+    virtualContributors: hasVcEntitlement &&
+      (virtualContributors.length > 0 || canInviteVc || virtualContributorsUnavailable) && (
+        <VirtualContributorsSection
+          key="virtualContributors"
+          contributors={virtualContributors}
+          onContributorClick={href => navigate(href)}
+          onInviteVc={canInviteVc ? () => setVcInviteOpen(true) : undefined}
+          unavailableMessage={virtualContributorsUnavailable ? t('tabs.unavailable') : undefined}
+        />
+      ),
     guidelines: guidelines.id && (
       <CommunityGuidelinesBlock
         key="guidelines"

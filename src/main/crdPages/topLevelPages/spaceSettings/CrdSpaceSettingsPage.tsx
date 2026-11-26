@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import {
   LONG_MARKDOWN_TEXT_LENGTH,
   LONG_TEXT_LENGTH,
@@ -28,14 +27,18 @@ import { SpaceSettingsSettingsView } from '@/crd/components/space/settings/Space
 import { SpaceSettingsStorageView } from '@/crd/components/space/settings/SpaceSettingsStorageView';
 import { SpaceSettingsSubspacesView } from '@/crd/components/space/settings/SpaceSettingsSubspacesView';
 import { SpaceSettingsUpdatesView } from '@/crd/components/space/settings/SpaceSettingsUpdatesView';
+import { SpaceTemplateForm } from '@/crd/components/templates/forms/SpaceTemplateForm';
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { useCreateDialogMarkdown } from '@/domain/space/components/CreateSpace/hooks/useCreateDialogMarkdown';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { useNativeMarkdownUpload } from '@/main/crdPages/markdown/useNativeMarkdownUpload';
 import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/InviteMembersDialogConnector';
+import { useSettingsPostTemplatePicker } from '@/main/crdPages/templates/settingsTemplates/useSettingsPostTemplatePicker';
+import { useSettingsSaveSpaceAsTemplate } from '@/main/crdPages/templates/settingsTemplates/useSettingsSaveSpaceAsTemplate';
+import { useStageDefaultTemplate } from '@/main/crdPages/templates/settingsTemplates/useStageDefaultTemplate';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import {
@@ -94,23 +97,19 @@ export default function CrdSpaceSettingsPage() {
   const scope = useSettingsScope();
   const { id: spaceId, level, url: spaceUrl, roleSetId, communityId, accountId, loading: scopeLoading } = scope;
 
-  // Gate the page on the user's Update privilege for this space. The hook
+  // Gate the page on the viewer's update verdict for this space. The hook
   // throws NotAuthorizedError (or signals a sign-in redirect) for anyone who
   // shouldn't see settings; otherwise it's a no-op and the page renders.
-  useSpaceSettingsAccessGuard(spaceId, scopeLoading);
+  useSpaceSettingsAccessGuard(scope.canUpdate, scopeLoading);
 
   const visibleTabs = getVisibleSettingsTabs(level);
   const { activeTab, setActiveTab } = useSpaceSettingsTab(visibleTabs);
   const guard = useDirtyTabGuardContext();
 
-  // Markdown image upload. The ambient `StorageConfigContextProvider`
-  // (locationType="space") is mounted by `CrdSpacePageLayout` /
-  // `CrdSubspacePageLayout`, so editing existing sections uploads to the
-  // space's own bucket (temporaryLocation: false). Creating a subspace has no
-  // bucket yet, so it uploads against the parent space's bucket flagged
-  // temporary (server GCs it if the create is abandoned) — mirrors MUI.
-  const md = useMarkdownEditorIntegration();
-  const mdCreate = useMarkdownEditorIntegration({ temporaryLocation: true });
+  // The space exists: inline images go through the native file contract (useNativeMarkdownUpload). A template being
+  // created has no owner yet, so its editor fails an inline image visibly (useCreateDialogMarkdown).
+  const md = useNativeMarkdownUpload(spaceId);
+  const mdCreate = useCreateDialogMarkdown();
 
   const isTabVisible = (id: (typeof visibleTabs)[number]) => visibleTabs.includes(id);
 
@@ -123,59 +122,49 @@ export default function CrdSpaceSettingsPage() {
   const navigate = useNavigate();
   const about = useAboutTabData(activeTab === 'about' ? spaceId : '', spaceUrl, level);
   const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '', level);
-  const community = useCommunityTabData(activeTab === 'community' ? roleSetId : '');
+  const community = useCommunityTabData(
+    activeTab === 'community' ? spaceId : '',
+    activeTab === 'community' ? roleSetId : ''
+  );
 
-  // Gate each role-assignment control on the privilege its own backend resolver enforces.
+  // Gate each role-assignment control on the native verdict of the intent it runs.
   const reasonText = usePermissionReasonText();
-  const actionPermissions = useCommunityActionPermissions(community.myPrivileges, community.loading);
+  const actionPermissions = useCommunityActionPermissions(community.gates);
   const userRoleChangeReason = reasonText(actionPermissions.userRoleChange);
   const organizationLeadAssignReason = reasonText(actionPermissions.organizationLeadAssign);
   const organizationRemoveReason = reasonText(actionPermissions.organizationRemove);
   const addVcReason = reasonText(actionPermissions.addVirtualContributor);
   const inviteOrganizationsReason = reasonText(actionPermissions.invite);
   const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
-  const createSubspace = useCreateSubspace(spaceId, {
-    accountId,
-    templatesSetId: subspacesTab.templatesSetId,
-    defaultTemplateId: subspacesTab.defaultTemplateId,
-  });
+  const createSubspace = useCreateSubspace(spaceId);
   // Subspace "Save as template" now runs through the unified `saveAs` instance below — see T053.
   const storageTab = useStorageTabData(activeTab === 'storage' ? spaceId : '');
   const settingsTab = useSettingsTabData(activeTab === 'settings' ? spaceId : '');
-  // ApplicationFormEditor renders inside the Community panel — pull `roleSetId`
-  // from the always-available scope instead of `settingsTab` so we don't have
-  // to fetch the Settings tab just to know the role set id.
-  const applicationForm = useApplicationFormData(activeTab === 'community' ? roleSetId : '');
+  // ApplicationFormEditor renders inside the Community panel; the form is the space's own
+  // Space.applicationForm, read and written on the space id.
+  const applicationForm = useApplicationFormData(activeTab === 'community' ? spaceId : '');
   const accountTab = useAccountTabData(activeTab === 'account' ? spaceId : '');
   const updatesTab = useUpdatesTabData(activeTab === 'updates' ? communityId || undefined : undefined);
   const communityGuidelinesId = scope.guidelinesId;
   const communityGuidelines = useCommunityGuidelinesData(activeTab === 'community' ? communityGuidelinesId : undefined);
 
   // Community-guidelines templating (FR-038 / T070): the templates set lives at L0; `useSpaceTemplatesManagerQuery`
-  // resolves it via the space lookup (dedupes with the Subspaces-tab query in cache). Only needed on tabs whose
-  // pickers / save-as flows consume `templatesSetId`.
-  // The Settings tab needs the templates set too, but only on subspaces (L1/L2),
-  // where it drives the "Save as a template" section at the bottom of the tab.
-  const needsTemplatesSet =
-    activeTab === 'community' ||
-    activeTab === 'layout' ||
-    activeTab === 'subspaces' ||
-    (activeTab === 'settings' && level !== 'L0');
+  // resolves it via the space lookup. Only the Community tab's guidelines picker / save-as still consume
+  // `templatesSetId`; the Layout default-post template and the space save-as run on the native template roots.
+  const needsTemplatesSet = activeTab === 'community';
   const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
     variables: { spaceId },
     skip: !spaceId || !needsTemplatesSet,
   });
   const templatesSet = templatesManagerData?.lookup.space?.templatesManager?.templatesSet;
   const templatesSetId = templatesSet?.id;
-  const canSaveAsTemplate = (templatesSet?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Create);
   const guidelinesTemplatePicker = useTemplatePicker({
     allowedTypes: ['communityGuidelines'],
     accountId,
     spaceTemplatesSetId: templatesSetId,
   });
-  // Unified "Save as a template" dialog driver — used by both the Community-guidelines editor (US5/T070,
-  // FR-038) and the Subspaces tab kebab (US4/T053). One dialog instance is enough because only one of
-  // the two flows can be open at a time; `openSaveAs` discriminates on the `kind` field.
+  // "Save as a template" dialog driver of the Community-guidelines editor (US5/T070, FR-038). Saving a space
+  // (Subspaces tab kebab, a subspace's Settings tab) runs through `spaceSaveAs` below.
   const saveAs = useSaveAsTemplate({
     templatesSetId,
     spaceId,
@@ -203,32 +192,30 @@ export default function CrdSpaceSettingsPage() {
     else guidelinesTemplatePicker.openPicker();
   };
 
-  // Layout-tab: per-flow-state default Callout template (T058) — the column kebab opens this picker.
-  const [defaultCalloutTemplateColumnId, setDefaultCalloutTemplateColumnId] = useState<string | null>(null);
-  const defaultCalloutTemplatePicker = useTemplatePicker({
-    allowedTypes: ['callout'],
-    accountId,
-    spaceTemplatesSetId: templatesSetId,
-  });
-  const openDefaultCalloutTemplatePicker = (columnId: string) => {
-    setDefaultCalloutTemplateColumnId(columnId);
-    defaultCalloutTemplatePicker.openPicker();
-  };
-
   const addVCDialog = useAddVirtualContributorDialog({
     community: community._adminRef,
     spaceId,
-    spaceLevel: level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2,
   });
   const [vcExternalOpen, setVcExternalOpen] = useState(false);
   const [inviteMembersOpen, setInviteMembersOpen] = useState(false);
   const [inviteOrganizationsOpen, setInviteOrganizationsOpen] = useState(false);
   const { space: spaceContext } = useSpace();
-  const { subspace } = useSubSpace();
   // `useSpace()` always resolves the top-level (root) Space regardless of the
   // current route's depth, so its id IS the FR-007a "top-level Space's
   // Template Library" target — never the immediate parent's.
   const classificationPicker = useClassificationPicker(spaceContext.id);
+
+  // Layout-tab: per-stage default post template (T058) — the column kebab opens this picker; the pick and the
+  // column's Clear set / clear the stage's `stage` default binding.
+  const [defaultCalloutTemplateColumnId, setDefaultCalloutTemplateColumnId] = useState<string | null>(null);
+  const defaultCalloutTemplatePicker = useSettingsPostTemplatePicker({ rootSpaceId: spaceContext.id, accountId });
+  const openDefaultCalloutTemplatePicker = (columnId: string) => {
+    setDefaultCalloutTemplateColumnId(columnId);
+    defaultCalloutTemplatePicker.openPicker();
+  };
+  const setStageDefaultTemplate = useStageDefaultTemplate({ spaceId, onTemplateSaved: layout.markTemplateSaved });
+  // Saving a space as a template (Subspaces tab kebab, a subspace's Settings tab) into the top-level space's library.
+  const spaceSaveAs = useSettingsSaveSpaceAsTemplate({ rootSpaceId: spaceContext.id });
   // Staging an add needs the picked template's vocabulary, which the picker already holds.
   const stageClassificationAdd = (templateId: string, displayLabel?: string) => {
     const template = classificationPicker.sources.flatMap(source => source.templates).find(t => t.id === templateId);
@@ -238,7 +225,7 @@ export default function CrdSpaceSettingsPage() {
   const csvExport = useCommunityCsvExport({
     members: community.members,
     applications: community.applications,
-    spaceDisplayName: level === 'L0' ? spaceContext.about.profile.displayName : subspace.about.profile.displayName,
+    spaceDisplayName: scope.displayName,
     loading: community.loading,
     errored: community.errored,
   });
@@ -255,13 +242,12 @@ export default function CrdSpaceSettingsPage() {
     enabled: activeTab === 'settings' && isSubspace,
   });
   const onSaveSubspaceAsTemplate =
-    isSubspace && canSaveAsTemplate
+    isSubspace && scope.canSaveAsTemplate
       ? () =>
-          saveAs.openSaveAs({
-            kind: 'subspace',
-            subspaceId: spaceId,
-            name: subspace.about.profile.displayName,
-            description: subspace.about.profile.tagline,
+          spaceSaveAs.openSaveAs({
+            spaceId,
+            name: scope.displayName,
+            description: scope.tagline,
           })
       : undefined;
   const columnMenu = useColumnMenu({
@@ -295,16 +281,21 @@ export default function CrdSpaceSettingsPage() {
     onToggleVisibility: layout.onToggleVisibility,
     innovationFlowStates: layout.innovationFlowStates,
   });
-  // When the user picks a Callout template in the layout-tab picker, set it as the chosen flow state's default.
+  // When the user picks a post template in the layout-tab picker, set it as the chosen stage's default.
   const selectedDefaultCalloutTemplateId = defaultCalloutTemplatePicker.selectedTemplateId;
   useEffect(() => {
     if (!selectedDefaultCalloutTemplateId || !defaultCalloutTemplateColumnId) return;
-    columnMenu.onSetAsDefaultCalloutTemplate(defaultCalloutTemplateColumnId, selectedDefaultCalloutTemplateId);
+    void setStageDefaultTemplate(defaultCalloutTemplateColumnId, selectedDefaultCalloutTemplateId);
     setDefaultCalloutTemplateColumnId(null);
     // Consume the selection so re-picking the same template (different column, or same column after a
     // failed apply) fires the effect again instead of short-circuiting on a stale "already applied" key.
     defaultCalloutTemplatePicker.clearSelection();
-  }, [selectedDefaultCalloutTemplateId, defaultCalloutTemplateColumnId, columnMenu, defaultCalloutTemplatePicker]);
+  }, [
+    selectedDefaultCalloutTemplateId,
+    defaultCalloutTemplateColumnId,
+    setStageDefaultTemplate,
+    defaultCalloutTemplatePicker,
+  ]);
 
   // The active tab's buffered fields, as the unsaved-changes bar sees them (spec 045 FR-025).
   // Only About, Layout and Settings buffer fields; the guard forces a save or discard before a
@@ -401,22 +392,19 @@ export default function CrdSpaceSettingsPage() {
     isLead: org.isLead,
   });
 
-  // Bridge: when Subspaces tab signals "save as template" for a subspace, open the unified
+  // Bridge: when Subspaces tab signals "save as template" for a subspace, open the space
   // `TemplateFormDialog` (`type: 'space'`) pre-filled from that subspace as the source.
-  // T053 — the legacy `SaveSubspaceAsTemplateDialog` + `useSaveSubspaceAsTemplate` plumbing is
-  // retained on disk (modify-not-delete) but no longer wired into the page.
   useEffect(() => {
     if (!subspacesTab.saveAsTemplateSubspaceId) return;
     const target = subspacesTab.subspaces.find(s => s.id === subspacesTab.saveAsTemplateSubspaceId);
     if (!target) return;
-    saveAs.openSaveAs({
-      kind: 'subspace',
-      subspaceId: target.id,
+    spaceSaveAs.openSaveAs({
+      spaceId: target.id,
       name: target.name,
       description: target.description,
     });
     subspacesTab.closeSaveAsTemplate();
-  }, [subspacesTab, saveAs]);
+  }, [subspacesTab, spaceSaveAs]);
 
   // Leave once the changes are saved or discarded: either the pending tab switch or View Post.
   const proceedAfterGuard = () => {
@@ -547,7 +535,7 @@ export default function CrdSpaceSettingsPage() {
                   else navigate(path);
                 }}
                 hasUnsavedChanges={layout.isDirty}
-                columnMenuActions={columnMenu}
+                columnMenuActions={{ ...columnMenu, onSetAsDefaultCalloutTemplate: setStageDefaultTemplate }}
                 onCreatePhase={layout.onCreateState}
                 maximumNumberOfStates={layout.maximumNumberOfStates}
                 isStructureMutating={layout.isStructureMutating}
@@ -643,8 +631,8 @@ export default function CrdSpaceSettingsPage() {
             {activeTab === 'subspaces' && isTabVisible('subspaces') && (
               <SpaceSettingsSubspacesView
                 subspaces={subspacesTab.subspaces}
-                canCreate={subspacesTab.canCreate}
-                canSaveAsTemplate={subspacesTab.canSaveAsTemplate && level === 'L0'}
+                canCreate={scope.canCreateSubspace}
+                canSaveAsTemplate={scope.canSaveAsTemplate && level === 'L0'}
                 loading={subspacesTab.loading}
                 onCreate={() => createSubspace.openDialog()}
                 onChangeDefaultTemplate={level === 'L0' ? subspacesTab.onChangeDefaultTemplate : undefined}
@@ -745,16 +733,14 @@ export default function CrdSpaceSettingsPage() {
         onCancel={updatesTab.onCancelRemove}
       />
 
-      {/* Subspace "Save as template" + Community-Guidelines "Save as template" both flow through the
-          unified `saveAs.form` → `<TemplateFormDialog>` mounted below (T053). The legacy
-          `SaveSubspaceAsTemplateDialog` + `useSaveSubspaceAsTemplate` remain on disk for reference
-          but are no longer wired to this page. */}
+      {/* Subspace "Save as template" + Community-Guidelines "Save as template" flow through the
+          `<TemplateFormDialog>`s mounted below (T053). */}
 
       <CreateSubspaceDialogs
         createSubspace={createSubspace}
-        onImageUpload={mdCreate.onImageUpload}
-        iframeAllowedUrls={mdCreate.iframeAllowedUrls}
-        onError={mdCreate.onError}
+        onImageUpload={createSubspace.markdown.onImageUpload}
+        iframeAllowedUrls={createSubspace.markdown.iframeAllowedUrls}
+        onError={createSubspace.markdown.onError}
       />
 
       <ChangeDefaultSubspaceTemplateDialog
@@ -1072,11 +1058,11 @@ export default function CrdSpaceSettingsPage() {
         onClose={() => setSaveFailed(false)}
       />
 
-      {/* Community-guidelines + Subspace save-as both drive this shared `<TemplateFormDialog>`
-          via the unified `saveAs` instance (FR-038 / T070 / T053). Only one of the two flows can
-          be open at a time; the dialog state is reset every time `openSaveAs` is called. */}
+      {/* Community-guidelines save-as drives the first `<TemplateFormDialog>` (`saveAs`, FR-038 / T070); saving a
+          space (Subspaces tab kebab, a subspace's Settings tab) drives the second (`spaceSaveAs`, T053). */}
       <TemplatePicker {...guidelinesTemplatePicker.pickerProps} />
       <TemplatePicker {...defaultCalloutTemplatePicker.pickerProps} />
+      <TemplateFormDialog {...spaceSaveAs.form} perTypeFormSlot={<SpaceTemplateForm {...spaceSaveAs.spaceForm} />} />
       <TemplateFormDialog
         open={saveAs.form.open}
         intent={saveAs.form.intent}

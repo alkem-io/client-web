@@ -1,0 +1,7 @@
+# Legacy home dispatch uses only the declared homepage identity.
+# Consumer: src/main/routing/urlResolver/native/useNativeHomepageResolution.ts
+query V2Resolve($url: String!) {
+  resolve(url: $url) {
+    homepage { id }
+  }
+}

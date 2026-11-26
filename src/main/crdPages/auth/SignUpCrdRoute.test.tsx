@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { RegistrationCrdRoute, SignUpCrdRoute } from './SignUpCrdRoute';
 
@@ -60,6 +60,7 @@ vi.mock('@/crd/components/auth/SignUpCard', () => ({
   },
 }));
 vi.mock('./AuthShellWrapper', () => ({
+  AuthFlowContext: ({ children }: { children: ReactNode }) => <>{children}</>,
   AuthShellWrapper: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
 vi.mock('@/main/routing/urlBuilders', () => ({ buildLoginUrl: () => '/login' }));
@@ -78,6 +79,8 @@ vi.mock('@/core/auth/authentication/utils/useSignUpReturnUrl', () => ({
   useReturnUrl: () => ({ setReturnUrl: vi.fn() }),
   useSignUpRoundTrip: () => ({ armed: false, arm: vi.fn(), clearArmed: vi.fn() }),
 }));
+// An anonymous visitor: the sign-up page renders (a signed-in one is sent home, IdentityRoute.test).
+vi.mock('@/core/foundation/NativeFoundationProvider', () => ({ useNativeFoundation: () => ({ data: undefined }) }));
 vi.mock('@/core/analytics/SentryTransactionScopeContext', () => ({ useTransactionScope: () => {} }));
 vi.mock('@/core/routing/usePageTitle', () => ({ usePageTitle: () => {} }));
 vi.mock('@/core/routing/useQueryParams', () => ({ useQueryParams: () => new URLSearchParams('') }));
@@ -89,7 +92,10 @@ vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => k
 const renderRoute = () =>
   render(
     <MemoryRouter initialEntries={['/']}>
-      <SignUpCrdRoute />
+      <Routes>
+        <Route path="/" element={<SignUpCrdRoute />} />
+        <Route path="/login" element={<div data-testid="duplicate-login" />} />
+      </Routes>
     </MemoryRouter>
   );
 
@@ -381,5 +387,6 @@ describe('SignUpCrdRoute — provider-arrival signpost (FR-013/FR-014)', () => {
 
     // The account-exists branch redirects to login before SignUpCard ever mounts.
     expect(screen.queryByTestId('crd-signup-card')).not.toBeInTheDocument();
+    expect(screen.getByTestId('duplicate-login')).toBeInTheDocument();
   });
 });

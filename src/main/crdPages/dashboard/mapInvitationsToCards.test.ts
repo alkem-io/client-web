@@ -1,35 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { mapInvitationsToCards } from './dashboardDataMappers';
+import { pendingSpaceRequest } from './dashboardPendingTestData';
 
-const entry = (
-  level: SpaceLevel,
-  profile: { avatar?: { uri: string }; cardBanner?: { uri: string } }
-): Parameters<typeof mapInvitationsToCards>[0][number] => ({
-  id: `inv-${level}`,
-  spacePendingMembershipInfo: {
-    id: `space-${level}`,
-    level,
-    about: { profile: { displayName: 'A Space', url: '/a-space', ...profile } },
-  },
-  invitation: {
-    createdBy: { id: 'user-1', profile: { id: 'profile-1', displayName: 'Jane Doe' } },
-  },
-});
-
-describe('mapInvitationsToCards', () => {
-  it('shows the cardBanner for an L0 space — it has no avatar, so the row used to be blank', () => {
-    const [card] = mapInvitationsToCards([entry(SpaceLevel.L0, { cardBanner: { uri: 'card.png' } })]);
+describe('mapInvitationsToCards (Viewer.pendingInvitations)', () => {
+  it('shows the card for an L0 space — it has no avatar, so the row used to be blank', () => {
+    const [card] = mapInvitationsToCards([pendingSpaceRequest('inv', { card: 'card.png' })]);
 
     expect(card.spaceAvatarUrl).toBe('card.png');
   });
 
-  it('keeps using the avatar for L1 and L2 subspaces', () => {
+  it('keeps using the avatar for depth 1 and 2 subspaces', () => {
     const [l1] = mapInvitationsToCards([
-      entry(SpaceLevel.L1, { avatar: { uri: 'avatar.png' }, cardBanner: { uri: 'card.png' } }),
+      pendingSpaceRequest('l1', { depth: 1, avatar: 'avatar.png', card: 'card.png' }),
     ]);
     const [l2] = mapInvitationsToCards([
-      entry(SpaceLevel.L2, { avatar: { uri: 'avatar.png' }, cardBanner: { uri: 'card.png' } }),
+      pendingSpaceRequest('l2', { depth: 2, avatar: 'avatar.png', card: 'card.png' }),
     ]);
 
     expect(l1.spaceAvatarUrl).toBe('avatar.png');
@@ -37,23 +22,28 @@ describe('mapInvitationsToCards', () => {
   });
 
   it('falls back to initials rather than borrowing the other visual', () => {
-    const [l0] = mapInvitationsToCards([entry(SpaceLevel.L0, { avatar: { uri: 'avatar.png' } })]);
+    const [l0] = mapInvitationsToCards([pendingSpaceRequest('l0', { avatar: 'avatar.png' })]);
 
     expect(l0.spaceAvatarUrl).toBeUndefined();
   });
 
-  it('carries the inviter name, href and a deterministic colour through', () => {
-    const [card] = mapInvitationsToCards([entry(SpaceLevel.L0, {})]);
+  it('carries the inviter name, space id, href and a deterministic colour through', () => {
+    const [card] = mapInvitationsToCards([pendingSpaceRequest('inv')]);
 
-    expect(card.inviterName).toBe('Jane Doe');
-    expect(card.spaceHref).toBe('/a-space');
+    expect(card).toMatchObject({ id: 'inv', spaceId: 'space-inv', inviterName: 'Jane Doe', spaceHref: '/a-space' });
     expect(card.color).toMatch(/^#/);
   });
 
   it('omits the inviter name when the invitation has no createdBy', () => {
-    const [inv] = [entry(SpaceLevel.L0, {})];
-    const [card] = mapInvitationsToCards([{ ...inv, invitation: { createdBy: null } }]);
+    const [card] = mapInvitationsToCards([pendingSpaceRequest('inv', {}, { createdBy: null })]);
 
     expect(card.inviterName).toBeUndefined();
+  });
+
+  it('a request without a space or a space route is an error, not an empty card', () => {
+    expect(() => mapInvitationsToCards([pendingSpaceRequest('inv', {}, { space: null })])).toThrow('names no space');
+    expect(() => mapInvitationsToCards([pendingSpaceRequest('inv', { url: null })])).toThrow(
+      'has no canonical destination'
+    );
   });
 });

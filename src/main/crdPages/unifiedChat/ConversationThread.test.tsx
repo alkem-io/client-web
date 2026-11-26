@@ -1,10 +1,14 @@
 import { act, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ChatMessage } from '@/crd/components/chat/types';
 import { ConversationThread } from './ConversationThread';
 
 type View = {
   onSendMessage: (text: string) => Promise<boolean>;
   onAttachFiles: (files: File[]) => void;
+  messages: ChatMessage[];
+  onReply?: (eventId: string) => void;
+  replyPreview?: string;
 };
 const harness = vi.hoisted(() => ({ view: null as View | null }));
 vi.mock('@/crd/components/chat/ChatThreadView', () => ({
@@ -39,6 +43,48 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('native conversation composer', () => {
+  it('keeps the chosen target through a failed send and clears it on acknowledgement', async () => {
+    const send = vi.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+    const restore = vi.fn();
+    const target: ChatMessage = {
+      id: '$target',
+      content: 'original',
+      timestampMs: 1,
+      reactions: [],
+      isOwn: false,
+    };
+    render(
+      <ConversationThread
+        conversationId="conversation"
+        roomId="room"
+        conversation={{ id: 'room', displayName: 'Room', isGroup: false, isGuidance: false }}
+        attachmentsAllowed={true}
+        messages={[target, { ...target, id: '$reply', replyTo: target.id }]}
+        messagesLoading={false}
+        sendEvent={send}
+        onClearDraft={vi.fn()}
+        onRestoreDraft={restore}
+      />
+    );
+    expect(renderedView().messages[1].replyPreview).toBe('original');
+    act(() => renderedView().onReply?.(target.id));
+    expect(renderedView().replyPreview).toBe('original');
+
+    await act(async () => {
+      expect(await renderedView().onSendMessage('answer')).toBe(false);
+    });
+    expect(restore).toHaveBeenCalledWith('answer');
+    expect(renderedView().replyPreview).toBe('original');
+    await act(async () => {
+      expect(await renderedView().onSendMessage('answer')).toBe(true);
+    });
+    expect(send.mock.calls).toEqual([
+      ['answer', undefined, '$target'],
+      ['answer', undefined, '$target'],
+    ]);
+    expect(renderedView().replyPreview).toBeUndefined();
+  });
+
   it.each([true, false])('waits for native text acknowledgement before uploading a file (%s)', async confirmed => {
     let acknowledge!: (accepted: boolean) => void;
     const pending = new Promise<boolean>(resolve => {

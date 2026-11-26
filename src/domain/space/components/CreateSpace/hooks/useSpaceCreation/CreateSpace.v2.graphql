@@ -1,0 +1,3 @@
+mutation CreateSpace($input: CreateSpaceInput!) {
+  createSpace(input: $input) { node { id ... on Space { url } } omissions { path code } }
+}

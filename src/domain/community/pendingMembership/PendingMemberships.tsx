@@ -2,19 +2,17 @@ import {
   usePendingMembershipsSpaceQuery,
   usePendingMembershipsUserQuery,
   useSpacePrivilegesQuery,
-  useUserPendingMembershipsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   type CommunityGuidelinesSummaryFragment,
-  type OrgPendingApplicationDataFragment,
-  type OrgPendingInvitationDataFragment,
   type SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import type { Identifiable } from '@/core/utils/Identifiable';
+import { useV2PendingMembershipsQuery } from '@/core/apollo/generated-v2/apollo-hooks';
+import type { V2PendingMembershipRequestFragment } from '@/core/apollo/generated-v2/graphql-schema';
+import { useReportedQueryError } from '@/core/apollo/hooks/useReportedQueryError';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
-import type { PendingApplicationItem } from '../user/models/PendingApplicationItem';
 import type { PendingInvitationItem } from '../user/models/PendingInvitationItem';
 
 export interface SpaceDetails {
@@ -28,17 +26,17 @@ export interface InvitationWithMeta extends Omit<PendingInvitationItem, 'space'>
   space: SpaceDetails;
 }
 
-export interface ApplicationWithMeta extends Identifiable {
-  space: SpaceDetails;
-}
+export type PendingMembershipRequest = V2PendingMembershipRequestFragment;
 
 interface UsePendingMembershipsProvided {
-  applications: PendingApplicationItem[] | undefined;
-  invitations: PendingInvitationItem[] | undefined;
+  /** Space invitations this viewer may act on: their own and those addressed to their organizations and VCs. */
+  invitations: PendingMembershipRequest[] | undefined;
+  /** The viewer's own pending Space applications. */
+  applications: PendingMembershipRequest[] | undefined;
   /** The user's own pending organization invitations (062) — never mixed into `invitations`, which stays Space-only. */
-  orgInvitations: OrgPendingInvitationDataFragment[] | undefined;
+  orgInvitations: PendingMembershipRequest[] | undefined;
   /** The user's own pending organization applications (062) — never mixed into `applications`, which stays Space-only. */
-  orgApplications: OrgPendingApplicationDataFragment[] | undefined;
+  orgApplications: PendingMembershipRequest[] | undefined;
   loading: boolean;
   refetch: () => void;
 }
@@ -47,17 +45,25 @@ type PendingMembershipsProps = {
   skip: boolean;
 };
 
+const ofResource = (requests: PendingMembershipRequest[] | undefined, entityType: string) =>
+  requests?.filter(request => request.resource.entityType === entityType);
+
+/**
+ * Viewer.pendingInvitations / Viewer.pendingApplications (screens-dispositions.tsv:10985-10986, :17683): one
+ * MembershipRequest list each, split by the requested resource's entity type into the Space and organization sections.
+ */
 export const usePendingMemberships = ({ skip = false }: PendingMembershipsProps): UsePendingMembershipsProvided => {
-  const { isAuthenticated } = useAuthenticationContext();
-  const { data, loading, refetch } = useUserPendingMembershipsQuery({
+  const { isAuthenticated } = useCurrentUserContext();
+  const { data, loading, error, refetch } = useV2PendingMembershipsQuery({
     skip: !isAuthenticated || skip,
   });
+  useReportedQueryError(error);
 
   return {
-    invitations: data?.me.communityInvitations,
-    applications: data?.me.communityApplications,
-    orgInvitations: data?.me.organizationInvitations,
-    orgApplications: data?.me.organizationApplications,
+    invitations: ofResource(data?.viewer.pendingInvitations, 'space'),
+    applications: ofResource(data?.viewer.pendingApplications, 'space'),
+    orgInvitations: ofResource(data?.viewer.pendingInvitations, 'organization'),
+    orgApplications: ofResource(data?.viewer.pendingApplications, 'organization'),
     loading,
     refetch,
   };
@@ -123,48 +129,4 @@ export const useInvitationHydrator = (
   const communityGuidelines = space?.about.guidelines;
 
   return { invitation: hydratedInvitation, communityGuidelines };
-};
-
-interface UseApplicationHydratorResult {
-  application: ApplicationWithMeta | undefined;
-}
-
-export const useApplicationHydrator = (
-  application: PendingApplicationItem | undefined
-): UseApplicationHydratorResult => {
-  const spaceId = application?.spacePendingMembershipInfo.id ?? '';
-
-  const { data: spacePrivileges } = useSpacePrivilegesQuery({
-    variables: { spaceId },
-    skip: !application,
-  });
-  const hasReadAboutPrivilege = spacePrivileges?.lookup.space?.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.ReadAbout
-  );
-  const { data: spaceData } = usePendingMembershipsSpaceQuery({
-    variables: { spaceId },
-    skip: !application || !hasReadAboutPrivilege,
-  });
-
-  const space = spaceData?.lookup.space;
-
-  const hydratedApplication = (() => {
-    if (!application) {
-      return undefined;
-    }
-    return {
-      ...application,
-      space: {
-        ...application.spacePendingMembershipInfo,
-        ...space,
-        level: application.spacePendingMembershipInfo.level,
-        about: {
-          ...application.spacePendingMembershipInfo.about,
-          ...space?.about,
-        },
-      },
-    };
-  })();
-
-  return { application: hydratedApplication };
 };

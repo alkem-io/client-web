@@ -1,0 +1,47 @@
+fragment NativeSubspaceCard on Space {
+  id
+  url
+  status
+  isContentPublic
+  pinned
+  tags
+  about {
+    displayName
+    tagline
+    avatar { file { url } }
+    card { file { url } }
+  }
+  membership { roles }
+  can { read }
+  leads {
+    id
+    actorType
+    about {
+      displayName
+      avatar { file { url } }
+    }
+  }
+}
+
+query NativeSubspaces($root: UUID!, $first: Int!, $after: String) {
+  node(id: $root) {
+    id
+    entityType
+    ... on Space {
+      settings
+    }
+  }
+  # One space's children in the signed order (FC-S2), from the space tree (spaces 2026-11-26).
+  spaces: subtree(root: $root, maxDepth: 1, types: ["space"], first: $first, after: $after) {
+    edges {
+      cursor
+      node {
+        id
+        entityType
+        ...NativeSubspaceCard
+      }
+    }
+    pageInfo { hasNextPage endCursor }
+    totalCount
+  }
+}

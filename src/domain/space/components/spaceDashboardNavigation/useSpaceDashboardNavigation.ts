@@ -1,128 +1,39 @@
-import {
-  useSpaceDashboardNavigationSubspacesQuery,
-  useSpacePrivilegesQuery,
-} from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CommunityMembershipStatus,
-  type MyMembershipsRoleSetFragment,
-  SpaceSortMode,
-} from '@/core/apollo/generated/graphql-schema';
-import { sortBySortOrder } from '@/core/utils/sortBySortOrder';
-import type { SpaceAboutLightModel } from '@/domain/space/about/model/spaceAboutLight.model';
+import { pageSpace } from '@/domain/space/context/spacePageShellMapper';
+import { treeSubspaces, useSpacePageData, useSpaceTree } from '@/domain/space/hooks/useSpacePage';
 
 interface UseSpaceDashboardNavigationProps {
   spaceId: string | undefined;
   skip?: boolean;
 }
 
-interface UseSpaceDashboardNavigationProvided {
-  dashboardNavigation: DashboardNavigationItem | undefined;
-  loading: boolean;
-  refetch: () => void;
-}
-
-export interface DashboardNavigationItem {
-  id: string;
-  displayName: string;
-  url: string;
-  avatar?: {
-    uri: string;
-    alternativeText?: string;
-  };
-  innovationFlowState?: string | undefined;
-  private?: boolean;
-  pinned?: boolean;
-  member: boolean;
-  canCreateSubspace?: boolean;
-  children?: DashboardNavigationItem[];
-}
-
-const getDashboardNavigationItemProps = (space: {
-  id: string;
-  about: SpaceAboutLightModel;
-  roleSet?: MyMembershipsRoleSetFragment;
-  authorization?: {
-    myPrivileges?: AuthorizationPrivilege[];
-  };
-}): DashboardNavigationItem => {
+/**
+ * The sidebar's child links (021 F040), read from the page cache with no request: the first 7 subspaces of the page's
+ * space tree, in the tree's signed order, so six rows show and a seventh proves Show all.
+ * The pin icon follows the parent's `settings.sort_mode` as legacy (pinned shown unless custom).
+ */
+const useSpaceDashboardNavigation = ({ spaceId, skip }: UseSpaceDashboardNavigationProps) => {
+  const id = skip ? undefined : spaceId;
+  const { tree, notServed } = useSpaceTree(id);
+  const space = pageSpace(useSpacePageData(id, 'space')?.node, id);
+  const rows = tree && treeSubspaces(tree).slice(0, 7);
+  const showPins = (space?.settings as { sort_mode?: string } | null | undefined)?.sort_mode !== 'custom';
   return {
-    id: space.id,
-    url: space.about.profile.url,
-    displayName: space.about.profile.displayName,
-    avatar: space.about.profile.avatar,
-    private: !space.about.isContentPublic,
-    member: space.about.membership?.myMembershipStatus === CommunityMembershipStatus.Member,
-    canCreateSubspace: space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateSubspace),
-  };
-};
-
-const useSpaceDashboardNavigation = ({
-  spaceId,
-  skip,
-}: UseSpaceDashboardNavigationProps): UseSpaceDashboardNavigationProvided => {
-  // TODO: Additional Auth Check
-  const { data: subSpacesAuth, loading: subSpacesAuthLoading } = useSpacePrivilegesQuery({
-    variables: { spaceId: spaceId! },
-    skip: skip || !spaceId,
-  });
-
-  const hasSpaceProfileReadAccess = subSpacesAuth?.lookup.space?.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.Read
-  );
-
-  const {
-    data: subSpacesQueryData,
-    loading: subSpacesQueryLoading,
-    refetch: refetchSubSpaces,
-  } = useSpaceDashboardNavigationSubspacesQuery({
-    variables: { spaceId: spaceId! },
-    skip: skip || !spaceId || subSpacesAuthLoading || !hasSpaceProfileReadAccess,
-  });
-
-  const space = subSpacesQueryData?.lookup.space;
-
-  // The subspaces query is chained on the privileges query — the list is "loading" through both.
-  const loading = subSpacesAuthLoading || subSpacesQueryLoading;
-
-  const dashboardNavigation = (() => {
-    if (!space) {
-      return undefined;
-    }
-
-    const sortMode = space.settings?.sortMode;
-    let sortedSubspaces = [...space.subspaces];
-
-    if (sortMode === SpaceSortMode.Custom) {
-      sortedSubspaces.sort(sortBySortOrder);
-    } else {
-      // Alphabetical: pinned first (by sortOrder), then non-pinned (by displayName A-Z)
-      const pinned = sortedSubspaces.filter(s => s.pinned).sort(sortBySortOrder);
-      const unpinned = sortedSubspaces
-        .filter(s => !s.pinned)
-        .sort((a, b) => a.about.profile.displayName.localeCompare(b.about.profile.displayName));
-      sortedSubspaces = [...pinned, ...unpinned];
-    }
-
-    const isAlphabetical = sortMode !== SpaceSortMode.Custom;
-
-    return {
-      ...getDashboardNavigationItemProps(space),
-      children: sortedSubspaces.map(subspace => ({
-        ...getDashboardNavigationItemProps(subspace),
-        pinned: isAlphabetical && subspace.pinned,
-      })),
-    };
-  })();
-
-  const refetch = () => {
-    refetchSubSpaces();
-  };
-
-  return {
-    dashboardNavigation,
-    loading,
-    refetch,
+    dashboardNavigation: rows && {
+      children: rows.map(child => {
+        if (!child.url) throw new Error(`Subspace ${child.id} has no canonical destination`);
+        return {
+          id: child.id,
+          displayName: child.about.displayName,
+          url: child.url,
+          avatar: child.about.avatar ? { uri: child.about.avatar.file.url } : undefined,
+          private: !child.isContentPublic,
+          pinned: showPins && Boolean(child.pinned),
+        };
+      }),
+    },
+    loading: Boolean(id) && !rows && !notServed,
+    /** The space tree is not served yet: the links widget says so in place. */
+    unavailable: notServed,
   };
 };
 

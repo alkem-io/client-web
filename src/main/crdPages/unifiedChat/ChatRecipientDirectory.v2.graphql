@@ -1,0 +1,18 @@
+query ChatRecipientDirectory($terms: String!) {
+  actors(filter: { types: ["user"], terms: $terms }, first: 20) {
+    edges {
+      node {
+        id
+        about {
+          displayName
+          location
+          avatar {
+            file {
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+}

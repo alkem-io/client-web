@@ -1,12 +1,15 @@
 import { type ReactNode, useState } from 'react';
+import { MembershipStatus, RequestDirection, RequestState } from '@/core/apollo/generated-v2/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ApplicationSubmittedDialog } from '@/crd/components/community/ApplicationSubmittedDialog';
 import { PreApplicationDialog } from '@/crd/components/community/PreApplicationDialog';
 import { PreJoinParentDialog } from '@/crd/components/community/PreJoinParentDialog';
 import type { SpaceAboutApplyButtonProps } from '@/crd/components/space/SpaceAboutApplyButton';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
-import isApplicationPending from '@/domain/community/applicationButton/isApplicationPending';
+import { pageSpace, shellSpaceLevel } from '@/domain/space/context/spacePageShellMapper';
+import { useSpacePageData } from '@/domain/space/hooks/useSpacePage';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
+import { useNativeRouteSpace } from '@/main/routing/urlResolver/native/useNativeRouteSpace';
 import { ApplyDialogConnector } from './about/ApplyDialogConnector';
 import { InvitationDetailConnector } from './about/InvitationDetailConnector';
 
@@ -60,24 +63,63 @@ export function useSpaceApplyFlow({
   // pending application), preventing a duplicate apply that the server rejects.
   const [hasApplied, setHasApplied] = useState(false);
 
-  const { applicationButtonProps, loading } = useApplicationButton({
+  // The join step stays legacy's; its queries are skipped. The button's state is the D2 Space document (021
+  // F038/F039): membership, can.join/apply and the parent's, read from the page cache; the parent's face is D1's.
+  const { applicationButtonProps: joinStep, loading: joinLoading } = useApplicationButton({
     spaceId,
     parentSpaceId,
-    // A real skip (not `loading`): gates BOTH the per-space ApplicationButton
-    // query and the global cache-and-network UserPendingMemberships list, so a
-    // skipped consumer (widget not configured / dialog closed) issues nothing.
-    skip,
+    skip: true,
     // On success, either close the hosting dialog (About) or navigate into the space.
     onJoin: onJoined ?? (() => navigate(spaceProfileUrl)),
   });
+  const space = pageSpace(useSpacePageData(skip ? undefined : spaceId, 'space')?.node, spaceId);
+  const parent = space?.parent;
+  const parentFace = useNativeRouteSpace().ancestors.find(ancestor => ancestor.id === space?.parent?.id);
+  const status = space?.membership?.status;
+  const request = space?.membership?.request;
+  // The viewer's own pending invitation to this space (legacy's UserPendingMemberships item), for its detail dialog.
+  const isInvitation = request?.direction === RequestDirection.Inbound && request.state === RequestState.Invited;
+  const userInvitation =
+    space && request && isInvitation
+      ? {
+          id: request.id,
+          spacePendingMembershipInfo: {
+            id: space.id,
+            level: shellSpaceLevel(space.depth),
+            about: { profile: { displayName: space.about.displayName, url: space.url ?? '' } },
+          },
+          invitation: {
+            id: request.id,
+            createdBy: request.createdBy ?? undefined,
+            welcomeMessage: request.message ?? undefined,
+            createdDate: request.createdAt,
+            state: request.state?.toLowerCase(),
+          },
+        }
+      : undefined;
+  const loading = joinLoading || (!skip && !space);
+  const applicationButtonProps = {
+    ...joinStep,
+    isMember: status === MembershipStatus.Member,
+    isParentMember: parent?.membership?.status === MembershipStatus.Member,
+    applyUrl: space?.url ?? undefined,
+    parentUrl: space?.parent?.url ?? undefined,
+    parentCommunityName: parentFace?.about.displayName,
+    parentCommunitySpaceLevel: parentFace && shellSpaceLevel(parentFace.depth),
+    subspaceName: space?.about.displayName,
+    userInvitation,
+    canJoinCommunity: space?.can.join ?? false,
+    canAcceptInvitation: status === MembershipStatus.Invited,
+    canApplyToCommunity: space?.can.apply ?? false,
+    canJoinParentCommunity: parent?.can.join ?? false,
+    canApplyToParentCommunity: parent?.can.apply ?? false,
+    loading,
+  };
 
-  // Resolved once, here: `isApplicationPending` is domain logic, so the purely
-  // presentational CRD components receive the verdict rather than re-deriving it
-  // from a raw state string (they each used to, and disagreed with each other).
-  // `hasApplied` is the optimistic local flag — an application just submitted is
-  // pending even though the server state hasn't been refetched yet.
-  const isPending = hasApplied || isApplicationPending(applicationButtonProps.applicationState);
-  const isParentPending = isApplicationPending(applicationButtonProps.parentApplicationState);
+  // `hasApplied` is the optimistic local flag — an application just submitted is pending even though the server
+  // state hasn't been refetched yet.
+  const isPending = hasApplied || status === MembershipStatus.Applied;
+  const isParentPending = parent?.membership?.status === MembershipStatus.Applied;
 
   const preAppDialogVariant = isParentPending ? 'dialog-parent-app-pending' : 'dialog-apply-parent';
 
@@ -95,7 +137,7 @@ export function useSpaceApplyFlow({
     canApplyToCommunity: applicationButtonProps.canApplyToCommunity,
     canJoinParentCommunity: applicationButtonProps.canJoinParentCommunity,
     canApplyToParentCommunity: applicationButtonProps.canApplyToParentCommunity,
-    loading: applicationButtonProps.loading || loading,
+    loading,
     onLoginClick: () => navigate(buildLoginUrl(applicationButtonProps.applyUrl ?? spaceProfileUrl)),
     onApplyClick: () => setIsApplyDialogOpen(true),
     // Joining is a direct, non-destructive action (the user already has join

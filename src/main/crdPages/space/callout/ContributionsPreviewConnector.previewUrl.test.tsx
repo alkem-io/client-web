@@ -1,10 +1,7 @@
 import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import {
-  CalloutContributionType,
-  CalloutFramingType,
-  CollaboraDocumentType,
-} from '@/core/apollo/generated/graphql-schema';
+import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import { DocType } from '@/core/apollo/generated-v2/graphql-schema';
 import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 
 vi.mock('react-i18next', () => ({
@@ -24,26 +21,26 @@ vi.mock(
   })
 );
 
-vi.mock('@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions', () => ({
-  default: () => ({
-    inViewRef: vi.fn(),
-    loaded: true,
-    contributions: {
-      total: 1,
-      items: [
-        {
-          id: 'contribution-1',
-          collaboraDocument: {
-            id: 'doc-1',
-            documentType: CollaboraDocumentType.Spreadsheet,
-            previewUrl: '/api/private/wopi/files/doc-1/preview',
-            profile: { id: 'profile-1', url: '/documents/doc-1', displayName: 'Q1 Report' },
-          },
-        },
-      ],
+const response = {
+  id: 'contribution-1',
+  url: '/documents/doc-1',
+  contentKind: 'document',
+  createdAt: '2026-01-01T00:00:00Z',
+  tags: [],
+  sortOrder: 0,
+  about: { displayName: 'Q1 Report' },
+  links: [],
+  can: { update: false, delete: false, moveTask: false },
+  content: {
+    __typename: 'DocumentContent' as const,
+    document: {
+      id: 'doc-1',
+      docType: DocType.OfficeSheet,
+      preview: { url: '/api/private/wopi/files/doc-1/preview' },
+      about: { displayName: 'Q1 Report' },
     },
-  }),
-}));
+  },
+};
 
 describe('ContributionsPreviewConnector collabora document preview', () => {
   it('threads the resolved previewUrl into the feed contribution card', () => {
@@ -65,7 +62,9 @@ describe('ContributionsPreviewConnector collabora document preview', () => {
       contributions: [{ id: 'contribution-1' }],
     };
 
-    const { container } = render(<ContributionsPreviewConnector callout={callout as never} onShowAll={vi.fn()} />);
+    const { container } = render(
+      <ContributionsPreviewConnector callout={callout as never} responses={[response]} total={1} onShowAll={vi.fn()} />
+    );
 
     const image = container.querySelector('img');
     expect(image).not.toBeNull();

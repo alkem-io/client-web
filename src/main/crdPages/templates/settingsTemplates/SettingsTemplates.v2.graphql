@@ -1,0 +1,128 @@
+# Space settings: the Layout tab's per-stage default post template and "save as template" of a space.
+# templates-screens "phase default post template" / "set / clear phase default post template" / "capture a space ... as
+# template"; callout-post "callout template preview" (Template.body → Post).
+
+fragment SettingsPostTemplateCard on Template {
+  id
+  kind
+  url
+  tags
+  about { displayName description card { file { url } } }
+}
+
+query SettingsPostTemplates($space: UUID!) {
+  templates(scope: $space, kind: POST) { ...SettingsPostTemplateCard }
+}
+
+query SettingsPostTemplateLibrary($scope: UUID, $after: String) {
+  library(filter: { itemType: TEMPLATE, kinds: [POST], scope: $scope }, first: 20, after: $after) {
+    edges {
+      node {
+        ... on Template {
+          ...SettingsPostTemplateCard
+          scope { id ... on InnovationPack { about { displayName } } }
+          provider { id about { displayName } }
+        }
+      }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}
+
+query SettingsPostTemplateContent($template: UUID!, $after: String) {
+  node(id: $template) {
+    id
+    ... on Template {
+      kind
+      body {
+        id
+        ... on Post {
+          about { displayName description }
+          contentKind
+          links { id uri title description sortOrder }
+          responseKind
+          responsePolicy
+          responseDefaults
+          commentsEnabled
+          content {
+            ... on DocumentContent { document { id docType about { displayName } textSnapshot preview { url } } }
+            ... on LinkContent { link { id uri title } }
+            ... on GalleryContent { images { alt file { url } } }
+            ... on PollContent { question options { id value sortOrder } }
+          }
+        }
+      }
+    }
+  }
+  subtree(root: $template, maxDepth: 2, types: ["document"], first: 500, after: $after) {
+    edges { node { id entityType ... on Document { role docType } } }
+    pageInfo { hasNextPage endCursor }
+  }
+}
+
+mutation SettingsSetStageTemplateDefault($scope: UUID!, $stage: UUID!, $template: UUID) {
+  setTemplateDefault(scope: $scope, slot: "stage", stage: $stage, template: $template) {
+    slot
+    stage { id defaultTemplate { id about { displayName } } }
+    template { id about { displayName } }
+  }
+}
+
+query SettingsSaveAsResolveSource($url: String!) {
+  resolve(url: $url) {
+    state
+    remainder
+    node { id entityType }
+  }
+}
+
+query SettingsSaveAsSource($space: UUID!, $after: String) {
+  node(id: $space) {
+    id
+    ... on Space {
+      about { displayName avatar { file { url } } }
+      can { saveAsTemplate }
+    }
+  }
+  subtree(root: $space, includeRoot: true, maxDepth: 1, types: ["space", "post"], first: 500, after: $after) {
+    edges {
+      node {
+        id
+        entityType
+        ... on Space {
+          about { displayName card { file { url } } }
+          isContentPublic
+          stages { name description sortOrder }
+        }
+        ... on Post {
+          about { displayName description }
+          contentKind
+          sortOrder
+          stage { name }
+          content { ... on DocumentContent { document { id docType } } }
+        }
+      }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}
+
+mutation SettingsCreateSpaceTemplate($scope: UUID!, $source: UUID!, $recursive: Boolean!, $about: UpdateAboutInput!) {
+  createTemplate(scope: $scope, kind: SPACE, source: $source, recursive: $recursive, about: $about) {
+    node { id }
+    omissions { path code }
+  }
+}
+
+mutation SettingsUpdateSpaceTemplate(
+  $id: UUID!
+  $source: UUID
+  $recursive: Boolean
+  $about: UpdateAboutInput
+  $tags: [String!]
+) {
+  updateTemplate(id: $id, source: $source, recursive: $recursive, about: $about, tags: $tags) {
+    node { id }
+    omissions { path code }
+  }
+}

@@ -1,30 +1,6 @@
-import { useState } from 'react';
-import {
-  useClassificationTemplatesForSpaceQuery,
-  useClassificationTemplatesPlatformWideQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useTranslation } from 'react-i18next';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { ClassificationPickerSource } from '@/crd/components/classification/ClassificationPickerDialog';
-import type { ClassificationTemplateOptionData } from '@/crd/components/classification/types';
-import { mapGqlClassificationCardinality } from '@/domain/space/about/model/classificationCardinality';
-
-type GqlTemplateOption = {
-  id: string;
-  profile: { displayName: string; description?: string | null };
-  classification?: {
-    cardinality: Parameters<typeof mapGqlClassificationCardinality>[0];
-    values: ReadonlyArray<{ id: string; label: string }>;
-  } | null;
-};
-
-function toOption(t: GqlTemplateOption): ClassificationTemplateOptionData {
-  return {
-    id: t.id,
-    displayLabel: t.profile.displayName,
-    description: t.profile.description ?? '',
-    cardinality: t.classification ? mapGqlClassificationCardinality(t.classification.cardinality) : 'MULTI_SELECT',
-    values: t.classification?.values.map(v => ({ id: v.id, label: v.label })) ?? [],
-  };
-}
 
 export type UseClassificationPickerResult = {
   open: boolean;
@@ -34,35 +10,19 @@ export type UseClassificationPickerResult = {
 };
 
 /**
- * Step A picker sources (FR-007) — every publicly-listed platform Template
- * Pack (FR-005b) plus the acting Space's TOP-LEVEL (root) Template Library
- * (FR-007a). Fetched only while the picker is open.
+ * Step A picker of the About tab's classifications (FR-007). The native API has no designed read of a
+ * CLASSIFICATION template's values: Template.body is a Node, and that template's body is a choice set
+ * (templates.md §4.1) — a design hole sent to the seed lead (spaces lead 2026-11-25). Until it is designed,
+ * opening the picker shows the existing "feature not enabled" notice and reads nothing, never the legacy API.
+ * Existing classifications are still shown and edited through Space.classifications (useAboutTabData).
  */
-export function useClassificationPicker(levelZeroSpaceId: string | undefined): UseClassificationPickerResult {
-  const [open, setOpen] = useState(false);
-
-  const { data: platformData, loading: platformLoading } = useClassificationTemplatesPlatformWideQuery({
-    skip: !open,
-  });
-  const { data: spaceData, loading: spaceLoading } = useClassificationTemplatesForSpaceQuery({
-    variables: { levelZeroSpaceId: levelZeroSpaceId ?? '' },
-    skip: !open || !levelZeroSpaceId,
-  });
-
-  const platformTemplates = (platformData?.platform.library.templates ?? []).map(r => toOption(r.template));
-  const spaceTemplates = (spaceData?.lookup.space?.templatesManager?.templatesSet?.classificationTemplates ?? []).map(
-    toOption
-  );
-
-  const sources: ClassificationPickerSource[] = [
-    { key: 'platform', templates: platformTemplates, loading: platformLoading },
-    { key: 'space', templates: spaceTemplates, loading: spaceLoading },
-  ];
-
+export function useClassificationPicker(_levelZeroSpaceId: string | undefined): UseClassificationPickerResult {
+  const { t } = useTranslation();
+  const notify = useNotification();
   return {
-    open,
-    openPicker: () => setOpen(true),
-    closePicker: () => setOpen(false),
-    sources,
+    open: false,
+    openPicker: () => notify(t('apollo.errors.userMessages.operations.notEnabled'), 'error'),
+    closePicker: () => undefined,
+    sources: [],
   };
 }

@@ -12,7 +12,7 @@ import { useAdminAccessGuard } from '@/main/crdPages/topLevelPages/admin/useAdmi
  * Full keys rather than suffixes: `t()` is typed against the literal key union,
  * so a template-built key does not type-check.
  */
-const ROLE_LABEL_KEYS = {
+export const ROLE_LABEL_KEYS = {
   [RoleName.PlatformRolesAdmin]: 'common.roles.PLATFORM_ROLES_ADMIN',
   [RoleName.PlatformContentFullAccess]: 'common.roles.PLATFORM_CONTENT_FULL_ACCESS',
   [RoleName.PlatformResourceAdmin]: 'common.roles.PLATFORM_RESOURCE_ADMIN',

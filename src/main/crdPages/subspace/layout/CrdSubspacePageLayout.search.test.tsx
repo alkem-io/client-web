@@ -24,10 +24,7 @@ const useFlowStateSearch = vi.fn(
     retry: () => {},
   })
 );
-const useCalloutsSetTagsQuery = vi.fn((_options: { skip?: boolean; variables: unknown }) => ({
-  data: undefined,
-  loading: false,
-}));
+const notify = vi.fn();
 const useCrdCommunityUpdates = vi.fn((_communityId: string | undefined, _skip?: boolean) => ({
   latest: undefined,
   total: 0,
@@ -49,6 +46,7 @@ const subspaceData = () => ({
   subspaceUrl: '/l0/l1',
   levelZeroSpaceId: 'L0-ID',
   parentSpaceId: 'L0-ID',
+  ancestorCrumbs: [],
   communityId: 'community-1',
   calloutsSetId: 'callouts-set-1',
   collaborationId: 'collab-1',
@@ -86,9 +84,7 @@ vi.mock('react-router-dom', () => ({
   },
   useLocation: () => ({ pathname: '/l0/l1' }),
 }));
-vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useCalloutsSetTagsQuery: (options: { skip?: boolean; variables: unknown }) => useCalloutsSetTagsQuery(options),
-}));
+vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => notify }));
 vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
   useAuthenticationContext: () => ({ isAuthenticated }),
 }));
@@ -131,7 +127,11 @@ vi.mock('@/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs', ()
   getVisibleSettingsTabs: () => [],
   useSettingsTabDescriptors: () => [],
 }));
-vi.mock('@/main/routing/urlResolver/useUrlResolver', () => ({ default: () => ({ spaceLevel: 'L1' }) }));
+vi.mock('@/main/routing/urlResolver/useUrlResolver', () => ({ default: () => ({ spaceLevel: 'L1', remainder: [] }) }));
+vi.mock('@/main/routing/urlResolver/native/useNativeRouteSpace', () => ({
+  useNativeRouteSpace: () => ({ space: undefined, ancestors: [], root: undefined, post: undefined }),
+}));
+vi.mock('@/domain/space/hooks/useSpacePage', () => ({ useSpacePageLoad: () => {}, useSpacePageData: () => undefined }));
 vi.mock('@/main/ui/breadcrumbs/BreadcrumbsContext', () => ({ useSetBreadcrumbs: () => {} }));
 vi.mock('@/main/ui/layout/BannerOverlayContext', () => ({ useEnableBannerOverlay: () => {} }));
 vi.mock('@/main/ui/layout/LayoutWidthContext', () => ({ useEnableSpaceFullWidth: () => {} }));
@@ -191,7 +191,7 @@ describe('CrdSubspacePageLayout sidebar search', () => {
     lastSidebarProps = undefined;
     lastOutletContext = undefined;
     useFlowStateSearch.mockClear();
-    useCalloutsSetTagsQuery.mockClear();
+    notify.mockClear();
     useCrdCommunityUpdates.mockClear();
     inviteDialogMounts.mockClear();
   });
@@ -206,14 +206,10 @@ describe('CrdSubspacePageLayout sidebar search', () => {
     expect(lastOutletContext?.search?.isSearching).toBe(true);
   });
 
-  test('fetches the active phase tags for the search widget', () => {
+  test('the tag chips read is not served: no chips and the failed-read notification for the active phase', () => {
     render(<CrdSubspacePageLayout />);
-    const tagsCall = useCalloutsSetTagsQuery.mock.calls[useCalloutsSetTagsQuery.mock.calls.length - 1][0];
-    expect(tagsCall.skip).toBe(false);
-    expect(tagsCall.variables).toEqual({
-      calloutsSetId: 'callouts-set-1',
-      classificationTagsets: [{ name: 'FLOW_STATE', tags: ['Phase A'] }],
-    });
+    expect(lastSidebarProps?.search?.allTags).toEqual([]);
+    expect(notify).toHaveBeenCalledTimes(1);
   });
 
   test('switching phase clears the field and re-scopes to the new phase', () => {
@@ -233,7 +229,7 @@ describe('CrdSubspacePageLayout sidebar search', () => {
     sidebarPlan = ['intent', 'index'];
     render(<CrdSubspacePageLayout />);
     expect(useFlowStateSearch.mock.calls.every(([params]) => params.skip === true)).toBe(true);
-    expect(useCalloutsSetTagsQuery.mock.calls.every(([options]) => options.skip === true)).toBe(true);
+    expect(notify).not.toHaveBeenCalled();
     expect(lastSidebarProps?.search).toBeUndefined();
   });
 });

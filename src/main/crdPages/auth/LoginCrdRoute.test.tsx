@@ -43,6 +43,7 @@ vi.mock('@/crd/components/auth/LoginCard', () => ({
   ),
 }));
 vi.mock('./AuthShellWrapper', () => ({
+  AuthFlowContext: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   AuthShellWrapper: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 vi.mock('@/core/auth/authentication/pages/LoginSuccessPage', () => ({ default: () => <div /> }));
@@ -121,12 +122,14 @@ describe('LoginCrdRoute', () => {
     expect(screen.getByTestId('crd-login-card')).toBeInTheDocument();
   });
 
-  it('redirects an authenticated user away when there is no flow id', () => {
+  it('uses the BFF entry without consulting a local authentication or Viewer state', () => {
     mockIsAuthenticated.mockReturnValue(true);
 
     renderRoute();
 
-    expect(screen.queryByTestId('crd-login-card')).not.toBeInTheDocument();
+    expect(screen.getByTestId('crd-login-card')).toBeInTheDocument();
+    expect(mockIsAuthenticated).not.toHaveBeenCalled();
+    expect(replaceSpy).toHaveBeenCalledWith('https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F');
   });
 
   it('a lockout arrival renders the notice instead of redirecting into the OIDC entry', () => {
@@ -312,13 +315,15 @@ describe('LoginCrdRoute', () => {
 
   // The exemption is value-scoped too: an authenticated visitor on a crafted
   // `?app_signin=<anything>` must still be bounced by the guard.
-  it('an authenticated unrecognised app_signin value is still bounced by the guard', () => {
+  it('an unrecognised app_signin value enters the BFF without consulting local auth state', () => {
     mockIsAuthenticated.mockReturnValue(true);
     mockSearch = 'app_signin=bogus';
 
     renderRoute();
 
-    expect(screen.queryByTestId('crd-login-card')).not.toBeInTheDocument();
+    expect(screen.getByTestId('crd-login-card')).toBeInTheDocument();
+    expect(mockIsAuthenticated).not.toHaveBeenCalled();
+    expect(replaceSpy).toHaveBeenCalledWith('https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F');
   });
 
   // The disqualifier is value-scoped, not presence-scoped: an unrecognised value

@@ -16,7 +16,9 @@ export const retryIf = (error: any, operation: Operation) => {
     return false;
   }
 
-  const doNotRetryCodes = [500, 400, 401, 403];
+  // 422: the native server's schema validation refused the operation (a field or argument it does not declare yet);
+  // the same request is refused again, so a read it does not serve yet is asked once (spaces 2026-11-26, no retries).
+  const doNotRetryCodes = [500, 400, 401, 403, 422];
   return !!error && !doNotRetryCodes.includes(error.statusCode) && !error.response?.redirected;
 };
 

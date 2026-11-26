@@ -1,0 +1,437 @@
+{
+  "roles": [
+    "admin",
+    "applicant",
+    "associate",
+    "audit-reader",
+    "content-full-access",
+    "document-initializer",
+    "feature-beta-tester",
+    "feature-organization-creator",
+    "feature-vc-campaign",
+    "feature-virtual-assistant",
+    "guest-contributor",
+    "guest-viewer",
+    "invitee",
+    "inviter",
+    "joiner",
+    "lead",
+    "license-manager",
+    "member",
+    "messageable",
+    "meta-viewer",
+    "operations-admin",
+    "owner",
+    "registered",
+    "registered-viewer",
+    "resource-admin",
+    "roles-admin",
+    "settings-admin",
+    "spaces-reader",
+    "support",
+    "users-admin",
+    "viewer"
+  ],
+  "entitlements": [
+    "account-ai-assistant-tokens-month",
+    "account-innovation-hub",
+    "account-innovation-pack",
+    "account-space-free",
+    "account-space-plus",
+    "account-space-premium",
+    "account-virtual-contributor",
+    "space-flag-memo-multi-user",
+    "space-flag-memo-signing",
+    "space-flag-office-documents",
+    "space-flag-save-as-template",
+    "space-flag-virtual-contributor-access",
+    "space-flag-whiteboard-multi-user",
+    "space-free",
+    "space-plus",
+    "space-premium"
+  ],
+  "source_role_mappings": [
+    {
+      "entity_type": "account",
+      "source_role": "admin",
+      "target_role": "admin"
+    },
+    {
+      "entity_type": "account",
+      "source_role": "owner",
+      "target_role": "owner"
+    },
+    {
+      "entity_type": "conversation",
+      "source_role": "member",
+      "target_role": "member"
+    },
+    {
+      "entity_type": "document",
+      "source_role": "contributor",
+      "target_role": "contributor"
+    },
+    {
+      "entity_type": "document",
+      "source_role": "guest-contributor",
+      "target_role": "contributor"
+    },
+    {
+      "entity_type": "document",
+      "source_role": "guest-viewer",
+      "target_role": "viewer"
+    },
+    {
+      "entity_type": "document",
+      "source_role": "viewer",
+      "target_role": "viewer"
+    },
+    {
+      "entity_type": "organization",
+      "source_role": "admin",
+      "target_role": "admin"
+    },
+    {
+      "entity_type": "organization",
+      "source_role": "associate",
+      "target_role": "associate"
+    },
+    {
+      "entity_type": "organization",
+      "source_role": "invitee",
+      "target_role": "invitee"
+    },
+    {
+      "entity_type": "organization",
+      "source_role": "owner",
+      "target_role": "owner"
+    },
+    {
+      "entity_type": "organization",
+      "source_role": "pending-applicant",
+      "target_role": "pending_applicant"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "audit-reader",
+      "target_role": "audit_reader"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "content-full-access",
+      "target_role": "content_full_access"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "document-initializer",
+      "target_role": "document_initializer"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "feature-beta-tester",
+      "target_role": "feature_beta_tester"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "feature-organization-creator",
+      "target_role": "feature_organization_creator"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "feature-vc-campaign",
+      "target_role": "feature_vc_campaign"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "feature-virtual-assistant",
+      "target_role": "feature_virtual_assistant"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "guest-viewer",
+      "target_role": "viewer"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "invitee",
+      "target_role": "invitee"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "license-manager",
+      "target_role": "license_manager"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "operations-admin",
+      "target_role": "operations_admin"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "pending-applicant",
+      "target_role": "pending_applicant"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "registered",
+      "target_role": "registered"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "resource-admin",
+      "target_role": "resource_admin"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "roles-admin",
+      "target_role": "roles_admin"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "settings-admin",
+      "target_role": "settings_admin"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "spaces-reader",
+      "target_role": "spaces_reader"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "support",
+      "target_role": "support"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "users-admin",
+      "target_role": "users_admin"
+    },
+    {
+      "entity_type": "platform",
+      "source_role": "viewer",
+      "target_role": "viewer"
+    },
+    {
+      "entity_type": "post",
+      "source_role": "contributor",
+      "target_role": "contributor"
+    },
+    {
+      "entity_type": "post",
+      "source_role": "guest-contributor",
+      "target_role": "contributor"
+    },
+    {
+      "entity_type": "post",
+      "source_role": "guest-viewer",
+      "target_role": "viewer"
+    },
+    {
+      "entity_type": "post",
+      "source_role": "viewer",
+      "target_role": "viewer"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "admin",
+      "target_role": "admin"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "applicant",
+      "target_role": "applicant"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "contributor",
+      "target_role": "contributor"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "guest-contributor",
+      "target_role": "contributor"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "guest-viewer",
+      "target_role": "viewer"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "invitee",
+      "target_role": "invitee"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "joiner",
+      "target_role": "joiner"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "lead",
+      "target_role": "lead"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "member",
+      "target_role": "member"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "meta-viewer",
+      "target_role": "meta_viewer"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "pending-applicant",
+      "target_role": "pending_applicant"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "registered-viewer",
+      "target_role": "registered_viewer"
+    },
+    {
+      "entity_type": "space",
+      "source_role": "viewer",
+      "target_role": "viewer"
+    },
+    {
+      "entity_type": "thread",
+      "source_role": "member",
+      "target_role": "member"
+    },
+    {
+      "entity_type": "user",
+      "source_role": "owner",
+      "target_role": "owner"
+    },
+    {
+      "entity_type": "virtual_contributor",
+      "source_role": "guest-viewer",
+      "target_role": "viewer"
+    },
+    {
+      "entity_type": "virtual_contributor",
+      "source_role": "viewer",
+      "target_role": "viewer"
+    }
+  ],
+  "legacy_credential_types": [
+    {
+      "source_role": "account-admin",
+      "target_role": "admin",
+      "platform_resource": false
+    },
+    {
+      "source_role": "feature-beta-tester",
+      "target_role": "feature-beta-tester",
+      "platform_resource": true
+    },
+    {
+      "source_role": "feature-organization-creator",
+      "target_role": "feature-organization-creator",
+      "platform_resource": true
+    },
+    {
+      "source_role": "feature-vc-campaign",
+      "target_role": "feature-vc-campaign",
+      "platform_resource": true
+    },
+    {
+      "source_role": "feature-virtual-assistant",
+      "target_role": "feature-virtual-assistant",
+      "platform_resource": true
+    },
+    {
+      "source_role": "organization-admin",
+      "target_role": "admin",
+      "platform_resource": false
+    },
+    {
+      "source_role": "organization-associate",
+      "target_role": "associate",
+      "platform_resource": false
+    },
+    {
+      "source_role": "organization-owner",
+      "target_role": "owner",
+      "platform_resource": false
+    },
+    {
+      "source_role": "platform-audit-reader",
+      "target_role": "audit-reader",
+      "platform_resource": true
+    },
+    {
+      "source_role": "platform-content-full-access",
+      "target_role": "content-full-access",
+      "platform_resource": true
+    },
+    {
+      "source_role": "platform-license-manager",
+      "target_role": "license-manager",
+      "platform_resource": true
+    },
+    {
+      "source_role": "platform-operations-admin",
+      "target_role": "operations-admin",
+      "platform_resource": true
+    },
+    {
+      "source_role": "platform-resource-admin",
+      "target_role": "resource-admin",
+      "platform_resource": true
+    },
+    {
+      "source_role": "platform-roles-admin",
+      "target_role": "roles-admin",
+      "platform_resource": true
+    },
+    {
+      "source_role": "platform-settings-admin",
+      "target_role": "settings-admin",
+      "platform_resource": true
+    },
+    {
+      "source_role": "platform-spaces-reader",
+      "target_role": "spaces-reader",
+      "platform_resource": true
+    },
+    {
+      "source_role": "platform-support",
+      "target_role": "support",
+      "platform_resource": true
+    },
+    {
+      "source_role": "platform-users-admin",
+      "target_role": "users-admin",
+      "platform_resource": true
+    },
+    {
+      "source_role": "space-admin",
+      "target_role": "admin",
+      "platform_resource": false
+    },
+    {
+      "source_role": "space-invitee",
+      "target_role": "invitee",
+      "platform_resource": false
+    },
+    {
+      "source_role": "space-lead",
+      "target_role": "lead",
+      "platform_resource": false
+    },
+    {
+      "source_role": "space-member",
+      "target_role": "member",
+      "platform_resource": false
+    },
+    {
+      "source_role": "user-self",
+      "target_role": "owner",
+      "platform_resource": false
+    }
+  ]
+}

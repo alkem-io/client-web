@@ -1,15 +1,14 @@
 import { debounce } from 'lodash-es';
 import { useEffect, useRef, useState } from 'react';
-import { UserConversationsDocument, useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
-import {
-  ConversationCreationType,
-  type UserConversationsQuery,
-  type UserFilterInput,
-} from '@/core/apollo/generated/graphql-schema';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+import { useReportedQueryError } from '@/core/apollo/hooks/useReportedQueryError';
+import { useMatrixClient } from '@/core/matrix/activeClient';
 import type { ShareUser } from '@/crd/forms/UserSelector';
-import { useContributors } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { useChatRecipientDirectory } from './useChatRecipientDirectory';
+import { openNativeConversation } from './useStartDirectChat';
 
 /**
  * Drives the "new message" flow: contributor search + create a direct (1 person)
@@ -17,113 +16,65 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
  */
 export const useNewChat = (onCreated: (conversationId: string, roomId: string) => void) => {
   const { userModel: currentUser } = useCurrentUserContext();
+  const { t } = useTranslation('crd-profilePages');
   const [open, setOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<ShareUser[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filter, setFilter] = useState<UserFilterInput>();
+  const [terms, setTerms] = useState('');
 
-  const [createConversation] = useCreateConversationMutation();
-  const { data: contributors = [], loading } = useContributors({ filter, onlyUsersInRole: false, pageSize: 20 });
+  const client = useMatrixClient();
+  const searchPending = searchQuery.trim() !== terms;
+  const { searchResults, loading, error } = useChatRecipientDirectory(
+    open && !searchPending ? terms : '',
+    currentUser?.id
+  );
+  useReportedQueryError(error);
 
-  const selectedIds = new Set(selectedUsers.map(user => user.id));
-  const searchResults: ShareUser[] = contributors
-    .filter(user => user.id !== currentUser?.id && !selectedIds.has(user.id))
-    .map(user => ({
-      id: user.id,
-      displayName: user.profile?.displayName ?? '',
-      avatarUrl: user.profile?.visual?.uri,
-      city: user.profile?.location?.city,
-      country: user.profile?.location?.country,
-    }));
+  const setSearchTerms = useRef(debounce((value: string) => setTerms(value.trim()), 300)).current;
+  useEffect(() => () => setSearchTerms.cancel(), [setSearchTerms]);
 
-  const debouncedSetFilter = useRef(
-    debounce((value: string) => {
-      setFilter(value ? { email: value, displayName: value } : undefined);
-    }, 300)
-  ).current;
-  useEffect(() => () => debouncedSetFilter.cancel(), [debouncedSetFilter]);
+  const clearSearch = () => {
+    setSearchTerms.cancel();
+    setSearchQuery('');
+    setTerms('');
+  };
 
   const reset = () => {
     setSelectedUsers([]);
-    setSearchQuery('');
-    setFilter(undefined);
+    clearSearch();
   };
 
   const onSearchChange = (query: string) => {
     setSearchQuery(query);
-    debouncedSetFilter(query);
+    setSearchTerms(query);
   };
 
   const onSelect = (user: ShareUser) => {
-    setSelectedUsers(previous => [...previous, user]);
-    setSearchQuery('');
-    setFilter(undefined);
+    setSelectedUsers(previous =>
+      previous.some(candidate => candidate.id === user.id) ? previous : [...previous, user]
+    );
+    clearSearch();
   };
 
   const onRemove = (userId: string) => setSelectedUsers(previous => previous.filter(user => user.id !== userId));
 
-  const [create, creating] = useLoadingState(async () => {
+  const [createConversation, creating] = useLoadingState(async () => {
     if (selectedUsers.length === 0) {
       return;
     }
     const isGroup = selectedUsers.length > 1;
     const displayName = isGroup ? selectedUsers.map(user => user.displayName).join(', ') : undefined;
 
-    const result = await createConversation({
-      variables: {
-        conversationData: {
-          memberIDs: selectedUsers.map(user => user.id),
-          type: isGroup ? ConversationCreationType.Group : ConversationCreationType.Direct,
-          displayName,
-        },
-      },
-      update: (cache, { data }) => {
-        const conversation = data?.createConversation;
-        const room = conversation?.room;
-        if (!conversation || !room) {
-          return;
-        }
-        cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-          if (!existing?.me?.conversations?.conversations) return existing;
-          if (existing.me.conversations.conversations.some(c => c.id === conversation.id)) return existing;
-          return {
-            ...existing,
-            me: {
-              ...existing.me,
-              conversations: {
-                ...existing.me.conversations,
-                conversations: [
-                  {
-                    __typename: 'Conversation' as const,
-                    id: conversation.id,
-                    room: {
-                      __typename: 'Room' as const,
-                      id: room.id,
-                      attachmentBucketId: room.attachmentBucketId,
-                      type: room.type,
-                      displayName: room.displayName,
-                      avatarUrl: room.avatarUrl,
-                      createdDate: room.createdDate,
-                    },
-                    members: conversation.members,
-                  },
-                  ...existing.me.conversations.conversations,
-                ],
-              },
-            },
-          };
-        });
-      },
-    });
-
-    const conversationId = result.data?.createConversation.id;
-    const roomId = result.data?.createConversation.room?.id;
-    if (conversationId && roomId) {
-      onCreated(conversationId, roomId);
-    }
+    const roomId = await openNativeConversation(
+      client,
+      selectedUsers.map(user => user.id),
+      displayName
+    );
+    onCreated(roomId, roomId);
     setOpen(false);
     reset();
   });
+  const create = () => createConversation().catch(() => toast.error(t('common.messagePopover.openChatError')));
 
   const openDialog = () => {
     reset();
@@ -147,7 +98,7 @@ export const useNewChat = (onCreated: (conversationId: string, roomId: string) =
     selectedUsers,
     onSelect,
     onRemove,
-    loading,
+    loading: loading || searchPending,
     creating,
     create,
   };

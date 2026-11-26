@@ -1,26 +1,18 @@
-import { useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
-import { mapSidebarLeads } from '../dataMappers/spacePageDataMapper';
+import { pageSpace } from '@/domain/space/context/spacePageShellMapper';
+import { useSpacePageData } from '@/domain/space/hooks/useSpacePage';
+import { actorsOfType, mapSidebarLeads } from '../dataMappers/spacePageDataMapper';
 
 /**
- * Fetches lead users + lead organizations for the L0 sidebar info block.
+ * Lead users + lead organizations for the L0 sidebar info block, read from the page's D2 Space document
+ * (`leads`, split by actorType, users first). No request of its own.
  *
- * `SpaceContext` only loads the lightweight `SpaceAboutLight` fragment, which
- * does not include `leadUsers` / `leadOrganizations`. The full
- * `useSpaceAboutDetailsQuery` is the canonical source. Apollo dedupes against
- * any other consumer (e.g. the L1 layout fetching the parent's about).
- *
- * `skip: true` suppresses the query — the sidebar connector passes this when
- * the `intent` widget is not configured on the active tab (FR-019).
- *
- * `loading` lets the info block hold the leads row's footprint until the query
- * lands, instead of growing when it does (issue #10043).
+ * `skip: true` reads nothing — the sidebar connector passes this when the `intent` widget is not configured on the
+ * active tab (FR-019). `loading` holds the leads row's footprint until the document lands (issue #10043).
  */
 export function useCrdSpaceLeads(spaceId: string | undefined, skip?: boolean): { leads: LeadItem[]; loading: boolean } {
-  const { data, loading } = useSpaceAboutDetailsQuery({
-    variables: { spaceId: spaceId ?? '' },
-    skip: skip || !spaceId,
-  });
-  const membership = data?.lookup.space?.about.membership;
-  return { leads: mapSidebarLeads(membership?.leadUsers, membership?.leadOrganizations), loading };
+  const id = skip ? undefined : spaceId;
+  const space = pageSpace(useSpacePageData(id, 'space')?.node, id);
+  const leads = mapSidebarLeads(actorsOfType(space?.leads, 'user'), actorsOfType(space?.leads, 'organization'));
+  return { leads, loading: Boolean(id) && !space };
 }

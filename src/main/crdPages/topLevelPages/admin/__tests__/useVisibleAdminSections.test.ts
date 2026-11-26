@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { ROLE_ADMIN_SECTIONS } from '../adminSectionAccess';
 import { useVisibleAdminSections } from '../useVisibleAdminSections';
 
@@ -48,7 +49,7 @@ describe('useVisibleAdminSections', () => {
     expect(
       arrange({
         platform: ['AUTHORIZATION_RESET', 'PLATFORM_OPERATIONS_ADMIN'],
-        myRoles: ['PLATFORM_OPERATIONS_ADMIN'],
+        myRoles: [RoleName.PlatformOperationsAdmin],
       })
     ).toEqual(['authorization-policies']);
   });
@@ -76,7 +77,7 @@ describe('useVisibleAdminSections', () => {
         arrange({
           platform: ['SET_SERVICE_PROFILE'],
           roleSet: ['PLATFORM_ROLES_ASSIGN', 'FEATURE_ROLE_ASSIGN', 'PLATFORM_ROLE_HOLDERS_READ'],
-          myRoles: ['PLATFORM_ROLES_ADMIN'],
+          myRoles: [RoleName.PlatformRolesAdmin],
         })
       ).toEqual(['authorization']);
     });
@@ -86,7 +87,7 @@ describe('useVisibleAdminSections', () => {
         arrange({
           platform: ['PLATFORM_USERS_ADMIN'],
           roleSet: ['FEATURE_ROLE_ASSIGN', 'FEATURE_ROLE_HOLDERS_READ'],
-          myRoles: ['PLATFORM_USERS_ADMIN'],
+          myRoles: [RoleName.PlatformUsersAdmin],
         }).sort()
       ).toEqual(['authorization', 'users']);
     });
@@ -101,7 +102,7 @@ describe('useVisibleAdminSections', () => {
         arrange({
           platform: ['CREATE', 'READ', 'UPDATE', 'DELETE', 'PLATFORM_CONTENT_FULL_ACCESS'],
           roleSet: ['CREATE', 'READ', 'UPDATE', 'DELETE', 'PLATFORM_CONTENT_FULL_ACCESS'],
-          myRoles: ['PLATFORM_CONTENT_FULL_ACCESS'],
+          myRoles: [RoleName.PlatformContentFullAccess],
         }).sort()
       ).toEqual(['innovation-hubs', 'innovation-packs', 'organizations', 'spaces', 'virtual-contributors']);
     });
@@ -111,7 +112,7 @@ describe('useVisibleAdminSections', () => {
     // The fixture carries no privileges at all because that is what the running
     // server returns; the role name is the only signal available.
     test('Platform Resource Admin — transfer, by role, with no privileges at all (F1)', () => {
-      expect(arrange({ myRoles: ['PLATFORM_RESOURCE_ADMIN'] })).toEqual(['transfer']);
+      expect(arrange({ myRoles: [RoleName.PlatformResourceAdmin] })).toEqual(['transfer']);
     });
 
     // Read-only oversight. `CrdAdminGlobalRolesPage` already collapses to
@@ -128,7 +129,7 @@ describe('useVisibleAdminSections', () => {
         arrange({
           platform: ['CREATE_ORGANIZATION', 'PLATFORM_FORUM_MANAGE', 'PLATFORM_SUPPORT_LISTS_READ'],
           roleSet: ['PLATFORM_FORUM_MANAGE'],
-          myRoles: ['PLATFORM_SUPPORT'],
+          myRoles: [RoleName.PlatformSupport],
         }).sort()
       ).toEqual(['innovation-hubs', 'innovation-packs', 'organizations']);
     });
@@ -151,7 +152,7 @@ describe('useVisibleAdminSections', () => {
       expect(
         arrange({
           platform: ['PLATFORM_LICENSING_LISTS_READ'],
-          myRoles: ['PLATFORM_LICENSE_MANAGER'],
+          myRoles: [RoleName.PlatformLicenseManager],
         })
       ).toEqual(['licensing']);
     });
@@ -161,7 +162,7 @@ describe('useVisibleAdminSections', () => {
     });
 
     test('Platform Settings Admin — defines plans but does not get the licensing section', () => {
-      expect(arrange({ platform: ['PLATFORM_SETTINGS_ADMIN'], myRoles: ['PLATFORM_SETTINGS_ADMIN'] })).toEqual([]);
+      expect(arrange({ platform: ['PLATFORM_SETTINGS_ADMIN'], myRoles: [RoleName.PlatformSettingsAdmin] })).toEqual([]);
     });
 
     test('Platform Audit Reader — the holder lists, view-only', () => {
@@ -169,7 +170,7 @@ describe('useVisibleAdminSections', () => {
         arrange({
           platform: ['PLATFORM_AUDIT_READ'],
           roleSet: ['PLATFORM_ROLE_HOLDERS_READ'],
-          myRoles: ['PLATFORM_AUDIT_READER'],
+          myRoles: [RoleName.PlatformAuditReader],
         })
       ).toEqual(['authorization']);
     });
@@ -188,15 +189,18 @@ describe('useVisibleAdminSections', () => {
      * cases are above.)
      */
     test.each([
-      ['Platform Settings Admin', { platform: ['PLATFORM_SETTINGS_ADMIN'], myRoles: ['PLATFORM_SETTINGS_ADMIN'] }],
-      ['Platform Spaces Reader', { myRoles: ['PLATFORM_SPACES_READER'] }],
-      ['Feature Beta Tester', { myRoles: ['FEATURE_BETA_TESTER'] }],
-      ['Feature Virtual Assistant', { platform: ['ACCESS_VIRTUAL_ASSISTANT'], myRoles: ['FEATURE_VIRTUAL_ASSISTANT'] }],
+      ['Platform Settings Admin', { platform: ['PLATFORM_SETTINGS_ADMIN'], myRoles: [RoleName.PlatformSettingsAdmin] }],
+      ['Platform Spaces Reader', { myRoles: [RoleName.PlatformSpacesReader] }],
+      ['Feature Beta Tester', { myRoles: [RoleName.FeatureBetaTester] }],
+      [
+        'Feature Virtual Assistant',
+        { platform: ['ACCESS_VIRTUAL_ASSISTANT'], myRoles: [RoleName.FeatureVirtualAssistant] },
+      ],
       [
         'Feature Organization Creator',
-        { platform: ['CREATE_ORGANIZATION'], myRoles: ['FEATURE_ORGANIZATION_CREATOR'] },
+        { platform: ['CREATE_ORGANIZATION'], myRoles: [RoleName.FeatureOrganizationCreator] },
       ],
-      ['Feature VC Campaign', { myRoles: ['FEATURE_VC_CAMPAIGN'] }],
+      ['Feature VC Campaign', { myRoles: [RoleName.FeatureVcCampaign] }],
     ])('%s sees no section (recorded gap)', (_role, fixture) => {
       expect(arrange(fixture)).toEqual([]);
     });
@@ -234,7 +238,7 @@ describe('useVisibleAdminSections', () => {
         arrange({
           platform: ['PLATFORM_LICENSING_LISTS_READ', 'PLATFORM_USERS_ADMIN'],
           roleSet: ['FEATURE_ROLE_ASSIGN', 'FEATURE_ROLE_HOLDERS_READ'],
-          myRoles: ['PLATFORM_LICENSE_MANAGER', 'PLATFORM_USERS_ADMIN'],
+          myRoles: [RoleName.PlatformLicenseManager, RoleName.PlatformUsersAdmin],
         }).sort()
       ).toEqual(['authorization', 'licensing', 'users']);
     });
@@ -244,16 +248,16 @@ describe('useVisibleAdminSections', () => {
         arrange({
           platform: ['PLATFORM_SUPPORT_LISTS_READ', 'PLATFORM_USERS_ADMIN'],
           roleSet: ['FEATURE_ROLE_ASSIGN', 'FEATURE_ROLE_HOLDERS_READ'],
-          myRoles: ['PLATFORM_SUPPORT', 'PLATFORM_USERS_ADMIN'],
+          myRoles: [RoleName.PlatformSupport, RoleName.PlatformUsersAdmin],
         }).sort()
       ).toEqual(['authorization', 'innovation-hubs', 'innovation-packs', 'organizations', 'users']);
     });
 
     test('a second role never removes a section the first one granted', () => {
-      const alone = arrange({ platform: ['PLATFORM_USERS_ADMIN'], myRoles: ['PLATFORM_USERS_ADMIN'] });
+      const alone = arrange({ platform: ['PLATFORM_USERS_ADMIN'], myRoles: [RoleName.PlatformUsersAdmin] });
       const paired = arrange({
         platform: ['PLATFORM_USERS_ADMIN', 'PLATFORM_LICENSING_LISTS_READ'],
-        myRoles: ['PLATFORM_USERS_ADMIN', 'PLATFORM_LICENSE_MANAGER'],
+        myRoles: [RoleName.PlatformUsersAdmin, RoleName.PlatformLicenseManager],
       });
       for (const id of alone) expect(paired).toContain(id);
     });

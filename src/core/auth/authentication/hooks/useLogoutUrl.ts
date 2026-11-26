@@ -1,74 +1,64 @@
 import { useState } from 'react';
-import {
-  AUTH_LOGOUT_PATH,
-  OIDC_LOGOUT_PATH,
-  OIDC_RECOVERY_ATTEMPTED_KEY,
-} from '@/core/auth/authentication/constants/authentication.constants';
-import { runMatrixLogoutCleanup } from '@/core/matrix/logoutCleanup';
-import { useIdTokenHint } from './useIdTokenHint';
+import { AUTH_LOGOUT_PATH, OIDC_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { useKratosLogout } from './useKratosLogout';
 
-type LogoutOutcome = { kind: 'redirect'; url: string } | { kind: 'cleared' };
+type LogoutOutcome = { kind: 'redirect'; url: string } | { kind: 'cleared' } | { kind: 'unknown' };
 
 /**
- * Computes the next logout redirect. Logout spans up to two sequential legs, each
- * a separate redirect across a page reload — this hook owns deciding which is next:
+ * Completes RP/Hydra logout through the registered return, then Kratos SSO logout:
  *
- *  Leg 1 (RP / Hydra): while the BFF session is alive, fetch the id_token_hint and
- *    redirect to `/api/auth/oidc/logout` -> Hydra `end_session` -> back to /logout.
- *  Leg 2 (Kratos SSO): on the return pass the BFF session is gone, so the hint
- *    fetch fails; we sweep any stale cookie, then end the Kratos SSO session for
- *    this browser (closes the shared-device whoami / silent re-login gap).
+ *  Leg 1 (RP / Hydra): a live BFF session redirects through its logout endpoint
+ *    and Hydra `end_session` back to the registered /logout route.
+ *  Leg 2 (Kratos SSO): on the return pass the shared foundation reports no
+ *    authenticated requester session. Confirm BFF cleanup before asking Kratos
+ *    for its browser logout flow.
  *
  * When neither leg has anything left to end, the outcome is `cleared`.
  */
 export const useLogoutUrl = () => {
-  const { fetchIdTokenHint } = useIdTokenHint();
   const { getKratosLogoutUrl } = useKratosLogout();
-  const [loading, setLoading] = useState<boolean>();
   const [outcome, setOutcome] = useState<LogoutOutcome>();
+  const [error, setError] = useState<Error>();
 
-  const getLogoutUrl = async () => {
-    setLoading(true);
-    // Disarm OIDC self-recovery so logging out is never silently undone by an
-    // automatic re-login. (Logout also ends the Kratos SSO session below, which
-    // alone stops recovery — this clears the per-tab loop guard belt-and-suspenders.)
-    sessionStorage.removeItem(OIDC_RECOVERY_ATTEMPTED_KEY);
-    // Stop this tab's Matrix session if it has one, then clear every stored Matrix namespace in any case.
-    await runMatrixLogoutCleanup();
-    const postLogoutRedirectUri = `${window.location.origin}${AUTH_LOGOUT_PATH}`;
+  const getLogoutUrl = async (session: boolean | 'invalid-session'): Promise<LogoutOutcome | undefined> => {
+    if (outcome?.kind === 'unknown') return outcome;
+    setError(undefined);
+    setOutcome(undefined);
     try {
-      const idToken = await fetchIdTokenHint();
       const params = new URLSearchParams({
-        id_token_hint: idToken,
-        post_logout_redirect_uri: postLogoutRedirectUri,
+        post_logout_redirect_uri: `${window.location.origin}${AUTH_LOGOUT_PATH}`,
       });
-      // Leg 1 — RP-initiated logout via Hydra, then back to /logout for leg 2.
-      setOutcome({ kind: 'redirect', url: `${OIDC_LOGOUT_PATH}?${params.toString()}` });
-    } catch {
-      // No hint — the BFF session is already gone (return from Hydra, or the user
-      // was never OIDC-logged-in). Sweep any stale BFF cookie hintless; use fetch
-      // (not navigation) so the page does not reload and loop on /logout.
-      try {
-        await fetch(OIDC_LOGOUT_PATH, {
-          credentials: 'include',
-          redirect: 'manual',
-        });
-      } catch {
-        // Network error mid-cleanup is non-fatal — nothing to clear, or already cleared.
+      const bffLogoutUrl = `${OIDC_LOGOUT_PATH}?${params.toString()}`;
+      if (session === true) {
+        const next = { kind: 'redirect', url: bffLogoutUrl } as const;
+        setOutcome(next);
+        return next;
       }
-      // Leg 2 — end the Kratos SSO session too, if one is still live. Kratos's own
-      // logout.after config decides the landing page. No live session -> cleared.
-      const kratosLogoutUrl = await getKratosLogoutUrl();
-      setOutcome(kratosLogoutUrl ? { kind: 'redirect', url: kratosLogoutUrl } : { kind: 'cleared' });
-    } finally {
-      setLoading(false);
+      const cleanup = await fetch(bffLogoutUrl, { credentials: 'include', redirect: 'manual' });
+      if (cleanup.type === 'opaqueredirect' || (cleanup.status >= 300 && cleanup.status < 400)) {
+        const next = { kind: 'unknown' } as const;
+        setOutcome(next);
+        return next;
+      }
+      if (cleanup.status !== 204) throw new Error('BFF logout outcome unavailable');
+      if (session === 'invalid-session') {
+        const next = { kind: 'redirect', url: AUTH_LOGOUT_PATH } as const;
+        setOutcome(next);
+        return next;
+      }
+      const kratosOutcome = await getKratosLogoutUrl();
+      if (kratosOutcome.kind === 'failed') throw new Error('Kratos logout outcome unavailable');
+      const next = kratosOutcome.kind === 'redirect' ? kratosOutcome : ({ kind: 'cleared' } as const);
+      setOutcome(next);
+      return next;
+    } catch (cause) {
+      setError(cause instanceof Error ? cause : new Error('Logout unavailable'));
     }
   };
 
   return {
     outcome,
-    loading,
-    getLogoutUrl: () => getLogoutUrl(),
+    error,
+    getLogoutUrl,
   };
 };

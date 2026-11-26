@@ -32,6 +32,7 @@ import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationP
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
 import type { InAppNotificationPayloadModel } from '@/main/inAppNotifications/model/InAppNotificationPayloadModel';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
+import { ROLE_LABEL_KEYS } from './useCrdUser';
 
 const TRANS_COMPONENTS = {
   b: <strong />,
@@ -47,7 +48,10 @@ const TRANS_COMPONENTS = {
  * humanized form of the slug, never the raw slug and never blank.
  */
 function resolveRoleLabel(slug: string | undefined, t: TFunction): string | undefined {
-  return slug ? t(`common.roles.${kebabToConstantCase(slug)}`, { defaultValue: humanizeRoleSlug(slug) }) : undefined;
+  const key = Object.entries(ROLE_LABEL_KEYS).find(([role]) => role === slug)?.[1];
+  return slug
+    ? t(key ?? `common.roles.${kebabToConstantCase(slug)}`, { defaultValue: humanizeRoleSlug(slug) })
+    : undefined;
 }
 
 /**

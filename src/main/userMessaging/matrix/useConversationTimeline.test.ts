@@ -12,6 +12,8 @@ import { computeUnreadCount } from './unreadCount';
 import { useConversationTimeline } from './useConversationTimeline';
 
 const HS = 'hs.test';
+const roomId = '019435a6-8be3-7d28-a5f2-b05f03f76455';
+const matrixRoomId = `!${roomId}:${HS}`;
 
 // A room holding `total` text events, of which the newest `live` are loaded;
 // scrollback loads older ones.
@@ -24,19 +26,18 @@ const makeClient = (total: number, live: number) => {
     getOriginalContent: () => ({ msgtype: 'm.text', body: `m${index}` }),
   }));
   let loadedFrom = total - live;
-  const room = { roomId: '!r', getLiveTimeline: () => ({ getEvents: () => all.slice(loadedFrom) }) };
+  const room = { roomId: matrixRoomId, getLiveTimeline: () => ({ getEvents: () => all.slice(loadedFrom) }) };
   const scrollback = vi.fn(async (_room: unknown, limit: number) => {
     loadedFrom = Math.max(0, loadedFrom - limit);
   });
   const client = {
     getUserId: () => `@me:${HS}`,
-    getRoomIdForAlias: vi.fn(async () => ({ room_id: '!r' })),
-    getRoom: () => room,
+    getRoom: vi.fn((_id: string): typeof room | null => room),
     scrollback,
     on: vi.fn(),
     removeListener: vi.fn(),
   };
-  return { client, scrollback };
+  return { client, room, scrollback };
 };
 
 describe('useConversationTimeline', () => {
@@ -44,7 +45,7 @@ describe('useConversationTimeline', () => {
     const { client, scrollback } = makeClient(5000, 20);
     harness.client = client;
 
-    const { result } = renderHook(() => useConversationTimeline('alk-room'));
+    const { result } = renderHook(() => useConversationTimeline(roomId));
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.messages).toHaveLength(1000);
@@ -55,7 +56,7 @@ describe('useConversationTimeline', () => {
     const { client } = makeClient(130, 20);
     harness.client = client;
 
-    const { result } = renderHook(() => useConversationTimeline('alk-room'));
+    const { result } = renderHook(() => useConversationTimeline(roomId));
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.messages).toHaveLength(130);
@@ -66,7 +67,7 @@ describe('useConversationTimeline', () => {
     scrollback.mockRejectedValueOnce(new Error('M_LIMIT_EXCEEDED'));
     harness.client = client;
 
-    const { result } = renderHook(() => useConversationTimeline('alk-room'));
+    const { result } = renderHook(() => useConversationTimeline(roomId));
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.messages).toHaveLength(20);
@@ -74,30 +75,30 @@ describe('useConversationTimeline', () => {
 
   it('renders nothing for a room that has no Matrix room behind it', async () => {
     const { client, scrollback } = makeClient(10, 10);
-    client.getRoomIdForAlias.mockRejectedValue(new Error('M_NOT_FOUND'));
+    client.getRoom.mockReturnValue(null);
     harness.client = client;
 
-    const { result } = renderHook(() => useConversationTimeline('unlisted-room'));
+    const { result } = renderHook(() => useConversationTimeline(roomId));
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.messages).toEqual([]);
     expect(scrollback).not.toHaveBeenCalled();
   });
 
-  it('looks the room up again on the first sync when the lookup failed before it', async () => {
-    const { client } = makeClient(30, 30);
-    client.getRoomIdForAlias.mockRejectedValueOnce(new Error('network'));
+  it('loads the room when it first appears in sync', async () => {
+    const { client, room } = makeClient(30, 30);
+    client.getRoom.mockReturnValueOnce(null);
     harness.client = client;
 
-    const { result } = renderHook(() => useConversationTimeline('alk-room'));
+    const { result } = renderHook(() => useConversationTimeline(roomId));
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.messages).toEqual([]);
 
-    const onSync = client.on.mock.calls.find(([name]) => name === 'sync')?.[1] as (state: string) => void;
-    act(() => onSync('PREPARED'));
+    const onRoom = client.on.mock.calls.find(([name]) => name === 'Room')?.[1] as (entered: typeof room) => void;
+    act(() => onRoom(room));
 
     await waitFor(() => expect(result.current.messages).toHaveLength(30));
-    expect(client.getRoomIdForAlias).toHaveBeenCalledTimes(2);
+    expect(client.getRoom).toHaveBeenCalledWith(matrixRoomId);
   });
 
   it('puts the read marker past a newest message that is not rendered, so it counts as read', async () => {
@@ -117,10 +118,10 @@ describe('useConversationTimeline', () => {
     const { client } = makeClient(0, 0);
     harness.client = {
       ...client,
-      getRoom: () => ({ roomId: '!r', getLiveTimeline: () => ({ getEvents: () => events }) }),
+      getRoom: () => ({ roomId: matrixRoomId, getLiveTimeline: () => ({ getEvents: () => events }) }),
     };
 
-    const { result } = renderHook(() => useConversationTimeline('alk-room'));
+    const { result } = renderHook(() => useConversationTimeline(roomId));
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     expect(result.current.messages.map(message => message.eventId)).toEqual(['$text']);
@@ -146,11 +147,11 @@ describe('useConversationTimeline', () => {
     harness.client = client;
     const { result } = renderHook(() => useConversationTimeline(null));
     expect(result.current).toEqual({ messages: [], readUpToEventId: null, isLoading: false });
-    expect(client.getRoomIdForAlias).not.toHaveBeenCalled();
+    expect(client.getRoom).not.toHaveBeenCalled();
 
     harness.client = null;
     harness.establishing = false;
-    const { result: noSession } = renderHook(() => useConversationTimeline('alk-room'));
+    const { result: noSession } = renderHook(() => useConversationTimeline(roomId));
     expect(noSession.current).toEqual({ messages: [], readUpToEventId: null, isLoading: false });
     expect(scrollback).not.toHaveBeenCalled();
   });
@@ -158,7 +159,7 @@ describe('useConversationTimeline', () => {
   it('shows loading while the Matrix session is being established, and the empty state once it is not', () => {
     harness.client = null;
     harness.establishing = true;
-    const { result, rerender } = renderHook(() => useConversationTimeline('alk-room'));
+    const { result, rerender } = renderHook(() => useConversationTimeline(roomId));
     expect(result.current).toEqual({ messages: [], readUpToEventId: null, isLoading: true });
 
     harness.establishing = false;

@@ -1,12 +1,10 @@
+import { ApolloError } from '@apollo/client';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import {
-  useDefaultVisualTypeConstraintsQuery,
-  useTemplateContentLazyQuery,
-} from '@/core/apollo/generated/apollo-hooks';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import { info, TagCategoryValues } from '@/core/logging/sentry/log';
+import type { CreateSpaceAccountFragment } from '@/core/apollo/generated-v2/graphql-schema';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { info, error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import useNavigate from '@/core/routing/useNavigate';
 import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { NAMEID_MAX_LENGTH } from '@/core/ui/forms/validator/nameIdValidator';
@@ -23,21 +21,20 @@ import {
 import type { VisualConstraints } from '@/domain/common/visual/model/VisualModel';
 import { useSpacePlans } from '@/domain/space/components/CreateSpace/hooks/spacePlans/useSpacePlans';
 import { useSpaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSpaceCreation/useSpaceCreation';
+import { useSpaceVisualConstraints } from '@/domain/space/components/CreateSpace/hooks/useSpaceVisualConstraints';
 import { addSpaceWelcomeCache } from '@/domain/space/components/CreateSpace/utils';
-import { mapTemplateContent } from '@/main/crdPages/templates/templateContentMapper';
-import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
-import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
+import { useSpaceTemplatePicker } from '@/main/crdPages/templates/spaceTemplates/useSpaceTemplatePicker';
 
 export type CreatedSpaceResult = {
   id: string;
-  about: { profile: { url: string } };
+  url: string;
 };
 
 export type UseCreateSpaceOptions = {
   /** Controlled open state — owned by the account tab and passed through the connector. */
   open: boolean;
-  /** Target account the Space is created in (user's own, or an organization's). */
-  accountId: string | undefined;
+  /** The hosting account the Space is created in (the viewer's own, or an organisation's), with its canCreate. */
+  account: CreateSpaceAccountFragment | undefined;
   /** Closes the dialog (resets the owner's open state). Called on cancel and on success. */
   onClose: () => void;
   /** When provided, the caller handles the created Space; otherwise the hook navigates to it. */
@@ -97,7 +94,7 @@ const EMPTY_VALUES: CreateSpaceFormValues = {
  */
 export function useCreateSpace({
   open,
-  accountId,
+  account,
   onClose,
   onSpaceCreated,
 }: UseCreateSpaceOptions): UseCreateSpaceResult {
@@ -126,41 +123,30 @@ export function useCreateSpace({
     cardBannerFile: '',
   });
 
-  const { refetchSpaces } = useDashboardSpaces();
+  // 023 FR-020 "L0 refreshes": the mounted native reads that list the new space, and the hosting account's
+  // canCreate (its usage changed), re-read.
   const { createSpace, loading: submitting } = useSpaceCreation({
-    refetchQueries: ['AccountInformation'],
-    onCompleted: () => refetchSpaces(),
+    refetchQueries: [
+      'V2DashboardMembershipProbe',
+      'ExplorerRootSpaces',
+      'CreateSpaceViewerAccount',
+      'CreateSpaceOrganizationAccount',
+    ],
     awaitRefetchQueries: true,
   });
 
-  const { availablePlans, loading: plansLoading } = useSpacePlans({
-    accountId,
-    skip: !open || !accountId,
-  });
+  const accountId = account?.id;
+  const { availablePlans, loading: plansLoading } = useSpacePlans({ account, skip: !open });
   const licensePlanId = availablePlans[0]?.id;
   const noPlanAvailable = open && !plansLoading && Boolean(accountId) && availablePlans.length === 0;
 
-  const templatePicker = useTemplatePicker({ allowedTypes: ['space'], accountId });
+  // item9 "Who sends what": the L0 dialog has no space source and no preselect; account and platform library.
+  const templatePicker = useSpaceTemplatePicker({ accountId });
+  const handleError = useApolloErrorHandler();
 
-  const { data: bannerConstraintsData } = useDefaultVisualTypeConstraintsQuery({
-    variables: { visualType: VisualType.Banner },
-    skip: !open,
-  });
-  const { data: cardBannerConstraintsData } = useDefaultVisualTypeConstraintsQuery({
-    variables: { visualType: VisualType.Card },
-    skip: !open,
-  });
-
-  const bannerConstraints: VisualConstraints | null = bannerConstraintsData?.platform.configuration
-    .defaultVisualTypeConstraints
-    ? { ...bannerConstraintsData.platform.configuration.defaultVisualTypeConstraints }
-    : null;
-  const cardBannerConstraints: VisualConstraints | null = cardBannerConstraintsData?.platform.configuration
-    .defaultVisualTypeConstraints
-    ? { ...cardBannerConstraintsData.platform.configuration.defaultVisualTypeConstraints }
-    : null;
-
-  const [getTemplateContent] = useTemplateContentLazyQuery();
+  const { constraintsFor } = useSpaceVisualConstraints({ skip: !open });
+  const bannerConstraints = constraintsFor('banner');
+  const cardBannerConstraints = constraintsFor('card');
 
   const validationSchema = yup.object().shape({
     displayName: yup.string().trim().min(3, 'min3').max(SMALL_TEXT_LENGTH, 'maxSmall').required('required'),
@@ -251,29 +237,14 @@ export function useCreateSpace({
     const requestSeq = ++templateRequestSeqRef.current;
     setSelectedTemplateLoading(true);
     try {
-      const { data } = await getTemplateContent({ variables: { templateId, includeSpace: true } });
+      const fetched = await templatePicker.fetchSpaceTemplate(templateId);
       // A newer selection has superseded this fetch — drop the stale response.
       if (requestSeq !== templateRequestSeqRef.current) return;
-      const template = data?.lookup.template;
-      if (!template) return;
-      const mapped = mapTemplateContent(template, 'space');
+      if (!fetched) return;
+      const { templateName, displayName, tagline, description, tags } = fetched.prefill;
 
-      setSelectedTemplateName(template.profile.displayName);
-      setSelectedTemplateContent(mapped);
-
-      const contentProfile = template.contentSpace?.about?.profile;
-      const templateProfile = template.profile;
-      const contentTagset =
-        contentProfile?.tagsets?.find(ts => ts.name === 'default' || ts.type === 'FREEFORM') ??
-        contentProfile?.tagsets?.[0];
-      const contentTags = contentTagset?.tags ?? [];
-      const templateTags = templateProfile?.defaultTagset?.tags ?? [];
-
-      const displayName = contentProfile?.displayName || templateProfile?.displayName || '';
-      const tagline = contentProfile?.tagline || '';
-      const description = contentProfile?.description || templateProfile?.description || '';
-      const tags = contentTags.length > 0 ? contentTags : templateTags;
-
+      setSelectedTemplateName(templateName);
+      setSelectedTemplateContent(fetched.content);
       setValues(prev => {
         const nextDisplayName = displayName || prev.displayName;
         return {
@@ -287,6 +258,14 @@ export function useCreateSpace({
         };
       });
       setErrors({});
+    } catch (error) {
+      // The read failed: show it and hold no template, so nothing unpreviewed is submitted.
+      if (requestSeq !== templateRequestSeqRef.current) return;
+      if (error instanceof ApolloError) handleError(error);
+      else logError(error instanceof Error ? error : new Error(String(error)));
+      templatePicker.clearSelection();
+      setAppliedTemplateId(null);
+      clearSelectedTemplate();
     } finally {
       if (requestSeq === templateRequestSeqRef.current) {
         setSelectedTemplateLoading(false);
@@ -440,28 +419,25 @@ export function useCreateSpace({
       const result = await createSpace({
         accountId,
         nameId: values.nameId.trim(),
-        licensePlanId,
-        about: {
-          profile: {
-            displayName: values.displayName.trim(),
-            tagline: values.tagline.trim(),
-            description: values.description.trim() || undefined,
-            tags: values.tags,
-            visuals: {
-              banner: values.bannerFile ? { file: values.bannerFile, altText: visualAltText.bannerFile } : undefined,
-              cardBanner: values.cardBannerFile
-                ? { file: values.cardBannerFile, altText: visualAltText.cardBannerFile }
-                : undefined,
-            },
-          },
+        planId: licensePlanId,
+        profile: {
+          displayName: values.displayName.trim(),
+          tagline: values.tagline.trim(),
+          description: values.description.trim() || undefined,
+          tags: values.tags,
+        },
+        visuals: {
+          banner: values.bannerFile ? { file: values.bannerFile, altText: visualAltText.bannerFile } : undefined,
+          card: values.cardBannerFile
+            ? { file: values.cardBannerFile, altText: visualAltText.cardBannerFile }
+            : undefined,
         },
         addTutorialCallouts: values.addTutorialCallouts,
-        addCallouts: true,
         spaceTemplateId: values.spaceTemplateId || undefined,
       });
 
       const spaceId = result?.id;
-      const spaceUrl = result?.about?.profile?.url;
+      const spaceUrl = result?.url;
       if (!spaceId || !spaceUrl) {
         notify(t('createError'), 'error');
         return;
@@ -475,7 +451,7 @@ export function useCreateSpace({
 
       onClose();
       if (onSpaceCreated) {
-        onSpaceCreated(result);
+        onSpaceCreated({ id: spaceId, url: spaceUrl });
       } else {
         navigate(spaceUrl);
       }

@@ -81,6 +81,8 @@ export type SubspaceSidebarProps = SubspaceSidebarData & {
   parentSpaces?: ParentSpaceStackItem[];
   /** Nested subspaces of the current subspace (used by the widget under the nav). */
   subspaces?: SubspaceWidgetItem[];
+  /** Shown in the Subspaces widget in place of the list while the subspaces are not available. */
+  subspacesUnavailableMessage?: string;
   /** Opens the Subspaces dialog with the full list. */
   onShowAllSubspaces?: () => void;
   /** Navigate to a nested subspace from the widget row. */
@@ -132,6 +134,7 @@ export function SubspaceSidebar({
   collapsedActionsSlot,
   parentSpaces,
   subspaces,
+  subspacesUnavailableMessage,
   onShowAllSubspaces,
   onSubspaceClick,
   onCreateSubspace,
@@ -302,10 +305,11 @@ export function SubspaceSidebar({
       case 'subspaceLinks':
         return (
           subspaces &&
-          (subspaces.length > 0 || onCreateSubspace) && (
+          (subspaces.length > 0 || onCreateSubspace || subspacesUnavailableMessage) && (
             <SubspacesSection
               key="subspaceLinks"
               subspaces={subspaces}
+              unavailableMessage={subspacesUnavailableMessage}
               onShowAllClick={onShowAllSubspaces}
               onSubspaceClick={onSubspaceClick}
               onCreateClick={onCreateSubspace}

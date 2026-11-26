@@ -1,5 +1,6 @@
-import { UserConversationsDocument, useCreateConversationMutation } from '@/core/apollo/generated/apollo-hooks';
-import { ConversationCreationType, type UserConversationsQuery } from '@/core/apollo/generated/graphql-schema';
+import type { EventType, MatrixClient } from 'matrix-js-sdk';
+import { useMatrixClient } from '@/core/matrix/activeClient';
+import { nativeEntityId, nativeMatrixId } from '@/main/userMessaging/matrix/matrixRooms';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
 export type StartDirectChatResult = {
@@ -7,23 +8,73 @@ export type StartDirectChatResult = {
   roomId: string;
 };
 
-/**
- * Opens (or creates) the persistent 1:1 chat with a single user and reveals it
- * in the chat panel. Extracted from `useNewChat` so the profile "Message" flow
- * and the US2/US3 "open chat" confirmation action share one seam.
- *
- * `createConversation(type: DIRECT)` is dedup-or-create server-side: calling it
- * for a user the requester already has a 1:1 chat with returns the existing
- * conversation, so no duplicate is created (FR-002).
- *
- * `startDirectChat` accepts an optional recipient id that overrides the one
- * captured when the hook was called — a list of cards (each with its own
- * recipient) needs the id at click time, not at hook-call time. Backward
- * compatible: every existing caller (the profile page, `useOpenDirectChatHandler`)
- * calls it with no argument and keeps targeting the id it was constructed with.
- */
+export async function openNativeConversation(
+  client: MatrixClient | null,
+  inviteeIds: readonly string[],
+  name?: string
+): Promise<string> {
+  if (!client) {
+    throw new Error('Messaging is not connected.');
+  }
+
+  const invite = inviteeIds.map(id => {
+    const userId = nativeMatrixId(id, '@', client);
+    if (!userId) {
+      throw new Error('Invalid conversation recipient.');
+    }
+    return userId;
+  });
+  const isDirect = invite.length === 1;
+
+  const existingDirectRoom = () => {
+    if (!isDirect) {
+      return;
+    }
+    const direct: Record<string, unknown> | undefined = client
+      .getAccountData('m.direct' as EventType.Direct)
+      ?.getContent();
+    const rooms = direct?.[invite[0]];
+    if (Array.isArray(rooms)) {
+      for (const room of rooms) {
+        const id = typeof room === 'string' ? nativeEntityId(room, '!', client) : undefined;
+        if (id) {
+          return id;
+        }
+      }
+    }
+  };
+
+  const existing = existingDirectRoom();
+  if (existing) {
+    return existing;
+  }
+
+  let created: Awaited<ReturnType<MatrixClient['createRoom']>>;
+  try {
+    created = await client.createRoom({
+      is_direct: isDirect,
+      invite,
+      ...(isDirect ? {} : { name }),
+    });
+  } catch (error) {
+    // A sync may have delivered the direct room during a competing create.
+    const concurrentRoom = existingDirectRoom();
+    if (concurrentRoom) {
+      return concurrentRoom;
+    }
+    throw error;
+  }
+
+  const roomId = nativeEntityId(created.room_id, '!', client);
+  if (!roomId) {
+    throw new Error('Conversation could not be opened.');
+  }
+  return roomId;
+}
+
+/** Opens the recipient’s direct conversation in the existing chat panel. */
 export const useStartDirectChat = (userId: string | undefined) => {
-  const [createConversation] = useCreateConversationMutation();
+  const client = useMatrixClient();
   const { setIsOpen, setSelectedConversationId, setSelectedRoomId, setNewlyCreatedConversationId } =
     useUserMessagingContext();
 
@@ -32,68 +83,13 @@ export const useStartDirectChat = (userId: string | undefined) => {
       throw new Error('Recipient user not loaded.');
     }
 
-    const result = await createConversation({
-      variables: {
-        conversationData: {
-          memberIDs: [targetUserId],
-          type: ConversationCreationType.Direct,
-        },
-      },
-      // Callers (e.g. ContributorCollectionConnector's `handleMessage`) map a
-      // failure — such as the recipient having messaging disabled — to their own
-      // friendly toast; the global error-handler link must not add a second, raw one.
-      context: { skipGlobalErrorHandler: true },
-      update: (cache, { data }) => {
-        const conversation = data?.createConversation;
-        const room = conversation?.room;
-        if (!conversation || !room) {
-          return;
-        }
-        cache.updateQuery<UserConversationsQuery>({ query: UserConversationsDocument }, existing => {
-          if (!existing?.me?.conversations?.conversations) return existing;
-          if (existing.me.conversations.conversations.some(c => c.id === conversation.id)) return existing;
-          return {
-            ...existing,
-            me: {
-              ...existing.me,
-              conversations: {
-                ...existing.me.conversations,
-                conversations: [
-                  {
-                    __typename: 'Conversation' as const,
-                    id: conversation.id,
-                    room: {
-                      __typename: 'Room' as const,
-                      id: room.id,
-                      attachmentBucketId: room.attachmentBucketId,
-                      type: room.type,
-                      displayName: room.displayName,
-                      avatarUrl: room.avatarUrl,
-                      createdDate: room.createdDate,
-                    },
-                    members: conversation.members,
-                  },
-                  ...existing.me.conversations.conversations,
-                ],
-              },
-            },
-          };
-        });
-      },
-    });
-
-    const conversationId = result.data?.createConversation.id;
-    const roomId = result.data?.createConversation.room?.id;
-    if (!conversationId || !roomId) {
-      throw new Error('Conversation could not be opened.');
-    }
-
-    setNewlyCreatedConversationId(conversationId);
-    setSelectedConversationId(conversationId);
+    const roomId = await openNativeConversation(client, [targetUserId]);
+    setNewlyCreatedConversationId(roomId);
+    setSelectedConversationId(roomId);
     setSelectedRoomId(roomId);
     setIsOpen(true);
 
-    return { conversationId, roomId };
+    return { conversationId: roomId, roomId };
   };
 
   return { startDirectChat };

@@ -16,6 +16,19 @@ const event = (type: string, content: Record<string, unknown>, overrides: Partia
 });
 
 describe('projectMessages', () => {
+  it('preserves a plain rich reply target in the same message sequence', () => {
+    const original = event('m.room.message', { msgtype: 'm.text', body: 'first' });
+    const reply = event('m.room.message', {
+      msgtype: 'm.text',
+      body: 'answer',
+      'm.relates_to': { 'm.in_reply_to': { event_id: original.eventId } },
+    });
+    expect(projectMessages([original, reply], HS).map(message => [message.eventId, message.replyTo])).toEqual([
+      [original.eventId, undefined],
+      [reply.eventId, original.eventId],
+    ]);
+  });
+
   it('keeps text messages verbatim and skips blank ones (e.g. redacted)', () => {
     const messages = projectMessages(
       [

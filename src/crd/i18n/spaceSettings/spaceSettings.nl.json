@@ -759,6 +759,8 @@
       "title": "Zichtbaarheid",
       "public": "Openbaar",
       "publicDescription": "Deze Space en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Gebruikers kunnen alleen bijdragen als ze lid zijn.",
+      "registered": "Ingelogde gebruikers",
+      "registeredDescription": "Deze Space en de inhoud ervan zijn zichtbaar voor iedereen die is ingelogd op het platform; bezoekers die niet zijn ingelogd, kunnen de inhoud niet zien. Gebruikers kunnen alleen bijdragen als ze lid zijn.",
       "private": "Privé",
       "privateDescription": "Deze Space is zichtbaar voor iedereen op het platform, maar de inhoud is alleen zichtbaar voor leden.",
       "hint": "Houd rekening met het doel en het publiek van je Space bij het kiezen van de zichtbaarheid."

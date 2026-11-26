@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import useCalloutDetails from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
+import { mapPostToCallout } from '../dataMappers/calloutDataMapper';
 import { CalloutDeeplinkView } from './CalloutDeeplinkView';
 
 type CrdCalloutDialogByIdProps = {
@@ -26,6 +27,7 @@ export function CrdCalloutDialogById({ calloutId, calloutsSetId, onLoaded, onClo
     calloutId,
     calloutsSetId,
     withClassification: true,
+    toCallout: post => mapPostToCallout(post, [], calloutsSetId),
     skip: !calloutId,
   });
 

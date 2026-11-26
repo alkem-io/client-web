@@ -1,9 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import type { CalloutSelectionMode } from '@/core/apollo/generated/graphql-schema';
+import { CalloutSelectionMode } from '@/core/apollo/generated/graphql-schema';
+import { MembershipStatus, type PostBodyFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { SpaceCollection } from '@/crd/components/callout/SpaceCollection/SpaceCollection';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
-import { useCrdSpaceSubspaces } from '@/main/crdPages/space/hooks/useCrdSpaceSubspaces';
+import { useCachedPost } from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
+import { nativeSubspaceCard } from '@/main/crdPages/space/dataMappers/subspaceCardDataMapper';
+
+type SpacesContent = Extract<NonNullable<PostBodyFragment['content']>, { __typename: 'SpacesContent' }>;
 
 /**
  * Integration layer for a Spaces-collection callout (feature 013). Fetches the
@@ -42,11 +46,27 @@ export function SpaceCollectionConnector({
   // for its skeleton. Pull the namespace in here, while the card's boundary is still
   // showing the skeleton anyway (issue #10043).
   useTranslation('crd-exploreSpaces');
-  const { subspaces, hasHiddenSpaces, loading } = useCrdSpaceSubspaces(
-    calloutId,
-    cardVariant === 'expanded',
-    selectionMode
+  // 021 F081-F099: the spaces arrive in the post's own SpacesContent; pinned first, then by name, as legacy
+  // (the pinned spaces' own sort order is not served, so they too go by name).
+  const post = useCachedPost(calloutId);
+  const content = post?.contentKind === 'spaces' ? (post.content as SpacesContent | null) : undefined;
+  const isCustom = selectionMode === CalloutSelectionMode.Custom;
+  const spaces = [...(content?.spaces ?? [])].sort(
+    (a, b) =>
+      Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || a.about.displayName.localeCompare(b.about.displayName)
   );
+  const subspaces = spaces.map(space =>
+    nativeSubspaceCard(
+      {
+        ...space,
+        membership: { roles: space.membership?.status === MembershipStatus.Member ? ['member'] : [] },
+        can: { read: true },
+      },
+      !isCustom
+    )
+  );
+  const hasHiddenSpaces = content?.hasHiddenSpaces ?? false;
+  const loading = !post;
 
   const handleSubspaceClick = (space: SpaceCardData) => navigate(space.href);
 

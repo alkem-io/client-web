@@ -11,6 +11,9 @@ export interface CurrentUserModel {
   verified: boolean;
   isAuthenticated: boolean;
   platformRoles: RoleName[];
-  accountPrivileges: AuthorizationPrivilege[];
+  // Native account API exposes the combined create verdict, not a raw privilege list.
+  accountPrivileges?: AuthorizationPrivilege[];
+  accountCanCreate?: ReadonlyArray<{ kind: string; allowed: boolean; reason?: string | null }>;
+  nativePlatformPrivileges?: readonly string[];
   accountEntitlements: LicenseEntitlementType[];
 }

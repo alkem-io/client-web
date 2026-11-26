@@ -4,7 +4,6 @@ import {
   useCalloutContentLazyQuery,
   useCalloutContributionsSortOrderQuery,
   useCalloutFormResponsesQuery,
-  useSpaceTemplatesManagerQuery,
   useUpdateContributionsSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
@@ -93,13 +92,9 @@ export function CalloutSettingsConnector({
   const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
   const [fetchCalloutContent] = useCalloutContentLazyQuery();
 
-  // Save-as-template — the level-zero space owns the templates set.
-  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
-    variables: { spaceId: levelZeroSpaceId ?? '' },
-    skip: !levelZeroSpaceId,
-  });
-  const saveAsTemplatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
-  const saveAs = useSaveAsTemplate({ templatesSetId: saveAsTemplatesSetId, spaceId: levelZeroSpaceId });
+  // Save-as-template is not served (PostCan.saveAsTemplate, 021): the card reads no templates set and the item
+  // keeps legacy's state for an absent flag (`canBeSavedAsTemplate` false).
+  const saveAs = useSaveAsTemplate({ templatesSetId: undefined, spaceId: levelZeroSpaceId });
 
   // Contributions sort — fetched only while the dialog is open.
   const { data: sortData, loading: sortLoading } = useCalloutContributionsSortOrderQuery({

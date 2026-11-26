@@ -1,9 +1,32 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-const mockCreateConversation = vi.fn();
-vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useCreateConversationMutation: () => [mockCreateConversation],
+const viewer = '00000000-0000-4000-8000-000000000001';
+const first = '00000000-0000-4000-8000-000000000002';
+const second = '00000000-0000-4000-8000-000000000003';
+const room = '00000000-0000-4000-8000-000000000004';
+const server = 'matrix.test';
+const mockCreateRoom = vi.fn();
+const mockGetAccountData = vi.fn();
+const mockErrorToast = vi.fn();
+const mockDirectory = vi.fn();
+
+vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+vi.mock('sonner', () => ({ toast: { error: (...args: unknown[]) => mockErrorToast(...args) } }));
+
+vi.mock('@/core/matrix/activeClient', () => ({
+  useMatrixClient: () => ({
+    getUserId: () => `@${viewer}:${server}`,
+    createRoom: mockCreateRoom,
+    getAccountData: mockGetAccountData,
+  }),
+}));
+vi.mock('@/core/apollo/hooks/useReportedQueryError', () => ({ useReportedQueryError: () => {} }));
+vi.mock('./useChatRecipientDirectory', () => ({
+  useChatRecipientDirectory: (terms: string, actorId: string | undefined) => mockDirectory(terms, actorId),
+}));
+vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
+  useCurrentUserContext: () => ({ userModel: { id: viewer } }),
 }));
 
 const mockSetIsOpen = vi.fn();
@@ -19,75 +42,132 @@ vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
   }),
 }));
 
+import { useNewChat } from './useNewChat';
 import { useStartDirectChat } from './useStartDirectChat';
 
-function mockMutationResult(conversationId: string, roomId: string) {
-  return {
-    data: {
-      createConversation: {
-        id: conversationId,
-        room: {
-          id: roomId,
-          type: 'DIRECT',
-          displayName: undefined,
-          avatarUrl: undefined,
-          createdDate: new Date().toISOString(),
-          unreadCount: 0,
-          messagesCount: 0,
-          lastMessage: undefined,
-        },
-      },
-    },
-  };
-}
+beforeEach(() => {
+  mockCreateRoom.mockReset().mockResolvedValue({ room_id: `!${room}:${server}` });
+  mockGetAccountData.mockReset();
+  mockSetIsOpen.mockReset();
+  mockSetSelectedConversationId.mockReset();
+  mockSetSelectedRoomId.mockReset();
+  mockSetNewlyCreatedConversationId.mockReset();
+  mockErrorToast.mockReset();
+  mockDirectory.mockReset().mockReturnValue({ searchResults: [], loading: false });
+});
 
-describe('useStartDirectChat — click-time recipient', () => {
-  beforeEach(() => {
-    mockCreateConversation.mockReset();
-    mockSetIsOpen.mockReset();
-    mockSetSelectedConversationId.mockReset();
-    mockSetSelectedRoomId.mockReset();
-    mockSetNewlyCreatedConversationId.mockReset();
-  });
+describe('native conversation creation', () => {
+  test('the click-time recipient takes precedence and opens the returned room', async () => {
+    const { result } = renderHook(() => useStartDirectChat(first));
 
-  test('hook called with undefined: startDirectChat("u-2") creates the conversation for u-2 and opens the panel on it', async () => {
-    mockCreateConversation.mockResolvedValue(mockMutationResult('conv-2', 'room-2'));
-    const { result } = renderHook(() => useStartDirectChat(undefined));
+    const outcome = await result.current.startDirectChat(second);
 
-    const outcome = await result.current.startDirectChat('u-2');
-
-    expect(mockCreateConversation).toHaveBeenCalledWith(
-      expect.objectContaining({
-        variables: { conversationData: { memberIDs: ['u-2'], type: 'DIRECT' } },
-        // The global error-handler link must not also toast a raw server error —
-        // callers (e.g. ContributorCollectionConnector) map a rejection to their
-        // own friendly message.
-        context: { skipGlobalErrorHandler: true },
-      })
-    );
-    expect(outcome).toEqual({ conversationId: 'conv-2', roomId: 'room-2' });
-    expect(mockSetSelectedConversationId).toHaveBeenCalledWith('conv-2');
-    expect(mockSetSelectedRoomId).toHaveBeenCalledWith('room-2');
+    expect(mockCreateRoom).toHaveBeenCalledWith({ invite: [`@${second}:${server}`], is_direct: true });
+    expect(outcome).toEqual({ conversationId: room, roomId: room });
+    expect(mockSetSelectedConversationId).toHaveBeenCalledWith(room);
+    expect(mockSetSelectedRoomId).toHaveBeenCalledWith(room);
     expect(mockSetIsOpen).toHaveBeenCalledWith(true);
   });
 
-  test('hook called with u-1 and no argument still targets u-1 (backward compatible)', async () => {
-    mockCreateConversation.mockResolvedValue(mockMutationResult('conv-1', 'room-1'));
-    const { result } = renderHook(() => useStartDirectChat('u-1'));
+  test('the profile flow uses the recipient supplied to the hook', async () => {
+    const { result } = renderHook(() => useStartDirectChat(first));
 
     await result.current.startDirectChat();
 
-    expect(mockCreateConversation).toHaveBeenCalledWith(
-      expect.objectContaining({
-        variables: { conversationData: { memberIDs: ['u-1'], type: 'DIRECT' } },
-      })
-    );
+    expect(mockCreateRoom).toHaveBeenCalledWith({ invite: [`@${first}:${server}`], is_direct: true });
   });
 
-  test('both undefined ⇒ rejects and never calls the mutation', async () => {
+  test('a direct pair in m.direct opens without a create request', async () => {
+    mockGetAccountData.mockReturnValue({
+      getContent: () => ({ [`@${first}:${server}`]: [`!${room}:remote.test`, `!${room}:${server}`] }),
+    });
+    const { result } = renderHook(() => useStartDirectChat(first));
+
+    await expect(result.current.startDirectChat()).resolves.toEqual({ conversationId: room, roomId: room });
+    expect(mockGetAccountData).toHaveBeenCalledWith('m.direct');
+    expect(mockCreateRoom).not.toHaveBeenCalled();
+  });
+
+  test('a competing create can reopen a direct pair delivered while the request was in flight', async () => {
+    mockCreateRoom.mockRejectedValue({ errcode: 'M_FORBIDDEN' });
+    mockGetAccountData.mockReturnValueOnce(undefined).mockReturnValue({
+      getContent: () => ({ [`@${first}:${server}`]: [`!${room}:${server}`] }),
+    });
+    const { result } = renderHook(() => useStartDirectChat(first));
+
+    await expect(result.current.startDirectChat()).resolves.toEqual({ conversationId: room, roomId: room });
+    expect(mockSetSelectedRoomId).toHaveBeenCalledWith(room);
+  });
+
+  test('no recipient refuses before any Matrix request', async () => {
     const { result } = renderHook(() => useStartDirectChat(undefined));
 
     await expect(result.current.startDirectChat()).rejects.toThrow('Recipient user not loaded.');
-    expect(mockCreateConversation).not.toHaveBeenCalled();
+    expect(mockCreateRoom).not.toHaveBeenCalled();
+  });
+
+  test('a directory result supplies the Matrix invitee for new chat', async () => {
+    const recipient = { id: first, displayName: 'Ada' };
+    mockDirectory.mockImplementation((terms: string) => ({
+      searchResults: terms === 'Ada' ? [recipient] : [],
+      loading: false,
+    }));
+    const onCreated = vi.fn();
+    const { result } = renderHook(() => useNewChat(onCreated));
+
+    act(() => result.current.openDialog());
+    act(() => result.current.onSearchChange(' Ada '));
+    await waitFor(() => expect(result.current.searchResults).toEqual([recipient]));
+    expect(mockDirectory).toHaveBeenLastCalledWith('Ada', viewer);
+
+    act(() => result.current.onSelect(result.current.searchResults[0]));
+    await act(async () => {
+      await result.current.create();
+    });
+    expect(mockCreateRoom).toHaveBeenCalledWith({ invite: [`@${first}:${server}`], is_direct: true });
+    expect(onCreated).toHaveBeenCalledWith(room, room);
+  });
+
+  test('the new-chat dialog creates a named group with canonical Matrix invitees', async () => {
+    const onCreated = vi.fn();
+    const { result } = renderHook(() => useNewChat(onCreated));
+
+    act(() => {
+      result.current.openDialog();
+      result.current.onSelect({ id: first, displayName: 'Ada' });
+      result.current.onSelect({ id: second, displayName: 'Lin' });
+    });
+    await act(async () => {
+      await result.current.create();
+    });
+
+    expect(mockCreateRoom).toHaveBeenCalledWith({
+      invite: [`@${first}:${server}`, `@${second}:${server}`],
+      is_direct: false,
+      name: 'Ada, Lin',
+    });
+    expect(onCreated).toHaveBeenCalledWith(room, room);
+    expect(result.current.open).toBe(false);
+    expect(result.current.selectedUsers).toEqual([]);
+  });
+
+  test('a refused create keeps the dialog and its selection open with an error toast', async () => {
+    mockCreateRoom.mockRejectedValue({ errcode: 'M_FORBIDDEN' });
+    const onCreated = vi.fn();
+    const { result } = renderHook(() => useNewChat(onCreated));
+    const recipient = { id: first, displayName: 'Ada' };
+
+    act(() => {
+      result.current.openDialog();
+      result.current.onSelect(recipient);
+    });
+    await act(async () => {
+      await result.current.create();
+    });
+
+    expect(onCreated).not.toHaveBeenCalled();
+    expect(result.current.open).toBe(true);
+    expect(result.current.selectedUsers).toEqual([recipient]);
+    expect(mockErrorToast).toHaveBeenCalledWith('common.messagePopover.openChatError');
   });
 });

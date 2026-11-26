@@ -1,19 +1,17 @@
 import { formatDistanceToNow } from 'date-fns';
 import type { TFunction } from 'i18next';
-import {
-  ActorType,
-  type OrgPendingApplicationDataFragment,
-  type OrgPendingInvitationDataFragment,
-} from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated-v2/legacy-vocabulary';
 import type { OrgPendingApplicationCardData } from '@/crd/components/dashboard/OrgPendingApplicationCard';
 import type { OrgPendingInvitationCardData } from '@/crd/components/dashboard/OrgPendingInvitationCard';
 import type { PendingApplicationCardData } from '@/crd/components/dashboard/PendingApplicationCard';
 import type { PendingInvitationCardData } from '@/crd/components/dashboard/PendingInvitationCard';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
-import type { ApplicationWithMeta, InvitationWithMeta } from '@/domain/community/pendingMembership/PendingMemberships';
+import type {
+  InvitationWithMeta,
+  PendingMembershipRequest,
+} from '@/domain/community/pendingMembership/PendingMemberships';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { offeredRoleLabelKey } from '@/main/crdPages/topLevelPages/organizationPages/publicProfile/organizationProfileMapper';
 
 type InvitationDetailData = {
   spaceName: string;
@@ -29,34 +27,83 @@ type InvitationDetailData = {
 const truncate = (text: string, maxLength: number): string =>
   text.length > maxLength ? `${text.slice(0, maxLength).trimEnd()}...` : text;
 
-export const mapHydratedInvitationToCardData = (
-  hydrated: InvitationWithMeta,
+type PendingSpace = NonNullable<PendingMembershipRequest['space']>;
+
+/** A Space request carries its space (MembershipRequest.space); without it the request is not a Space card. */
+export const requestSpace = (request: PendingMembershipRequest): PendingSpace => {
+  if (!request.space) throw new Error(`Membership request ${request.id} names no space`);
+  return request.space;
+};
+
+const requireUrl = (space: PendingSpace): string => {
+  if (!space.url) throw new Error(`Pending space ${space.id} has no canonical destination`);
+  return space.url;
+};
+
+/** The organization a request is addressed to (MembershipRequest.resource, entityType organization). */
+type OrganizationResource = {
+  id: string;
+  url?: string | null;
+  about: { displayName: string; avatar?: { file: { url: string } } | null };
+};
+
+export const requestOrganization = (request: PendingMembershipRequest): OrganizationResource => {
+  if (request.resource.entityType !== 'organization') {
+    throw new Error(`Membership request ${request.id} is not addressed to an organization`);
+  }
+  return request.resource as OrganizationResource;
+};
+
+export const mapPendingInvitationToCardData = (
+  invitation: PendingMembershipRequest,
   t: TFunction
-): PendingInvitationCardData => ({
-  id: hydrated.id,
-  spaceName: hydrated.space.about.profile.displayName,
-  spaceAvatarUrl: hydrated.space.about.profile.cardBanner?.uri,
-  senderName: hydrated.userDisplayName ?? '',
-  organizationName:
-    hydrated.invitation.actor?.type === ActorType.Organization
-      ? hydrated.invitation.actor.profile?.displayName
-      : undefined,
-  welcomeMessageExcerpt: hydrated.invitation.welcomeMessage
-    ? truncate(hydrated.invitation.welcomeMessage, 100)
-    : undefined,
-  timeElapsed: formatTimeElapsed(hydrated.invitation.createdDate, t),
-  color: pickColorFromId(hydrated.space.id),
-});
+): PendingInvitationCardData => {
+  const space = requestSpace(invitation);
+  return {
+    id: invitation.id,
+    spaceName: space.about.displayName,
+    spaceAvatarUrl: space.about.card?.file.url,
+    senderName: invitation.createdBy?.about?.displayName ?? '',
+    organizationName: invitation.actor?.actorType === 'organization' ? invitation.actor.about?.displayName : undefined,
+    welcomeMessageExcerpt: invitation.message ? truncate(invitation.message, 100) : undefined,
+    timeElapsed: formatTimeElapsed(invitation.createdAt, t),
+    color: pickColorFromId(space.id),
+  };
+};
 
-export const mapHydratedApplicationToCardData = (hydrated: ApplicationWithMeta): PendingApplicationCardData => ({
-  id: hydrated.id,
-  spaceName: hydrated.space.about.profile.displayName,
-  spaceAvatarUrl: hydrated.space.about.profile.cardBanner?.uri,
-  tagline: hydrated.space.about.profile.tagline,
-  spaceHref: hydrated.space.about.profile.url,
-  color: pickColorFromId(hydrated.space.id),
-});
+export const mapPendingApplicationToCardData = (application: PendingMembershipRequest): PendingApplicationCardData => {
+  const space = requestSpace(application);
+  return {
+    id: application.id,
+    spaceName: space.about.displayName,
+    spaceAvatarUrl: space.about.card?.file.url,
+    tagline: space.about.tagline ?? undefined,
+    spaceHref: requireUrl(space),
+    color: pickColorFromId(space.id),
+  };
+};
 
+export const mapPendingInvitationToDetailData = (
+  invitation: PendingMembershipRequest,
+  language: string
+): InvitationDetailData => {
+  const space = requestSpace(invitation);
+  return {
+    spaceName: space.about.displayName,
+    spaceAvatarUrl: space.about.card?.file.url,
+    spaceTagline: space.about.tagline ?? undefined,
+    spaceTags: space.tags,
+    spaceHref: requireUrl(space),
+    senderName: invitation.createdBy?.about?.displayName ?? '',
+    timeElapsed: formatDistanceToNow(new Date(invitation.createdAt), {
+      addSuffix: true,
+      locale: resolveDateFnsLocale(language),
+    }),
+    color: pickColorFromId(space.id),
+  };
+};
+
+/** The legacy hydrated invitation's detail (space About page, InvitationDetailConnector). */
 export const mapHydratedInvitationToDetailData = (
   hydrated: InvitationWithMeta,
   language: string
@@ -75,6 +122,15 @@ export const mapHydratedInvitationToDetailData = (
 });
 
 export type { InvitationDetailData };
+
+type OfferedRoleLabelKey = 'associate' | 'associateAdmin' | 'associateOwner';
+
+/** The offered organization role beyond associate, from the request's roles (native role names). */
+export const offeredOrganizationRoleKey = (roles: readonly string[]): OfferedRoleLabelKey => {
+  if (roles.includes(RoleName.Admin)) return 'associateAdmin';
+  if (roles.includes(RoleName.Owner)) return 'associateOwner';
+  return 'associate';
+};
 
 const ORG_ROLE_LABEL_KEY = {
   associate: 'pendingMemberships.orgAssociateCard.role.associate',
@@ -99,24 +155,28 @@ type LooseTranslator = (key: string, options?: Record<string, unknown>) => strin
  * namespace, see `HydratedInvitationCard`).
  */
 export const mapOrgInvitationToCardData = (
-  item: OrgPendingInvitationDataFragment,
+  item: PendingMembershipRequest,
   t: LooseTranslator,
   tCommon: LooseTranslator
-): OrgPendingInvitationCardData => ({
-  id: item.id,
-  organizationName: item.organization.profile?.displayName ?? '',
-  organizationAvatarUrl: item.organization.profile?.avatar?.uri,
-  offeredRoleLabel: t(ORG_ROLE_LABEL_KEY[offeredRoleLabelKey(item.invitation.extraRoles)]),
-  timeElapsed: formatTimeElapsed(item.invitation.createdDate, tCommon as TFunction),
-  color: pickColorFromId(item.organization.id),
-});
+): OrgPendingInvitationCardData => {
+  const organization = requestOrganization(item);
+  return {
+    id: item.id,
+    organizationName: organization.about.displayName,
+    organizationAvatarUrl: organization.about.avatar?.file.url,
+    offeredRoleLabel: t(ORG_ROLE_LABEL_KEY[offeredOrganizationRoleKey(item.roles)]),
+    timeElapsed: formatTimeElapsed(item.createdAt, tCommon as TFunction),
+    color: pickColorFromId(organization.id),
+  };
+};
 
-export const mapOrgApplicationToCardData = (
-  item: OrgPendingApplicationDataFragment
-): OrgPendingApplicationCardData => ({
-  id: item.id,
-  organizationName: item.organization.profile?.displayName ?? '',
-  organizationAvatarUrl: item.organization.profile?.avatar?.uri,
-  organizationHref: item.organization.profile?.url ?? '',
-  color: pickColorFromId(item.organization.id),
-});
+export const mapOrgApplicationToCardData = (item: PendingMembershipRequest): OrgPendingApplicationCardData => {
+  const organization = requestOrganization(item);
+  return {
+    id: item.id,
+    organizationName: organization.about.displayName,
+    organizationAvatarUrl: organization.about.avatar?.file.url,
+    organizationHref: organization.url ?? '',
+    color: pickColorFromId(organization.id),
+  };
+};

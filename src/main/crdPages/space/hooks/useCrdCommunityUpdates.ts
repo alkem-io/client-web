@@ -1,43 +1,21 @@
 import type { CommunityUpdate } from '@/crd/components/space/CommunityUpdatesDialog';
-import { getInitials } from '@/crd/lib/getInitials';
-import useCommunityUpdates from '@/domain/communication/updates/CommunityUpdatesContainer/useCommunityUpdates';
-import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
+
+const NO_UPDATES: CommunityUpdate[] = [];
 
 /**
- * Fetches a community's update messages and maps them to the CRD `CommunityUpdate`
- * shape (newest first). Powers the sidebar `UpdatesSection` (latest) and the
- * `CommunityUpdatesDialog` (full list) on both Space and subspace pages.
+ * The sidebar `UpdatesSection` (latest) and `CommunityUpdatesDialog` (full list) on both Space and subspace pages. The
+ * space's updates room is not served yet: the server answers no room node (resolver/boot.go bootNode; 021 S08) and its
+ * messages wait for WP-MSG1 (DEP-021-UPDATES), so the widget says "not available yet" in place (`unavailable`).
  *
- * `skip: true` suppresses the query — the sidebar connector passes this when
- * the `updates` widget is not configured on the active tab (FR-019). Forwarded
- * as an absent `communityId` since `useCommunityUpdates` skips on `!communityId`.
+ * `spaceId` is the community id of legacy, which natively is the space's own id. `skip: true` reads nothing — the
+ * sidebar connector passes this when the `updates` widget is not configured on the active tab (FR-019).
  */
-export function useCrdCommunityUpdates(communityId: string | undefined, skip?: boolean) {
-  const { entities, state } = useCommunityUpdates({ communityId: skip ? undefined : communityId });
-
-  const updates: CommunityUpdate[] = [...entities.messages]
-    .sort((a, b) => b.timestamp - a.timestamp)
-    .map(message => {
-      const author = message.sender ? buildAuthorFromUser(message.sender) : undefined;
-      return {
-        id: message.id,
-        body: message.message,
-        date: message.timestamp ? new Date(message.timestamp) : undefined,
-        author: author
-          ? {
-              name: author.displayName,
-              initials: getInitials(author.displayName) || '??',
-              avatarUrl: author.avatarUrl,
-              href: author.url || undefined,
-            }
-          : undefined,
-      };
-    });
-
+export function useCrdCommunityUpdates(spaceId: string | undefined, skip?: boolean) {
   return {
-    updates,
-    latest: updates[0],
-    total: updates.length,
-    loading: state.retrievingUpdateMessages,
+    updates: NO_UPDATES,
+    latest: undefined as CommunityUpdate | undefined,
+    total: 0,
+    loading: false,
+    unavailable: !skip && Boolean(spaceId),
   };
 }

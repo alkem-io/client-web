@@ -1,7 +1,5 @@
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSpaceDefaultTemplatesQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
-import { TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
@@ -37,6 +35,7 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
     tabDescription,
     flowStateForNewCallouts,
     loading,
+    unavailable,
   } = useCrdCalloutList({ tabPosition });
 
   const [createOpen, setCreateOpen] = useState(false);
@@ -53,25 +52,7 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
   // for either entry point — not only the dedicated `createSubspace` widget.
   const hasCreateSubspaceEntry = sidebarPlan.includes('createSubspace') || sidebarPlan.includes('subspaceLinks');
   const canCreateSubspace = hasCreateSubspaceEntry && permissions.canCreateSubspaces;
-  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
-    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
-    variables: { spaceId: spaceId! },
-    skip: !spaceId || !canCreateSubspace,
-  });
-  const templatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
-  const { data: defaultTemplatesData } = useSpaceDefaultTemplatesQuery({
-    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
-    variables: { spaceId: spaceId! },
-    skip: !spaceId || !canCreateSubspace,
-  });
-  const defaultSubspaceTemplateId = defaultTemplatesData?.lookup.space?.templatesManager?.templateDefaults?.find(
-    td => td.type === TemplateDefaultType.SpaceSubspace
-  )?.template?.id;
-  const createSubspace = useCreateSubspace(spaceId ?? '', {
-    accountId: space.accountId || undefined,
-    templatesSetId,
-    defaultTemplateId: defaultSubspaceTemplateId,
-  });
+  const createSubspace = useCreateSubspace(spaceId ?? '');
 
   // Search widget (the sidebar `search` widget — every tab it's configured
   // on, not position-keyed). The page owns all of the search state and data
@@ -133,6 +114,9 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
               />
             ))}
           </FlowStateSearchResults>
+        ) : unavailable ? (
+          // The space tree is not served yet: the feed says so in place.
+          <p className="text-body text-muted-foreground py-6 text-center">{t('crd-space:tabs.unavailable')}</p>
         ) : (
           <CalloutListConnector
             callouts={callouts}

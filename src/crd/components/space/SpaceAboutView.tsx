@@ -49,7 +49,7 @@ export type SpaceAboutData = {
 };
 
 type SpaceAboutViewProps = {
-  data: SpaceAboutData;
+  data: Pick<SpaceAboutData, 'name'> & Partial<Omit<SpaceAboutData, 'name'>>;
   className?: string;
   /** Apply / Join CTA rendered below the space-info panel when the viewer can join. */
   joinSlot?: ReactNode;
@@ -104,7 +104,7 @@ export function SpaceAboutView({
 }: SpaceAboutViewProps) {
   const { t } = useTranslation('crd-space');
 
-  const leads = [...data.leadUsers, ...data.leadOrganizations];
+  const leads = [...(data.leadUsers ?? []), ...(data.leadOrganizations ?? [])];
   const hasLeads = leads.length > 0;
   const hasPanelEditIcons = hasEditPrivilege && Boolean(onEditDescription || onEditMembers);
   const hasMeta = Boolean(data.location) || memberCount !== undefined || Boolean(isMember);
@@ -239,14 +239,14 @@ export function SpaceAboutView({
       )}
 
       {/* ── Classifications (FR-018 — the only rendering surface this iteration, D2) ── */}
-      {data.classifications.length > 0 && (
+      {(data.classifications?.length ?? 0) > 0 && (
         <SectionCard
           title={t('classifications.sectionTitle')}
           canEdit={hasEditPrivilege}
           onEdit={onEditClassifications}
           editLabel={t('about.edit')}
         >
-          <ClassificationGroupList entries={data.classifications} canEdit={hasEditPrivilege} />
+          <ClassificationGroupList entries={data.classifications ?? []} canEdit={hasEditPrivilege} />
         </SectionCard>
       )}
 
@@ -254,7 +254,7 @@ export function SpaceAboutView({
       {guidelinesSlot}
 
       {/* ── References ── */}
-      {(data.references.length > 0 || (hasEditPrivilege && onEditReferences)) && (
+      {((data.references?.length ?? 0) > 0 || (hasEditPrivilege && onEditReferences)) && (
         <SectionCard
           title={t('about.references')}
           canEdit={hasEditPrivilege}
@@ -262,7 +262,7 @@ export function SpaceAboutView({
           editLabel={t('about.edit')}
         >
           <div className="space-y-3">
-            {data.references.map(ref => (
+            {data.references?.map(ref => (
               <a
                 key={ref.uri}
                 href={ref.uri}

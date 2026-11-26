@@ -16,7 +16,7 @@ export type VirtualContributorCardItem = {
   displayName: string;
   description: string | null;
   type: string;
-  href: string;
+  href?: string;
   avatarImageUrl: string | null;
 };
 

@@ -13,7 +13,8 @@
       "generic-with-code": "Une erreur est survenue avec le code {{code}}",
       "network": {
         "session_store_unavailable": "Le service est temporairement indisponible. Veuillez réessayer dans un instant.",
-        "generic": "Un problème de connexion est survenu. Veuillez vérifier votre connexion et réessayer."
+        "generic": "Un problème de connexion est survenu. Veuillez vérifier votre connexion et réessayer.",
+        "retry": "Réessayer"
       },
       "support": {
         "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
@@ -63,6 +64,7 @@
           "messagingNotEnabled": "Messaging not enabled.",
           "noAgentForUser": "No agent for user.",
           "notEnabled": "Feature not enabled.",
+          "notAvailableYet": "Cette action n’est pas encore disponible.",
           "operationNotAllowed": "Operation not allowed.",
           "roleLimitsViolated": "Role limits exceeded.",
           "roleSetAlreadyMember": "You're already a member of this space.",
@@ -1424,7 +1426,11 @@
       "fullName": "$t(common.templateLibrary)"
     },
     "logout": {
-      "loading": "Déconnexion en cours..."
+      "loading": "Déconnexion en cours...",
+      "unavailable": "La déconnexion n’a pas pu être effectuée. Veuillez réessayer.",
+      "unknown": "La déconnexion n’a pas pu être confirmée. La session du fournisseur d’identité est peut-être encore active.",
+      "cleanupUnavailable": "Vous êtes déconnecté, mais les données locales n’ont pas pu être effacées. Veuillez réessayer.",
+      "pushCleanupUnavailable": "Vous êtes déconnecté, mais le nettoyage des notifications sur cet appareil est incomplet."
     },
     "recovery": {
       "cooldown": {

@@ -4,7 +4,6 @@ import type { ConversationMessage, MessageReaction } from '@/main/userMessaging/
 import {
   GUIDANCE_INTRO_ID,
   injectGuidanceIntro,
-  isGuidanceConversation,
   mapMessageToChatMessage,
   mapReactionsToCommentReactions,
   sortUnifiedConversations,
@@ -27,24 +26,6 @@ const makeConversation = (overrides: Partial<UnifiedConversation> = {}): Unified
   isGuidance: false,
   pinned: false,
   ...overrides,
-});
-
-describe('isGuidanceConversation', () => {
-  it('returns false when there is no guidance VC id', () => {
-    expect(isGuidanceConversation([{ id: ME }, { id: GUIDANCE_VC }], null)).toBe(false);
-  });
-
-  it('flags a 1:1 conversation with the guidance VC', () => {
-    expect(isGuidanceConversation([{ id: ME }, { id: GUIDANCE_VC }], GUIDANCE_VC)).toBe(true);
-  });
-
-  it('does NOT flag a 3+ member group that merely includes the guidance VC', () => {
-    expect(isGuidanceConversation([{ id: ME }, { id: 'u2' }, { id: GUIDANCE_VC }], GUIDANCE_VC)).toBe(false);
-  });
-
-  it('returns false when the guidance VC is not a member', () => {
-    expect(isGuidanceConversation([{ id: ME }, { id: 'u2' }], GUIDANCE_VC)).toBe(false);
-  });
 });
 
 describe('sortUnifiedConversations', () => {

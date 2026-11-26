@@ -1,0 +1,3 @@
+query CreateSpaceVisualConstraints {
+  config { visualConstraints { name minWidth maxWidth minHeight maxHeight aspectRatio minAspectRatio maxAspectRatio allowedTypes } }
+}

@@ -9,7 +9,7 @@ import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { VerificationCard } from '@/crd/components/auth/VerificationCard';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
-import { AuthShellWrapper } from './AuthShellWrapper';
+import { AuthFlowContext, AuthShellWrapper } from './AuthShellWrapper';
 import { CrdEmailVerificationRequiredPage } from './CrdEmailVerificationRequiredPage';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { useTranslateDescriptor } from './useKratosMessageCopy';
@@ -56,15 +56,17 @@ function CrdVerificationPage() {
 /** CRD `/verify/*` route — the un-gated replacement for the MUI `VerifyRoute`. */
 export function VerifyCrdRoute() {
   return (
-    <Routes>
-      <Route path="/" element={<CrdVerificationPage />} />
-      <Route
-        path="reminder"
-        element={<CrdEmailVerificationRequiredPage pageTitleKey="pages.verification-required.header" />}
-      />
-      {/* Unknown sub-path → bounce to login, mirroring the MUI VerifyRoute fallback. */}
-      <Route path="*" element={<RedirectToLogin />} />
-    </Routes>
+    <AuthFlowContext>
+      <Routes>
+        <Route path="/" element={<CrdVerificationPage />} />
+        <Route
+          path="reminder"
+          element={<CrdEmailVerificationRequiredPage pageTitleKey="pages.verification-required.header" />}
+        />
+        {/* Unknown sub-path → bounce to login, mirroring the MUI VerifyRoute fallback. */}
+        <Route path="*" element={<RedirectToLogin />} />
+      </Routes>
+    </AuthFlowContext>
   );
 }
 

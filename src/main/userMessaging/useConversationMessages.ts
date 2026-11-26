@@ -28,6 +28,9 @@ export const useConversationMessages = (conversation: ConversationRef | null) =>
 
   return {
     messages: readyMessages,
+    replyTargets: new Map<string, string>(
+      parsed.flatMap(message => (message.replyTo ? [[message.eventId, message.replyTo]] : []))
+    ),
     readUpToEventId,
     roomId: conversation?.roomId ?? null,
     isLoading,

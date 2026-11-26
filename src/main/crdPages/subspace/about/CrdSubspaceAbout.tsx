@@ -1,15 +1,15 @@
 import { Lock, Mail } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useCommunityGuidelinesQuery, useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
-import { groupEntriesForDisplay, resolveSelectedValues } from '@/crd/components/classification/types';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceAboutDialog } from '@/crd/components/space/SpaceAboutDialog';
 import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
+import { pageSpace } from '@/domain/space/context/spacePageShellMapper';
+import { useSpacePageData } from '@/domain/space/hooks/useSpacePage';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { nativeClassifications } from '@/main/crdPages/space/dataMappers/spacePageDataMapper';
 import { isApplyUnavailable } from '@/main/crdPages/space/isApplyUnavailable';
-import { mapClassificationEntries } from '@/main/crdPages/topLevelPages/spaceSettings/about/aboutMapper';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { useSpaceApplyFlow } from '../../space/useSpaceApplyFlow';
 
@@ -38,12 +38,10 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { data } = useSpaceAboutDetailsQuery({
-    variables: { spaceId: subspace.id },
-    skip: !open || !subspace.id,
-  });
-
-  const profileUrl = data?.lookup.space?.about.profile.url ?? subspace.about.profile.url;
+  // The page's D2 Space document (021 T021): opening About sends no request of its own.
+  const about = subspace.about;
+  const profile = about.profile;
+  const profileUrl = profile.url;
 
   const {
     loading: applyLoading,
@@ -58,18 +56,11 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
     // Joining from the About dialog closes it via the normal close path instead
     // of letting the default navigate yank the open modal (which froze the page).
     onJoined: onClose,
+    // While the About dialog is closed the apply-flow queries are not issued, as on the L0 About.
+    skip: !open,
   });
 
-  const guidelinesId = data?.lookup.space?.about.guidelines.id;
-  const { data: guidelinesData, loading: guidelinesLoading } = useCommunityGuidelinesQuery({
-    variables: { communityGuidelinesId: guidelinesId ?? '' },
-    skip: !open || !guidelinesId,
-  });
-
-  const about = data?.lookup.space?.about;
-  const profile = about?.profile;
-
-  const leadUsers = (about?.membership?.leadUsers ?? [])
+  const leadUsers = (about.membership.leadUsers ?? [])
     .filter((u): u is typeof u & { profile: NonNullable<typeof u.profile> } => !!u.profile)
     .map(u => ({
       name: u.profile.displayName,
@@ -79,7 +70,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
       href: u.profile.url,
     }));
 
-  const leadOrgs = (about?.membership?.leadOrganizations ?? [])
+  const leadOrgs = (about.membership.leadOrganizations ?? [])
     .filter((o): o is typeof o & { profile: NonNullable<typeof o.profile> } => !!o.profile)
     .map(o => ({
       name: o.profile.displayName,
@@ -89,7 +80,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
       href: o.profile.url,
     }));
 
-  const provider = about?.provider?.profile
+  const provider = about.provider?.profile
     ? {
         name: about.provider.profile.displayName,
         avatarUrl: about.provider.profile.avatar?.uri,
@@ -102,37 +93,28 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
       }
     : undefined;
 
-  const canEditClassifications = permissions.canUpdate;
-  const classifications = data?.lookup.space
-    ? groupEntriesForDisplay(mapClassificationEntries(data.lookup.space), { canEdit: canEditClassifications }).map(
-        entry => ({
-          id: entry.id,
-          displayLabel: entry.displayLabel,
-          values: resolveSelectedValues(entry).map(v => v.label),
-          hidden: !entry.display,
-        })
-      )
-    : [];
-
+  // The classification groups from the page's D2 Space document (its About's facets; cached, no request), as legacy
+  // renders them.
+  const document = pageSpace(useSpacePageData(subspace.id, 'space')?.node, subspace.id);
   const aboutData: SpaceAboutData = {
-    name: profile?.displayName ?? subspace.about.profile.displayName,
-    tagline: profile?.tagline ?? subspace.about.profile.tagline ?? undefined,
-    description: profile?.description ?? undefined,
-    location: [profile?.location?.city, profile?.location?.country].filter(Boolean).join(', ') || undefined,
-    metrics: (about?.metrics ?? []).map(m => ({ name: m.name, value: m.value })),
-    who: about?.who ?? undefined,
-    why: about?.why ?? undefined,
+    name: profile.displayName,
+    tagline: profile.tagline ?? undefined,
+    description: profile.description ?? undefined,
+    location: [profile.location?.city, profile.location?.country].filter(Boolean).join(', ') || undefined,
+    metrics: (about.metrics ?? []).map(m => ({ name: m.name, value: m.value })),
+    who: about.who ?? undefined,
+    why: about.why ?? undefined,
     provider,
     leadUsers,
     leadOrganizations: leadOrgs,
-    references: (profile?.references ?? []).map(r => ({
+    references: (profile.references ?? []).map(r => ({
       name: r.name,
       uri: r.uri,
       description: r.description ?? undefined,
     })),
     // Freeform Tags stay visible beside Classifications (FR-013 coexistence).
-    tags: profile?.tagset?.tags ?? [],
-    classifications,
+    tags: profile.tagset?.tags ?? [],
+    classifications: nativeClassifications(document, permissions.canUpdate, t('tabs.unavailable', { ns: 'crd-space' })),
   };
 
   const whyTitle = t(`about.context.${subspace.level}.why` as const, { ns: 'crd-space' });
@@ -163,17 +145,10 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
     </a>
   ) : undefined;
 
-  const guidelines = guidelinesData?.lookup.communityGuidelines?.profile;
-  const guidelinesSlot = guidelinesId ? (
+  // The `guidelines` JSON has no designed client shape yet (021 field-map F048): the block renders as legacy renders
+  // empty guidelines.
+  const guidelinesSlot = about.guidelines.id ? (
     <CommunityGuidelinesBlock
-      displayName={guidelines?.displayName}
-      description={guidelines?.description ?? undefined}
-      references={guidelines?.references?.map(r => ({
-        name: r.name,
-        uri: r.uri,
-        description: r.description ?? undefined,
-      }))}
-      loading={guidelinesLoading}
       canEdit={permissions.canUpdate}
       onEditClick={() => navigate(buildSettingsTabUrl(profileUrl, 'community', 'guidelines'))}
     />

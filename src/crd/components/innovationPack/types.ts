@@ -23,7 +23,7 @@ export type InnovationPackCardData = {
   /** sum of templatesSet.*Count — shown as a "{N} templates" badge. */
   templateCount: number;
   /** profile.url — the card links here. */
-  url: string;
+  url?: string;
   providerName?: string;
   providerAvatarUrl?: string;
   providerUrl?: string;

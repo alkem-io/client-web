@@ -1,5 +1,5 @@
 import type { ApolloError } from '@apollo/client';
-import { useCalendarEventDetailsQuery, useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, type CalendarEventDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
@@ -42,17 +42,11 @@ type UseCalendarEventDetailResult = {
 const useCalendarEventDetail = ({ eventId }: UseCalendarEventDetailParams): UseCalendarEventDetailResult => {
   const { userModel, isAuthenticated } = useCurrentUserContext();
 
-  const {
-    data,
-    loading: loadingEvent,
-    error,
-  } = useCalendarEventDetailsQuery({
-    variables: { eventId: eventId ?? '' },
-    skip: !eventId,
-    fetchPolicy: 'cache-and-network',
-  });
-  const loading = !eventId || loadingEvent;
-  const event = data?.lookup.calendarEvent;
+  // 021 F076: the event post's detail is not served yet (spaceEvents, WP-RF4), so it renders as legacy renders an
+  // absent event.
+  const loading = !eventId;
+  const event = undefined as CalendarEventDetailData | undefined;
+  const error = undefined as ApolloError | undefined;
 
   const roomId = event?.comments.id;
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);

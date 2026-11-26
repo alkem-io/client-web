@@ -1,0 +1,234 @@
+# specs/021-space-pages data-model.md D2/D3: the page's one request, SpacePage, carries the Space document (node); a cold
+# post URL carries its post in the same request (SpacePageWithPost).
+# Written against the MODEL API (specs/000-domain-model/surface.graphql; USER via spaces 2026-11-26): a field configured
+# on its type is always present and null when the database holds none (USER, ReadMeta), rendered as legacy renders
+# absent data. The About's model extensions are its facets (core.purpose why/who, the link roles' references,
+# core.classification sets), mapped into the legacy slots (spacePageDataMapper).
+# The page reads the SPACE TREE (USER via spaces, 2026-11-26: "but why don't you grab this data as space tree???" and
+# "you need to grab all subtree, excluding subspaces"): SpaceTree is ONE read of the space's whole subtree that does not
+# enter child spaces (stopAt: ["space"]: a child space is its face row): depth 1 the space's posts and child spaces,
+# depth 2 each post's responses, tasks and form responses (posts whose parentPost is that post). Rooms are not asked:
+# the server answers no room node (resolver/boot.go bootNode), and one such row would fail the whole read. A stage's feed
+# filters the tree's posts by Post.stage on the client (subtree has no stage filter). node(id) reads a single post
+# outside the tree (PostDetail); the members reader the virtual contributors (SpaceVirtualContributors).
+query SpacePage($space: UUID!, $withSpace: Boolean!) {
+  ...SpacePageRoots
+}
+
+query SpacePageWithPost($space: UUID!, $withSpace: Boolean!, $post: UUID!) {
+  ...SpacePageRoots
+  post: node(id: $post) { id entityType ...PostDetail }
+}
+
+# The space page's ONE tree read; its continuation is the same read with `after`.
+query SpaceTree($space: UUID!, $treeFirst: Int!, $after: String) {
+  tree: subtree(
+    root: $space
+    maxDepth: 2
+    types: ["post", "space"]
+    stopAt: ["space"]
+    first: $treeFirst
+    after: $after
+  ) {
+    edges {
+      cursor
+      node {
+        id
+        entityType
+        ...PostCard
+        ...NativeSubspaceCard
+      }
+    }
+    pageInfo { hasNextPage endCursor }
+    totalCount
+  }
+}
+
+# The space's virtual contributors (the members reader; members are not tree nodes), read by their widget; while the server
+# does not serve it the widget says "not available yet" in place. Continued with `after`.
+query SpaceVirtualContributors($space: UUID!, $membersFirst: Int!, $after: String) {
+  members(resource: $space, actorType: "virtual_contributor", first: $membersFirst, after: $after) {
+    edges { cursor node { id actor { ...ActorIdentity } } }
+    pageInfo { hasNextPage endCursor }
+  }
+}
+
+fragment SpacePageRoots on Query {
+  node(id: $space) @include(if: $withSpace) { id entityType ...SpaceDocument }
+}
+
+fragment ActorIdentity on Actor {
+  id
+  actorType
+  url
+  about { displayName avatar { alt file { url } } }
+}
+
+fragment LeadFace on Actor {
+  ...ActorIdentity
+  about { location }
+}
+
+fragment ContributorCard on Actor {
+  ...ActorIdentity
+  about { tagline location }
+  ... on User { skills keywords }
+  ... on Organization { tags associateCount website }
+}
+
+fragment SpaceDocument on Space {
+  id
+  handle
+  url
+  depth
+  status
+  createdAt
+  tags
+  isContentPublic
+  settings
+  videoCallUrl
+  memberCount
+  about {
+    displayName
+    tagline
+    description
+    location
+    facets { namespace name value }
+    avatar { alt file { id url } }
+    banner { alt aspectRatio file { id url } }
+    card { alt file { id url } }
+  }
+  guidelines
+  applicationForm
+  host { ...LeadFace account { id } }
+  leads { ...LeadFace }
+  stages { id name description sortOrder }
+  membership { roles status request { id state direction message createdAt createdBy { ...ActorIdentity } } }
+  parent { id url can { join apply } membership { status } }
+  entitlements { name }
+  can {
+    read
+    update
+    delete
+    archive
+    createPost
+    createSubspace
+    createDocument
+    invite
+    manageMembers
+    manageTemplates
+    upload
+    readActivity
+    saveAsTemplate
+    join
+    apply
+  }
+}
+
+# A response's card fields: a task board's tasks (TaskBoardContent.tasks); a response row carries them too (PostCard).
+fragment ResponseCard on Post {
+  id
+  url
+  contentKind
+  createdAt
+  tags
+  sortOrder
+  stage { id }
+  about { displayName description }
+  links { id title description uri file { id url } sortOrder }
+  author { ...ActorIdentity }
+  room { id messageCount }
+  can { update delete moveTask }
+  content {
+    __typename
+    ... on DocumentContent { document { id docType textSnapshot preview { url } about { displayName } } }
+    ... on LinkContent { link { id uri title description file { id url } } }
+  }
+}
+
+fragment PostBody on Post {
+  id
+  url
+  handle
+  sortOrder
+  # aliased: the space tree lists posts beside subspaces, whose Space.status is another enum
+  postStatus: status
+  contentKind
+  createdAt
+  publishedAt
+  tags
+  commentsEnabled
+  responseKind
+  responsePolicy
+  responseDefaults
+  responseCount
+  stage { id }
+  about { displayName description }
+  links { id title description uri file { id url } sortOrder }
+  author { ...ActorIdentity }
+  publishedBy { ...ActorIdentity }
+  # The flags the client reads, each from its declared read_can_rules on the card and node(id) alike; the comment
+  # control follows can.comment. The room's own grants are not asked: the server answers no room node (spaces 2026-11-26).
+  room { id messageCount }
+  can { read update delete respond comment move moveTask manageColumns }
+  content {
+    __typename
+    ... on DocumentContent {
+      document { id docType url textSnapshot preview { url } about { displayName } can { read edit } }
+    }
+    ... on LinkContent { link { id uri title description file { id url } } }
+    ... on GalleryContent { images { alt file { id url mime } } }
+    ... on PollContent {
+      question
+      status
+      deadline
+      settings
+      totalVotes
+      myVotes
+      options { id value sortOrder votes percentage mine voters { ...ActorIdentity } }
+    }
+    ... on EventContent {
+      startsAt
+      endsAt
+      startsOn
+      endsOn
+      allDay
+      timezone
+      location
+      type
+      rollUp
+      calendarLinks { provider url }
+    }
+    ... on ContributorsContent { settings counts { type count } contributors { ...ContributorCard } }
+    ... on SpacesContent {
+      settings
+      hasHiddenSpaces
+      spaces {
+        id
+        url
+        pinned
+        status
+        isContentPublic
+        tags
+        membership { status }
+        about { displayName tagline description card { file { url } } avatar { file { url } } }
+        leads { ...ActorIdentity }
+      }
+    }
+    ... on FormContent { questions responseCount myResponseCount }
+    ... on FormResponseContent { answers }
+    ... on TaskBoardContent { columns { id name sortOrder } tasks { ...ResponseCard } }
+  }
+}
+
+# A tree row that is a post: the space's post at depth 1, a response, task or form response at depth 2 (its parentPost).
+fragment PostCard on Post {
+  ...PostBody
+  parentPost { id }
+}
+
+
+fragment PostDetail on Post {
+  ...PostBody
+  parentPost { id url }
+}

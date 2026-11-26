@@ -1,0 +1,62 @@
+query CreateSubspaceTemplateDefault($root: UUID!) {
+  templateDefaults(scope: $root) {
+    slot
+    template { id about { displayName } }
+  }
+}
+
+fragment CreateSpacePickerCard on Template {
+  id
+  kind
+  url
+  tags
+  about { displayName description card { file { url } } }
+  body { id ... on Space { about { card { file { url } } } } }
+}
+
+query CreateSpacePickerSpaceTemplates($space: UUID!) {
+  templates(scope: $space, kind: SPACE) { ...CreateSpacePickerCard }
+}
+
+query CreateSpacePickerLibrary($scope: UUID, $after: String) {
+  library(filter: { itemType: TEMPLATE, kinds: [SPACE], scope: $scope }, first: 20, after: $after) {
+    edges {
+      node {
+        ... on Template {
+          ...CreateSpacePickerCard
+          scope { id ... on InnovationPack { about { displayName } } }
+          provider { id about { displayName } }
+        }
+      }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}
+
+query CreateSpaceTemplateContent($template: UUID!, $after: String) {
+  node(id: $template) {
+    id
+    ... on Template { about { displayName description } tags body { id } }
+  }
+  subtree(root: $template, maxDepth: 2, types: ["space", "post"], first: 500, after: $after) {
+    edges {
+      node {
+        id
+        entityType
+        ... on Space {
+          about { displayName tagline description card { file { url } } }
+          tags
+          isContentPublic
+          stages { name description sortOrder }
+        }
+        ... on Post {
+          about { displayName description }
+          contentKind
+          sortOrder
+          stage { name }
+        }
+      }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}

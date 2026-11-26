@@ -13,7 +13,8 @@
     "dashboard": "Tableau de bord",
     "community": "Communauté",
     "subspaces": "Sous-espaces",
-    "knowledgeBase": "Base de connaissances"
+    "knowledgeBase": "Base de connaissances",
+    "unavailable": "Ce contenu n'est pas encore disponible."
   },
   "visibility": {
     "archived": "Cet Espace est archivé et en lecture seule.",

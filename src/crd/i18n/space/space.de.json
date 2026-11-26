@@ -13,7 +13,8 @@
     "dashboard": "Übersicht",
     "community": "Gemeinschaft",
     "subspaces": "Unterbereiche",
-    "knowledgeBase": "Wissensdatenbank"
+    "knowledgeBase": "Wissensdatenbank",
+    "unavailable": "Dieser Inhalt ist noch nicht verfügbar."
   },
   "visibility": {
     "archived": "Dieser Bereich ist archiviert und schreibgeschützt.",

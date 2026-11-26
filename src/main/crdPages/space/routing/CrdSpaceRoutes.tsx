@@ -7,6 +7,9 @@ import { SpaceContextProvider } from '@/domain/space/context/SpaceContext';
 import SubspaceContextProvider from '@/domain/space/context/SubspaceContext';
 import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import { nameOfUrl } from '@/main/routing/urlParams';
+import { BreadcrumbsProvider } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
+import { BannerOverlayProvider } from '@/main/ui/layout/BannerOverlayContext';
+import { LayoutWidthProvider } from '@/main/ui/layout/LayoutWidthContext';
 import CrdSpacePageLayout from '../layout/CrdSpacePageLayout';
 import CrdSpaceProtectedRoutes from './CrdSpaceProtectedRoutes';
 
@@ -18,7 +21,21 @@ const CrdSpaceSettingsPage = lazyWithGlobalErrorHandler(
 const SubspaceRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/subspace/routing/CrdSubspaceRoutes'));
 const CrdSpaceCalloutPage = lazyWithGlobalErrorHandler(() => import('../CrdSpaceCalloutPage'));
 
+// The space layout needs the shell providers legacy's CrdLayoutWrapper mounted (71f8ddcf CrdLayoutWrapper.tsx:147-157);
+// develop's reduced shell has none, so the space routes mount them (rf2-create-dialogs ae7ba8523) until the shell does.
 export default function CrdSpaceRoutes() {
+  return (
+    <BreadcrumbsProvider>
+      <BannerOverlayProvider>
+        <LayoutWidthProvider>
+          <SpaceRoutes />
+        </LayoutWidthProvider>
+      </BannerOverlayProvider>
+    </BreadcrumbsProvider>
+  );
+}
+
+function SpaceRoutes() {
   return (
     <SpaceContextProvider>
       <Routes>

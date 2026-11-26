@@ -1,6 +1,6 @@
-import { usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { resolveVisibleAdminSections } from './adminSectionAccess';
 import type { AdminSectionDescriptor } from './adminSections';
+import { usePlatformAdminData } from './usePlatformAdminData';
 
 /**
  * Which admin sections may this user see?
@@ -21,15 +21,8 @@ export const useVisibleAdminSections = (): {
   sections: readonly AdminSectionDescriptor[];
   loading: boolean;
 } => {
-  const { data, loading } = usePlatformLevelAuthorizationQuery();
-
-  const sections = resolveVisibleAdminSections({
-    privileges: [
-      ...(data?.platform.authorization?.myPrivileges ?? []),
-      ...(data?.platform.roleSet.authorization?.myPrivileges ?? []),
-    ],
-    roles: data?.platform.roleSet.myRoles ?? [],
-  });
+  const { privileges, roles, loading } = usePlatformAdminData();
+  const sections = resolveVisibleAdminSections({ privileges, roles });
 
   return { sections, loading };
 };

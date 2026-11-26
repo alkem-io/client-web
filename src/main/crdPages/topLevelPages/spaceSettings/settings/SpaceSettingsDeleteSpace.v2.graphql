@@ -1,0 +1,19 @@
+# Delete space / subspace (screens-dispositions.tsv:19520): the control is gated on SpaceCan.delete (the space DELETE
+# verdict) and runs deleteSpace(id) (surface.graphql:537).
+query SpaceSettingsDeleteGate($id: UUID!) {
+  node(id: $id) {
+    id
+    entityType
+    ... on Space {
+      can {
+        delete
+      }
+    }
+  }
+}
+
+mutation SpaceSettingsDeleteSpace($id: UUID!) {
+  deleteSpace(id: $id) {
+    deletedId
+  }
+}

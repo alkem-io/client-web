@@ -1,11 +1,13 @@
 import { FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
-import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import { pageSpace } from '@/domain/space/context/spacePageShellMapper';
+import { treePosts, useSpacePageData, useSpaceTree } from '@/domain/space/hooks/useSpacePage';
 
 type CrdSubspaceIndexDialogConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** A native space has no callouts set wrapper: this is the subspace's own id. */
   calloutsSetId: string | undefined;
   /** Flow state names in innovation-flow order, so the index groups match the tab strip. */
   phaseNames: string[];
@@ -19,18 +21,18 @@ export function CrdSubspaceIndexDialogConnector({
 }: CrdSubspaceIndexDialogConnectorProps) {
   const { t } = useTranslation('crd-subspace');
 
-  const { callouts, loading } = useCalloutsSet({
-    calloutsSetId,
-    classificationTagsets: [],
-    includeClassification: true,
-    skip: !open || !calloutsSetId,
-  });
+  // D9: the subspace's own posts in the page's space tree (no request of its own); while the server does not serve the
+  // tree read yet the dialog says so in place.
+  const { tree, notServed } = useSpaceTree(open ? calloutsSetId : undefined);
+  const loading = open && !tree && !notServed;
+  const callouts = treePosts(tree);
+  const stages = pageSpace(useSpacePageData(calloutsSetId, 'space')?.node, calloutsSetId)?.stages;
 
-  // Group by flow state (phase). Items without a flow state fall under "—".
+  // Group by stage (phase). Items without a stage fall under "—".
   const groups = (() => {
     const map = new Map<string, typeof callouts>();
     (callouts ?? []).forEach(c => {
-      const state = c.classification?.flowState?.tags?.[0] ?? '—';
+      const state = stages?.find(stage => stage.id === c.stage?.id)?.name ?? '—';
       const arr = map.get(state) ?? [];
       arr.push(c);
       map.set(state, arr);
@@ -62,7 +64,10 @@ export function CrdSubspaceIndexDialogConnector({
         <div className="flex-1 min-h-0 overflow-y-auto">
           {loading && groups.length === 0 && <p className="text-body text-muted-foreground py-6">…</p>}
 
-          {!loading && groups.length === 0 && (
+          {notServed && (
+            <p className="text-body text-muted-foreground py-6">{t('tabs.unavailable', { ns: 'crd-space' })}</p>
+          )}
+          {!loading && !notServed && groups.length === 0 && (
             <DialogDescription className="py-6 text-center">{t('index.empty')}</DialogDescription>
           )}
 
@@ -72,11 +77,11 @@ export function CrdSubspaceIndexDialogConnector({
                 <p className="text-label uppercase text-muted-foreground mb-2 px-1">{group.state}</p>
                 <ul className="space-y-1">
                   {group.items.map(callout => {
-                    const profile = callout.framing.profile;
+                    const profile = callout.about;
                     return (
                       <li key={callout.id}>
                         <a
-                          href={profile.url ?? '#'}
+                          href={callout.url ?? '#'}
                           className="flex items-start gap-3 w-full px-3 py-2.5 rounded-md transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           <FileText className="w-4 h-4 shrink-0 mt-0.5 text-primary" aria-hidden="true" />

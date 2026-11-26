@@ -1,6 +1,5 @@
 import { Layers, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
 import { Button } from '@/crd/primitives/button';
 import {
@@ -11,13 +10,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/crd/primitives/dialog';
-import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
-import { mapSubspacesToCardDataList } from '../dataMappers/subspaceCardDataMapper';
+import { useNativeSubspaces } from '@/domain/space/hooks/useNativeSubspaces';
+import { nativeSubspaceCard } from '../dataMappers/subspaceCardDataMapper';
 
 type SubspacesDialogConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** The space whose direct children are listed — works for any level (L0/L1). */
+  /** The space whose direct children are listed, at any depth. */
   spaceId: string | undefined;
   /** Shown when the space has no subspaces — the consumer words it for its level. */
   emptyText: string;
@@ -40,15 +39,8 @@ export function SubspacesDialogConnector({
   // initial load instead of blanking the tab body on the first open.
   const { t } = useTranslation(['crd-space', 'crd-exploreSpaces']);
 
-  const { data, loading } = useSpaceSubspaceCardsQuery({
-    variables: { spaceId: spaceId ?? '' },
-    skip: !open || !spaceId,
-  });
-
-  const rawSubspaces = data?.lookup.space?.subspaces;
-  const sortMode = data?.lookup.space?.settings.sortMode;
-  const sorted = useSubspacesSorted(rawSubspaces, sortMode);
-  const subspaces = mapSubspacesToCardDataList(sorted, sortMode);
+  const { subspaces: children, showPins, loading, hasMore, loadMore } = useNativeSubspaces(spaceId, !open);
+  const subspaces = children?.map(child => nativeSubspaceCard(child, showPins)) ?? [];
   const hasSubspaces = subspaces.length > 0;
   const showEmptyText = !loading && !hasSubspaces;
 
@@ -71,8 +63,15 @@ export function SubspacesDialogConnector({
 
         {hasSubspaces && (
           <div className="flex-1 overflow-y-auto px-6 pb-4">
-            {/* The dialog IS the "show all" — render every card, no Show-more paging. */}
-            <SpaceSubspacesList subspaces={subspaces} disableFilters={true} initialVisibleCount={subspaces.length} />
+            <SpaceSubspacesList
+              key={spaceId}
+              subspaces={subspaces}
+              disableFilters={true}
+              initialVisibleCount={subspaces.length}
+              hasMore={hasMore}
+              loading={loading}
+              onLoadMore={loadMore}
+            />
           </div>
         )}
 

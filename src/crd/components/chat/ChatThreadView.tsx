@@ -28,6 +28,9 @@ type ChatThreadViewProps = {
   draft?: string;
   onDraftChange?: (value: string) => void;
   onSendMessage?: (content: string) => void;
+  onReply?: (messageId: string) => void;
+  replyPreview?: string;
+  onCancelReply?: () => void;
   onAddReaction?: (messageId: string, emoji: string) => void;
   onRemoveReaction?: (messageId: string, emoji: string) => void;
   /** Attachments (feature 013): when enabled the composer shows the attach
@@ -63,6 +66,9 @@ export function ChatThreadView({
   draft,
   onDraftChange,
   onSendMessage,
+  onReply,
+  replyPreview,
+  onCancelReply,
   onAddReaction,
   onRemoveReaction,
   attachmentsEnabled,
@@ -125,6 +131,7 @@ export function ChatThreadView({
                 canReact={canReact}
                 onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
                 onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}
+                onReply={onReply && !isSending ? () => onReply(message.id) : undefined}
               />
             );
             return (
@@ -203,6 +210,14 @@ export function ChatThreadView({
       </div>
       {onSendMessage && (
         <div className="shrink-0 border-t border-border p-2">
+          {replyPreview !== undefined && (
+            <div className="mb-2 flex items-center gap-2 border-l-2 border-border px-2 text-caption">
+              <span className="min-w-0 flex-1 truncate">{replyPreview}</span>
+              <button type="button" onClick={onCancelReply} disabled={isSending}>
+                {t('actions.cancel')}
+              </button>
+            </div>
+          )}
           <CommentInput
             currentUser={currentUser}
             onSubmit={onSendMessage}

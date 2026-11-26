@@ -5,7 +5,7 @@ import type { MessageAttachment } from '@/crd/components/comment/types';
  */
 export interface ConversationMember {
   id: string;
-  type: ActorType;
+  type?: ActorType;
   displayName: string;
   avatarUri?: string;
   url?: string;

@@ -1,0 +1,18 @@
+# 023 FR-020 "Plans (L0)": the hosting account's canCreate (extensibility.md:759-785) and the space plans.
+fragment CreateSpaceAccount on AccountSummary {
+  id
+  canCreate { kind allowed reason byEntitlement { name allowed } }
+}
+
+query CreateSpaceViewerAccount {
+  viewer { id account { ...CreateSpaceAccount } }
+}
+
+query CreateSpaceOrganizationAccount($organization: UUID!) {
+  node(id: $organization) { id ... on Organization { account { ...CreateSpaceAccount } } }
+}
+
+query CreateSpacePlans {
+  plans(scope: SPACE) { id name sortOrder enabled entitlements { name } }
+  config { entitlementCatalog { name effectiveEntitlement creationKinds { entityType kind } } }
+}

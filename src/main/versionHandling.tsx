@@ -56,7 +56,7 @@ export const VersionHandling = () => {
 
   const handleReload = () => {
     // using window to avoid redundant re-rendering
-    window.location.replace(window.location.pathname + window.location.search);
+    window.location.replace(window.location.pathname + window.location.search + window.location.hash);
   };
 
   return <AppVersionBanner recurring={recurring} onReload={handleReload} />;

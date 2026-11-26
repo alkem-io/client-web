@@ -36,6 +36,8 @@ export type SubspaceFlowTabsProps = {
   mobileMenuContent?: ReactNode;
   /** Drawer header label. Defaults to the `flow.menu` translation. */
   mobileMenuTitle?: string;
+  /** Shown instead of the phases when there are none to list. Defaults to the `flow.emptyState` translation. */
+  emptyMessage?: string;
   className?: string;
 };
 
@@ -60,6 +62,7 @@ export function SubspaceFlowTabs({
   onMobileMenuOpenChange,
   mobileMenuContent,
   mobileMenuTitle,
+  emptyMessage,
   className,
 }: SubspaceFlowTabsProps) {
   const { t } = useTranslation('crd-subspace');
@@ -89,7 +92,7 @@ export function SubspaceFlowTabs({
   if (isMobile) {
     return (
       <>
-        {phases.length === 0 && <EmptyFlowState className={className} />}
+        {phases.length === 0 && <EmptyFlowState className={className} message={emptyMessage} />}
         <MobileFlowBar
           phases={phases}
           activePhaseId={activePhaseId}
@@ -108,7 +111,7 @@ export function SubspaceFlowTabs({
     return (
       <>
         <div className={cn('flex items-center gap-4', className)}>
-          <EmptyFlowState className="flex-1" />
+          <EmptyFlowState className="flex-1" message={emptyMessage} />
           {action && <div className="shrink-0 flex items-center">{action}</div>}
         </div>
         {drawer}
@@ -133,13 +136,13 @@ export function SubspaceFlowTabs({
   );
 }
 
-function EmptyFlowState({ className }: { className?: string }) {
+function EmptyFlowState({ className, message }: { className?: string; message?: string }) {
   const { t } = useTranslation('crd-subspace');
   return (
     <div
       className={cn('flex items-center justify-center py-6 border-2 border-dashed border-border rounded-lg', className)}
     >
-      <p className="text-body text-muted-foreground">{t('flow.emptyState')}</p>
+      <p className="text-body text-muted-foreground">{message ?? t('flow.emptyState')}</p>
     </div>
   );
 }

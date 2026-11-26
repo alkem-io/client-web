@@ -1,16 +1,33 @@
+import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
+import { NotFoundError } from '@/core/40XErrorHandler/40XErrors';
 import {
-  refetchRoleSetApplicationFormQuery,
-  useRoleSetApplicationFormQuery,
-  useUpdateApplicationFormOnRoleSetMutation,
-} from '@/core/apollo/generated/apollo-hooks';
+  useSpaceSettingsApplicationFormQuery,
+  useSpaceSettingsUpdateApplicationFormMutation,
+} from '@/core/apollo/generated-v2/apollo-hooks';
+import type { SpaceSettingsApplicationFormQuery } from '@/core/apollo/generated-v2/graphql-schema';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import type { ApplicationQuestion } from '@/crd/components/space/settings/ApplicationFormEditor';
+
+type FormSpace = Extract<NonNullable<SpaceSettingsApplicationFormQuery['node']>, { __typename?: 'Space' }>;
+
+/** core.application_form, the one form store (surface.graphql:171). */
+type NativeApplicationForm = {
+  description?: string | null;
+  questions?: Array<{
+    question: string;
+    explanation?: string | null;
+    required: boolean;
+    max_length?: number | null;
+    sort_order: number;
+  }>;
+};
 
 export type UseApplicationFormDataResult = {
   description: string;
   questions: ApplicationQuestion[];
   loading: boolean;
-  /** The save mutation (and its refetch) is in flight. */
+  /** The save mutation is in flight. */
   submitting: boolean;
   isDirty: boolean;
   canSave: boolean;
@@ -21,24 +38,32 @@ export type UseApplicationFormDataResult = {
   onQuestionDelete: (index: number) => void;
   onQuestionMoveUp: (index: number) => void;
   onQuestionMoveDown: (index: number) => void;
-  /** Resolves once the form is saved and refetched; rejects on failure. */
+  /** Resolves once the form is saved (the mutation returns the stored form); rejects on failure. */
   onSave: () => Promise<void>;
   onReset: () => void;
 };
 
-export function useApplicationFormData(roleSetId: string | undefined): UseApplicationFormDataResult {
-  const { data: rawData, loading: loadingQuestions } = useRoleSetApplicationFormQuery({
-    variables: { roleSetId: roleSetId ?? '' },
-    skip: !roleSetId,
+export function useApplicationFormData(spaceId: string | undefined): UseApplicationFormDataResult {
+  const {
+    data,
+    loading: loadingQuestions,
+    error: queryError,
+  } = useSpaceSettingsApplicationFormQuery({
+    variables: { id: spaceId ?? '' },
+    skip: !spaceId,
   });
+  if (spaceId && queryError) throw queryError;
+  if (spaceId && data && !loadingQuestions && !data.node) throw new NotFoundError();
 
-  const serverDescription = rawData?.lookup?.roleSet?.applicationForm?.description ?? '';
-  const serverQuestions =
-    rawData?.lookup?.roleSet?.applicationForm?.questions?.map(q => ({
-      question: q.question,
-      required: q.required,
-      sortOrder: q.sortOrder,
-    })) ?? [];
+  const node = data?.node;
+  const space = node && node.id === spaceId && node.entityType === 'space' ? (node as FormSpace) : undefined;
+  const serverForm = (space?.applicationForm ?? {}) as NativeApplicationForm;
+  const serverDescription = serverForm.description ?? '';
+  const serverQuestions = (serverForm.questions ?? []).map(q => ({
+    question: q.question,
+    required: q.required,
+    sortOrder: q.sort_order,
+  }));
 
   const sortedServerQuestions = [...serverQuestions].sort((a, b) => a.sortOrder - b.sortOrder);
 
@@ -48,12 +73,8 @@ export function useApplicationFormData(roleSetId: string | undefined): UseApplic
   const description = localDescription ?? serverDescription;
   const questions = localQuestions ?? sortedServerQuestions;
 
-  // Sync from server when data loads
-  if (localDescription === null && serverDescription) {
-    // Already handled by the fallback above
-  }
-
-  const [updateForm, { loading: submitting }] = useUpdateApplicationFormOnRoleSetMutation();
+  const [updateForm, { loading: submitting }] = useSpaceSettingsUpdateApplicationFormMutation();
+  const handleError = useApolloErrorHandler();
 
   const hasEmptyQuestions = questions.some(q => !q.question.trim());
   const isDirty = localDescription !== null || localQuestions !== null;
@@ -100,25 +121,25 @@ export function useApplicationFormData(roleSetId: string | undefined): UseApplic
   };
 
   const onSave = async () => {
-    if (!roleSetId) return;
-    const formQuestions = questions.map((q, i) => ({
-      question: q.question,
-      required: q.required,
-      sortOrder: i + 1,
-      explanation: '',
-      maxLength: 500,
-    }));
-    await updateForm({
-      variables: {
-        roleSetId,
-        formData: {
-          description,
-          questions: formQuestions,
-        },
-      },
-      refetchQueries: [refetchRoleSetApplicationFormQuery({ roleSetId })],
-      awaitRefetchQueries: true,
-    });
+    if (!spaceId) return;
+    // The editor keeps the fields it always wrote: an empty explanation and a 500-character answer limit.
+    const applicationForm: NativeApplicationForm = {
+      description,
+      questions: questions.map((q, i) => ({
+        question: q.question,
+        explanation: '',
+        required: q.required,
+        max_length: 500,
+        sort_order: i + 1,
+      })),
+    };
+    try {
+      // updateSpace returns the stored form, which replaces the cached one.
+      await updateForm({ variables: { id: spaceId, applicationForm } });
+    } catch (err) {
+      if (err instanceof ApolloError) handleError(err);
+      throw err;
+    }
     setLocalDescription(null);
     setLocalQuestions(null);
   };

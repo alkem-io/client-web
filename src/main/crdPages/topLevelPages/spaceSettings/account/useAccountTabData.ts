@@ -1,8 +1,13 @@
 import { useState } from 'react';
-import { useDeleteSpaceMutation, useSpaceAccountQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { NotFoundError } from '@/core/40XErrorHandler/40XErrors';
+import {
+  useSpaceSettingsAccountQuery,
+  useSpaceSettingsDeleteSpaceMutation,
+} from '@/core/apollo/generated-v2/apollo-hooks';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
 import type { AccountHost, AccountPlan } from '@/crd/components/space/settings/SpaceSettingsAccountView';
-import { mapAccountHost, mapAccountPlan } from './accountMapper';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { type AccountSpace, mapAccountHost, mapAccountPlan } from './accountMapper';
 
 export type UseAccountTabDataResult = {
   url: string;
@@ -21,27 +26,32 @@ export type UseAccountTabDataResult = {
 };
 
 export function useAccountTabData(spaceId: string): UseAccountTabDataResult {
-  const { data, loading } = useSpaceAccountQuery({
-    variables: { spaceId },
+  const { data, loading, error } = useSpaceSettingsAccountQuery({
+    variables: { id: spaceId },
     skip: !spaceId,
   });
+  if (spaceId && error) throw error;
+  if (spaceId && data && !loading && !data.node) throw new NotFoundError();
 
-  const space = data?.lookup.space;
-  const platform = data?.platform;
+  const space =
+    data?.node?.id === spaceId && data.node.entityType === 'space' ? (data.node as AccountSpace) : undefined;
+  // The support location is the native Config.links `support` entry, served through the config context.
+  const { locations } = useConfig();
 
-  const url = space?.about.profile.url ?? '';
-  const visibility = space?.visibility ?? '';
-  const plan = space && platform ? mapAccountPlan(space, platform) : null;
+  const url = space?.url ?? '';
+  // Space.status carries the legacy visibility values (ACTIVE, ARCHIVED, DEMO, INACTIVE).
+  const visibility = space?.status ?? '';
+  const plan = space ? mapAccountPlan(space) : null;
   const host = space ? mapAccountHost(space) : null;
-  const contactSupportHref = platform?.configuration.locations.support ?? '';
+  const contactSupportHref = locations?.support ?? '';
   // "Change License" routes users to the Alkemio contact page so the team can
   // walk them through plan changes — not a self-service plans list.
-  const changeLicenseHref = platform?.configuration.locations.support ?? null;
+  const changeLicenseHref = locations?.support ?? null;
 
-  const privileges = space?.authorization?.myPrivileges ?? [];
-  const canDeleteSpace = privileges.includes(AuthorizationPrivilege.Delete);
+  const canDeleteSpace = space?.can.delete ?? false;
 
-  const [deleteSpace] = useDeleteSpaceMutation();
+  const handleError = useApolloErrorHandler();
+  const [deleteSpace] = useSpaceSettingsDeleteSpaceMutation({ onError: handleError });
   const [pendingDeleteSpace, setPendingDeleteSpace] = useState(false);
 
   const onDeleteSpace = () => {
@@ -49,7 +59,7 @@ export function useAccountTabData(spaceId: string): UseAccountTabDataResult {
   };
 
   const confirmDeleteSpace = () => {
-    void deleteSpace({ variables: { spaceId } });
+    void deleteSpace({ variables: { id: spaceId } });
     setPendingDeleteSpace(false);
   };
 

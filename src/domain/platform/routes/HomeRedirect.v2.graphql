@@ -1,0 +1,3 @@
+query HomeRedirectMemberships {
+  viewer { id actor { id ... on User { memberships { space { id depth url } } } } }
+}

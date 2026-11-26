@@ -103,6 +103,14 @@ describe('useApolloErrorHandler', () => {
       expect(notify).toHaveBeenCalledWith('apollo.errors.network.generic', 'error');
     });
 
+    it('shows an operation or field the server does not serve yet as not available yet', () => {
+      // the server's schema validation, answered with HTTP 422: a bare VALIDATION located in the document, on no path
+      const refusal = { message: 'invalid', locations: [{ line: 1, column: 12 }], extensions: { code: 'VALIDATION' } };
+      useApolloErrorHandler()(apolloError(serverResponse({ errors: [refusal] })));
+
+      expect(notify).toHaveBeenCalledWith('apollo.errors.userMessages.operations.notAvailableYet', 'error', undefined);
+    });
+
     it('surfaces GraphQL errors carried in a network error payload', () => {
       useApolloErrorHandler()(apolloError(serverResponse({ errors: [{ message: 'Boom', extensions: {} }] })));
 
@@ -114,5 +122,48 @@ describe('useApolloErrorHandler', () => {
     useApolloErrorHandler()(apolloError(null));
 
     expect(notify).not.toHaveBeenCalled();
+  });
+});
+
+describe('native server codes in the legacy wording', () => {
+  // An executed field's refusal carries its path; the selection admission refuses before execution, on no path.
+  const graphQLError = (code: string, message: string, path: string[] | null = ['node']) =>
+    ({
+      networkError: null,
+      graphQLErrors: [{ message, ...(path ? { path } : {}), extensions: { code } }],
+      clientErrors: [],
+    }) as never;
+
+  beforeEach(() => notify.mockReset());
+
+  it.each([
+    ['FORBIDDEN', 'forbidden', 'apollo.errors.userMessages.authorization.forbiddenPolicy'],
+    ['NOT_FOUND', 'not found', 'apollo.errors.userMessages.notFound.entity'],
+    ['ENTITLEMENT', 'entitlement unavailable', 'apollo.errors.userMessages.operations.licenseEntitlementNotAvailable'],
+    ['UNAVAILABLE', 'unavailable', 'apollo.errors.userMessages.operations.notEnabled'],
+    ['CONFLICT', 'conflict', 'apollo.errors.userMessages.operations.operationNotAllowed'],
+    ['FORBIDDEN_OPERATION', 'operation not allowed', 'apollo.errors.userMessages.operations.operationNotAllowed'],
+    ['TEMPLATE_NOT_READY', 'TEMPLATE_NOT_READY: invalid', 'apollo.errors.userMessages.validation.entityNotInitialized'],
+    ['DEFAULT_UNAVAILABLE', 'default unavailable', 'apollo.errors.userMessages.validation.entityNotInitialized'],
+    ['VISIT_BUDGET_EXHAUSTED', 'subtree visit budget exhausted', 'apollo.errors.UNSPECIFIED'],
+    ['UNSUPPORTED_NODE_TYPE', 'unsupported node type', 'apollo.errors.userMessages.validation.notSupported'],
+    ['INTERNAL', 'internal error', 'apollo.errors.UNSPECIFIED'],
+    ['VALIDATION', 'invalid', 'apollo.errors.userMessages.validation.inputValidation'],
+  ])('shows %s once, in its legacy wording, without the bare server text', (code, message, key) => {
+    useApolloErrorHandler()(graphQLError(code, message));
+    expect(notify).toHaveBeenCalledTimes(1);
+    expect(notify).toHaveBeenCalledWith(key, 'error', undefined);
+  });
+
+  it('shows the selection admission refusal (UNAVAILABLE on no path) as not available yet', () => {
+    useApolloErrorHandler()(graphQLError('UNAVAILABLE', 'unavailable', null));
+    expect(notify).toHaveBeenCalledTimes(1);
+    expect(notify).toHaveBeenCalledWith('apollo.errors.userMessages.operations.notAvailableYet', 'error', undefined);
+  });
+
+  it('shows a VALIDATION field message as legacy showed a BAD_USER_INPUT message', () => {
+    useApolloErrorHandler()(graphQLError('VALIDATION', 'blueprint.nodes/profile/tagline: at most 128 characters'));
+    expect(notify).toHaveBeenCalledTimes(1);
+    expect(notify).toHaveBeenCalledWith('apollo.errors.userMessages.validation.badUserInput', 'error', undefined);
   });
 });

@@ -41,6 +41,7 @@ vi.mock('@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionRetu
   }),
 }));
 vi.mock('./AuthShellWrapper', () => ({
+  AuthFlowContext: ({ children }: { children: ReactNode }) => <>{children}</>,
   AuthShellWrapper: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
 vi.mock('@/main/routing/urlBuilders', () => ({ buildLoginUrl: () => '/login' }));
@@ -56,6 +57,8 @@ vi.mock('@/core/auth/authentication/utils/useSignUpReturnUrl', () => ({
   useReturnUrl: () => ({ setReturnUrl: vi.fn() }),
   useSignUpRoundTrip: () => ({ armed: false, arm: vi.fn(), clearArmed: vi.fn() }),
 }));
+// An anonymous visitor: the sign-up page renders (a signed-in one is sent home, IdentityRoute.test).
+vi.mock('@/core/foundation/NativeFoundationProvider', () => ({ useNativeFoundation: () => ({ data: undefined }) }));
 vi.mock('@/core/analytics/SentryTransactionScopeContext', () => ({ useTransactionScope: () => {} }));
 vi.mock('@/core/routing/usePageTitle', () => ({ usePageTitle: () => {} }));
 vi.mock('@/core/routing/useQueryParams', () => ({ useQueryParams: () => new URLSearchParams('') }));

@@ -1,16 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  useCalloutCommentsRevalidateQuery,
-  useCalloutContributionQuery,
-  useDeleteContributionMutation,
-  useMemoMarkdownLazyQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useDeleteContributionMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CalloutContributionType,
   CalloutFramingType,
 } from '@/core/apollo/generated/graphql-schema';
+import type { PostBodyFragment, ResponseCardFragment } from '@/core/apollo/generated-v2/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
@@ -22,9 +18,10 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatRelativeFromNow } from '@/crd/lib/dateTimeFormat';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { useCachedPost } from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
 import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/canRenameCollaboraDocument';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
-import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
+import { usePostResponses } from '@/domain/space/hooks/useSpacePage';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import { MemoSignedCopiesDialogConnector } from '@/main/crdPages/memo/MemoSignedCopiesDialogConnector';
 import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
@@ -36,8 +33,8 @@ import {
 } from '../dataMappers/calloutDataMapper';
 import {
   type ContributionCardData,
-  mapAnyContributionToCardData,
   mapContributionToLinkItem,
+  mapResponseToCardData,
 } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutFramingFormConnector } from './CalloutFramingFormConnector';
@@ -67,6 +64,16 @@ import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddC
 import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
 import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
 
+type PostContent = NonNullable<PostBodyFragment['content']>;
+type TaskBoardContent = Extract<PostContent, { __typename: 'TaskBoardContent' }>;
+type DocumentContent = Extract<PostContent, { __typename: 'DocumentContent' }> | null | undefined;
+const documentOf = (response: ResponseCardFragment | undefined) =>
+  response?.contentKind === 'document' ? (response.content as DocumentContent)?.document : undefined;
+const actorAuthor = (actor: ResponseCardFragment['author']) =>
+  actor?.about
+    ? { name: actor.about.displayName, avatarUrl: actor.about.avatar?.file.url, profileUrl: actor.url ?? undefined }
+    : undefined;
+
 type CalloutDetailDialogConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -91,13 +98,15 @@ type CalloutDetailDialogConnectorProps = {
 
 function ContributionsSlot({
   callout,
-  open,
+  responses,
+  loading,
   onContributionClick,
   onContributionCreated,
   onOpenMemoSignedCopies,
 }: {
   callout: CalloutDetailsModelExtended;
-  open: boolean;
+  responses: ResponseCardFragment[];
+  loading: boolean;
   onContributionClick?: (id: string, entityId?: string) => void;
   onContributionCreated?: () => void;
   onOpenMemoSignedCopies?: (memoId: string) => void;
@@ -110,16 +119,6 @@ function ContributionsSlot({
     contributionType: contributionType ?? CalloutContributionType.Post,
   });
 
-  const {
-    inViewRef,
-    contributions: { items },
-    loading,
-  } = useCalloutContributions({
-    callout,
-    contributionType: contributionType ?? CalloutContributionType.Post,
-    skip: !open || !contributionType,
-  });
-
   // Visibility follows MUI: presence of `allowedTypes` (i.e. `contributionType`)
   // is what marks the callout as collecting contributions. `enabled: false`
   // (turning both Members/Admins switches off) is a soft-disable — existing
@@ -129,9 +128,7 @@ function ContributionsSlot({
     return null;
   }
 
-  const mapped = items
-    .map(item => mapAnyContributionToCardData(item, locale))
-    .filter(Boolean) as ContributionCardData[];
+  const mapped = responses.map(response => mapResponseToCardData(response, locale));
 
   const defaults = callout.contributionDefaults;
   const trailingSlot = canCreateContribution ? (
@@ -171,7 +168,7 @@ function ContributionsSlot({
   // affordances gated by per-link authorization.
   if (contributionType === CalloutContributionType.Link) {
     return (
-      <div ref={inViewRef}>
+      <div>
         {!loading && (
           <LinkContributionListSlot
             calloutId={callout.id}
@@ -185,7 +182,7 @@ function ContributionsSlot({
   }
 
   return (
-    <div ref={inViewRef}>
+    <div>
       {!loading && (
         <ContributionGridConnector
           contributions={mapped}
@@ -327,52 +324,25 @@ export function CalloutDetailDialogConnector({
   const [deletingContribution, setDeletingContribution] = useState(false);
   const notify = useNotification();
   const [deleteContribution] = useDeleteContributionMutation();
-  const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
-  const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const consumedSigningRestore = useRef<string | undefined>(undefined);
   const [restoringAttemptId, setRestoringAttemptId] = useState<string>();
 
   const restoreContributionId =
     memoSigningRestore?.kind === 'contribution' ? memoSigningRestore.contributionId : undefined;
-  const {
-    data: restoreContributionData,
-    loading: restoreContributionLoading,
-    error: restoreContributionError,
-  } = useCalloutContributionQuery({
-    variables: { contributionId: restoreContributionId ?? '', includeMemo: true },
-    skip: !open || !restoreContributionId || contributionType !== CalloutContributionType.Memo,
-  });
 
-  // CrdMemoDialog writes the editor content to Apollo cache on close for instant preview updates.
-  // Schedule a delayed server fetch as a safety net to reconcile with the canonical server markdown
-  // once the collab room has persisted its snapshot (~2s lag).
+  // 021 FR-009: the dialog's responses are the post's child posts in the page's space tree (depth 2), already in the
+  // cache with the page (no request); a task board's are its typed tasks.
+  const post = useCachedPost(callout.id);
+  const boardTasks = post?.contentKind === 'task_board' ? (post.content as TaskBoardContent | null)?.tasks : undefined;
+  const treeWindow = usePostResponses(callout.calloutsSetId, callout.id);
+  const windowLoading = open && !treeWindow.responses && !treeWindow.notServed;
+  const responses = boardTasks ?? treeWindow.responses ?? [];
+  const restoreResponse = responses.find(response => response.id === restoreContributionId);
+
   const handleFramingMemoClose = () => {
-    const fmId = callout.framing.memo?.id;
-    if (framingRefreshRef.current) {
-      clearTimeout(framingRefreshRef.current);
-      framingRefreshRef.current = null;
-    }
-    if (fmId) {
-      framingRefreshRef.current = setTimeout(() => {
-        void fetchFramingMarkdown({ variables: { id: fmId } });
-        framingRefreshRef.current = null;
-      }, 2500);
-    }
     setFramingMemoOpen(false);
     setRefreshAfterSigningAttemptId(undefined);
   };
-
-  // Clear the pending refresh on unmount — otherwise an unmount during the
-  // 2.5s window still fires the delayed fetch (wasted request, possible cache
-  // population for a component that's gone).
-  useEffect(() => {
-    return () => {
-      if (framingRefreshRef.current) {
-        clearTimeout(framingRefreshRef.current);
-        framingRefreshRef.current = null;
-      }
-    };
-  }, []);
 
   // Sync when the parent passes a new initial contribution ID (e.g. feed thumbnail click)
   useEffect(() => {
@@ -428,23 +398,18 @@ export function CalloutDetailDialogConnector({
       onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
       return;
     }
-    if (restoreContributionLoading) return;
+    if (windowLoading) return;
 
     consumedSigningRestore.current = memoSigningRestore.attemptId;
-    const loadedContribution = restoreContributionData?.lookup.contribution;
-    if (
-      restoreContributionError ||
-      !loadedContribution ||
-      loadedContribution.id !== memoSigningRestore.contributionId ||
-      loadedContribution.memo?.id !== memoSigningRestore.memoId
-    ) {
+    const restoredMemoId = documentOf(restoreResponse)?.id;
+    if (!restoreResponse || restoredMemoId !== memoSigningRestore.memoId) {
       onMemoSigningRestoreConsumed?.(memoSigningRestore.attemptId);
       return;
     }
 
     setRestoringAttemptId(memoSigningRestore.attemptId);
-    setMemoContributionId(loadedContribution.id);
-    setMemoId(loadedContribution.memo.id);
+    setMemoContributionId(restoreResponse.id);
+    setMemoId(restoredMemoId);
     setRefreshAfterSigningAttemptId(memoSigningRestore.refreshMemo ? memoSigningRestore.attemptId : undefined);
   }, [
     callout.id,
@@ -454,9 +419,8 @@ export function CalloutDetailDialogConnector({
     memoSigningRestore,
     onMemoSigningRestoreConsumed,
     open,
-    restoreContributionData,
-    restoreContributionError,
-    restoreContributionLoading,
+    restoreResponse,
+    windowLoading,
   ]);
 
   const handleRestoredEditorMounted = (focusTarget: HTMLElement) => {
@@ -596,32 +560,31 @@ export function CalloutDetailDialogConnector({
 
   // See `ContributionsSlot` above for why `enabled` is intentionally NOT in this gate.
   const hasContributionType = Boolean(getCalloutContributionType(callout));
-  const contributionsSlot = hasContributionType ? (
+  const contributionsSlot = !hasContributionType ? undefined : treeWindow.notServed ? (
+    // The space tree (the post's responses) is not served yet: the responses say so in place.
+    <p className="text-body text-muted-foreground py-6 text-center">{t('tabs.unavailable')}</p>
+  ) : (
     <ContributionsSlot
       callout={callout}
-      open={open}
+      responses={responses}
+      loading={windowLoading}
       onContributionClick={handleContributionClick}
       onOpenMemoSignedCopies={setSignedCopiesMemoId}
     />
-  ) : undefined;
+  );
 
   // Inline preview of the selected post contribution — mirrors the MUI flow
   // where clicking a post card swaps the contributions grid for a read-only
   // preview of the chosen post (`CalloutContributionPreview` + `CalloutContributionPreviewPost`).
-  const { data: postContributionData, loading: loadingPostContribution } = useCalloutContributionQuery({
-    variables: { contributionId: postContributionId ?? '', includePost: true },
-    skip: !open || !postContributionId || contributionType !== CalloutContributionType.Post,
-  });
-  const selectedPost = postContributionData?.lookup.contribution?.post;
-  const selectedPostUrl = selectedPost?.profile?.url;
-  // Edit privileges live on the contribution wrapper, not the inner post — same
-  // shape MUI uses in `useCalloutContributionQuery` to gate the edit button.
-  const canEditSelectedPost =
-    postContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ??
-    false;
-  const canDeleteSelectedPost =
-    postContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete) ??
-    false;
+  // One response renders from the post's window (021 FR-009).
+  const selectedPost =
+    contributionType === CalloutContributionType.Post
+      ? responses.find(response => response.id === postContributionId)
+      : undefined;
+  const loadingPostContribution = windowLoading;
+  const selectedPostUrl = selectedPost?.url ?? undefined;
+  const canEditSelectedPost = selectedPost?.can.update ?? false;
+  const canDeleteSelectedPost = selectedPost?.can.delete ?? false;
 
   // Whiteboard contribution data — drives the inline preview (header + thumbnail
   // + click-to-open overlay). MUI parity: clicking a whiteboard card surfaces
@@ -629,19 +592,13 @@ export function CalloutDetailDialogConnector({
   // clicks through. Fetching from `lookup.contribution` keeps the preview
   // independent from the costlier WhiteboardFromCallout query that the editor
   // uses internally.
-  const { data: whiteboardContributionData, loading: loadingWhiteboardContribution } = useCalloutContributionQuery({
-    variables: { contributionId: whiteboardContributionId ?? '', includeWhiteboard: true },
-    skip: !open || !whiteboardContributionId || contributionType !== CalloutContributionType.Whiteboard,
-  });
-  const selectedWhiteboard = whiteboardContributionData?.lookup.contribution?.whiteboard;
-  const canEditSelectedWhiteboard =
-    whiteboardContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(
-      AuthorizationPrivilege.Update
-    ) ?? false;
-  const canDeleteSelectedWhiteboard =
-    whiteboardContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(
-      AuthorizationPrivilege.Delete
-    ) ?? false;
+  const selectedWhiteboard =
+    contributionType === CalloutContributionType.Whiteboard
+      ? responses.find(response => response.id === whiteboardContributionId)
+      : undefined;
+  const loadingWhiteboardContribution = windowLoading;
+  const canEditSelectedWhiteboard = selectedWhiteboard?.can.update ?? false;
+  const canDeleteSelectedWhiteboard = selectedWhiteboard?.can.delete ?? false;
 
   const handleDeleteContributionConfirm = async () => {
     if (!confirmDeleteContribution) return;
@@ -702,20 +659,11 @@ export function CalloutDetailDialogConnector({
       <CalloutWhiteboardContributionPreview
         loading={loadingWhiteboardContribution && !selectedWhiteboard}
         whiteboard={{
-          id: selectedWhiteboard?.id ?? whiteboardContributionId,
-          title: selectedWhiteboard?.profile.displayName ?? '',
-          author: selectedWhiteboard?.createdBy?.profile
-            ? {
-                name: selectedWhiteboard.createdBy.profile.displayName,
-                avatarUrl: selectedWhiteboard.createdBy.profile.avatar?.uri,
-                profileUrl: selectedWhiteboard.createdBy.profile.url,
-              }
-            : undefined,
-          timestamp: formatRelativeFromNow(
-            selectedWhiteboard?.createdDate as string | number | Date | undefined,
-            resolveDateFnsLocale(i18n.language)
-          ),
-          previewUrl: selectedWhiteboard?.profile.preview?.uri,
+          id: documentOf(selectedWhiteboard)?.id ?? whiteboardContributionId,
+          title: selectedWhiteboard?.about.displayName ?? '',
+          author: actorAuthor(selectedWhiteboard?.author),
+          timestamp: formatRelativeFromNow(selectedWhiteboard?.createdAt, resolveDateFnsLocale(i18n.language)),
+          previewUrl: documentOf(selectedWhiteboard)?.preview?.url,
         }}
         onOpen={() => setWhiteboardEditorOpen(true)}
         onEdit={canEditSelectedWhiteboard ? () => setWhiteboardEditorOpen(true) : undefined}
@@ -724,16 +672,16 @@ export function CalloutDetailDialogConnector({
             ? () =>
                 setConfirmDeleteContribution({
                   id: whiteboardContributionId,
-                  title: selectedWhiteboard?.profile.displayName ?? '',
+                  title: selectedWhiteboard?.about.displayName ?? '',
                   kind: 'whiteboard',
                 })
             : undefined
         }
         onClose={() => setWhiteboardContributionId(undefined)}
         shareSlot={
-          selectedWhiteboard?.profile?.url ? (
+          selectedWhiteboard?.url ? (
             <ShareButton
-              url={selectedWhiteboard.profile.url}
+              url={selectedWhiteboard.url}
               tooltip={t('whiteboardPreview.share')}
               dialogTitle={t('whiteboardPreview.share')}
             />
@@ -751,24 +699,22 @@ export function CalloutDetailDialogConnector({
         deEmphasizeCreator={elevated}
         post={{
           id: selectedPost?.id ?? postContributionId,
-          title: selectedPost?.profile.displayName ?? '',
-          author: selectedPost?.createdBy?.profile
-            ? {
-                name: selectedPost.createdBy.profile.displayName,
-                avatarUrl: selectedPost.createdBy.profile.avatar?.uri,
-                profileUrl: selectedPost.createdBy.profile.url,
-              }
-            : undefined,
+          title: selectedPost?.about.displayName ?? '',
+          author: actorAuthor(selectedPost?.author),
           // Match MUI's contribution-preview header ("1 hour ago" / "5 minutes ago")
           // — the precise date is shown on the contribution card itself; in the
           // inline preview we want the at-a-glance relative distance.
-          timestamp: formatRelativeFromNow(
-            selectedPost?.createdDate as string | number | Date | undefined,
-            resolveDateFnsLocale(i18n.language)
+          timestamp: formatRelativeFromNow(selectedPost?.createdAt, resolveDateFnsLocale(i18n.language)),
+          description: selectedPost?.about.description ?? undefined,
+          tags: selectedPost?.tags ?? [],
+          references: selectedPost?.links.map(link =>
+            mapReferenceToStripData({
+              id: link.id,
+              name: link.title ?? '',
+              uri: link.uri,
+              description: link.description,
+            })
           ),
-          description: selectedPost?.profile.description ?? undefined,
-          tags: selectedPost?.profile.tagset?.tags ?? [],
-          references: selectedPost?.profile.references?.map(mapReferenceToStripData),
         }}
         onEdit={canEditSelectedPost ? () => setPostEditOpen(true) : undefined}
         onDelete={
@@ -776,7 +722,7 @@ export function CalloutDetailDialogConnector({
             ? () =>
                 setConfirmDeleteContribution({
                   id: postContributionId,
-                  title: selectedPost?.profile.displayName ?? '',
+                  title: selectedPost?.about.displayName ?? '',
                   kind: 'post',
                 })
             : undefined
@@ -971,25 +917,17 @@ export function CalloutDetailDialogConnector({
   const calloutCommentsEnabled = callout.settings.framing.commentsEnabled;
   const postCommentsEnabled = callout.settings.contribution.commentsEnabled ?? false;
   const activeCommentsEnabled = isPostSelected ? postCommentsEnabled : calloutCommentsEnabled;
-  const postCommentsRoomId = selectedPost?.comments?.id;
-  const activeCommentsRoomId = isPostSelected ? postCommentsRoomId : callout.comments?.id;
-  const activeRoomData = isPostSelected ? undefined : callout.comments;
-  // The callout-level thread renders `callout.comments` from whichever
-  // cache-first query loaded the callout, and the live room subscription only
-  // carries messages posted while it is open. Re-read just that room on every
-  // open so comments added since the callout was last loaded show up. The
-  // result lands in the same normalized Room, so the cached thread stays on
-  // screen until it arrives; `network-only` because this query's own data is
-  // never rendered, only its cache write matters.
-  useCalloutCommentsRevalidateQuery({
-    variables: { calloutId: callout.id },
-    skip: !open || isPostSelected || !callout.comments?.id,
-    fetchPolicy: 'network-only',
-  });
+  // Comment threads are not served yet (WP-MSG1): the rooms carry their message counts only.
+  const postRoom = selectedPost?.room;
+  const activeCommentsRoomId = isPostSelected ? postRoom?.id : callout.comments?.id;
+  const activeRoomData =
+    isPostSelected && postRoom
+      ? { id: postRoom.id, messagesCount: postRoom.messageCount, messages: [], vcInteractions: [] }
+      : callout.comments;
   // Pre-load count fallback for case 2c — when comments are disabled and the live thread isn't
   // mounted yet, this seeds the dialog's `showDiscussion` rule so the section stays hidden
   // until/unless we actually have messages.
-  const postMessagesCount = selectedPost?.comments?.messagesCount ?? 0;
+  const postMessagesCount = postRoom?.messageCount ?? 0;
 
   if (!activeCommentsRoomId) {
     return (
@@ -1017,7 +955,7 @@ export function CalloutDetailDialogConnector({
           spacesFramingSlot={spacesFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
-          contributionsCount={callout.contributions.length}
+          contributionsCount={post?.responseCount ?? responses.length}
           selectedContributionSlot={selectedContributionSlot}
           reactionsSlot={reactionsSlot}
           settingsSlot={settingsSlot}
@@ -1044,7 +982,6 @@ export function CalloutDetailDialogConnector({
         key={activeCommentsRoomId}
         roomId={activeCommentsRoomId}
         calloutId={callout.id}
-        contributionId={isPostSelected ? postContributionId : undefined}
         roomData={activeRoomData}
         // In the focused-task dialog on a board (elevated, z-[110]) the comment
         // delete-confirmation would otherwise open behind it and block the UI —
@@ -1074,14 +1011,17 @@ export function CalloutDetailDialogConnector({
               // (already on the prefetched preview payload) so the dialog header doesn't say
               // "0 comments" for a post that actually has them. The live count takes over once
               // the thread resolves.
-              commentCount: isPostSelected ? Math.max(commentCount, postMessagesCount) : commentCount,
+              commentCount: Math.max(
+                commentCount,
+                isPostSelected ? postMessagesCount : (callout.comments?.messagesCount ?? 0)
+              ),
             }}
             commentsSlot={thread}
             commentInputSlot={activeCommentsEnabled ? commentInput : null}
             commentsEnabled={activeCommentsEnabled}
             hasContributions={hasContributionType}
             contributionsSlot={contributionsSlot}
-            contributionsCount={callout.contributions.length}
+            contributionsCount={post?.responseCount ?? responses.length}
             selectedContributionSlot={selectedContributionSlot}
             pollSlot={pollSlot}
             formFramingSlot={formFramingSlot}

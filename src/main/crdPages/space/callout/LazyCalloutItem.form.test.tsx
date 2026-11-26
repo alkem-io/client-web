@@ -13,31 +13,35 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
 
-vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useMemoMarkdownLazyQuery: () => [vi.fn()],
-}));
-
-vi.mock('@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView', () => ({
-  default: () => ({
-    ref: vi.fn(),
-    inView: true,
-    loading: false,
-    callout: {
-      id: 'callout-1',
-      draft: false,
-      contributions: [],
-      comments: mocks.hasCommentsRoom ? { id: 'room-1', messages: [] } : undefined,
-      framing: { type: CalloutFramingType.Form, profile: { displayName: 'Survey' } },
-      settings: {
-        framing: { commentsEnabled: mocks.commentsEnabled },
-        contribution: { allowedTypes: [CalloutContributionType.Post], enabled: false },
-      },
-    },
+// The card renders from the feed's PostCard in the cache (021 FR-008); the mapped callout is stubbed below.
+vi.mock('@apollo/client', async importOriginal => ({
+  ...(await importOriginal<typeof import('@apollo/client')>()),
+  useFragment: () => ({
+    complete: true,
+    data: { id: 'callout-1', contentKind: 'form', responseCount: 0 },
   }),
 }));
+// The card's response preview reads the page's space tree; this card's form framing needs none of it.
+vi.mock('@/domain/space/hooks/useSpacePage', async importOriginal => ({
+  ...(await importOriginal<typeof import('@/domain/space/hooks/useSpacePage')>()),
+  usePostResponses: () => ({ responses: [], complete: true, notServed: false }),
+}));
+
+const legacyCallout = () => ({
+  id: 'callout-1',
+  draft: false,
+  contributions: [],
+  comments: mocks.hasCommentsRoom ? { id: 'room-1', messages: [] } : undefined,
+  framing: { type: CalloutFramingType.Form, profile: { displayName: 'Survey' } },
+  settings: {
+    framing: { commentsEnabled: mocks.commentsEnabled },
+    contribution: { allowedTypes: [CalloutContributionType.Post], enabled: false },
+  },
+});
 
 vi.mock('../dataMappers/calloutDataMapper', () => ({
   getCalloutContributionType: () => CalloutContributionType.Post,
+  mapPostToCallout: () => legacyCallout(),
   mapCalloutDetailsToPostCard: () => ({ id: 'callout-1', type: 'post', title: 'Survey' }),
 }));
 
@@ -72,9 +76,6 @@ vi.mock('./CollaboraFramingEditorOverlay', () => ({ CollaboraFramingEditorOverla
 vi.mock('./TaskBoardConnector', () => ({ TaskBoardConnector: () => null }));
 vi.mock('./TaskBoardDialog', () => ({ TaskBoardDialog: () => null }));
 vi.mock('../hooks/useCrdCalloutMoveActions', () => ({ useCrdCalloutMoveActions: () => undefined }));
-vi.mock('../hooks/useFlowStateLayout', () => ({
-  useFlowStateLayout: () => ({ descriptionCollapsed: false, showPublishDetails: true }),
-}));
 vi.mock('../hooks/useMediaGalleryDirectUpload', () => ({
   useMediaGalleryDirectUpload: () => ({ triggerAddImages: vi.fn(), fileInputElement: null }),
 }));

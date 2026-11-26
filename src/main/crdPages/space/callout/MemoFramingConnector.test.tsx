@@ -11,19 +11,6 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-vi.mock('@/domain/collaboration/memo/MemoManager/useMemoManager', () => ({
-  default: () => ({
-    memo: {
-      id: 'memo-1',
-      markdown: 'Decision',
-      signatures: [
-        { id: 'signed-1', document: { id: 'document-1' } },
-        { id: 'incomplete-1', document: null },
-      ],
-    },
-  }),
-}));
-
 describe('MemoFramingConnector signed copies', () => {
   it('opens framing history for the right memo without opening the memo editor', async () => {
     const user = userEvent.setup();
@@ -34,7 +21,14 @@ describe('MemoFramingConnector signed copies', () => {
       framing: {
         type: CalloutFramingType.Memo,
         profile: { displayName: 'Decision' },
-        memo: { id: 'memo-1', markdown: 'Decision' },
+        memo: {
+          id: 'memo-1',
+          markdown: 'Decision',
+          signatures: [
+            { id: 'signed-1', document: { id: 'document-1' } },
+            { id: 'incomplete-1', document: null },
+          ],
+        },
       },
     };
 

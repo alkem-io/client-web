@@ -1,0 +1,26 @@
+name: legacy-page-source-guard
+on:
+  push:
+  pull_request:
+jobs:
+  guard:
+    runs-on: docker
+    container: node:24.14.0-bookworm
+    steps:
+      - name: Checkout exact Forgejo source
+        uses: https://data.forgejo.org/actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          github-server-url: ${{ forgejo.server_url }}
+          repository: ${{ forgejo.repository }}
+          ref: ${{ forgejo.sha }}
+      - name: Install locked dependencies without lifecycle scripts
+        run: corepack pnpm install --frozen-lockfile --ignore-scripts --store-dir /tmp/alkemio-client-pnpm-store
+      - name: Check legacy UI tree and mounted route bindings
+        run: corepack pnpm check:legacy-pages
+      - name: Exercise focused refusal controls
+        run: corepack pnpm test:legacy-pages
+      - name: Exercise spaces boot through the actual root providers
+        run: corepack pnpm exec vitest run src/root.test.tsx
+      - name: Check native client types
+        run: corepack pnpm typecheck:native

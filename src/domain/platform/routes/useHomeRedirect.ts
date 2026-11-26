@@ -1,4 +1,5 @@
-import { useHomeRedirectDataQuery, useHomeSpaceLookupQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useHomeRedirectMembershipsQuery } from '@/core/apollo/generated-v2/apollo-hooks';
+import { useNativeFoundation } from '@/core/foundation/NativeFoundationProvider';
 
 type HomeRedirectResult = {
   loading: boolean;
@@ -6,37 +7,21 @@ type HomeRedirectResult = {
 };
 
 export const useHomeRedirect = (isAuthenticated: boolean): HomeRedirectResult => {
-  const { data, loading: loadingRedirectData } = useHomeRedirectDataQuery({
-    skip: !isAuthenticated,
-  });
-
-  const l0Memberships = data?.me.spaceMembershipsHierarchical ?? [];
-  const homeSpaceSettings = data?.me.user?.settings?.homeSpace;
-  const homeSpaceId = homeSpaceSettings?.spaceID;
-  const autoRedirect = homeSpaceSettings?.autoRedirect ?? false;
-
-  const needsHomeSpaceLookup = l0Memberships.length !== 1 && !!homeSpaceId && autoRedirect;
-
-  const { data: homeSpaceData, loading: loadingHomeSpace } = useHomeSpaceLookupQuery({
-    variables: { spaceId: homeSpaceId! },
-    skip: !needsHomeSpaceLookup,
-  });
-
-  const loading = loadingRedirectData || (needsHomeSpaceLookup && loadingHomeSpace);
+  const { data: foundation } = useNativeFoundation();
+  const { data, loading } = useHomeRedirectMembershipsQuery({ skip: !isAuthenticated });
 
   const redirectUrl = (() => {
-    if (!data) return null;
+    const actor = data?.viewer.actor;
+    if (!actor) return null;
+    // Legacy counted top-level memberships only (server me.service.ts:265-278); the list holds every depth.
+    const topLevel = 'memberships' in actor ? actor.memberships.filter(membership => membership.space.depth === 0) : [];
 
     // Priority 1: Single L0 membership - redirect to that space
-    if (l0Memberships.length === 1) {
-      const singleSpace = l0Memberships[0];
-      return singleSpace.space.about.profile.url ?? null;
-    }
+    if (topLevel.length === 1) return topLevel[0].space.url ?? null;
 
     // Priority 2: Multiple memberships with homeSpace and autoRedirect enabled
-    if (l0Memberships.length > 1 && homeSpaceId && autoRedirect) {
-      return homeSpaceData?.lookup.space?.about.profile.url ?? null;
-    }
+    const settings = foundation?.viewer.actor?.settings as { home_space?: { auto_redirect?: boolean } } | null;
+    if (topLevel.length > 1 && settings?.home_space?.auto_redirect) return foundation?.viewer.homeSpace?.url ?? null;
 
     // No redirect needed
     return null;

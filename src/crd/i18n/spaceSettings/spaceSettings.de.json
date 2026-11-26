@@ -759,6 +759,8 @@
       "title": "Sichtbarkeit",
       "public": "Öffentlich",
       "publicDescription": "Dieser Space und seine Inhalte sind für alle auf der Plattform sichtbar. Benutzer können nur beitragen, wenn sie Mitglied sind.",
+      "registered": "Angemeldete Benutzer",
+      "registeredDescription": "Dieser Space und seine Inhalte sind für alle sichtbar, die auf der Plattform angemeldet sind; nicht angemeldete Besucher können die Inhalte nicht sehen. Benutzer können nur beitragen, wenn sie Mitglied sind.",
       "private": "Privat",
       "privateDescription": "Dieser Space ist für alle auf der Plattform sichtbar, aber die Inhalte sind nur für Mitglieder sichtbar.",
       "hint": "Berücksichtigen Sie den Zweck und das Publikum Ihres Spaces bei der Wahl der Sichtbarkeit."

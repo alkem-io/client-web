@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCalloutsIndexListLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { PostIndexDialog } from '@/crd/components/callout/PostIndexDialog';
 import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
-import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
-import { mapPostIndexToListItems } from '../dataMappers/postIndexDataMapper';
+import { orderedStages, treePosts, useSpaceTree } from '@/domain/space/hooks/useSpacePage';
+import { useNativeRouteSpace } from '@/main/routing/urlResolver/native/useNativeRouteSpace';
+import { mapPostIndexRowsToListItems } from '../dataMappers/postIndexDataMapper';
 import { CrdCalloutDialogById } from './CrdCalloutDialogById';
 
 type PostIndexDialogConnectorProps = {
@@ -30,32 +30,20 @@ export function PostIndexDialogConnector({
   open,
   onOpenChange,
   calloutsSetId,
-  classificationTagsets,
   tabSectionNumber,
 }: PostIndexDialogConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [selectedCalloutId, setSelectedCalloutId] = useState<string | undefined>();
 
-  const [fetchIndex, { data, loading, called }] = useCalloutsIndexListLazyQuery({
-    fetchPolicy: 'cache-and-network',
-  });
+  // 021 D9: the space's post index is its own posts in the page's space tree (no request of its own), grouped by stage
+  // here: the tab shows its own stage's rows, a space without stages all of them. While the server does not serve the
+  // tree read yet the dialog says so in place.
+  const { tree, notServed } = useSpaceTree(open ? calloutsSetId : undefined);
+  const stageId = orderedStages(useNativeRouteSpace().space?.stages)[tabSectionNumber - 1]?.id;
+  const rows = treePosts(tree).filter(row => !stageId || row.stage?.id === stageId);
+  const items = mapPostIndexRowsToListItems(rows, tabSectionNumber, t);
 
-  // `classificationTagsets` may be a fresh array reference each render, so the
-  // effect keys on its serialized value (and parses it back inside) to avoid
-  // re-firing the query on every render.
-  const tagsetKey = JSON.stringify(classificationTagsetModelToTagsetArgs(classificationTagsets));
-
-  useEffect(() => {
-    if (open && calloutsSetId) {
-      fetchIndex({ variables: { calloutsSetId, classificationTagsets: JSON.parse(tagsetKey) } });
-    }
-  }, [open, calloutsSetId, tagsetKey, fetchIndex]);
-
-  const items = mapPostIndexToListItems(data?.lookup.calloutsSet?.callouts ?? [], tabSectionNumber, t);
-
-  // Skeletons until the first result lands; once data exists, keep the list
-  // visible through any background refetch instead of flashing placeholders.
-  const isLoading = open && !data && (loading || !called);
+  const isLoading = open && !tree && !notServed;
 
   return (
     <>
@@ -68,7 +56,7 @@ export function PostIndexDialogConnector({
         labels={{
           title: t('sidebar.postIndex'),
           loadingLabel: t('postIndexDialog.loadingLabel'),
-          empty: t('postIndexDialog.empty'),
+          empty: notServed ? t('tabs.unavailable') : t('postIndexDialog.empty'),
         }}
         onItemClick={setSelectedCalloutId}
       />

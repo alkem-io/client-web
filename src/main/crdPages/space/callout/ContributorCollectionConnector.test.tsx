@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { enUS, nl } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 import i18next from 'i18next';
 import type { ReactElement } from 'react';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
@@ -17,51 +17,29 @@ vi.mock('@/main/crdPages/space/hooks/useCrdSpaceLocale', () => ({
   useCrdSpaceLocale: () => mockLocale,
 }));
 
-// One card whose only new value is the raw joinedDate — proves the connector
-// decorates at render (joinedMonthLabel), never stores a formatted string.
-const userCard = {
-  id: 'user-ada',
-  type: 'user' as const,
-  name: 'Ada',
-  hasValidCoordinates: false,
-  joinedDate: '2023-10-01T00:00:00.000Z',
-};
-const otherUserCard = {
-  id: 'user-ben',
-  type: 'user' as const,
-  name: 'Ben',
-  hasValidCoordinates: false,
-  href: 'https://alkemio.test/ben',
-};
-const vcCard = {
-  id: 'vc-helper',
-  type: 'virtualContributor' as const,
-  name: 'Helper VC',
-  hasValidCoordinates: false,
-  href: 'https://alkemio.test/helper-vc',
-};
-const orgCard = {
-  id: 'org-green',
-  type: 'organization' as const,
-  name: 'Green Future Labs',
-  hasValidCoordinates: false,
-  href: 'https://alkemio.test/green-future-labs',
-};
+// 021: the contributors arrive in the post's own ContributorsContent (read from the cache, no request).
+const actor = (id: string, actorType: string, displayName: string, url?: string) => ({
+  __typename: 'User' as const,
+  id,
+  actorType,
+  url,
+  about: { displayName },
+});
+const userCard = actor('user-ada', 'user', 'Ada');
+const otherUserCard = actor('00000000-0000-4000-8000-000000000002', 'user', 'Ben', 'https://alkemio.test/ben');
+const vcCard = actor('vc-helper', 'virtual_contributor', 'Helper VC', 'https://alkemio.test/helper-vc');
+const orgCard = actor('org-green', 'organization', 'Green Future Labs', 'https://alkemio.test/green-future-labs');
 
-let mockCards: unknown[] = [userCard];
-const mockGetCards = vi.fn(() => mockCards);
-vi.mock('@/main/crdPages/space/hooks/useCrdSpaceContributors', () => ({
-  useCrdSpaceContributors: () => ({
-    types: ['user'],
-    defaultType: 'user',
-    defaultView: 'list',
-    fixedView: null,
-    counts: { users: mockCards.length, organizations: 0, virtualContributors: 0 },
-    getCards: mockGetCards,
-    ensureLoaded: vi.fn(),
-    isLoading: () => false,
-    loading: false,
-    isCustomSelection: false,
+let mockCards: ReturnType<typeof actor>[] = [userCard];
+vi.mock('@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails', () => ({
+  useCachedPost: () => ({
+    contentKind: 'contributors',
+    content: {
+      __typename: 'ContributorsContent',
+      settings: { types: ['user', 'organization', 'virtual_contributor'], default_type: mockCards[0]?.actorType },
+      counts: [{ type: mockCards[0]?.actorType, count: mockCards.length }],
+      contributors: mockCards,
+    },
   }),
 }));
 
@@ -85,10 +63,16 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: mockCurrentUserId ? { id: mockCurrentUserId } : undefined }),
 }));
 
-const mockCreateConversation = vi.fn();
+const mockCreateRoom = vi.fn();
+vi.mock('@/core/matrix/activeClient', () => ({
+  useMatrixClient: () => ({
+    getUserId: () => '@00000000-0000-4000-8000-000000000001:matrix.test',
+    getAccountData: () => undefined,
+    createRoom: mockCreateRoom,
+  }),
+}));
 const mockSendMessageToOrganization = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useCreateConversationMutation: () => [mockCreateConversation],
   useSendMessageToOrganizationMutation: () => [mockSendMessageToOrganization],
 }));
 
@@ -145,7 +129,7 @@ beforeEach(async () => {
   mockCards = [userCard];
   mockSignedIn = true;
   mockCurrentUserId = 'user-current-viewer';
-  mockCreateConversation.mockReset();
+  mockCreateRoom.mockReset();
   mockSendMessageToOrganization.mockReset();
   mockToastError.mockReset();
   mockToastSuccess.mockReset();
@@ -156,33 +140,6 @@ beforeEach(async () => {
 });
 
 const renderConnector = (ui: ReactElement) => render(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);
-
-describe('ContributorCollectionConnector — join-month decoration at render (US4, isolated block)', () => {
-  test('renders "Joined this space Oct 2023" for a user with a joinedDate', () => {
-    renderConnector(<ContributorCollectionConnector calloutId="callout-1" />);
-
-    expect(screen.getByText('Joined this space Oct 2023')).toBeInTheDocument();
-  });
-
-  test('a live language switch re-labels the card without a new fetch', () => {
-    const { rerender } = renderConnector(<ContributorCollectionConnector calloutId="callout-1" />);
-    expect(screen.getByText('Joined this space Oct 2023')).toBeInTheDocument();
-
-    // Only the resolved date-fns locale changes — the underlying card model
-    // (and its raw joinedDate) is untouched, exactly as it would be after a
-    // language switch with no refetch of the contributor list.
-    mockLocale = nl;
-    rerender(
-      <I18nextProvider i18n={i18n}>
-        <ContributorCollectionConnector calloutId="callout-1" />
-      </I18nextProvider>
-    );
-
-    // The month abbreviation is now Dutch — proving the label is re-derived
-    // at render from the same underlying model, not cached from first render.
-    expect(screen.getByText(/Joined this space okt/i)).toBeInTheDocument();
-  });
-});
 
 describe('ContributorCollectionConnector — canMessage wiring (US3, D-AUTH/D-CONTACT)', () => {
   test('signed out: every card has canMessage false (no menu Message item)', async () => {
@@ -221,46 +178,28 @@ describe('ContributorCollectionConnector — canMessage wiring (US3, D-AUTH/D-CO
 });
 
 describe('ContributorCollectionConnector — Message wiring (US3)', () => {
-  test("Message on a user calls the create-conversation mutation with that user's id", async () => {
-    mockCreateConversation.mockResolvedValue({
-      data: {
-        createConversation: {
-          id: 'conv-1',
-          room: {
-            id: 'room-1',
-            type: 'DIRECT',
-            createdDate: new Date().toISOString(),
-            unreadCount: 0,
-            messagesCount: 0,
-          },
-        },
-      },
-    });
+  test("Message on a user opens a Matrix conversation with that user's id", async () => {
+    const roomId = '00000000-0000-4000-8000-000000000003';
+    mockCreateRoom.mockResolvedValue({ room_id: `!${roomId}:matrix.test` });
     mockCards = [otherUserCard];
     renderConnector(<ContributorCollectionConnector calloutId="callout-1" />);
 
     await userEvent.click(screen.getByRole('button', { name: /Actions for Ben/ }));
     await userEvent.click(screen.getByRole('menuitem', { name: 'Message' }));
 
-    expect(mockCreateConversation).toHaveBeenCalledWith(
-      expect.objectContaining({ variables: { conversationData: { memberIDs: ['user-ben'], type: 'DIRECT' } } })
-    );
+    expect(mockCreateRoom).toHaveBeenCalledWith({ invite: [`@${otherUserCard.id}:matrix.test`], is_direct: true });
+    expect(mockSetSelectedRoomId).toHaveBeenCalledWith(roomId);
   });
 
-  test('a MESSAGING_NOT_ENABLED error shows the cannot-be-contacted text and never opens the panel', async () => {
-    const { ApolloError } = await import('@apollo/client');
-    mockCreateConversation.mockRejectedValue(
-      new ApolloError({
-        graphQLErrors: [{ message: 'refused', extensions: { code: 'MESSAGING_NOT_ENABLED' } } as never],
-      })
-    );
+  test('a refused Matrix create shows an error and never opens the panel', async () => {
+    mockCreateRoom.mockRejectedValue({ errcode: 'M_FORBIDDEN' });
     mockCards = [otherUserCard];
     renderConnector(<ContributorCollectionConnector calloutId="callout-1" />);
 
     await userEvent.click(screen.getByRole('button', { name: /Actions for Ben/ }));
     await userEvent.click(screen.getByRole('menuitem', { name: 'Message' }));
 
-    expect(mockToastError).toHaveBeenCalledWith('This person cannot be contacted.');
+    expect(mockToastError).toHaveBeenCalledWith("We couldn't open the chat. Please try again.");
     expect(mockSetIsOpen).not.toHaveBeenCalledWith(true);
   });
 

@@ -43,7 +43,8 @@ export const useMarkdownEditorIntegration = (
   const onImageUpload = async (file: File): Promise<string> => {
     const storageBucketId = storageBucketIdOverride ?? storageConfig?.storageBucketId;
     if (!storageBucketId) {
-      throw new Error(t('components.file-upload.file-upload-error'));
+      // No bucket: its storage config is not served (useStorageConfig), so the upload is not available yet.
+      throw new Error(t('apollo.errors.userMessages.operations.notAvailableYet'));
     }
     const result = await uploadFile({
       variables: { file, uploadData: { storageBucketId, temporaryLocation } },

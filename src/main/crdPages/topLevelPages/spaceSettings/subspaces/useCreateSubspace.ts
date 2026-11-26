@@ -1,12 +1,10 @@
+import { ApolloError } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import {
-  refetchSubspacesInSpaceQuery,
-  useDefaultVisualTypeConstraintsQuery,
-  useTemplateContentLazyQuery,
-} from '@/core/apollo/generated/apollo-hooks';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { useCreateSubspaceRootQuery } from '@/core/apollo/generated-v2/apollo-hooks';
+import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { error as logError } from '@/core/logging/sentry/log';
 import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type {
@@ -15,18 +13,12 @@ import type {
 } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import type { TemplateContent, TemplatePickerSelectProps } from '@/crd/components/templates/types';
 import type { VisualConstraints } from '@/domain/common/visual/model/VisualModel';
+import { useCreateDialogMarkdown } from '@/domain/space/components/CreateSpace/hooks/useCreateDialogMarkdown';
+import { useSpaceVisualConstraints } from '@/domain/space/components/CreateSpace/hooks/useSpaceVisualConstraints';
 import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';
-import { mapTemplateContent } from '@/main/crdPages/templates/templateContentMapper';
-import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
-
-export type UseCreateSubspaceOptions = {
-  /** The owning account id — enables the Account source section in the template picker. */
-  accountId?: string;
-  /** The space's templates set id — enables the Space source section in the template picker. */
-  templatesSetId?: string;
-  /** The space's configured default subspace template — pre-selected when the dialog opens. */
-  defaultTemplateId?: string;
-};
+import { useSpaceTemplatePicker } from '@/main/crdPages/templates/spaceTemplates/useSpaceTemplatePicker';
+import { useSubspaceDefaultTemplate } from '@/main/crdPages/templates/spaceTemplates/useSubspaceDefaultTemplate';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 /** An avatar/card image awaiting crop in the ImageCropDialog. */
 export type CreateSubspacePendingCrop = {
@@ -61,6 +53,8 @@ export type UseCreateSubspaceResult = {
   cardBannerConstraints: VisualConstraints | null;
   onChange: (patch: Partial<CreateSubspaceFormValues>) => void;
   onSubmit: () => Promise<void>;
+  /** The description editor's integration before the subspace exists (useCreateDialogMarkdown). */
+  markdown: ReturnType<typeof useCreateDialogMarkdown>;
 };
 
 const EMPTY_VALUES: CreateSubspaceFormValues = {
@@ -84,8 +78,7 @@ const EMPTY_VALUES: CreateSubspaceFormValues = {
  * dialog when the form already holds user data. The space's configured default
  * subspace template (if any) is pre-selected when the dialog opens.
  */
-export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOptions = {}): UseCreateSubspaceResult {
-  const { accountId, templatesSetId, defaultTemplateId } = options;
+export function useCreateSubspace(spaceId: string): UseCreateSubspaceResult {
   const { t } = useTranslation('crd-spaceSettings');
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState<CreateSubspaceFormValues>(EMPTY_VALUES);
@@ -105,43 +98,32 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
     cardBannerFile: '',
   });
 
+  // 023 FR-020 "After the subspace submit": each mounted view re-reads through its own read;
+  // the parent's subspace list is NativeSubspaces (RF1).
   const { createSubspace, loading: submitting } = useSubspaceCreation({
-    // Two independent readers show the new subspace and neither is reachable from
-    // the other's cache entry. The settings tab reads `space.subspaces`, refetched
-    // here by variables; the Subspaces tab and the subspace page render a
-    // spaces-collection callout, which reads `callout.framing.subspaces` — a
-    // different field under a different parent, so the mutation's cache update
-    // cannot reach it. Refetch that one by name: the calloutId belongs to whichever
-    // collection is currently mounted and is not known here.
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId }), 'SpaceCollectionSubspaces'],
+    refetchQueries: ['NativeSubspaces'],
     awaitRefetchQueries: true,
   });
 
-  const templatePicker = useTemplatePicker({
-    allowedTypes: ['space'],
-    spaceTemplatesSetId: templatesSetId,
-    accountId,
+  // item9 "Who sends what": scope = the root (L0) space; the account source is the root's hosting account.
+  const { levelZeroSpaceId } = useUrlResolver();
+  const rootSpaceId = levelZeroSpaceId ?? spaceId;
+  const { data: rootData } = useCreateSubspaceRootQuery({
+    variables: { root: rootSpaceId },
+    skip: !open || !rootSpaceId,
   });
+  const rootNode = rootData?.node;
+  const accountId = rootNode && 'host' in rootNode ? (rootNode.host?.account?.id ?? undefined) : undefined;
+  const templatePicker = useSpaceTemplatePicker({ rootSpaceId, accountId });
+  const defaultTemplate = useSubspaceDefaultTemplate(rootSpaceId, !open);
+  // True from opening until the root's default has been read and, when there is one, applied (FR-020 preselect).
+  const [preselectPending, setPreselectPending] = useState(false);
+  const handleError = useApolloErrorHandler();
+  const markdown = useCreateDialogMarkdown();
 
-  const { data: avatarConstraintsData } = useDefaultVisualTypeConstraintsQuery({
-    variables: { visualType: VisualType.Avatar },
-    skip: !open,
-  });
-  const { data: cardBannerConstraintsData } = useDefaultVisualTypeConstraintsQuery({
-    variables: { visualType: VisualType.Card },
-    skip: !open,
-  });
-
-  const avatarConstraints: VisualConstraints | null = avatarConstraintsData?.platform.configuration
-    .defaultVisualTypeConstraints
-    ? { ...avatarConstraintsData.platform.configuration.defaultVisualTypeConstraints }
-    : null;
-  const cardBannerConstraints: VisualConstraints | null = cardBannerConstraintsData?.platform.configuration
-    .defaultVisualTypeConstraints
-    ? { ...cardBannerConstraintsData.platform.configuration.defaultVisualTypeConstraints }
-    : null;
-
-  const [getTemplateContent] = useTemplateContentLazyQuery();
+  const { constraintsFor } = useSpaceVisualConstraints({ skip: !open });
+  const avatarConstraints = constraintsFor('avatar');
+  const cardBannerConstraints = constraintsFor('card');
 
   // Messages are keys resolved via t() in `validate()` so yup never carries
   // user-visible English literals.
@@ -211,25 +193,11 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
   const applyTemplate = async (templateId: string) => {
     setSelectedTemplateLoading(true);
     try {
-      const { data } = await getTemplateContent({ variables: { templateId, includeSpace: true } });
-      const template = data?.lookup.template;
-      if (!template) return;
-      setSelectedTemplateName(template.profile.displayName);
-      setSelectedTemplateContent(mapTemplateContent(template, 'space'));
-
-      const contentProfile = template.contentSpace?.about?.profile;
-      const templateProfile = template.profile;
-      const contentTagset =
-        contentProfile?.tagsets?.find(ts => ts.name === 'default' || ts.type === 'FREEFORM') ??
-        contentProfile?.tagsets?.[0];
-      const contentTags = contentTagset?.tags ?? [];
-      const templateTags = templateProfile?.defaultTagset?.tags ?? [];
-
-      const displayName = contentProfile?.displayName || templateProfile?.displayName || '';
-      const tagline = contentProfile?.tagline || '';
-      const description = contentProfile?.description || templateProfile?.description || '';
-      const tags = contentTags.length > 0 ? contentTags : templateTags;
-
+      const fetched = await templatePicker.fetchSpaceTemplate(templateId);
+      if (!fetched) return;
+      const { templateName, displayName, tagline, description, tags } = fetched.prefill;
+      setSelectedTemplateName(templateName);
+      setSelectedTemplateContent(fetched.content);
       setValues(prev => ({
         ...prev,
         spaceTemplateId: templateId,
@@ -239,6 +207,13 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
         tags: tags.length > 0 ? tags : prev.tags,
       }));
       setErrors({});
+    } catch (error) {
+      // The read failed: show it and hold no template, so nothing unpreviewed is submitted.
+      if (error instanceof ApolloError) handleError(error);
+      else logError(error instanceof Error ? error : new Error(String(error)));
+      templatePicker.clearSelection();
+      setAppliedTemplateId(null);
+      clearSelectedTemplate();
     } finally {
       setSelectedTemplateLoading(false);
     }
@@ -347,17 +322,26 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
 
   const openDialog = () => {
     reset();
-    if (defaultTemplateId) {
-      setAppliedTemplateId(defaultTemplateId);
-      setValues(prev => ({ ...prev, spaceTemplateId: defaultTemplateId }));
-      void applyTemplate(defaultTemplateId);
-    } else {
-      setAppliedTemplateId(null);
-    }
+    setAppliedTemplateId(null);
+    setPreselectPending(true);
     setOpen(true);
   };
 
+  // FR-020 "Default preselect": the root's subspace_default, read when the dialog opens, is preselected,
+  // previewed and submitted; a masked or absent binding preselects nothing and the submit omits `template`.
+  const defaultTemplateId = defaultTemplate.templateId;
+  useEffect(() => {
+    if (!open || !preselectPending || defaultTemplate.loading) return;
+    setPreselectPending(false);
+    // A template the user picked before the default arrived wins.
+    if (!defaultTemplateId || appliedTemplateId !== null || pendingTemplateId !== null) return;
+    setAppliedTemplateId(defaultTemplateId);
+    setValues(prev => ({ ...prev, spaceTemplateId: defaultTemplateId }));
+    void applyTemplate(defaultTemplateId);
+  }, [open, preselectPending, defaultTemplate.loading, defaultTemplateId]);
+
   const closeDialog = () => {
+    setPreselectPending(false);
     setOpen(false);
   };
 
@@ -368,26 +352,27 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
       return;
     }
 
-    await createSubspace({
-      spaceID: spaceId,
-      about: {
+    try {
+      await createSubspace({
+        parentId: spaceId,
         profile: {
           displayName: values.displayName.trim(),
           tagline: values.tagline.trim(),
           description: values.description.trim() || undefined,
           tags: values.tags,
-          visuals: {
-            avatar: values.avatarFile ? { file: values.avatarFile, altText: visualAltText.avatarFile } : undefined,
-            cardBanner: values.cardBannerFile
-              ? { file: values.cardBannerFile, altText: visualAltText.cardBannerFile }
-              : undefined,
-          },
         },
-      },
-      addTutorialCallouts: false,
-      addCallouts: true,
-      spaceTemplateId: values.spaceTemplateId || undefined,
-    });
+        visuals: {
+          avatar: values.avatarFile ? { file: values.avatarFile, altText: visualAltText.avatarFile } : undefined,
+          card: values.cardBannerFile
+            ? { file: values.cardBannerFile, altText: visualAltText.cardBannerFile }
+            : undefined,
+        },
+        spaceTemplateId: values.spaceTemplateId || undefined,
+      });
+    } catch {
+      // Keep the dialog open with the user's input; useSubspaceCreation has shown the refusal.
+      return;
+    }
 
     closeDialog();
   };
@@ -416,5 +401,6 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
     cardBannerConstraints,
     onChange,
     onSubmit,
+    markdown,
   };
 }
