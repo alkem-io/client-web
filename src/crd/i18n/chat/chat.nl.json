@@ -171,6 +171,8 @@
     "save": "Status opslaan",
     "clear": "Status wissen",
     "hint": "Mensen met wie je chat zien dit bij je avatar.",
-    "saveError": "We konden je status niet opslaan. Probeer het opnieuw."
+    "saveError": "We konden je status niet opslaan. Probeer het opnieuw.",
+    "showOnline": "Laten zien wanneer ik online ben",
+    "showOnlineSaveError": "We konden je online-instelling niet opslaan. Probeer het opnieuw."
   }
 }

@@ -39,6 +39,7 @@ import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessa
 import { storeFor } from '@/main/userMessaging/matrix/conversationSummaryStore';
 import { actorIdOf } from '@/main/userMessaging/matrix/matrixEvents';
 import { useOwnStatusMessage } from '@/main/userMessaging/matrix/useMatrixPresence';
+import { useShowOnlinePreference } from '@/main/userMessaging/matrix/useShowOnlinePreference';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useChatSound } from '@/main/userMessaging/useChatSound';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
@@ -265,6 +266,11 @@ export const UnifiedChatPanelConnector = ({
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const handleSaveStatus = (statusMessage: string) => {
     ownStatus.setStatusMessage(statusMessage).catch(() => notify(t('status.saveError'), 'error'));
+  };
+  // While off there is no status: switching off clears it, and setting one would say online.
+  const { showOnline, setShowOnline } = useShowOnlinePreference();
+  const handleShowOnlineChange = (value: boolean) => {
+    setShowOnline(value).catch(() => notify(t('status.showOnlineSaveError'), 'error'));
   };
 
   const listItems = withActiveCallsFirst(
@@ -571,6 +577,9 @@ export const UnifiedChatPanelConnector = ({
           <ChatSettingsMenu
             {...toggles}
             label={t('panel.settings')}
+            showOnlineLabel={t('status.showOnline')}
+            showOnline={showOnline}
+            onShowOnlineChange={handleShowOnlineChange}
             statusLabel={ownStatus.statusMessage ? t('status.change') : t('status.set')}
             onEditStatus={() => setStatusDialogOpen(true)}
             notificationSettingsLabel={t('panel.settings')}
@@ -606,7 +615,7 @@ export const UnifiedChatPanelConnector = ({
             <span className="min-w-0 truncate" title={counterpart.statusMessage}>
               {counterpart.statusMessage}
             </span>
-          ) : view === 'list' && ownStatus.statusMessage ? (
+          ) : view === 'list' && showOnline && ownStatus.statusMessage ? (
             <button
               type="button"
               onClick={() => setStatusDialogOpen(true)}
@@ -678,7 +687,7 @@ export const UnifiedChatPanelConnector = ({
       </ChatPanel>
 
       <SetStatusDialog
-        open={statusDialogOpen}
+        open={showOnline && statusDialogOpen}
         onOpenChange={setStatusDialogOpen}
         statusMessage={ownStatus.statusMessage}
         onSave={handleSaveStatus}

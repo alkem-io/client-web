@@ -171,6 +171,8 @@
     "save": "Guardar estado",
     "clear": "Borrar estado",
     "hint": "Las personas con las que chateas lo ven en tu avatar.",
-    "saveError": "No pudimos guardar tu estado. Inténtalo de nuevo."
+    "saveError": "No pudimos guardar tu estado. Inténtalo de nuevo.",
+    "showOnline": "Mostrar cuando estoy en línea",
+    "showOnlineSaveError": "No pudimos guardar tu ajuste de presencia. Inténtalo de nuevo."
   }
 }

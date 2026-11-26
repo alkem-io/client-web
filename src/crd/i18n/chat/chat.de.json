@@ -171,6 +171,8 @@
     "save": "Status speichern",
     "clear": "Status löschen",
     "hint": "Personen, mit denen du chattest, sehen ihn an deinem Avatar.",
-    "saveError": "Dein Status konnte nicht gespeichert werden. Bitte versuche es erneut."
+    "saveError": "Dein Status konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "showOnline": "Anzeigen, wenn ich online bin",
+    "showOnlineSaveError": "Deine Online-Einstellung konnte nicht gespeichert werden. Bitte versuche es erneut."
   }
 }

@@ -33,6 +33,10 @@ vi.mock('@/main/userMessaging/matrix/useMatrixPresence', async importOriginal =>
   ...(await importOriginal<typeof import('@/main/userMessaging/matrix/useMatrixPresence')>()),
   useOwnStatusMessage: () => ownStatus,
 }));
+const showOnlinePreference = { showOnline: true, setShowOnline: vi.fn() };
+vi.mock('@/main/userMessaging/matrix/useShowOnlinePreference', () => ({
+  useShowOnlinePreference: () => showOnlinePreference,
+}));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { id: 'me' } }),
 }));
@@ -111,6 +115,9 @@ vi.mock('@/crd/components/chat/ChatPanel', () => ({
 
 type SettingsMenuProps = {
   label: string;
+  showOnlineLabel: string;
+  showOnline: boolean;
+  onShowOnlineChange: (showOnline: boolean) => void;
   statusLabel: string;
   onEditStatus: () => void;
   notificationSettingsLabel: string;
@@ -199,6 +206,8 @@ describe('UnifiedChatPanelConnector header', () => {
     navigate.mockClear();
     ownStatus.statusMessage = '';
     ownStatus.setStatusMessage = vi.fn().mockResolvedValue(undefined);
+    showOnlinePreference.showOnline = true;
+    showOnlinePreference.setShowOnline = vi.fn().mockResolvedValue(undefined);
     groupAvatarMembers = undefined;
     confirmations.length = 0;
     openGroupSettings.mockClear();
@@ -292,6 +301,35 @@ describe('UnifiedChatPanelConnector header', () => {
     ownStatus.setStatusMessage = vi.fn().mockRejectedValue(new Error('rate limited'));
     statusDialogProps?.onSave('Lunch');
     await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('status.saveError', 'error'));
+  });
+
+  it('the gear menu shows the online setting and changes it', async () => {
+    render(<UnifiedChatPanelConnector />);
+    expect(settingsMenuProps).toMatchObject({ showOnlineLabel: 'status.showOnline', showOnline: true });
+
+    settingsMenuProps?.onShowOnlineChange(false);
+    expect(showOnlinePreference.setShowOnline).toHaveBeenCalledExactlyOnceWith(false);
+    await Promise.resolve();
+    expect(notify).not.toHaveBeenCalled();
+  });
+
+  it('a failed change of the online setting is reported once', async () => {
+    showOnlinePreference.setShowOnline = vi.fn().mockRejectedValue(new Error('rate limited'));
+    render(<UnifiedChatPanelConnector />);
+    settingsMenuProps?.onShowOnlineChange(false);
+    await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('status.showOnlineSaveError', 'error'));
+  });
+
+  it('while the online setting is off, the header shows no status and the status dialog never opens', () => {
+    showOnlinePreference.showOnline = false;
+    ownStatus.statusMessage = 'In a workshop';
+    render(<UnifiedChatPanelConnector />);
+    expect(settingsMenuProps?.showOnline).toBe(false);
+    expect(panelProps.subtitle).toBeUndefined();
+
+    act(() => settingsMenuProps?.onEditStatus());
+
+    expect(statusDialogProps?.open).toBe(false);
   });
 
   it.each([

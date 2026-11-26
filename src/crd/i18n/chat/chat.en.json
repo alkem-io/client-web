@@ -171,6 +171,8 @@
     "save": "Save status",
     "clear": "Clear status",
     "hint": "People you chat with see this on your avatar.",
-    "saveError": "We couldn't save your status. Please try again."
+    "saveError": "We couldn't save your status. Please try again.",
+    "showOnline": "Show when I'm online",
+    "showOnlineSaveError": "We couldn't save your online setting. Please try again."
   }
 }

@@ -3,20 +3,29 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { ChatSettingsMenu, type ChatSettingsMenuToggles } from './ChatSettingsMenu';
 
-const renderMenu = (toggles: ChatSettingsMenuToggles = {}) => {
+const renderMenu = (toggles: ChatSettingsMenuToggles = {}, showOnline = true) => {
   const onEditStatus = vi.fn();
   const onOpenNotificationSettings = vi.fn();
+  const onShowOnlineChange = vi.fn();
   render(
     <ChatSettingsMenu
       {...toggles}
       label="Notification settings"
+      showOnlineLabel="Show when I'm online"
+      showOnline={showOnline}
+      onShowOnlineChange={onShowOnlineChange}
       statusLabel="Set status"
       onEditStatus={onEditStatus}
       notificationSettingsLabel="Notification settings"
       onOpenNotificationSettings={onOpenNotificationSettings}
     />
   );
-  return { onEditStatus, onOpenNotificationSettings, user: userEvent.setup({ pointerEventsCheck: 0 }) };
+  return {
+    onEditStatus,
+    onOpenNotificationSettings,
+    onShowOnlineChange,
+    user: userEvent.setup({ pointerEventsCheck: 0 }),
+  };
 };
 
 describe('ChatSettingsMenu', () => {
@@ -81,5 +90,27 @@ describe('ChatSettingsMenu', () => {
 
     await user.click(item);
     expect(onSound).toHaveBeenCalledTimes(1);
+  });
+
+  test('the online setting is a checked item while on, and choosing it turns it off only', async () => {
+    const { user, onShowOnlineChange, onEditStatus } = renderMenu();
+    await user.click(screen.getByRole('button', { name: 'Notification settings' }));
+    const item = screen.getByRole('menuitemcheckbox', { name: "Show when I'm online" });
+    expect(item).toHaveAttribute('aria-checked', 'true');
+
+    await user.click(item);
+    expect(onShowOnlineChange).toHaveBeenCalledExactlyOnceWith(false);
+    expect(onEditStatus).not.toHaveBeenCalled();
+  });
+
+  test('while the online setting is off, it is unchecked, there is no status to set, and choosing it turns it on', async () => {
+    const { user, onShowOnlineChange } = renderMenu({}, false);
+    await user.click(screen.getByRole('button', { name: 'Notification settings' }));
+    expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual(['Notification settings']);
+    const item = screen.getByRole('menuitemcheckbox', { name: "Show when I'm online" });
+    expect(item).toHaveAttribute('aria-checked', 'false');
+
+    await user.click(item);
+    expect(onShowOnlineChange).toHaveBeenCalledExactlyOnceWith(true);
   });
 });

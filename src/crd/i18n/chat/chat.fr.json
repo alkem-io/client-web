@@ -171,6 +171,8 @@
     "save": "Enregistrer le statut",
     "clear": "Effacer le statut",
     "hint": "Les personnes avec qui vous discutez le voient sur votre avatar.",
-    "saveError": "Impossible d'enregistrer votre statut. Veuillez réessayer."
+    "saveError": "Impossible d'enregistrer votre statut. Veuillez réessayer.",
+    "showOnline": "Afficher quand je suis en ligne",
+    "showOnlineSaveError": "Impossible d'enregistrer votre paramètre de présence. Veuillez réessayer."
   }
 }

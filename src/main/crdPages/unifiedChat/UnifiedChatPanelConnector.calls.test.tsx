@@ -56,6 +56,9 @@ vi.mock('@/core/matrix/activeClient', async importOriginal => ({
   ...(await importOriginal<typeof import('@/core/matrix/activeClient')>()),
   useMatrixClient: () => calls.client,
 }));
+vi.mock('@/main/userMessaging/matrix/useShowOnlinePreference', () => ({
+  useShowOnlinePreference: () => ({ showOnline: true, setShowOnline: vi.fn() }),
+}));
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
