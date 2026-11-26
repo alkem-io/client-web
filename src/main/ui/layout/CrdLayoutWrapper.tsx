@@ -21,6 +21,7 @@ import {
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { LanguageOfferBannerConnector } from '@/domain/language/LanguageOfferBannerConnector';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import { useCookieSettings } from '@/main/cookies/CookieSettingsProvider';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { SearchProvider, useSearch } from '@/main/search/SearchContext';
@@ -74,6 +75,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { setOpenDialog } = usePendingMembershipsDialog();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { openSearch } = useSearch();
+  const { openCookieSettings } = useCookieSettings();
   const navigate = useNavigate();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const { visible: downNoticeVisible, notice: downNotice, dismiss: dismissDownNotice } = useDownNoticeBanner();
@@ -175,6 +177,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         }
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
+        onCookieSettingsClick={openCookieSettings}
       >
         {children ?? <Outlet />}
       </CrdLayout>

@@ -205,7 +205,7 @@ function MobileTabBar({
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border lg:hidden"
+      className="fixed bottom-[var(--cookie-banner-height,0px)] left-0 right-0 z-40 bg-background border-t border-border lg:hidden"
       aria-label={t('a11y.mobileTabBar')}
     >
       <div className="flex items-stretch h-14">

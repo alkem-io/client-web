@@ -36,6 +36,7 @@ type CrdLayoutProps = {
   onHelpClick?: () => void;
   onRefreshClick?: () => void;
   footerLinks?: CrdFooterLinks;
+  onCookieSettingsClick?: () => void;
   showGridToggle?: boolean;
   /** When true the header's inner content fills all 12 grid columns (full-width space pages). */
   fullWidth?: boolean;
@@ -69,6 +70,7 @@ export function CrdLayout({
   onHelpClick,
   onRefreshClick,
   footerLinks,
+  onCookieSettingsClick,
   showGridToggle,
   fullWidth,
   overlayBanner,
@@ -120,6 +122,7 @@ export function CrdLayout({
         currentLanguage={currentLanguage}
         onLanguageChange={onLanguageChange}
         onSupportClick={onHelpClick}
+        onCookieSettingsClick={onCookieSettingsClick}
       />
       {showGridToggle && <GridOverlay />}
     </div>

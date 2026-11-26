@@ -67,6 +67,10 @@ export const warn = log('warning');
 
 export const info = log('info');
 
+/** A step on the trail of the next error report. Kept only with `analysis` consent (see bootstrap.ts). */
+export const breadcrumb = (message: string, tags?: Tags) =>
+  Sentry.addBreadcrumb({ message, level: 'info', category: tags?.category, data: tags });
+
 export const log404NotFound = () => {
   const severity = 'error';
   const currentURL = document.location.href;
