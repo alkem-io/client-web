@@ -19,21 +19,10 @@ const accountDataEvent = (type: string, content: Record<string, unknown>): FakeE
 const makeClient = (accountData: Record<string, Record<string, unknown>> = {}, firstSyncDone = true) => {
   // biome-ignore lint/suspicious/noExplicitAny: handlers take an account data event or a sync state
   const handlers = new Map<string, (payload: any) => void>();
-  const events = new WeakMap<Record<string, unknown>, FakeEvent>();
   return {
     accountData,
     isInitialSyncComplete: () => firstSyncDone,
-    // As the SDK's store does: one event per update, replaced by the next.
-    getAccountData: (type: string) => {
-      const content = accountData[type];
-      if (!content) {
-        return undefined;
-      }
-      if (!events.has(content)) {
-        events.set(content, accountDataEvent(type, content));
-      }
-      return events.get(content);
-    },
+    getAccountData: (type: string) => (type in accountData ? accountDataEvent(type, accountData[type]) : undefined),
     // As the SDK does: resolves once sync has echoed the change back as an account data event.
     setAccountData: vi.fn(async (type: string, content: Record<string, unknown>) => {
       accountData[type] = content;
@@ -198,7 +187,7 @@ describe('useShowOnlinePreference', () => {
     expect(client.setSyncPresence).toHaveBeenLastCalledWith('online');
   });
 
-  it('switching off puts the setting back on when the presence clear fails', async () => {
+  it('switching off rejects and stays off when the presence clear fails', async () => {
     const client = makeClient();
     client.setPresence.mockRejectedValueOnce(new Error('network down'));
     harness.client = client;
@@ -206,65 +195,35 @@ describe('useShowOnlinePreference', () => {
 
     await act(() => expect(result.current.setShowOnline(false)).rejects.toThrow('network down'));
 
-    expect(client.setAccountData).toHaveBeenLastCalledWith(EVENT_TYPE, { show_online: true });
-    expect(result.current.showOnline).toBe(true);
-    expect(client.setSyncPresence).toHaveBeenLastCalledWith('online');
+    expect(client.setAccountData).toHaveBeenCalledExactlyOnceWith(EVENT_TYPE, { show_online: false });
+    expect(result.current.showOnline).toBe(false);
+    expect(client.setSyncPresence).toHaveBeenLastCalledWith('offline');
   });
 
-  it('a failed presence clear from an earlier switch-off does not undo a later one', async () => {
-    const client = makeClient();
-    let fail: (error: Error) => void = () => {};
-    client.setPresence.mockImplementationOnce(
-      () =>
-        new Promise<void>((_, reject) => {
-          fail = reject;
-        })
-    );
+  it('a session that starts with the setting off clears presence and status message, once', async () => {
+    const client = makeClient({ [EVENT_TYPE]: { show_online: false } }, false);
     harness.client = client;
-    const { result } = renderHook(() => useShowOnlinePreference());
+    renderHook(() => useShowOnlinePreference());
+    expect(client.setPresence).not.toHaveBeenCalled();
 
-    let first: Promise<void> = Promise.resolve();
-    act(() => {
-      first = result.current.setShowOnline(false);
+    await act(async () => {
+      client.emit(ClientEvent.Sync, SyncState.Prepared);
+      client.emit(ClientEvent.Sync, SyncState.Prepared);
     });
-    await waitFor(() => expect(client.setPresence).toHaveBeenCalledOnce());
-    await act(() => result.current.setShowOnline(true));
-    await act(() => result.current.setShowOnline(false));
-    fail(new Error('network down'));
-    await act(() => expect(first).rejects.toThrow('network down'));
 
-    expect(client.setAccountData).toHaveBeenLastCalledWith(EVENT_TYPE, { show_online: false });
-    expect(result.current.showOnline).toBe(false);
+    expect(client.setPresence).toHaveBeenCalledExactlyOnceWith({ presence: 'offline', status_msg: '' });
   });
 
-  it('a failed presence clear does not undo a switch-off made on another device meanwhile', async () => {
-    const client = makeClient();
-    let fail: (error: Error) => void = () => {};
-    client.setPresence.mockImplementationOnce(
-      () =>
-        new Promise<void>((_, reject) => {
-          fail = reject;
-        })
-    );
+  it('a session that starts with the setting on or absent sends no presence', async () => {
+    const client = makeClient({}, false);
     harness.client = client;
-    const { result } = renderHook(() => useShowOnlinePreference());
+    renderHook(() => useShowOnlinePreference());
 
-    let switchingOff: Promise<void> = Promise.resolve();
-    act(() => {
-      switchingOff = result.current.setShowOnline(false);
+    await act(async () => {
+      client.emit(ClientEvent.Sync, SyncState.Prepared);
     });
-    await waitFor(() => expect(client.setPresence).toHaveBeenCalledOnce());
-    act(() => {
-      for (const show_online of [true, false]) {
-        client.accountData[EVENT_TYPE] = { show_online };
-        client.emit(ClientEvent.AccountData, accountDataEvent(EVENT_TYPE, { show_online }));
-      }
-    });
-    fail(new Error('network down'));
-    await act(() => expect(switchingOff).rejects.toThrow('network down'));
 
-    expect(client.setAccountData).toHaveBeenCalledOnce();
-    expect(result.current.showOnline).toBe(false);
+    expect(client.setPresence).not.toHaveBeenCalled();
   });
 
   it('sends no presence clear when the setting is already back on by the time the save returns', async () => {

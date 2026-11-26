@@ -46,11 +46,22 @@ export const setPresenceRetryingOnce = async (
 export const showOnlineOf = (client: MatrixClient | null): boolean =>
   client?.getAccountData(SHOW_ONLINE_EVENT)?.getContent().show_online !== false;
 
+// An offline sync leaves the current presence as it is, and Synapse keeps the status
+// message of a user who goes offline, so hiding a user clears both explicitly.
+const OFFLINE_CLEAR = { presence: 'offline', status_msg: '' } as const;
+
+const clearUnlessShown = (client: MatrixClient) =>
+  setPresenceRetryingOnce(client, OFFLINE_CLEAR, () => !showOnlineOf(client));
+
+// Clients whose session start has already cleared a hidden user's presence.
+const clearedAtStart = new WeakSet<MatrixClient>();
+
 const apply = (client: MatrixClient, showOnline: boolean) =>
   void client.setSyncPresence(showOnline ? SetPresence.Online : SetPresence.Offline);
 
 // Every change, from another device or echoed back from this one, reaches the
-// sync loop here. Only the device that switched it off sends the explicit offline presence.
+// sync loop here. The device that switched it off sends the explicit offline presence, and
+// so does each session that starts with it off.
 const subscribeToSetting = (client: MatrixClient | null) => (listener: () => void) => {
   if (!client) {
     return noop;
@@ -63,6 +74,12 @@ const subscribeToSetting = (client: MatrixClient | null) => (listener: () => voi
   const onSync = (state: SyncState) => {
     if (state === SyncState.Prepared) {
       apply(client, showOnlineOf(client));
+      // A switch-off whose clear failed or was cut short by a reload left the status message
+      // published, so a session that starts with the setting off clears it, once.
+      if (!showOnlineOf(client) && !clearedAtStart.has(client)) {
+        clearedAtStart.add(client);
+        clearUnlessShown(client).catch(noop);
+      }
       listener();
     }
   };
@@ -93,22 +110,10 @@ export const useShowOnlinePreference = () => {
     }
     // Resolves once sync has echoed the change back, which applies it to this device above.
     await client.setAccountData(SHOW_ONLINE_EVENT, { show_online: value });
-    // Any later change, from this device or another, replaces this event in the store.
-    const saved = client.getAccountData(SHOW_ONLINE_EVENT);
     if (!value) {
-      // An offline sync leaves the current presence as it is, and Synapse keeps the
-      // status message of a user who goes offline, so both are cleared explicitly.
-      // Sending it before the offline sync would let the next sync say online again. When it
-      // fails the setting goes back on, so it never reads off while the status stays published,
-      // unless a later change owns the setting by then.
-      await setPresenceRetryingOnce(client, { presence: 'offline', status_msg: '' }, () => !showOnlineOf(client)).catch(
-        async error => {
-          if (client.getAccountData(SHOW_ONLINE_EVENT) === saved) {
-            await client.setAccountData(SHOW_ONLINE_EVENT, { show_online: true });
-          }
-          throw error;
-        }
-      );
+      // Sending it before the offline sync would let the next sync say online again. A failure
+      // rejects and leaves the setting off: the next session start clears again.
+      await clearUnlessShown(client);
     }
   };
 
