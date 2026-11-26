@@ -46,6 +46,7 @@ const makeClient = (): FakeClient => {
     startClient: vi.fn(async () => {}),
     on: vi.fn((event: string, listener: (state?: string) => void) => handlers.set(event, listener)),
     setAccessToken: vi.fn(),
+    setSyncPresence: vi.fn(async () => {}),
     emit: (event: string, state?: string) => handlers.get(event)?.(state),
   };
 };
@@ -233,6 +234,39 @@ describe('establishSession', () => {
     expect(getActiveClient()).toBe(client);
     handle.stop();
     expect(getActiveClient()).toBeNull();
+  });
+
+  it('starts the first sync offline when this browser stored "Show when I\'m online" as off for the user', async () => {
+    await seedRecord();
+    localStorage.setItem(`chatShowOnline:${USER_ID}`, 'false');
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+
+    try {
+      await establishSession(ACTOR);
+    } finally {
+      localStorage.clear();
+    }
+
+    expect(client.setSyncPresence).toHaveBeenCalledExactlyOnceWith('offline');
+    expect(vi.mocked(client.setSyncPresence).mock.invocationCallOrder[0]).toBeGreaterThan(
+      vi.mocked(client.startClient).mock.invocationCallOrder[0]
+    );
+  });
+
+  it('leaves sync presence alone when only another user stored the setting as off', async () => {
+    await seedRecord();
+    localStorage.setItem('chatShowOnline:@someone-else:matrix.dev-alkem.io', 'false');
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+
+    try {
+      await establishSession(ACTOR);
+    } finally {
+      localStorage.clear();
+    }
+
+    expect(client.setSyncPresence).not.toHaveBeenCalled();
   });
 
   it('a rejected token clears the stored record, runs one silent SSO and restarts sync once', async () => {

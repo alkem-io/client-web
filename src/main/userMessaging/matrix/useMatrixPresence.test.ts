@@ -13,11 +13,12 @@ type FakeUser = { presence: string; events: { presence?: { getContent: () => { s
 type FakeEvent = { getType: () => string };
 const presenceEvent: FakeEvent = { getType: () => 'm.presence' };
 
-const makeClient = (users: Record<string, FakeUser>) => {
+const makeClient = (users: Record<string, FakeUser>, accountData: Record<string, unknown> = {}) => {
   const handlers = new Map<string, (event: FakeEvent) => void>();
   return {
     users,
     getUserId: () => '@me:hs',
+    getAccountData: (type: string) => (type in accountData ? { getContent: () => accountData[type] } : undefined),
     getUser: (userId: string) => users[userId] ?? null,
     setPresence: vi.fn(() => Promise.resolve()),
     on: vi.fn((name: string, handler: (event: FakeEvent) => void) => handlers.set(name, handler)),
@@ -206,6 +207,16 @@ describe('useOwnStatusMessage', () => {
     // The rate-limited 'Old' and the accepted 'New': 'Old' is never retried.
     expect(client.setPresence).toHaveBeenCalledTimes(2);
     expect(client.setPresence).toHaveBeenLastCalledWith({ presence: 'online', status_msg: 'New' });
+  });
+
+  it('sends nothing while "Show when I\'m online" is off, since a status message would say online', async () => {
+    const client = makeClient({}, { 'io.alkemio.chat.presence': { show_online: false } });
+    harness.client = client;
+    const { result } = renderHook(() => useOwnStatusMessage());
+
+    await result.current.setStatusMessage('In a workshop');
+
+    expect(client.setPresence).not.toHaveBeenCalled();
   });
 
   it('rejects when the homeserver refuses, and without a client', async () => {

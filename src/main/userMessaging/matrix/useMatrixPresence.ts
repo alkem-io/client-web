@@ -3,6 +3,7 @@ import { useRef, useState, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import type { UserPresence } from '../models';
 import { homeserverOf } from './matrixRooms';
+import { setPresenceRetryingOnce, showOnlineOf } from './useShowOnlinePreference';
 
 /** A person's availability and the status message they set, if any. */
 export type UserStatus = { presence: UserPresence; statusMessage?: string };
@@ -66,13 +67,6 @@ export const useMatrixPresence = (actorIds: readonly string[]): ReadonlyMap<stri
   return new Map(actorIds.map((actorId, index) => [actorId, statuses[index]]));
 };
 
-// Synapse allows one presence update per user every 10 seconds by default and
-// answers 429 with the wait, so setting then clearing in quick succession is refused.
-const retryAfterMs = (error: unknown): number | undefined => {
-  const data = (error as { errcode?: string; data?: { retry_after_ms?: number } } | null) ?? {};
-  return data.errcode === 'M_LIMIT_EXCEEDED' ? (data.data?.retry_after_ms ?? 10_000) : undefined;
-};
-
 /** The signed-in user's own status message, live, and a setter; an empty message clears it. */
 export const useOwnStatusMessage = () => {
   const client = useMatrixClient();
@@ -91,22 +85,17 @@ export const useOwnStatusMessage = () => {
     if (!client) {
       throw new Error('Chat is not connected');
     }
+    // Setting a message also says 'online', which the "Show when I'm online" setting forbids.
+    if (!showOnlineOf(client)) {
+      return;
+    }
     const update = { presence: 'online' as const, status_msg: text.trim().slice(0, 100) };
     latestSave.current += 1;
     const save = latestSave.current;
     setPending(update.status_msg);
     try {
-      await client.setPresence(update).catch(async error => {
-        const wait = retryAfterMs(error);
-        if (wait === undefined) {
-          throw error;
-        }
-        await new Promise(resolve => setTimeout(resolve, wait));
-        // A newer save now owns the value; sending this one late would undo it.
-        if (save === latestSave.current) {
-          await client.setPresence(update);
-        }
-      });
+      // A newer save now owns the value; sending this one late would undo it.
+      await setPresenceRetryingOnce(client, update, () => save === latestSave.current);
     } finally {
       if (save === latestSave.current) {
         setPending(null);

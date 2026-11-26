@@ -12,6 +12,7 @@ import {
   listenToOtherTabs,
   withCredentialLock,
 } from './sharedDevice';
+import { readStoredShowOnline } from './showOnlineStorage';
 import { attemptSilentSso } from './ssoLogin';
 import {
   type CredentialRecord,
@@ -49,6 +50,7 @@ type MatrixClientLike = {
   startClient(opts?: { initialSyncLimit?: number; lazyLoadMembers?: boolean }): Promise<void>;
   on(event: string, listener: (state?: string) => void): unknown;
   setAccessToken(token: string): void;
+  setSyncPresence(presence: 'offline'): Promise<void>;
 };
 
 type SessionHandle = {
@@ -301,6 +303,12 @@ const establishSession = async (
     running = record;
     setActiveClient(client as unknown as MatrixClient);
     await client.startClient({ initialSyncLimit: INITIAL_SYNC_LIMIT, lazyLoadMembers: true });
+    // Account data arrives with the first sync, so the browser's copy of "Show when I'm online"
+    // decides that sync. Not earlier: the sync loop that takes it is created by startClient, and
+    // its first request still waits on the push rules and filter fetches.
+    if (!readStoredShowOnline(record.userId)) {
+      void client.setSyncPresence('offline');
+    }
   };
 
   const recover = (rejected: CredentialRecord): Promise<void> => transition(() => recoverNow(rejected));
