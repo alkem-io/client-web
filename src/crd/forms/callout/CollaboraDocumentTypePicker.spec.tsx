@@ -7,10 +7,10 @@
  * Word/Excel/PowerPoint even though PDF is now part of the P1 import
  * allowlist elsewhere.
  */
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import i18next from 'i18next';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import enJson from '@/crd/i18n/space/space.en.json';
 import { CollaboraDocumentTypePicker } from './CollaboraDocumentTypePicker';
 
@@ -42,5 +42,39 @@ describe('CollaboraDocumentTypePicker — no blank-create PDF option', () => {
     expect(screen.getByText(enJson.callout.documentSpreadsheet)).toBeInTheDocument();
     expect(screen.getByText(enJson.callout.documentPresentation)).toBeInTheDocument();
     expect(screen.queryByText(enJson.callout.documentPdf)).not.toBeInTheDocument();
+  });
+});
+
+describe('CollaboraDocumentTypePicker — multi-file import', () => {
+  it('hands two dropped files to upload.onFiles', () => {
+    const onFiles = vi.fn();
+    const a = new File(['a'], 'a.docx');
+    const b = new File(['b'], 'b.docx');
+    render(
+      <I18nextProvider i18n={i18n}>
+        <CollaboraDocumentTypePicker
+          value="WORDPROCESSING"
+          onChange={() => {}}
+          upload={{
+            acceptAttr: '.docx',
+            file: null,
+            onFileChange: vi.fn(),
+            onFiles,
+            onError: vi.fn(),
+            error: null,
+            errorMessage: null,
+            labelHint: 'drop here',
+            labelMaxSize: 'max',
+            labelRemoveFile: 'remove',
+            labelOr: 'or',
+          }}
+        />
+      </I18nextProvider>
+    );
+
+    fireEvent.drop(screen.getByRole('button', { name: 'drop here' }), {
+      dataTransfer: { files: [a, b], items: [] },
+    });
+    expect(onFiles).toHaveBeenCalledWith([a, b]);
   });
 });

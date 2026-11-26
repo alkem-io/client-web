@@ -117,13 +117,21 @@ export function useInnovationPackAdmin({
   // `useReferenceFileUpload` uploads permanently into the pack bucket — required so the file is
   // propagated to `file_backup_outbox` (issue #10126).
   const { storageConfig } = useStorageConfig({ locationType: 'innovationPack', innovationPackId });
-  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(storageConfig);
+  const {
+    onFileUpload: onReferenceFileUpload,
+    accept: referenceUploadAccept,
+    uploading: referenceUploading,
+  } = useReferenceFileUpload(storageConfig);
 
   const tm = useTemplatesManager({
     holderKind: 'innovationPack',
     templatesSetId,
     markdownUpload: templatesMarkdownUpload,
-    referenceUpload: { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept },
+    referenceUpload: {
+      onFileUpload: onReferenceFileUpload,
+      accept: referenceUploadAccept,
+      uploading: referenceUploading,
+    },
   });
 
   // Open the deep-linked template's Preview dialog once it (and the templates set) resolve.
@@ -273,6 +281,7 @@ export function useInnovationPackAdmin({
     onChange,
     onSubmit,
     submitting: submitting || pendingSubmit,
+    uploading: referenceUploading,
     isDirty,
     providerName: detail?.providerName ?? '',
     avatarUrl: detail ? undefined : undefined,

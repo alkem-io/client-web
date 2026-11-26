@@ -197,6 +197,7 @@ export default function CrdSpaceSettingsPage() {
     referenceUpload: {
       onFileUpload: communityGuidelines.onReferenceFileUpload,
       accept: communityGuidelines.referenceUploadAccept,
+      uploading: communityGuidelines.referenceUploading,
     },
   });
   const [confirmReplaceGuidelinesOpen, setConfirmReplaceGuidelinesOpen] = useState(false);
@@ -518,6 +519,7 @@ export default function CrdSpaceSettingsPage() {
                   untitledReferenceIds={about.untitledReferenceIds}
                   onReferenceFileUpload={about.onReferenceFileUpload}
                   referenceUploadAccept={about.referenceUploadAccept}
+                  referencesKey={about.resetGeneration}
                   onImageUpload={md.onImageUpload}
                   iframeAllowedUrls={md.iframeAllowedUrls}
                   onError={md.onError}
@@ -1100,6 +1102,7 @@ export default function CrdSpaceSettingsPage() {
         onCommonChange={saveAs.form.onCommonChange}
         perTypeFormSlot={saveAs.form.perTypeFormSlot}
         submitting={saveAs.form.submitting}
+        uploading={saveAs.form.uploading}
         onSubmit={saveAs.form.onSubmit}
         onCancel={saveAs.form.onCancel}
         isDirty={saveAs.form.isDirty}

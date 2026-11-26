@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import i18n from '@/core/i18n/config';
 import type { ClassificationEntryData } from '@/crd/components/classification/types';
-import { render, screen } from '@/main/test/testUtils';
+import { act, fireEvent, render, screen } from '@/main/test/testUtils';
 import { SpaceSettingsAboutView, type SpaceSettingsAboutViewProps } from './SpaceSettingsAboutView';
 
 // MarkdownEditor pulls in Tiptap (heavy + flaky in jsdom, see LayoutPoolColumn.test.tsx) —
@@ -203,5 +203,53 @@ describe('SpaceSettingsAboutView — section defaults (spec 045 Session 2026-10-
     expect(toggles.map(b => b.textContent)).toEqual(
       expect.arrayContaining(['Visuals', 'Location', 'Context', 'Tags', 'References & Links'])
     );
+  });
+});
+
+describe('SpaceSettingsAboutView — a Discard during a multi-file pick', () => {
+  const emptyReference = { id: 'ref-1', title: '', uri: '', description: '' };
+  const pdf = (name: string) => new File(['x'], name);
+  const referencesSection = () => document.getElementById('references') as HTMLElement;
+  const fileInput = () => referencesSection().querySelector('input[type="file"]') as HTMLInputElement;
+  const uriValues = () =>
+    Array.from(referencesSection().querySelectorAll('input[type="url"]')).map(i => (i as HTMLInputElement).value);
+
+  it('a new referencesKey cancels the queued file and drops the late results', async () => {
+    const resolvers: Array<(url: string) => void> = [];
+    const onReferenceFileUpload = vi.fn(
+      (_file: File) => new Promise<string | null>(resolve => resolvers.push(resolve))
+    );
+    const onReferencesChange = vi.fn();
+    const props = (overrides: Partial<SpaceSettingsAboutViewProps>) =>
+      baseProps({ onReferenceFileUpload, onReferencesChange, references: [emptyReference], ...overrides });
+
+    const { rerender } = render(<SpaceSettingsAboutView {...props({ referencesKey: 0 })} />);
+    fireEvent.change(fileInput(), {
+      target: { files: ['a', 'b', 'c', 'd', 'e'].map(n => pdf(`${n}.pdf`)) },
+    });
+    expect(onReferenceFileUpload).toHaveBeenCalledTimes(3);
+
+    await act(async () => resolvers[0]('https://cdn/a'));
+    const [landed] = onReferencesChange.mock.calls[0] as [Array<{ id?: string; name: string; uri: string }>];
+    rerender(
+      <SpaceSettingsAboutView
+        {...props({
+          referencesKey: 0,
+          references: landed.map(r => ({ id: r.id ?? 'temp', title: r.name, uri: r.uri, description: '' })),
+        })}
+      />
+    );
+    expect(uriValues()).toEqual(['https://cdn/a']);
+    expect(onReferenceFileUpload).toHaveBeenCalledTimes(4);
+
+    onReferencesChange.mockClear();
+    rerender(<SpaceSettingsAboutView {...props({ referencesKey: 1 })} />);
+    await act(async () => {
+      for (const resolve of resolvers.slice(1)) resolve('https://cdn/late');
+    });
+
+    expect(onReferenceFileUpload).toHaveBeenCalledTimes(4);
+    expect(onReferencesChange).not.toHaveBeenCalled();
+    expect(uriValues()).toEqual(['']);
   });
 });
