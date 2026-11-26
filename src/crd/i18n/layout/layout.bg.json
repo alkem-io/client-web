@@ -33,7 +33,8 @@
     "support": "Поддръжка",
     "about": "За нас",
     "thirdPartyLicenses": "Лицензи на пакети",
-    "opensInNewTab": "отваря се в нов раздел"
+    "opensInNewTab": "отваря се в нов раздел",
+    "close": "Затвори"
   },
   "appVersion": {
     "message": "Налична е нова версия на приложението.",
