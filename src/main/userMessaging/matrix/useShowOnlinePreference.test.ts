@@ -1,7 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { ClientEvent, SyncState } from 'matrix-js-sdk';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { readStoredShowOnline } from '@/core/matrix/showOnlineStorage';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({ client: null as unknown }));
 
@@ -20,11 +19,21 @@ const accountDataEvent = (type: string, content: Record<string, unknown>): FakeE
 const makeClient = (accountData: Record<string, Record<string, unknown>> = {}, firstSyncDone = true) => {
   // biome-ignore lint/suspicious/noExplicitAny: handlers take an account data event or a sync state
   const handlers = new Map<string, (payload: any) => void>();
+  const events = new WeakMap<Record<string, unknown>, FakeEvent>();
   return {
     accountData,
     isInitialSyncComplete: () => firstSyncDone,
-    getSafeUserId: () => '@me:hs',
-    getAccountData: (type: string) => (type in accountData ? accountDataEvent(type, accountData[type]) : undefined),
+    // As the SDK's store does: one event per update, replaced by the next.
+    getAccountData: (type: string) => {
+      const content = accountData[type];
+      if (!content) {
+        return undefined;
+      }
+      if (!events.has(content)) {
+        events.set(content, accountDataEvent(type, content));
+      }
+      return events.get(content);
+    },
     // As the SDK does: resolves once sync has echoed the change back as an account data event.
     setAccountData: vi.fn(async (type: string, content: Record<string, unknown>) => {
       accountData[type] = content;
@@ -46,22 +55,16 @@ describe('useShowOnlinePreference', () => {
     harness.client = null;
   });
 
-  afterEach(() => {
-    localStorage.clear();
-  });
-
   it('applies the setting at mount when the first sync is already done, absent meaning on', () => {
     const off = makeClient({ [EVENT_TYPE]: { show_online: false } });
     harness.client = off;
     renderHook(() => useShowOnlinePreference());
     expect(off.setSyncPresence).toHaveBeenCalledExactlyOnceWith('offline');
-    expect(readStoredShowOnline('@me:hs')).toBe(false);
 
     const none = makeClient();
     harness.client = none;
     renderHook(() => useShowOnlinePreference());
     expect(none.setSyncPresence).toHaveBeenCalledExactlyOnceWith('online');
-    expect(readStoredShowOnline('@me:hs')).toBe(true);
   });
 
   it('leaves the offline start alone until the first sync is done, then goes online when nothing is stored', () => {
@@ -69,12 +72,10 @@ describe('useShowOnlinePreference', () => {
     harness.client = client;
     renderHook(() => useShowOnlinePreference());
     expect(client.setSyncPresence).not.toHaveBeenCalled();
-    expect(readStoredShowOnline('@me:hs')).toBe(false);
 
     act(() => client.emit(ClientEvent.Sync, SyncState.Prepared));
 
     expect(client.setSyncPresence).toHaveBeenCalledExactlyOnceWith('online');
-    expect(readStoredShowOnline('@me:hs')).toBe(true);
   });
 
   it('stays offline after the first sync when the setting arrived as off', () => {
@@ -90,7 +91,6 @@ describe('useShowOnlinePreference', () => {
 
     expect(result.current.showOnline).toBe(false);
     expect(client.setSyncPresence).not.toHaveBeenCalledWith('online');
-    expect(readStoredShowOnline('@me:hs')).toBe(false);
   });
 
   it('is on while the account data is absent or says nothing, and off when it says so', () => {
@@ -108,7 +108,7 @@ describe('useShowOnlinePreference', () => {
     expect(renderHook(() => useShowOnlinePreference()).result.current.showOnline).toBe(true);
   });
 
-  it('follows a change made on another device into the sync loop and the stored copy, without sending presence', () => {
+  it('follows a change made on another device into the sync loop, without sending presence', () => {
     const client = makeClient();
     harness.client = client;
     const { result } = renderHook(() => useShowOnlinePreference());
@@ -119,7 +119,6 @@ describe('useShowOnlinePreference', () => {
     });
     expect(result.current.showOnline).toBe(false);
     expect(client.setSyncPresence).toHaveBeenLastCalledWith('offline');
-    expect(readStoredShowOnline('@me:hs')).toBe(false);
 
     act(() => {
       client.accountData[EVENT_TYPE] = { show_online: true };
@@ -127,7 +126,6 @@ describe('useShowOnlinePreference', () => {
     });
     expect(result.current.showOnline).toBe(true);
     expect(client.setSyncPresence).toHaveBeenLastCalledWith('online');
-    expect(readStoredShowOnline('@me:hs')).toBe(true);
 
     expect(client.setPresence).not.toHaveBeenCalled();
   });
@@ -158,7 +156,6 @@ describe('useShowOnlinePreference', () => {
     expect(client.setSyncPresence.mock.invocationCallOrder[0]).toBeLessThan(
       client.setPresence.mock.invocationCallOrder[0]
     );
-    expect(readStoredShowOnline('@me:hs')).toBe(false);
     expect(result.current.showOnline).toBe(false);
   });
 
@@ -212,7 +209,6 @@ describe('useShowOnlinePreference', () => {
     expect(client.setAccountData).toHaveBeenLastCalledWith(EVENT_TYPE, { show_online: true });
     expect(result.current.showOnline).toBe(true);
     expect(client.setSyncPresence).toHaveBeenLastCalledWith('online');
-    expect(readStoredShowOnline('@me:hs')).toBe(true);
   });
 
   it('a failed presence clear from an earlier switch-off does not undo a later one', async () => {
@@ -241,6 +237,36 @@ describe('useShowOnlinePreference', () => {
     expect(result.current.showOnline).toBe(false);
   });
 
+  it('a failed presence clear does not undo a switch-off made on another device meanwhile', async () => {
+    const client = makeClient();
+    let fail: (error: Error) => void = () => {};
+    client.setPresence.mockImplementationOnce(
+      () =>
+        new Promise<void>((_, reject) => {
+          fail = reject;
+        })
+    );
+    harness.client = client;
+    const { result } = renderHook(() => useShowOnlinePreference());
+
+    let switchingOff: Promise<void> = Promise.resolve();
+    act(() => {
+      switchingOff = result.current.setShowOnline(false);
+    });
+    await waitFor(() => expect(client.setPresence).toHaveBeenCalledOnce());
+    act(() => {
+      for (const show_online of [true, false]) {
+        client.accountData[EVENT_TYPE] = { show_online };
+        client.emit(ClientEvent.AccountData, accountDataEvent(EVENT_TYPE, { show_online }));
+      }
+    });
+    fail(new Error('network down'));
+    await act(() => expect(switchingOff).rejects.toThrow('network down'));
+
+    expect(client.setAccountData).toHaveBeenCalledOnce();
+    expect(result.current.showOnline).toBe(false);
+  });
+
   it('sends no presence clear when the setting is already back on by the time the save returns', async () => {
     const client = makeClient();
     // Another device switched it on again before this device's save came back.
@@ -266,7 +292,6 @@ describe('useShowOnlinePreference', () => {
     expect(client.setAccountData).toHaveBeenCalledWith(EVENT_TYPE, { show_online: true });
     expect(client.setSyncPresence).toHaveBeenLastCalledWith('online');
     expect(client.setPresence).not.toHaveBeenCalled();
-    expect(readStoredShowOnline('@me:hs')).toBe(true);
   });
 
   it('rejects without changing anything when the homeserver refuses, and without a client', async () => {
@@ -278,7 +303,6 @@ describe('useShowOnlinePreference', () => {
     await expect(result.current.setShowOnline(false)).rejects.toThrow('M_FORBIDDEN');
     expect(client.setSyncPresence).not.toHaveBeenCalledWith('offline');
     expect(client.setPresence).not.toHaveBeenCalled();
-    expect(readStoredShowOnline('@me:hs')).toBe(true);
 
     harness.client = null;
     rerender();

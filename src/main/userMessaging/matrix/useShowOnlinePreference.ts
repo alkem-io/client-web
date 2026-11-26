@@ -1,7 +1,6 @@
 import { ClientEvent, type MatrixClient, type MatrixEvent, SetPresence, SyncState } from 'matrix-js-sdk';
-import { useRef, useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
-import { writeStoredShowOnline } from '@/core/matrix/showOnlineStorage';
 
 const SHOW_ONLINE_EVENT = 'io.alkemio.chat.presence';
 
@@ -47,14 +46,11 @@ export const setPresenceRetryingOnce = async (
 export const showOnlineOf = (client: MatrixClient | null): boolean =>
   client?.getAccountData(SHOW_ONLINE_EVENT)?.getContent().show_online !== false;
 
-const apply = (client: MatrixClient, showOnline: boolean) => {
+const apply = (client: MatrixClient, showOnline: boolean) =>
   void client.setSyncPresence(showOnline ? SetPresence.Online : SetPresence.Offline);
-  writeStoredShowOnline(client.getSafeUserId(), showOnline);
-};
 
 // Every change, from another device or echoed back from this one, reaches the
-// sync loop and the start-up copy here. Only the device that switched it off
-// sends the explicit offline presence.
+// sync loop here. Only the device that switched it off sends the explicit offline presence.
 const subscribeToSetting = (client: MatrixClient | null) => (listener: () => void) => {
   if (!client) {
     return noop;
@@ -90,26 +86,24 @@ export const useShowOnlinePreference = () => {
   const readSnapshot = () => showOnlineOf(client);
   const showOnline = useSyncExternalStore(subscribeToSetting(client), readSnapshot, readSnapshot);
 
-  // Counts changes, so a failed offline request from an earlier change cannot undo a newer one.
-  const latestChange = useRef(0);
-
   // Rejects when there is no client or the homeserver refuses the change.
   const setShowOnline = async (value: boolean) => {
     if (!client) {
       throw new Error('Chat is not connected');
     }
-    latestChange.current += 1;
-    const change = latestChange.current;
     // Resolves once sync has echoed the change back, which applies it to this device above.
     await client.setAccountData(SHOW_ONLINE_EVENT, { show_online: value });
+    // Any later change, from this device or another, replaces this event in the store.
+    const saved = client.getAccountData(SHOW_ONLINE_EVENT);
     if (!value) {
       // An offline sync leaves the current presence as it is, and Synapse keeps the
       // status message of a user who goes offline, so both are cleared explicitly.
       // Sending it before the offline sync would let the next sync say online again. When it
-      // fails the setting goes back on, so it never reads off while the status stays published.
+      // fails the setting goes back on, so it never reads off while the status stays published,
+      // unless a later change owns the setting by then.
       await setPresenceRetryingOnce(client, { presence: 'offline', status_msg: '' }, () => !showOnlineOf(client)).catch(
         async error => {
-          if (change === latestChange.current) {
+          if (client.getAccountData(SHOW_ONLINE_EVENT) === saved) {
             await client.setAccountData(SHOW_ONLINE_EVENT, { show_online: true });
           }
           throw error;

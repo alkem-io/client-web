@@ -82,7 +82,8 @@ export const useOwnStatusMessage = () => {
 
   // Rejects when there is no client or the homeserver refuses the update.
   const setStatusMessage = async (text: string) => {
-    if (!client) {
+    // Until the first sync is done the setting is unknown, and absent would wrongly read as on.
+    if (!client?.isInitialSyncComplete()) {
       throw new Error('Chat is not connected');
     }
     // Setting a message also says 'online', which the "Show when I'm online" setting forbids.

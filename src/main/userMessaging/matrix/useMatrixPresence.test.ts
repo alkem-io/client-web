@@ -13,10 +13,15 @@ type FakeUser = { presence: string; events: { presence?: { getContent: () => { s
 type FakeEvent = { getType: () => string };
 const presenceEvent: FakeEvent = { getType: () => 'm.presence' };
 
-const makeClient = (users: Record<string, FakeUser>, accountData: Record<string, unknown> = {}) => {
+const makeClient = (
+  users: Record<string, FakeUser>,
+  accountData: Record<string, unknown> = {},
+  firstSyncDone = true
+) => {
   const handlers = new Map<string, (event: FakeEvent) => void>();
   return {
     users,
+    isInitialSyncComplete: () => firstSyncDone,
     getUserId: () => '@me:hs',
     getAccountData: (type: string) => (type in accountData ? { getContent: () => accountData[type] } : undefined),
     getUser: (userId: string) => users[userId] ?? null,
@@ -242,6 +247,16 @@ describe('useOwnStatusMessage', () => {
     const { result } = renderHook(() => useOwnStatusMessage());
 
     await result.current.setStatusMessage('In a workshop');
+
+    expect(client.setPresence).not.toHaveBeenCalled();
+  });
+
+  it('rejects and sends nothing before the first sync is done, while the setting is still unknown', async () => {
+    const client = makeClient({}, {}, false);
+    harness.client = client;
+    const { result } = renderHook(() => useOwnStatusMessage());
+
+    await expect(result.current.setStatusMessage('In a workshop')).rejects.toThrow('Chat is not connected');
 
     expect(client.setPresence).not.toHaveBeenCalled();
   });

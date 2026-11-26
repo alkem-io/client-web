@@ -236,52 +236,17 @@ describe('establishSession', () => {
     expect(getActiveClient()).toBeNull();
   });
 
-  it('starts the first sync offline when this browser stored "Show when I\'m online" as off for the user', async () => {
+  it("starts every session's sync offline, once startClient has created the sync loop", async () => {
     await seedRecord();
-    localStorage.setItem(`chatShowOnline:${USER_ID}`, 'false');
     const client = makeClient();
     mockedCreateClient.mockReturnValue(client);
 
-    try {
-      await establishSession(ACTOR);
-    } finally {
-      localStorage.clear();
-    }
+    await establishSession(ACTOR);
 
     expect(client.setSyncPresence).toHaveBeenCalledExactlyOnceWith('offline');
     expect(vi.mocked(client.setSyncPresence).mock.invocationCallOrder[0]).toBeGreaterThan(
       vi.mocked(client.startClient).mock.invocationCallOrder[0]
     );
-  });
-
-  it('starts the first sync offline when this browser has no copy of the setting for the user', async () => {
-    await seedRecord();
-    localStorage.setItem('chatShowOnline:@someone-else:matrix.dev-alkem.io', 'true');
-    const client = makeClient();
-    mockedCreateClient.mockReturnValue(client);
-
-    try {
-      await establishSession(ACTOR);
-    } finally {
-      localStorage.clear();
-    }
-
-    expect(client.setSyncPresence).toHaveBeenCalledExactlyOnceWith('offline');
-  });
-
-  it('leaves sync presence alone when this browser stored the setting as on for the user', async () => {
-    await seedRecord();
-    localStorage.setItem(`chatShowOnline:${USER_ID}`, 'true');
-    const client = makeClient();
-    mockedCreateClient.mockReturnValue(client);
-
-    try {
-      await establishSession(ACTOR);
-    } finally {
-      localStorage.clear();
-    }
-
-    expect(client.setSyncPresence).not.toHaveBeenCalled();
   });
 
   it('a rejected token clears the stored record, runs one silent SSO and restarts sync once', async () => {
