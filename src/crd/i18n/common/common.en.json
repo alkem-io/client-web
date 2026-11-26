@@ -1057,9 +1057,12 @@
   },
   "delete": "Delete",
   "downNoticeBanner": {
-    "a11yLabel": "Planned maintenance notice",
+    "a11yLabel": "Platform status notice",
     "dismiss": "Dismiss notice",
-    "message": "Planned maintenance Friday 31 July, 21:00 CEST. The platform may be briefly unavailable."
+    "incident": "Ongoing incident: {{name}}",
+    "maintenanceInProgress": "Maintenance in progress: {{name}}",
+    "maintenanceScheduled": "Planned maintenance on {{date}}: {{name}}",
+    "viewStatus": "View status"
   },
   "edit": "Edit",
   "error": "Error",
@@ -1149,7 +1152,6 @@
     "en": "English",
     "es": "Español",
     "fr": "Français",
-    "inContextTool": "In context translation",
     "nl": "Nederlands",
     "pt": "Português (Brasil)",
     "ua": "Українська"

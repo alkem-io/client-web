@@ -492,6 +492,24 @@ describe('ChatPanel', () => {
       expect(panel).toHaveStyle({ top: '24px', height: '460px', bottom: 'auto' });
     });
 
+    test('on a small screen an opaque sheet behind the panel hides the page under and around the keyboard', () => {
+      screenSize.isSmallScreen = true;
+      stubVisualViewport(24, 460);
+      renderPanel();
+
+      const underlay = document.querySelector('[data-slot="chat-underlay"]');
+      expect(underlay).toHaveAttribute('aria-hidden', 'true');
+      expect(underlay).toHaveClass('fixed', 'inset-x-0', '-top-[100vh]', '-bottom-[100vh]', 'bg-card');
+      expect(underlay?.compareDocumentPosition(screen.getByRole('dialog'))).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+
+    test('the floating and expanded desktop panels have no such sheet', async () => {
+      renderPanel();
+      expect(document.querySelector('[data-slot="chat-underlay"]')).not.toBeInTheDocument();
+      await userEvent.setup().click(screen.getByRole('button', { name: 'Expand chat' }));
+      expect(document.querySelector('[data-slot="chat-underlay"]')).not.toBeInTheDocument();
+    });
+
     test('the floating desktop card is left where its classes put it', () => {
       const viewport = stubVisualViewport(0, 500);
       const addEventListener = vi.spyOn(viewport, 'addEventListener');

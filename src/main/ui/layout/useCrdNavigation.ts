@@ -57,9 +57,7 @@ export function useCrdNavigation() {
     }),
   };
 
-  const languages = supportedLngs
-    .filter(lng => lng !== 'inContextTool')
-    .map(lng => ({ code: lng, label: t(`languages.${lng}`) }));
+  const languages = supportedLngs.map(lng => ({ code: lng, label: t(`languages.${lng}`) }));
 
   // Must persist the same way the Account Settings language dropdown does
   // (CrdUserSettingsTab.tsx's onLanguageChange) — otherwise a pick made here

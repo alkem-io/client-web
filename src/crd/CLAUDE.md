@@ -510,9 +510,7 @@ export const SpaceExplorerCrdView = ({ spaces, loading, ... }: SpaceExplorerView
 ```typescript
 // src/main/ui/layout/CrdLayoutWrapper.tsx (APP LAYER — in main)
 // Languages are derived from supportedLngs + main translation labels — not hardcoded
-const languages = supportedLngs
-  .filter(lng => lng !== 'inContextTool')
-  .map(lng => ({ code: lng, label: t(`languages.${lng}`) }));
+const languages = supportedLngs.map(lng => ({ code: lng, label: t(`languages.${lng}`) }));
 
 <CrdLayout
   user={user}

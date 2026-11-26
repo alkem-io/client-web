@@ -4,12 +4,12 @@ declare global {
       VITE_APP_ALKEMIO_DOMAIN?: string;
       VITE_APP_DEBUG_QUERY?: string;
       VITE_APP_LOG_ERRORS?: string;
-      VITE_APP_IN_CONTEXT_TRANSLATION?: string;
       VITE_APP_COLLAB_PATH?: string;
       VITE_APP_ASSISTANT_ENABLED?: string;
       VITE_APP_ASSISTANT_BASE_PATH?: string;
       VITE_APP_MATRIX_HOMESERVER_URL?: string;
       VITE_APP_LIVEKIT_SERVICE_URL?: string;
+      VITE_APP_STATUSPAGE_API_URL?: string;
     };
   }
 }

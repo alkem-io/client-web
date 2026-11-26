@@ -1057,9 +1057,12 @@
   },
   "delete": "Verwijderen",
   "downNoticeBanner": {
-    "a11yLabel": "Melding over gepland onderhoud",
+    "a11yLabel": "Melding over de platformstatus",
     "dismiss": "Melding sluiten",
-    "message": "Gepland onderhoud vrijdag 31 juli, 21:00 CEST. Het platform kan korte tijd onbereikbaar zijn."
+    "incident": "Lopende storing: {{name}}",
+    "maintenanceInProgress": "Onderhoud bezig: {{name}}",
+    "maintenanceScheduled": "Gepland onderhoud op {{date}}: {{name}}",
+    "viewStatus": "Status bekijken"
   },
   "edit": "Bewerken",
   "error": "Fout",
@@ -1149,7 +1152,6 @@
     "en": "English",
     "es": "Español",
     "fr": "Français",
-    "inContextTool": "In context vertaling",
     "nl": "Nederlands",
     "pt": "Português (Brasil)",
     "ua": "Українська"

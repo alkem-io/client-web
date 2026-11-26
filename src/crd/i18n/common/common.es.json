@@ -1057,9 +1057,12 @@
   },
   "delete": "Eliminar",
   "downNoticeBanner": {
-    "a11yLabel": "Aviso de mantenimiento programado",
+    "a11yLabel": "Aviso sobre el estado de la plataforma",
     "dismiss": "Cerrar aviso",
-    "message": "Mantenimiento programado el viernes 31 de julio a las 21:00 CEST. La plataforma podría no estar disponible durante un breve periodo."
+    "incident": "Incidencia en curso: {{name}}",
+    "maintenanceInProgress": "Mantenimiento en curso: {{name}}",
+    "maintenanceScheduled": "Mantenimiento programado el {{date}}: {{name}}",
+    "viewStatus": "Ver estado"
   },
   "edit": "Editar",
   "error": "Error",
@@ -1149,7 +1152,6 @@
     "en": "Inglés",
     "es": "Español",
     "fr": "Francés",
-    "inContextTool": "Traducción en contexto",
     "nl": "Neerlandés",
     "pt": "Portugués (Brasil)",
     "ua": "Ucraniano"
