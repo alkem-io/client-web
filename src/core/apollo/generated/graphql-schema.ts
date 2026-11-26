@@ -29648,7 +29648,6 @@ export type ConfigurationQuery = {
       featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
       sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
       apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
-      geo: { __typename?: 'Geo'; enabled: boolean; endpoint: string };
     };
     settings: {
       __typename?: 'PlatformSettings';
@@ -29704,7 +29703,6 @@ export type ConfigurationFragment = {
   featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
-  geo: { __typename?: 'Geo'; enabled: boolean; endpoint: string };
 };
 
 export type PlatformLicensingPlansQueryVariables = Exact<{ [key: string]: never }>;

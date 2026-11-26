@@ -174,7 +174,11 @@ vi.mock('@/main/ui/layout/LayoutWidthContext', () => ({
   useSpaceFullWidthActive: () => false,
 }));
 vi.mock('@/main/ui/layout/useDownNoticeBanner', () => ({
-  useDownNoticeBanner: () => ({ visible: state.downNoticeVisible, dismiss: vi.fn() }),
+  useDownNoticeBanner: () => ({
+    visible: state.downNoticeVisible,
+    notice: { key: 'inc1:investigating', kind: 'incident', name: 'Platform unstable' },
+    dismiss: vi.fn(),
+  }),
 }));
 vi.mock('@/main/ui/layout/useSecondFactorReminder', () => ({
   useSecondFactorReminder: () => ({
@@ -952,7 +956,7 @@ describe('CrdLayoutWrapper top banners', () => {
 
     renderPlainRoute();
 
-    expect(screen.getByText('downNoticeBanner.message')).toBeInTheDocument();
+    expect(screen.getByText('downNoticeBanner.incident')).toBeInTheDocument();
     expect(screen.getByText('secondFactorReminder.text:December 1st, 2026')).toBeInTheDocument();
   });
 

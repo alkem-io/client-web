@@ -11,17 +11,12 @@ import crdCommonEN from '@/crd/i18n/common/common.en.json';
 import crdErrorEN from '@/crd/i18n/error/error.en.json';
 // CRD layout namespace — eagerly loaded (renders on every CRD page)
 import crdLayoutEN from '@/crd/i18n/layout/layout.en.json';
-import { env } from '@/main/env';
 
 export const defaultNS = 'crd-common';
 
 const defaultLang = 'en';
 type SupportedLang = 'en' | 'nl' | 'es' | 'bg' | 'de' | 'fr';
-export const supportedLngs: (SupportedLang | 'inContextTool')[] = [defaultLang, 'nl', 'es', 'bg', 'de', 'fr'];
-
-if (env?.VITE_APP_IN_CONTEXT_TRANSLATION === 'true') {
-  supportedLngs.push('inContextTool');
-}
+export const supportedLngs: SupportedLang[] = [defaultLang, 'nl', 'es', 'bg', 'de', 'fr'];
 
 // Registry of CRD namespace imports for lazy loading
 // Each namespace maps language codes to dynamic import functions.

@@ -9,6 +9,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 import { version } from './package.json';
 import { generateMetaJson } from './build-utils.mjs';
 import { elementCallStaticCopy } from './vite.element-call.mjs';
+import { thirdPartyLicenses } from './vite.third-party-licenses.mjs';
 
 export default defineConfig({
   resolve: {
@@ -96,6 +97,7 @@ export default defineConfig({
       },
     },
     elementCallStaticCopy(),
+    thirdPartyLicenses(),
     // Bundle analyzer - generates stats.html when ANALYZE=true
     process.env.ANALYZE === 'true' && visualizer({
       open: true,

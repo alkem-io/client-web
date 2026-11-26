@@ -100,7 +100,7 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
 
       {/* Mobile-only fixed bottom bar — mirrors the SpaceNavigationTabs pattern. */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border md:hidden"
+        className="fixed bottom-[var(--cookie-banner-height,0px)] left-0 right-0 z-40 bg-background border-t border-border md:hidden"
         aria-label={t('sidebar.openMenu')}
       >
         <div className="flex items-stretch justify-end h-14">

@@ -1,10 +1,14 @@
 import { useEffect } from 'react';
-import { useCookies } from 'react-cookie';
+import { Cookies, useCookies } from 'react-cookie';
 
 export const ALKEMIO_COOKIE_NAME = 'accepted_cookies';
+// The persistent APM tracking id, minted only with analysis consent and removed when it is withdrawn.
+export const APM_COOKIE_NAME = 'apm';
 // localStorage marker so the host-only -> apex consent migration runs at most once per
 // browser, rather than re-writing the cookie (and sliding its 150-day expiry) on every load.
 const CONSENT_APEX_MIGRATED_KEY = 'alkemio.consentCookieApexMigrated';
+// localStorage marker so the clean-up of pre-existing `apm` cookies runs at most once per browser.
+const APM_COOKIE_CLEANED_KEY = 'alkemio.apmCookieCleaned';
 export const AlkemioCookieTypes = {
   technical: 'technical',
   analysis: 'analysis',
@@ -37,6 +41,13 @@ const createCookieOptions = () => {
   return { expires: date, path: '/', domain: apexCookieDomain() };
 };
 
+/** Options for the `apm` tracking id: it lives at most 13 months from when it is written. */
+export const apmCookieOptions = () => {
+  const date = new Date();
+  date.setMonth(date.getMonth() + 13);
+  return { expires: date, path: '/', sameSite: 'strict' as const };
+};
+
 // One-time migration for #9695. Users who accepted before the apex-domain fix hold a
 // host-only `accepted_cookies` on the platform host, so welcome.alkem.io still can't read
 // it — and because the banner only shows while consent is absent (App.tsx), they never
@@ -59,19 +70,65 @@ export const useMigrateConsentCookieToApex = () => {
   }, [consent, removeCookie, setCookie]);
 };
 
+type CookieConsent = { decided: boolean; analysis: boolean };
+
+// react-cookie updates its in-memory copy even when the browser refuses the write (cookies
+// blocked, domain rejected), so only `document.cookie` proves the choice was kept. This makes
+// the hook re-read `document.cookie` on every change, so a refused write never shows as a
+// choice (and never closes the banner).
+const READ_FROM_BROWSER = { doNotUpdate: false };
+
+const isStoredInBrowser = (value: string) =>
+  document.cookie.split('; ').includes(`${ALKEMIO_COOKIE_NAME}=${encodeURIComponent(value)}`);
+
+// A missing or malformed value (anything but an array) is no choice, so no consent.
+const toConsent = (stored: unknown): CookieConsent =>
+  Array.isArray(stored)
+    ? { decided: true, analysis: stored.includes(AlkemioCookieTypes.analysis) }
+    : { decided: false, analysis: false };
+
+/** Reads `document.cookie` on every call, for code outside React (Sentry's hooks). */
+export const hasAnalysisConsent = (): boolean => toConsent(new Cookies().get(ALKEMIO_COOKIE_NAME)).analysis;
+
 export const useAlkemioCookies = () => {
-  const [, setCookie] = useCookies([ALKEMIO_COOKIE_NAME]);
+  const [cookies, setCookie, removeCookie] = useCookies([ALKEMIO_COOKIE_NAME, APM_COOKIE_NAME], READ_FROM_BROWSER);
+  const consent = toConsent(cookies[ALKEMIO_COOKIE_NAME]);
 
-  const acceptAllCookies = () => {
-    const options = createCookieOptions();
-    setCookie(ALKEMIO_COOKIE_NAME, JSON.stringify(ALL_COOKIES), options);
+  /** Stores the choice; returns false when the browser did not keep it. */
+  const saveConsent = (analysis: boolean): boolean => {
+    const value = JSON.stringify(analysis ? ALL_COOKIES : MANDATORY_COOKIES);
+    setCookie(ALKEMIO_COOKIE_NAME, value, createCookieOptions());
+    if (!analysis) removeCookie(APM_COOKIE_NAME, { path: '/' });
+    return isStoredInBrowser(value);
   };
 
-  const acceptOnlySelected = (selectedCookies: string[]) => {
-    const cookies = new Set([...MANDATORY_COOKIES, ...selectedCookies]);
-    const options = createCookieOptions();
-    setCookie(ALKEMIO_COOKIE_NAME, JSON.stringify([...cookies]), options);
-  };
+  return { consent, saveConsent };
+};
 
-  return { acceptAllCookies, acceptOnlySelected };
+// An `apm` cookie never outlives analysis consent, whether or not RUM is enabled: without consent
+// (withdrawn on the welcome site, expired, never given) it is removed on every load, so a later
+// acceptance gets a new id. Cookies written before the consent gate expire in 2038, so once per
+// browser the id is rewritten with the 13-month expiry.
+export const useCleanUpApmCookie = () => {
+  const [cookies, setCookie, removeCookie] = useCookies([ALKEMIO_COOKIE_NAME, APM_COOKIE_NAME]);
+  const apmId: string | undefined = cookies[APM_COOKIE_NAME];
+  const { analysis } = toConsent(cookies[ALKEMIO_COOKIE_NAME]);
+
+  useEffect(() => {
+    if (!apmId) return;
+    if (!analysis) {
+      removeCookie(APM_COOKIE_NAME, { path: '/' });
+      return;
+    }
+    // Browsers that block site data throw on any localStorage access; the rewrite then runs on
+    // every load, which only rewrites the same cookie.
+    try {
+      if (window.localStorage.getItem(APM_COOKIE_CLEANED_KEY)) return;
+    } catch {}
+
+    setCookie(APM_COOKIE_NAME, apmId, apmCookieOptions());
+    try {
+      window.localStorage.setItem(APM_COOKIE_CLEANED_KEY, '1');
+    } catch {}
+  }, [apmId, analysis, setCookie, removeCookie]);
 };

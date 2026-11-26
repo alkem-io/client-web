@@ -31,7 +31,10 @@
     "privacy": "Privacy",
     "security": "Security",
     "support": "Support",
-    "about": "About"
+    "about": "About",
+    "thirdPartyLicenses": "Third-party licenses",
+    "opensInNewTab": "opens in a new tab",
+    "close": "Close"
   },
   "appVersion": {
     "message": "A new version of the app is available.",
@@ -50,13 +53,24 @@
     "home": "Home"
   },
   "cookieConsent": {
-    "consent": "By clicking \"Accept All Cookies\", you agree to the storing of cookies on your device to enhance site navigation and analyse site usage.",
-    "settingsIntro": "When visiting a website, information can be stored on your browser in the form of cookies. This information can be about you, your preferences and your device. Mostly, this information is used to make the website work as good as possible. Some websites use it for marketing purposes. As Alkemio does not allow any advertisement on its website, we only distinguish two types of cookies.",
-    "technical": "Technically necessary cookies: enable you to navigate and use the basis functions and to store preferences.",
-    "analysis": "Analysis cookies: enable us to determine how visitors interact with our services in order to improve user experience.",
-    "settings": "settings",
-    "acceptAll": "Accept All Cookies",
-    "confirmChoice": "Confirm Choice"
+    "title": "Cookies",
+    "text": "We use necessary cookies. With your permission, we also measure page speed and app usage. That is off unless you accept.",
+    "settings": "Settings",
+    "acceptAll": "Accept all",
+    "onlyNecessary": "Only necessary",
+    "settingsTitle": "Cookie settings",
+    "sectionDescription": "What Alkemio may store and measure on this device.",
+    "close": "Close",
+    "necessary": "Necessary",
+    "necessaryDescription": "Keeps you signed in and secure, reports errors so we can fix them, and remembers your cookie settings.",
+    "alwaysOn": "Always on",
+    "analytics": "Analytics",
+    "analyticsDescription": "Measures page speed and app usage. Off unless you turn it on.",
+    "cookiePolicy": "Cookie policy",
+    "privacyPolicy": "Privacy policy",
+    "saveSettings": "Save settings",
+    "saved": "Cookie settings saved.",
+    "saveFailed": "We couldn't save your cookie settings. Your browser may be blocking cookies for this site."
   },
   "secondFactorReminder": {
     "action": "Set it up",
