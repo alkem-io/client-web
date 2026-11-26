@@ -1,19 +1,26 @@
 import { useEffect, useState } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { actorIdOf } from '@/main/userMessaging/matrix/matrixEvents';
 import { resolveMatrixRoomId } from '@/main/userMessaging/matrix/matrixRooms';
 import { isCallsConfigured } from './callConfig';
-import { type MembershipLike, watchLiveMemberships } from './matrixRtc';
+import { isThisDevice, type MembershipLike, watchLiveMemberships } from './matrixRtc';
 import { type CallableConversation, isBetaTester, isCallableConversation, useIsSynced } from './useCallEligibility';
 
 /** A running call, as its live memberships describe it. */
 type LiveCall = {
+  /** The Matrix room the call runs in. */
+  readonly matrixRoomId: string;
   /** The earliest creation time among the live memberships, in ms (server clock). */
   readonly startedTs: number;
   /** The latest creation time among the live memberships, in ms (server clock). */
   readonly latestTs: number;
   /** Whether the current user is in it, on any device. */
   readonly withMe: boolean;
+  /** Whether this browser's chat device is in it. */
+  readonly withMyDevice: boolean;
+  /** The Alkemio actor ids of the people in it, sorted, each once. */
+  readonly participants: readonly string[];
 };
 
 type LiveCalls = ReadonlyMap<string, LiveCall>;
@@ -26,18 +33,31 @@ const sameCalls = (a: LiveCalls, b: LiveCalls): boolean =>
     const other = b.get(roomId);
     return (
       other !== undefined &&
+      other.matrixRoomId === call.matrixRoomId &&
       other.startedTs === call.startedTs &&
       other.latestTs === call.latestTs &&
-      other.withMe === call.withMe
+      other.withMe === call.withMe &&
+      other.withMyDevice === call.withMyDevice &&
+      other.participants.join('\n') === call.participants.join('\n')
     );
   });
 
-const describeCall = (memberships: readonly MembershipLike[], myUserId: string | null): LiveCall => {
+const describeCall = (
+  matrixRoomId: string,
+  memberships: readonly MembershipLike[],
+  myUserId: string | null,
+  myDeviceId: string | null
+): LiveCall => {
   const created = memberships.map(membership => membership.createdTs());
   return {
+    matrixRoomId,
     startedTs: Math.min(...created),
     latestTs: Math.max(...created),
     withMe: memberships.some(membership => membership.sender === myUserId),
+    withMyDevice: memberships.some(membership => isThisDevice(membership, myUserId, myDeviceId)),
+    participants: [
+      ...new Set(memberships.flatMap(membership => (membership.sender ? [actorIdOf(membership.sender)] : []))),
+    ].sort(),
   };
 };
 
@@ -87,11 +107,14 @@ const useLiveCalls = (conversations: readonly CallableConversation[]): LiveCalls
         return;
       }
       const myUserId = client.getUserId();
+      const myDeviceId = client.getDeviceId();
       stopWatching = watchLiveMemberships(client, [...alkemioByMatrixId.keys()], live => {
         const next: LiveCalls = new Map(
           [...alkemioByMatrixId].flatMap(([matrixRoomId, alkemioRoomId]) => {
             const memberships = live.get(matrixRoomId) ?? [];
-            return memberships.length > 0 ? [[alkemioRoomId, describeCall(memberships, myUserId)] as const] : [];
+            return memberships.length > 0
+              ? [[alkemioRoomId, describeCall(matrixRoomId, memberships, myUserId, myDeviceId)] as const]
+              : [];
           })
         );
         setActive(previous => (sameCalls(previous, next) ? previous : next));
@@ -106,9 +129,5 @@ const useLiveCalls = (conversations: readonly CallableConversation[]): LiveCalls
   return active;
 };
 
-/** The Alkemio room ids of the callable conversations with a call running, for the conversation list's call badge. */
-const useActiveCallRooms = (conversations: readonly CallableConversation[]): ReadonlySet<string> =>
-  new Set(useLiveCalls(conversations).keys());
-
-export { useActiveCallRooms, useLiveCalls };
+export { useLiveCalls };
 export type { LiveCall, LiveCalls };

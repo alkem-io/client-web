@@ -68,6 +68,11 @@ export type UserSecurityTabViewProps = {
    * than waiting for the Kratos settings flow the rest of this tab gates on.
    */
   connectedAccountsSection: ReactNode;
+  /**
+   * Slot for the Cookie settings section. The choice lives in this browser, not in the identity
+   * provider, so it renders last in every view state, `manageInBrowser` included.
+   */
+  cookieSettingsSection: ReactNode;
 };
 
 /**
@@ -84,6 +89,7 @@ export function UserSecurityTabView({
   twoStepVerificationSection,
   mcpApiKeysCard,
   connectedAccountsSection,
+  cookieSettingsSection,
 }: UserSecurityTabViewProps) {
   const { t } = useTranslation(NS);
 
@@ -223,6 +229,7 @@ export function UserSecurityTabView({
         </SettingsSection>
       )}
       {stateBody}
+      {cookieSettingsSection}
     </div>
   );
 }

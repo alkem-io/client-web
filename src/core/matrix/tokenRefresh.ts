@@ -1,3 +1,4 @@
+import { localpartOf, withCredentialLock } from './sharedDevice';
 import { type CredentialRecord, loadCredentials, replaceTokens } from './storage';
 
 const REFRESH_TIMEOUT_MS = 20_000;
@@ -47,6 +48,31 @@ const postRefresh = async (current: CredentialRecord): Promise<Tokens | null> =>
   }
 };
 
+// Builds before the shared credential lock renewed under this name only. It is
+// taken inside the shared lock, always in that order, so a tab still running
+// such a build never refreshes the same token at the same time. Remove once no
+// such build can still be running.
+const legacyRefreshLock = (userId: string): string => `alkemio-matrix-refresh/${userId}`;
+
+const renewHeld = async (current: CredentialRecord): Promise<Tokens | null> => {
+  const stored = await loadCredentials(current.userId);
+  if (!stored || stored.deviceId !== current.deviceId) {
+    return null;
+  }
+  if (
+    stored.refreshToken !== undefined &&
+    stored.expiresAt !== undefined &&
+    stored.refreshToken !== current.refreshToken
+  ) {
+    return { accessToken: stored.accessToken, refreshToken: stored.refreshToken, expiresAt: stored.expiresAt };
+  }
+  const tokens = await postRefresh(current);
+  if (!tokens) {
+    return null;
+  }
+  return (await replaceTokens(current.userId, current.deviceId, tokens)) ? tokens : null;
+};
+
 /**
  * Renews `current`'s access token, one tab at a time per user. Resolves the
  * new pair, or null when it must not be used: the stored record is gone or
@@ -57,23 +83,8 @@ const postRefresh = async (current: CredentialRecord): Promise<Tokens | null> =>
  * refresh token again until the new access token has been used.
  */
 const renewTokens = (current: CredentialRecord): Promise<Tokens | null> =>
-  navigator.locks.request(`alkemio-matrix-refresh/${current.userId}`, async () => {
-    const stored = await loadCredentials(current.userId);
-    if (!stored || stored.deviceId !== current.deviceId) {
-      return null;
-    }
-    if (
-      stored.refreshToken !== undefined &&
-      stored.expiresAt !== undefined &&
-      stored.refreshToken !== current.refreshToken
-    ) {
-      return { accessToken: stored.accessToken, refreshToken: stored.refreshToken, expiresAt: stored.expiresAt };
-    }
-    const tokens = await postRefresh(current);
-    if (!tokens) {
-      return null;
-    }
-    return (await replaceTokens(current.userId, current.deviceId, tokens)) ? tokens : null;
-  });
+  withCredentialLock(localpartOf(current.userId), () =>
+    navigator.locks.request(legacyRefreshLock(current.userId), () => renewHeld(current))
+  );
 
 export { canRenew, refreshPair, renewTokens };

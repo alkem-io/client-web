@@ -22,7 +22,6 @@ export const useConfig = () => {
     integration: context.config?.integration,
     sentry: context.config?.sentry,
     apm: context.config?.apm,
-    geo: context.config?.geo,
     language: context.config?.language,
     serverMetadata: context.serverMetadata,
     loading: context.loading,

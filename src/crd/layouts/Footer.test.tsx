@@ -1,4 +1,5 @@
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { Footer } from './Footer';
 
@@ -20,6 +21,7 @@ const baseProps = {
     privacy: '/privacy',
     security: '/security',
     about: '/about',
+    thirdPartyLicenses: '/third-party-licenses.html',
   },
 };
 
@@ -56,5 +58,43 @@ describe('Footer (#10057 — platform attribution logo)', () => {
     expect(screen.getByRole('link', { name: 'footer.privacy' })).toHaveAttribute('href', '/privacy');
     expect(screen.getByRole('link', { name: 'footer.security' })).toHaveAttribute('href', '/security');
     expect(screen.getByRole('link', { name: 'footer.about' })).toHaveAttribute('href', '/about');
+  });
+
+  test('opens the static third-party licence notices page in a new tab', () => {
+    render(<Footer {...baseProps} />);
+
+    const link = screen.getByRole('link', { name: 'footer.thirdPartyLicenses (footer.opensInNewTab)' });
+    expect(link).toHaveAttribute('href', '/third-party-licenses.html');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  test('shows the notices page in a dialog where there are no tabs (store app, installed PWA)', async () => {
+    render(<Footer {...baseProps} links={{ ...baseProps.links, thirdPartyLicensesInDialog: true }} />);
+
+    expect(screen.queryByRole('link', { name: /footer.thirdPartyLicenses/ })).toBeNull();
+    const trigger = screen.getByRole('button', { name: 'footer.thirdPartyLicenses' });
+    await userEvent.click(trigger);
+
+    const dialog = screen.getByRole('dialog', { name: 'footer.thirdPartyLicenses' });
+    expect(within(dialog).getByTitle('footer.thirdPartyLicenses')).toHaveAttribute('src', '/third-party-licenses.html');
+
+    await userEvent.click(within(dialog).getByRole('button', { name: 'footer.close' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(trigger).toHaveFocus();
+  });
+
+  test('places the Cookie settings entry after About and before the language picker, and opens the settings', async () => {
+    const onCookieSettingsClick = vi.fn();
+    render(<Footer {...baseProps} onCookieSettingsClick={onCookieSettingsClick} />);
+
+    const about = screen.getByRole('link', { name: 'footer.about' });
+    const cookieSettings = screen.getByRole('button', { name: 'cookieConsent.settingsTitle' });
+    const languagePicker = screen.getByRole('button', { name: 'English' });
+    expect(about.compareDocumentPosition(cookieSettings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(cookieSettings.compareDocumentPosition(languagePicker) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+    await userEvent.click(cookieSettings);
+    expect(onCookieSettingsClick).toHaveBeenCalledTimes(1);
   });
 });

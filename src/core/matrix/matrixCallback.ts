@@ -79,7 +79,11 @@ const isAcceptedParent = (parent: string, ownHost: string): boolean => {
 };
 
 /**
- * Runs inside the hidden silent-SSO iframe, on the platform origin. With no
+ * Runs inside the hidden silent-SSO iframe, on the platform origin. The page
+ * that opened the frame holds the user's credential lock for the whole
+ * round-trip and removes the frame before releasing it, so this write is part
+ * of that page's turn. It must never take the lock itself: the holder is
+ * waiting for it and the two would wait on each other until the SSO deadline. With no
  * `parent`, the embedding page is this origin: exchange the loginToken and
  * persist the credentials here. With an accepted `parent` (an innovation-hub
  * origin), the credentials must land in the parent's own storage, so the

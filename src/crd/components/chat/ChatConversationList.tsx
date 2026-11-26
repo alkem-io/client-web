@@ -1,4 +1,4 @@
-import { EllipsisVertical, Paperclip, Phone, Pin, PinOff, Search, SquarePen } from 'lucide-react';
+import { EllipsisVertical, Paperclip, Pin, PinOff, Search, SquarePen } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -141,14 +141,6 @@ export function ChatConversationList({
                             className="size-3.5 shrink-0 text-muted-foreground"
                           />
                         )}
-                        {item.hasActiveCall && (
-                          <Phone
-                            role="img"
-                            aria-label={t('call.listBadge')}
-                            data-testid="call-list-badge"
-                            className="size-3.5 shrink-0 text-primary"
-                          />
-                        )}
                       </span>
                       {item.lastMessageTimestamp && (
                         <span className="shrink-0 text-caption text-muted-foreground">{item.lastMessageTimestamp}</span>
@@ -156,10 +148,16 @@ export function ChatConversationList({
                     </span>
                     <span className="flex items-center justify-between gap-2">
                       <span className="min-w-0 truncate text-caption text-muted-foreground">
-                        {item.draftPreview ? (
+                        {item.hasActiveCall ? (
+                          <span className="font-medium text-success">{t('call.banner.inProgress')}</span>
+                        ) : item.draftPreview ? (
                           <>
                             <span className="text-primary">{t('list.draft')}</span> {item.draftPreview}
                           </>
+                        ) : item.lastMessageCall ? (
+                          <span className={cn(item.lastMessageCall === 'missed' && 'text-destructive')}>
+                            {t(`call.row.${item.lastMessageCall}` as 'call.row.missed')}
+                          </span>
                         ) : item.lastMessagePreview?.trim() ? (
                           item.lastMessagePreview
                         ) : item.lastMessageAttachmentCount ? (
@@ -179,6 +177,16 @@ export function ChatConversationList({
                     </span>
                   </span>
                 </button>
+                {item.onJoinCall && (
+                  <button
+                    type="button"
+                    onClick={item.onJoinCall}
+                    aria-label={t('call.listJoin', { name: item.displayName })}
+                    className="ml-1 flex h-7 shrink-0 items-center rounded-full bg-success px-3 text-caption font-medium text-success-foreground hover:bg-success/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {t('call.join')}
+                  </button>
+                )}
                 {!item.isGuidance && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild={true}>

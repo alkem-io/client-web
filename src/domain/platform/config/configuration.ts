@@ -46,10 +46,6 @@ export interface Configuration {
     rumEnabled: boolean;
     endpoint: string;
   };
-  geo: {
-    enabled: boolean;
-    endpoint: string;
-  };
   integration: {
     iframeAllowedUrls: string[];
   };

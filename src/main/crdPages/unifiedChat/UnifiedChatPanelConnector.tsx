@@ -6,7 +6,7 @@ import { useMatrixClient } from '@/core/matrix/activeClient';
 import { rotateActiveSessionIfDue } from '@/core/matrix/activeSession';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { ActiveCallIndicator } from '@/crd/components/chat/ActiveCallIndicator';
+import { CallBanner } from '@/crd/components/chat/CallBanner';
 import { CallControls, chatHeaderIconButtonClass, chatHeaderIconClass } from '@/crd/components/chat/CallControls';
 import { ChatConnectionNotice } from '@/crd/components/chat/ChatConnectionNotice';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
@@ -18,6 +18,7 @@ import { GroupAvatar } from '@/crd/components/chat/GroupAvatar';
 import { GroupSettingsDialog } from '@/crd/components/chat/GroupSettingsDialog';
 import { GuidanceInfoDialog } from '@/crd/components/chat/GuidanceInfoDialog';
 import { NewChatDialog } from '@/crd/components/chat/NewChatDialog';
+import { PresenceIndicator } from '@/crd/components/chat/PresenceIndicator';
 import { SetStatusDialog } from '@/crd/components/chat/SetStatusDialog';
 import type { ChatThreadHeader } from '@/crd/components/chat/types';
 import { UserPresencePopover } from '@/crd/components/chat/UserPresencePopover';
@@ -29,12 +30,14 @@ import { Avatar, AvatarImage } from '@/crd/primitives/avatar';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildUserNotificationSettingsUrl } from '@/main/routing/urlBuilders';
 import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsContext';
+import { dismissCall } from '@/main/userMessaging/calls/callDismissalStore';
 import { openCall } from '@/main/userMessaging/calls/callOverlayStore';
-import { useActiveCallRooms } from '@/main/userMessaging/calls/useActiveCallRooms';
+import { useLiveCalls } from '@/main/userMessaging/calls/useActiveCallRooms';
 import { useCallEligibility } from '@/main/userMessaging/calls/useCallEligibility';
 import { useRoomCallSession } from '@/main/userMessaging/calls/useRoomCallSession';
 import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessaging/calls/widgetUrl';
 import { storeFor } from '@/main/userMessaging/matrix/conversationSummaryStore';
+import { actorIdOf } from '@/main/userMessaging/matrix/matrixEvents';
 import { useOwnStatusMessage } from '@/main/userMessaging/matrix/useMatrixPresence';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useChatSound } from '@/main/userMessaging/useChatSound';
@@ -102,7 +105,28 @@ export const UnifiedChatPanelConnector = ({
     setSelectedRoomId(roomId);
   });
 
-  const { conversations, isLoading } = useUnifiedConversations();
+  const { conversations: listed, isLoading } = useUnifiedConversations();
+  // Calls are watched only for those who see the call controls; for everyone else none is live.
+  const liveCalls = useLiveCalls(listed);
+  // A call membership outlives a device that vanished without leaving, until it expires.
+  // That device is offline within seconds, so only someone the chat server still sees
+  // counts as in a call.
+  const present = new Set(
+    listed
+      .flatMap(conversation => conversation.members)
+      .filter(member => member.presence === 'online' || member.presence === 'away')
+      .map(member => member.id)
+  );
+  const inCall = new Set(
+    [...liveCalls.values()].flatMap(call => call.participants).filter(actorId => present.has(actorId))
+  );
+  // Someone in a live call shows as busy wherever their dot appears, over their chat presence.
+  const conversations = listed.map(conversation => ({
+    ...conversation,
+    members: conversation.members.map(member =>
+      inCall.has(member.id) ? { ...member, presence: 'busy' as const } : member
+    ),
+  }));
   // `?chat={conversationID}` deep link (contract C-6 / US1) — selects the
   // conversation once this list resolves, then strips the param regardless
   // of match (unknown/inaccessible id degrades to the default list, no error UI).
@@ -158,7 +182,30 @@ export const UnifiedChatPanelConnector = ({
     const timer = setTimeout(() => setDroppedCallIn(null), DROPPED_CALL_NOTICE_MS);
     return () => clearTimeout(timer);
   }, [droppedCallIn]);
-  const activeCallRooms = useActiveCallRooms(conversations);
+  const openCallWith = (
+    conversation: { readonly id: string; readonly isGroup: boolean },
+    matrixRoomId: string,
+    action: CallAction,
+    media: CallMedia
+  ) => {
+    if (queuedCall) {
+      return;
+    }
+    const intent = callIntentFor({ isGroup: conversation.isGroup, action, media });
+    setDroppedCallIn(null);
+    const request = { conversationId: conversation.id, matrixRoomId, intent, swapDone: false };
+    setQueuedCall(request);
+    // A due chat credential is replaced first: a call open across the swap would end.
+    void rotateActiveSessionIfDue().then(rotated => {
+      if (rotated) {
+        // Only this request: one dropped meanwhile leaves a later call waiting for its own swap.
+        setQueuedCall(queued => (queued === request ? { ...queued, swapDone: true } : queued));
+      } else {
+        setQueuedCall(null);
+        openCall({ matrixRoomId, intent });
+      }
+    });
+  };
 
   // Realtime conversation events are subscribed globally by
   // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
@@ -223,7 +270,26 @@ export const UnifiedChatPanelConnector = ({
   const listItems = withActiveCallsFirst(
     conversations.map(conversation => {
       const mapped = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
-      const item = activeCallRooms.has(conversation.roomId) ? { ...mapped, hasActiveCall: true } : mapped;
+      // A group shows as busy while someone is really in its call. A 1:1 keeps the
+      // counterpart's own dot, which is busy once they have joined: while you ring
+      // them they are not in a call.
+      const call = liveCalls.get(conversation.roomId);
+      const groupBusy = conversation.isGroup && call?.participants.some(actorId => inCall.has(actorId));
+      const item = call
+        ? {
+            ...mapped,
+            hasActiveCall: true,
+            presence: groupBusy ? ('busy' as const) : mapped.presence,
+            // Joining opens the conversation too. As in the banner, no Join while this browser's
+            // device is in the call; joined on another device, the user may still join here.
+            onJoinCall: call.withMyDevice
+              ? undefined
+              : () => {
+                  handleSelect(conversation.id);
+                  openCallWith(conversation, call.matrixRoomId, 'join', 'video');
+                },
+          }
+        : mapped;
       const draft = drafts[conversation.id];
       // A draft replaces the last-message preview but leaves the ordering and the
       // timestamp alone — the conversation does not jump the list for it.
@@ -248,7 +314,7 @@ export const UnifiedChatPanelConnector = ({
       memberAvatars={selectedListItem.memberAvatars}
     />
   );
-  // A 1:1 header avatar is the counterpart's: it carries their availability and opens their card.
+  // A 1:1 header avatar is the counterpart's: it opens their card. Its dot is the list row's.
   const counterpart =
     selectedConversation && !selectedConversation.isGroup && !selectedConversation.isGuidance
       ? selectedConversation.members.find(member => member.id !== currentUserId)
@@ -259,12 +325,15 @@ export const UnifiedChatPanelConnector = ({
       <UserPresencePopover
         displayName={counterpart.displayName}
         statusMessage={counterpart.statusMessage}
-        presence={counterpart.presence}
+        presence={selectedListItem.presence}
       >
         {conversationAvatar}
       </UserPresencePopover>
     ) : (
-      conversationAvatar
+      <span className="relative flex shrink-0">
+        {conversationAvatar}
+        <PresenceIndicator presence={selectedListItem.presence} />
+      </span>
     );
   }
 
@@ -304,12 +373,12 @@ export const UnifiedChatPanelConnector = ({
     setSelectedRoomId(null);
   };
 
-  // The reaction hooks reject when Matrix refuses the event; the message stays unchanged,
-  // so surface the same generic error toast a failed GraphQL mutation shows.
-  const notifyReactionFailed = () => notify(t('apollo.errors.generic', { ns: 'crd-common' }), 'error');
+  // When Matrix refuses an event (a reaction, a decline) nothing changes, so surface the same
+  // generic error toast a failed GraphQL mutation shows.
+  const notifyMatrixFailed = () => notify(t('apollo.errors.generic', { ns: 'crd-common' }), 'error');
 
   const onAddReaction = (messageId: string, emoji: string) => {
-    handleAddReaction(messageId)(emoji)?.catch(notifyReactionFailed);
+    handleAddReaction(messageId)(emoji)?.catch(notifyMatrixFailed);
   };
 
   // CommentReactions toggles by emoji; resolve the current user's reaction id for removal.
@@ -317,7 +386,7 @@ export const UnifiedChatPanelConnector = ({
     const raw = rawMessages.find(message => message.id === messageId);
     const reaction = raw?.reactions.find(item => item.emoji === emoji && item.sender?.id === currentUserId);
     if (reaction) {
-      handleRemoveReaction(reaction.id)?.catch(notifyReactionFailed);
+      handleRemoveReaction(reaction.id)?.catch(notifyMatrixFailed);
     }
   };
 
@@ -336,6 +405,9 @@ export const UnifiedChatPanelConnector = ({
   };
 
   let headerActions: ReactNode;
+  let callBanner: ReactNode;
+  // A missed call's row offers a call back while a call could be started from the header.
+  let callBack: (() => void) | undefined;
   if (isGuidanceThread) {
     headerActions = (
       <>
@@ -360,60 +432,67 @@ export const UnifiedChatPanelConnector = ({
   } else if (selectedConversation) {
     const { isGroup } = selectedConversation;
     const { matrixRoomId } = callEligibility;
-    const conversationId = selectedConversation.id;
-    const openCallWith = (action: CallAction, media: CallMedia) => {
-      if (!matrixRoomId || queuedCall) {
-        return;
+    const openSelectedCall = (action: CallAction, media: CallMedia) => {
+      if (matrixRoomId) {
+        openCallWith(selectedConversation, matrixRoomId, action, media);
       }
-      const intent = callIntentFor({ isGroup, action, media });
-      setDroppedCallIn(null);
-      setQueuedCall({ conversationId, matrixRoomId, intent, swapDone: false });
-      // A due chat credential is replaced first: a call open across the swap would end.
-      void rotateActiveSessionIfDue().then(rotated => {
-        if (rotated) {
-          setQueuedCall(queued => (queued ? { ...queued, swapDone: true } : null));
-        } else {
-          setQueuedCall(null);
-          openCall({ matrixRoomId, intent });
-        }
-      });
     };
     let callActions: ReactNode = null;
-    if (callEligibility.eligible) {
-      callActions =
-        callSession.participantCount > 0 ? (
-          <ActiveCallIndicator
-            activeLabel={t('call.active')}
-            count={callSession.participantCount}
-            joinedNote={
-              callSession.isJoinedOnThisDevice && !callSession.isJoinedHere ? t('call.joinedOnThisDevice') : undefined
+    if (callEligibility.eligible && callSession.participantCount === 0) {
+      callBack = () => openSelectedCall('start', 'video');
+      callActions = (
+        <CallControls
+          startAudioLabel={t('call.startAudio')}
+          startVideoLabel={t('call.startVideo')}
+          onStartAudio={() => openSelectedCall('start', 'voice')}
+          onStartVideo={() => openSelectedCall('start', 'video')}
+        />
+      );
+    }
+    // A running call gets the banner under the header, unless this tab is in it: the call is open here.
+    if (callEligibility.eligible && callSession.participantCount > 0 && !callSession.isJoinedHere) {
+      const { roomId, members, ringing } = selectedConversation;
+      const call = liveCalls.get(roomId);
+      const firstName = (displayName: string) => displayName.split(' ')[0];
+      // Not where this device is already in the call (another tab): the running banner says so.
+      if (call && ringing && matrixRoomId && matrixClient && !callSession.isJoinedOnThisDevice) {
+        // Rings for as long as the other person's ring does, answered with the media the caller chose.
+        // Declining tells the caller, every device and every tab.
+        callBanner = (
+          <CallBanner
+            variant="ringing"
+            callerName={firstName(counterpart?.displayName ?? '')}
+            onAnswer={() => openSelectedCall('join', ringing.media)}
+            onDecline={() =>
+              matrixClient
+                .sendRtcDecline(matrixRoomId, ringing.eventId)
+                .then(() => dismissCall(roomId, call.latestTs), notifyMatrixFailed)
             }
-            // Every tab of a browser is the same chat device: a join from a second tab would
-            // write over the first tab's membership, and its leave would end both.
-            join={
-              callSession.isJoinedOnThisDevice
-                ? undefined
-                : {
-                    joinLabel: t('call.join'),
-                    joinVideoLabel: t('call.joinVideo'),
-                    joinAudioLabel: t('call.joinAudio'),
-                    onJoinVideo: () => openCallWith('join', 'video'),
-                    onJoinAudio: () => openCallWith('join', 'voice'),
-                  }
-            }
-          />
-        ) : (
-          <CallControls
-            startAudioLabel={t('call.startAudio')}
-            startVideoLabel={t('call.startVideo')}
-            onStartAudio={() => openCallWith('start', 'voice')}
-            onStartVideo={() => openCallWith('start', 'video')}
           />
         );
+      } else {
+        const names = callSession.participants
+          .map(actorIdOf)
+          .filter(actorId => actorId !== currentUserId)
+          .flatMap(actorId => {
+            const member = members.find(item => item.id === actorId);
+            return member ? [firstName(member.displayName)] : [];
+          });
+        callBanner = (
+          <CallBanner
+            variant="running"
+            names={names}
+            startedAt={call?.startedTs}
+            // Every tab of a browser is the same chat device: a join from a second tab would
+            // write over the first tab's membership, and its leave would end both.
+            onJoin={callSession.isJoinedOnThisDevice ? undefined : media => openSelectedCall('join', media)}
+          />
+        );
+      }
     }
     if (isGroup) {
       headerActions = (
-        <div className="flex min-w-0 items-center gap-1">
+        <div className="flex items-center gap-1">
           {callActions}
           <ChatOptionsMenu
             label={t('thread.options')}
@@ -425,7 +504,7 @@ export const UnifiedChatPanelConnector = ({
         </div>
       );
     } else if (callActions) {
-      headerActions = <div className="flex min-w-0 items-center gap-1">{callActions}</div>;
+      headerActions = <div className="flex items-center gap-1">{callActions}</div>;
     }
   }
   const isGroupThread = view === 'thread' && Boolean(selectedConversation?.isGroup);
@@ -486,29 +565,27 @@ export const UnifiedChatPanelConnector = ({
         closeLabel={t('launcher.close')}
         onBack={view === 'thread' ? handleBack : undefined}
         backLabel={t('thread.back')}
-        // The gear is about chat in general, so it lives in the list header only; a
-        // conversation's own options are in its header menu.
-        settingsMenu={
-          view === 'list' ? (
-            <ChatSettingsMenu
-              label={t('panel.settings')}
-              statusLabel={ownStatus.statusMessage ? t('status.change') : t('status.set')}
-              onEditStatus={() => setStatusDialogOpen(true)}
-              notificationSettingsLabel={t('panel.settings')}
-              onOpenNotificationSettings={() => {
-                // Close first: the panel lives outside <Routes> and the messaging context has
-                // no route listener, so navigating alone leaves it mounted. On a small screen
-                // it is `fixed inset-0`, which would cover the settings page it just opened.
-                setIsOpen(false);
-                navigate(buildUserNotificationSettingsUrl());
-              }}
-            />
-          ) : undefined
-        }
-        // The sound is on or off for the whole chat, never per conversation, so like the gear
-        // the toggle lives in the list header only.
+        // The gear is about chat in general; a conversation's own options are in its header menu.
+        // In a thread the panel hands the gear its expand and sound toggles.
+        settingsMenu={toggles => (
+          <ChatSettingsMenu
+            {...toggles}
+            label={t('panel.settings')}
+            statusLabel={ownStatus.statusMessage ? t('status.change') : t('status.set')}
+            onEditStatus={() => setStatusDialogOpen(true)}
+            notificationSettingsLabel={t('panel.settings')}
+            onOpenNotificationSettings={() => {
+              // Close first: the panel lives outside <Routes> and the messaging context has
+              // no route listener, so navigating alone leaves it mounted. On a small screen
+              // it is `fixed inset-0`, which would cover the settings page it just opened.
+              setIsOpen(false);
+              navigate(buildUserNotificationSettingsUrl());
+            }}
+          />
+        )}
+        // The sound is on or off for the whole chat, never per conversation.
         onToggleSound={
-          view === 'list' && chatSound.setEnabled
+          chatSound.setEnabled
             ? () => {
                 // A failed save is reported by the global error handler; the toggle stays as it was.
                 chatSound.setEnabled?.(!chatSound.enabled).catch(() => undefined);
@@ -524,7 +601,12 @@ export const UnifiedChatPanelConnector = ({
         onTitleClick={isGroupThread ? groupSettings.openDialog : undefined}
         titleActionLabel={isGroupThread ? t('group.settings') : undefined}
         subtitle={
-          view === 'list' && ownStatus.statusMessage ? (
+          // In a 1:1 thread: the counterpart's status message, never their availability label.
+          view === 'thread' && counterpart?.statusMessage ? (
+            <span className="min-w-0 truncate" title={counterpart.statusMessage}>
+              {counterpart.statusMessage}
+            </span>
+          ) : view === 'list' && ownStatus.statusMessage ? (
             <button
               type="button"
               onClick={() => setStatusDialogOpen(true)}
@@ -536,6 +618,7 @@ export const UnifiedChatPanelConnector = ({
           ) : undefined
         }
         headerActions={view === 'thread' ? headerActions : undefined}
+        banner={view === 'thread' ? callBanner : undefined}
         notice={
           queuedCall && view === 'thread' ? (
             <ChatConnectionNotice kind="busy" message={t('call.preparing')} />
@@ -580,6 +663,7 @@ export const UnifiedChatPanelConnector = ({
             onRestoreDraft={text => setDraft(selectedConversationId, text)}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
+            onCallBack={callBack}
           />
         ) : (
           <ChatConversationList

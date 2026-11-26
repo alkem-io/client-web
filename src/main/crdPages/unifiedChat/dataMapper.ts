@@ -1,6 +1,7 @@
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import type { ChatListItem, ChatMessage, GroupMember } from '@/crd/components/chat/types';
+import type { ChatCall, ChatListItem, ChatMessage, GroupMember } from '@/crd/components/chat/types';
 import type { CommentAuthor, CommentReaction } from '@/crd/components/comment/types';
+import type { RingingRing } from '@/main/userMessaging/matrix/matrixEvents';
 import type {
   ConversationMember,
   ConversationMessage,
@@ -15,6 +16,8 @@ export type UnifiedConversation = UserConversation & {
   pinned: boolean;
   /** Pinned by the user, from their Matrix favourite tag on the room. */
   userPinned: boolean;
+  /** The ring from the other person still ringing in a 1:1. */
+  ringing?: RingingRing;
 };
 
 /**
@@ -114,6 +117,8 @@ export const mapMembersToGroupMembers = (
     name: member.displayName,
     avatarUrl: member.avatarUri,
     isCurrentUser: member.id === currentUserId,
+    presence: member.presence,
+    statusMessage: member.statusMessage,
   }));
 
 /**
@@ -145,6 +150,25 @@ export const mapReactionsToCommentReactions = (
   return [...byEmoji.values()];
 };
 
+/** How the viewer reads a call: a ring nobody answered is missed by the person rung, and unanswered for the ringer. */
+const chatCallOf = (message: ConversationMessage, currentUserId: string | undefined): ChatCall | undefined => {
+  const { call } = message;
+  if (!call) {
+    return undefined;
+  }
+  if (call.outcome === 'unanswered') {
+    return { kind: currentUserId && message.sender?.id === currentUserId ? 'noAnswer' : 'missed' };
+  }
+  if (call.outcome === 'declined') {
+    return { kind: 'declined' };
+  }
+  // Answered: a call, with its length once the leave that ended it is loaded.
+  return {
+    kind: 'call',
+    minutes: call.durationMs === undefined ? undefined : Math.max(1, Math.round(call.durationMs / 60_000)),
+  };
+};
+
 type ListItemOptions = {
   currentUserId: string | undefined;
   formatTimestamp: (timestampMs: number) => string;
@@ -166,6 +190,7 @@ export const mapConversationToListItem = (
     // A media-only message carries no body text, so the row needs the attachment
     // count to render something instead of an empty preview line.
     lastMessageAttachmentCount: conv.lastMessage?.attachments.length,
+    lastMessageCall: conv.lastMessage && chatCallOf(conv.lastMessage, currentUserId)?.kind,
     lastMessageTimestamp: conv.lastMessage ? formatTimestamp(conv.lastMessage.timestamp) : undefined,
     unreadCount: conv.unreadCount,
     pinned: conv.pinned,
@@ -183,20 +208,23 @@ export const mapMessageToChatMessage = (
   { currentUserId }: MessageOptions
 ): ChatMessage => ({
   id: message.id,
-  author: message.sender
-    ? {
-        id: message.sender.id,
-        name: message.sender.displayName,
-        avatarUrl: message.sender.avatarUri,
-        presence: message.sender.presence,
-        statusMessage: message.sender.statusMessage,
-      }
-    : undefined,
+  // A call has no author: it stands alone between the messages around it.
+  author:
+    message.sender && !message.call
+      ? {
+          id: message.sender.id,
+          name: message.sender.displayName,
+          avatarUrl: message.sender.avatarUri,
+          presence: message.sender.presence,
+          statusMessage: message.sender.statusMessage,
+        }
+      : undefined,
   content: message.message,
   timestampMs: message.timestamp,
   reactions: mapReactionsToCommentReactions(message.reactions, currentUserId),
   attachments: message.attachments,
   isOwn: Boolean(currentUserId && message.sender?.id === currentUserId),
+  call: chatCallOf(message, currentUserId),
 });
 
 /** Sentinel id for the synthetic Guidance introduction message. */

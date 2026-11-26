@@ -1,7 +1,7 @@
 import type { CommentAuthor, CommentReaction, MessageAttachment } from '@/crd/components/comment/types';
 
-/** A person's availability; 'unknown' renders nothing, never a fake 'offline'. */
-export type ChatPresence = 'online' | 'away' | 'offline' | 'unknown';
+/** A person's availability, 'busy' meaning in a call; 'unknown' renders nothing, never a fake 'offline'. */
+export type ChatPresence = 'online' | 'away' | 'offline' | 'busy' | 'unknown';
 
 /** A message author, with what the avatar popover shows. */
 export type ChatAuthor = CommentAuthor & {
@@ -14,6 +14,15 @@ export type ChatMemberAvatar = {
   id: string;
   name: string;
   avatarUrl?: string;
+};
+
+/** A call as the viewer reads it: one they missed, one nobody answered when they rang, one turned down, or one that took place. */
+export type ChatCallKind = 'missed' | 'noAnswer' | 'declined' | 'call';
+
+export type ChatCall = {
+  kind: ChatCallKind;
+  /** How long a call that took place lasted, when known. */
+  minutes?: number;
 };
 
 /** A row in the unified conversation list. Pure presentational shape. */
@@ -31,6 +40,8 @@ export type ChatListItem = {
    *  media-only message has no `lastMessagePreview`, so the row falls back to
    *  an attachment label instead of rendering a blank line. */
   lastMessageAttachmentCount?: number;
+  /** The last entry is a call: the preview line says what became of it. */
+  lastMessageCall?: ChatCallKind;
   /** Unsent text for this conversation — shown instead of `lastMessagePreview`. */
   draftPreview?: string;
   /** Pre-formatted relative-time display string for the last message. */
@@ -40,9 +51,11 @@ export type ChatListItem = {
   pinned?: boolean;
   /** Pinned by the user: shows the pin indicator and offers Unpin. */
   userPinned?: boolean;
-  /** A call is running in this conversation. */
+  /** A call is running in this conversation: the preview line says so. */
   hasActiveCall?: boolean;
-  /** The counterpart's availability in a 1:1 conversation. */
+  /** Joins the running call; the row shows a Join chip only when set. */
+  onJoinCall?: () => void;
+  /** The counterpart's availability in a 1:1 conversation; 'busy' for any conversation with a call running. */
   presence?: ChatPresence;
 };
 
@@ -63,6 +76,8 @@ export type ChatMessage = {
   isOwn: boolean;
   /** Optimistic send, not yet confirmed by the server. */
   isPending?: boolean;
+  /** A call rather than a message: rendered as a centred row, without author or bubble. */
+  call?: ChatCall;
 };
 
 /** A member shown in group settings / used by the group composite avatar. */
@@ -71,6 +86,8 @@ export type GroupMember = {
   name: string;
   avatarUrl?: string;
   isCurrentUser?: boolean;
+  presence?: ChatPresence;
+  statusMessage?: string;
 };
 
 /** Header model for the conversation/thread view. */

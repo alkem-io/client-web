@@ -1,7 +1,15 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
-import { lastMessageOf, type ParsedMessage, type RawEvent } from './matrixEvents';
+import {
+  lastMessageOf,
+  newestRingAt,
+  type ParsedMessage,
+  type RawEvent,
+  type RingingRing,
+  ringingRingOf,
+  ringingUntil,
+} from './matrixEvents';
 import {
   CLIENT_ROOM,
   CLIENT_SYNC,
@@ -28,6 +36,10 @@ type RoomSummary = {
   readonly unreadCount: number;
   /** The user has pinned the conversation (its room carries their favourite tag). */
   readonly pinned: boolean;
+  /** The ring from someone else still ringing there; only where a ring is an entry. */
+  readonly ringing?: RingingRing;
+  /** When the newest ring from someone else was sent, ringing or not; only where a ring is an entry. */
+  readonly ringAt?: number;
 };
 
 type Summaries = ReadonlyMap<string, RoomSummary>;
@@ -55,6 +67,11 @@ class ConversationSummaryStore {
   private readonly stale = new Set<string>();
   // Rooms with a pin write in flight, and whether their tags changed meanwhile.
   private readonly pinWrites = new Map<string, boolean>();
+  // The rooms where a ring counts as an entry (the latest one, and a missed one as unread).
+  private ringRooms: ReadonlySet<string> = new Set();
+  private groupCallRooms: ReadonlySet<string> = new Set();
+  // Rooms with a ring still ringing, computed again once it stops.
+  private readonly ringEnds = new Map<string, ReturnType<typeof setTimeout>>();
 
   constructor(private readonly client: MatrixClient) {
     client.on(
@@ -122,6 +139,23 @@ class ConversationSummaryStore {
         }
       }) as never
     );
+  }
+
+  /**
+   * Sets the conversations where a call counts as an entry while calls show: the user's 1:1
+   * conversations, where the entry is a ring, and their groups, where it is a call that took place.
+   * None otherwise. Every summary computed the other way is computed again.
+   */
+  setRingRooms(ringRooms: ReadonlySet<string>, groupCallRooms: ReadonlySet<string> = new Set()): void {
+    const previous = new Set([...this.ringRooms, ...this.groupCallRooms]);
+    this.ringRooms = ringRooms;
+    this.groupCallRooms = groupCallRooms;
+    // Also a room whose first summary is still being computed: it read the previous set.
+    for (const alkemioRoomId of new Set([...this.summaries.keys(), ...this.inFlight])) {
+      if (previous.has(alkemioRoomId) !== (ringRooms.has(alkemioRoomId) || groupCallRooms.has(alkemioRoomId))) {
+        this.invalidate(alkemioRoomId);
+      }
+    }
   }
 
   /** The Alkemio room id of a watched conversation's Matrix room, if any. */
@@ -228,9 +262,12 @@ class ConversationSummaryStore {
 
   private touchMatrixRoom(matrixRoomId: string): void {
     const alkemioRoomId = this.alkemioByMatrixId.get(matrixRoomId);
-    if (!alkemioRoomId) {
-      return;
+    if (alkemioRoomId) {
+      this.invalidate(alkemioRoomId);
     }
+  }
+
+  private invalidate(alkemioRoomId: string): void {
     if (this.watchers.has(alkemioRoomId)) {
       this.schedule(alkemioRoomId);
     } else {
@@ -278,19 +315,38 @@ class ConversationSummaryStore {
       const homeserver = homeserverOf(this.client);
       const fetchBatch = fetchBackward(this.client, matrixRoomId);
       const loaded = liveEvents(room);
+      // A ring rings, is missed and counts as unread only in a 1:1; a group call is just an entry.
+      const withRings = this.ringRooms.has(alkemioRoomId);
+      const inGroup = this.groupCallRooms.has(alkemioRoomId);
+      // Read before the history is fetched: a ring that stops ringing meanwhile still gets its timer below.
+      const now = Date.now();
       const [lastMessage, unreadCount] = await Promise.all([
-        this.findLastMessage(loaded, fetchBatch, homeserver),
+        this.findLastMessage(loaded, fetchBatch, homeserver, { withCalls: withRings || inGroup, inGroup }),
         computeUnreadCount({
           markerEventId: fullyReadEventId(room),
           ownUserId: ownUserId(this.client),
           loadedNewestFirst: [...loaded].reverse(),
           fetchBatch,
           notificationCount: () => notificationCount(room),
+          withCalls: withRings,
         }),
       ]);
       // An existing pin is kept: tags changes and the user's own toggle own it.
       const pinned = this.summaries.get(alkemioRoomId)?.pinned ?? isFavourite(room);
-      this.publish(alkemioRoomId, { lastMessage, unreadCount, pinned });
+      const ringing = withRings ? ringingRingOf(loaded, ownUserId(this.client), now) : undefined;
+      const ringAt = withRings ? newestRingAt(loaded, ownUserId(this.client)) : undefined;
+      this.publish(alkemioRoomId, { lastMessage, unreadCount, pinned, ringing, ringAt });
+      // A ring is no preview or unread while it rings, and no event arrives when it stops.
+      clearTimeout(this.ringEnds.get(alkemioRoomId));
+      const until = withRings ? ringingUntil(loaded, now) : undefined;
+      if (until === undefined) {
+        this.ringEnds.delete(alkemioRoomId);
+      } else {
+        this.ringEnds.set(
+          alkemioRoomId,
+          setTimeout(() => this.invalidate(alkemioRoomId), Math.max(0, until - Date.now()))
+        );
+      }
     } catch {
       // Left as it was; the room's next change recomputes it.
     }
@@ -299,16 +355,20 @@ class ConversationSummaryStore {
   private async findLastMessage(
     live: RawEvent[],
     fetchBatch: ReturnType<typeof fetchBackward>,
-    homeserver: string
+    homeserver: string,
+    options: { withCalls: boolean; inGroup: boolean }
   ): Promise<ParsedMessage | undefined> {
-    const local = lastMessageOf(live, homeserver);
+    const local = lastMessageOf(live, homeserver, options);
     if (local) {
       return local;
     }
     let from: string | undefined;
+    // Oldest first: a ring found further back is judged by everything newer already scanned.
+    let scanned = live;
     for (const batchSize of BATCH_SIZES) {
       const { events, end } = await fetchBatch(from, batchSize);
-      const found = lastMessageOf([...events].reverse(), homeserver);
+      scanned = [...[...events].reverse(), ...scanned];
+      const found = lastMessageOf(scanned, homeserver, options);
       if (found) {
         return found;
       }

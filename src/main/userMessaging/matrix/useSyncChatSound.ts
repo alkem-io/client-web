@@ -1,9 +1,11 @@
 import type { MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useRef } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
-import { playSound } from '@/core/sound/soundPlayer';
+import { playSound, stopSound } from '@/core/sound/soundPlayer';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { isCallsConfigured } from '../calls/callConfig';
+import { useCallOverlay } from '../calls/callOverlayStore';
+import { useIncomingCallRooms } from '../calls/incomingCallStore';
 import { isBetaTester } from '../calls/useCallEligibility';
 import { shouldPlayChatSound } from '../shouldPlayChatSound';
 import { useUserMessagingContext } from '../UserMessagingContext';
@@ -20,7 +22,8 @@ const CALL_STARTED_EVENT_TYPES = new Set(['org.matrix.msc4075.rtc.notification',
  * user's conversations, with the same rules as before: not for own messages,
  * not for the conversation being viewed in a focused tab, and only when the
  * user's chat-sound setting is on. The initial sync backlog never sounds.
- * A call starting sounds the same way, for those who see the call controls.
+ * A call starting follows the same rules with its own, longer sound, for those who
+ * see the call controls; that sound is cut short once the call needs no more attention.
  */
 export const useSyncChatSound = () => {
   const client = useMatrixClient();
@@ -38,6 +41,16 @@ export const useSyncChatSound = () => {
     chatSoundEnabledRef.current = chatSoundEnabled;
     callsShownRef.current = callsShown;
   }, [selectedRoomId, chatSoundEnabled, callsShown]);
+
+  // The call sound stops when a call opens in this tab (answered, joined), and when no call is left
+  // to deal with: declined, answered elsewhere, seen, or over.
+  const callOpenHere = useCallOverlay() !== null;
+  const callsWaiting = useIncomingCallRooms().size > 0;
+  useEffect(() => {
+    if (callOpenHere || !callsWaiting) {
+      stopSound('call');
+    }
+  }, [callOpenHere, callsWaiting]);
 
   useEffect(() => {
     if (!client) {
@@ -75,7 +88,7 @@ export const useSyncChatSound = () => {
           enabled: chatSoundEnabledRef.current,
         })
       ) {
-        playSound('chat');
+        playSound(isCallStarted ? 'call' : 'chat');
       }
     };
 

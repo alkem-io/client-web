@@ -3,6 +3,7 @@ import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
 import { isAppMode } from '@/core/appMode/isAppMode';
+import { isStandaloneDisplay } from '@/core/appMode/isStandaloneDisplay';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
@@ -20,6 +21,7 @@ import {
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { LanguageOfferBannerConnector } from '@/domain/language/LanguageOfferBannerConnector';
 import { useConfig } from '@/domain/platform/config/useConfig';
+import { useCookieSettings } from '@/main/cookies/CookieSettingsProvider';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { SearchProvider, useSearch } from '@/main/search/SearchContext';
@@ -32,6 +34,7 @@ import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
 import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useSecondFactorReminder } from '@/main/ui/layout/useSecondFactorReminder';
+import { useIncomingCallLabel } from '@/main/userMessaging/calls/useIncomingCallLabel';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 
@@ -40,6 +43,16 @@ const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(
 );
 const HelpDialog = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/help/CrdHelpDialog'));
 const CrdSearchOverlay = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/search/CrdSearchOverlay'));
+
+// "27 Nov 2026, 13:00 CET", in the viewer's zone (en-GB names the European zones; others read
+// "GMT-5"). Non-breaking spaces keep it on one line in the notice.
+const formatNoticeDate = (date: Date, language: string) => {
+  const zone = new Intl.DateTimeFormat('en-GB', { timeZoneName: 'short' })
+    .formatToParts(date)
+    .find(part => part.type === 'timeZoneName')?.value;
+  const text = format(date, 'd MMM yyyy, HH:mm', { locale: resolveDateFnsLocale(language) });
+  return `${text} ${zone ?? ''}`.trim().replace(/ /g, '\u00a0');
+};
 
 function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { user, userModel, isAuthenticated, isAdmin } = useCrdUser();
@@ -58,12 +71,14 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { unreadCount: notificationsUnreadCount } = useInAppNotifications();
   const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
   const unreadMessagesCount = useUnreadConversationsCount();
+  const incomingCallLabel = useIncomingCallLabel();
   const { setOpenDialog } = usePendingMembershipsDialog();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { openSearch } = useSearch();
+  const { openCookieSettings } = useCookieSettings();
   const navigate = useNavigate();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
-  const { visible: downNoticeVisible, dismiss: dismissDownNotice } = useDownNoticeBanner();
+  const { visible: downNoticeVisible, notice: downNotice, dismiss: dismissDownNotice } = useDownNoticeBanner();
   const breadcrumbItems = useBreadcrumbs();
   const overlayBanner = useBannerOverlay();
   const secondFactorReminder = useSecondFactorReminder();
@@ -105,6 +120,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         currentPath={currentPath}
         unreadNotificationsCount={notificationsUnreadCount}
         unreadMessagesCount={unreadMessagesCount}
+        incomingCallLabel={incomingCallLabel}
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={
@@ -119,7 +135,15 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         topBanner={
           downNoticeVisible || secondFactorReminder.visible ? (
             <>
-              {downNoticeVisible ? <DownNoticeBanner onDismiss={dismissDownNotice} /> : null}
+              {downNoticeVisible && downNotice ? (
+                <DownNoticeBanner
+                  kind={downNotice.kind}
+                  name={downNotice.name}
+                  scheduledFor={downNotice.scheduledFor && formatNoticeDate(downNotice.scheduledFor, currentLanguage)}
+                  statusHref={downNotice.href}
+                  onDismiss={dismissDownNotice}
+                />
+              ) : null}
               {secondFactorReminder.visible && secondFactorReminder.deadline ? (
                 <SecondFactorReminderBanner
                   deadline={format(secondFactorReminder.deadline, 'PPP', {
@@ -144,11 +168,16 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         onPendingMembershipsClick={isAuthenticated ? handlePendingMembershipsClick : undefined}
         onHelpClick={() => setIsHelpDialogOpen(true)}
         // A full reload, like the new-version banner: it also picks up a newer client build.
+        // Offered where there is no browser reload button: the store app and the installed PWA.
         onRefreshClick={
-          isAppMode() ? () => window.location.replace(window.location.pathname + window.location.search) : undefined
+          isAppMode() || isStandaloneDisplay()
+            ? // The origin is pinned: a pathname starting with '//' alone would be a protocol-relative URL.
+              () => window.location.replace(window.location.origin + window.location.pathname + window.location.search)
+            : undefined
         }
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
+        onCookieSettingsClick={openCookieSettings}
       >
         {children ?? <Outlet />}
       </CrdLayout>

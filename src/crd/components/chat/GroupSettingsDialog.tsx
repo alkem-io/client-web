@@ -8,6 +8,7 @@ import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
 import { initials } from './initials';
+import { PresenceIndicator } from './PresenceIndicator';
 import type { GroupMember } from './types';
 
 type GroupSettingsDialogProps = {
@@ -105,13 +106,23 @@ export function GroupSettingsDialog({
               <ul className="flex flex-col gap-1">
                 {members.map(member => (
                   <li key={member.id} className="flex items-center gap-3 rounded-md px-1 py-1.5">
-                    <Avatar className="size-8 shrink-0">
-                      {member.avatarUrl && <AvatarImage src={member.avatarUrl} alt="" />}
-                      <AvatarFallback className="text-caption">{initials(member.name)}</AvatarFallback>
-                    </Avatar>
-                    <span className="min-w-0 flex-1 truncate text-body">
-                      {member.name}
-                      {member.isCurrentUser && <span className="text-muted-foreground"> ({t('group.you')})</span>}
+                    <span className="relative flex shrink-0">
+                      <Avatar className="size-8">
+                        {member.avatarUrl && <AvatarImage src={member.avatarUrl} alt="" />}
+                        <AvatarFallback className="text-caption">{initials(member.name)}</AvatarFallback>
+                      </Avatar>
+                      <PresenceIndicator presence={member.presence} />
+                    </span>
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate text-body">
+                        {member.name}
+                        {member.isCurrentUser && <span className="text-muted-foreground"> ({t('group.you')})</span>}
+                      </span>
+                      {member.statusMessage && (
+                        <span className="truncate text-caption text-muted-foreground" title={member.statusMessage}>
+                          {member.statusMessage}
+                        </span>
+                      )}
                     </span>
                     {!member.isCurrentUser && (
                       <Button

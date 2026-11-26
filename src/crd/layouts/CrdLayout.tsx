@@ -23,6 +23,7 @@ type CrdLayoutProps = {
   currentPath?: string;
   unreadNotificationsCount?: number;
   unreadMessagesCount?: number;
+  incomingCallLabel?: string;
   languages: CrdLanguageOption[];
   currentLanguage: string;
   breadcrumbs?: ReactNode;
@@ -35,6 +36,7 @@ type CrdLayoutProps = {
   onHelpClick?: () => void;
   onRefreshClick?: () => void;
   footerLinks?: CrdFooterLinks;
+  onCookieSettingsClick?: () => void;
   showGridToggle?: boolean;
   /** When true the header's inner content fills all 12 grid columns (full-width space pages). */
   fullWidth?: boolean;
@@ -55,6 +57,7 @@ export function CrdLayout({
   currentPath,
   unreadNotificationsCount,
   unreadMessagesCount,
+  incomingCallLabel,
   languages,
   currentLanguage,
   breadcrumbs,
@@ -67,6 +70,7 @@ export function CrdLayout({
   onHelpClick,
   onRefreshClick,
   footerLinks,
+  onCookieSettingsClick,
   showGridToggle,
   fullWidth,
   overlayBanner,
@@ -92,6 +96,7 @@ export function CrdLayout({
         currentPath={currentPath}
         unreadNotificationsCount={unreadNotificationsCount}
         unreadMessagesCount={unreadMessagesCount}
+        incomingCallLabel={incomingCallLabel}
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbs}
@@ -117,6 +122,7 @@ export function CrdLayout({
         currentLanguage={currentLanguage}
         onLanguageChange={onLanguageChange}
         onSupportClick={onHelpClick}
+        onCookieSettingsClick={onCookieSettingsClick}
       />
       {showGridToggle && <GridOverlay />}
     </div>

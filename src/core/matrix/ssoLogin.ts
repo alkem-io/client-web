@@ -80,6 +80,9 @@ const attemptSilentSso = async (
   // settles it rather than walking away from it.
   const exchangeAbort = new AbortController();
   signal?.addEventListener('abort', () => exchangeAbort.abort());
+  // The caller holds the credential lock across this round-trip, so the
+  // exchange settles before it returns, never after the lock is released.
+  let exchange: Promise<void> = Promise.resolve();
   const onMessage = (event: MessageEvent) => {
     if (tokenConsumed || signal?.aborted || event.origin !== platformOrigin) {
       return;
@@ -89,7 +92,7 @@ const attemptSilentSso = async (
       return;
     }
     tokenConsumed = true;
-    void exchangeAndStore(homeserverUrl, loginToken, exchangeAbort.signal);
+    exchange = exchangeAndStore(homeserverUrl, loginToken, exchangeAbort.signal);
   };
   window.addEventListener('message', onMessage);
 
@@ -125,6 +128,7 @@ const attemptSilentSso = async (
   } finally {
     window.removeEventListener('message', onMessage);
     iframe.remove();
+    await exchange;
   }
 };
 

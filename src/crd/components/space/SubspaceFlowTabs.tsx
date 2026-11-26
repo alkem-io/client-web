@@ -292,7 +292,7 @@ function MobileFlowBar({
     <>
       {createPortal(
         <nav
-          className="fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border"
+          className="fixed bottom-[var(--cookie-banner-height,0px)] left-0 right-0 z-40 bg-background border-t border-border"
           aria-label={t('a11y.bottomBar')}
         >
           <div className="flex items-center h-14">
