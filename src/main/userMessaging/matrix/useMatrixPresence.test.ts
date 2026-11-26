@@ -212,7 +212,13 @@ describe('useOwnStatusMessage', () => {
   it('a save waiting on the rate limit is not retried once "Show when I\'m online" is switched off', async () => {
     const accountData: Record<string, unknown> = {};
     const client = makeClient({ '@me:hs': reported('online', 'Lunch') }, accountData);
-    client.setPresence.mockRejectedValueOnce({ errcode: 'M_LIMIT_EXCEEDED', data: { retry_after_ms: 20 } });
+    let refuse: (error: unknown) => void = () => {};
+    client.setPresence.mockImplementationOnce(
+      () =>
+        new Promise<void>((_, reject) => {
+          refuse = reject;
+        })
+    );
     harness.client = client;
     const { result } = renderHook(() => useOwnStatusMessage());
 
@@ -220,6 +226,10 @@ describe('useOwnStatusMessage', () => {
     act(() => {
       saving = result.current.setStatusMessage('In a workshop');
     });
+    await waitFor(() => expect(client.setPresence).toHaveBeenCalledOnce());
+    refuse({ errcode: 'M_LIMIT_EXCEEDED', data: { retry_after_ms: 20 } });
+    // Lets the refusal start the wait, so only the check after the wait can stop the retry.
+    await new Promise(resolve => setTimeout(resolve, 0));
     accountData['io.alkemio.chat.presence'] = { show_online: false };
     await act(() => saving);
 

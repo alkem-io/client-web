@@ -1,5 +1,5 @@
-import { ClientEvent, type MatrixClient, type MatrixEvent, SetPresence } from 'matrix-js-sdk';
-import { useSyncExternalStore } from 'react';
+import { ClientEvent, type MatrixClient, type MatrixEvent, SetPresence, SyncState } from 'matrix-js-sdk';
+import { useRef, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import { writeStoredShowOnline } from '@/core/matrix/showOnlineStorage';
 
@@ -22,12 +22,15 @@ const retryAfterMs = (error: unknown): number | undefined => {
   return data.errcode === 'M_LIMIT_EXCEEDED' ? (data.data?.retry_after_ms ?? 10_000) : undefined;
 };
 
-/** Sends the presence, and once more after the wait a rate-limited homeserver asks for, unless `stillWanted` says no by then. */
+/** Sends the presence unless `stillWanted` says no, and once more after the wait a rate-limited homeserver asks for, on the same condition. */
 export const setPresenceRetryingOnce = async (
   client: MatrixClient,
   update: PresenceUpdate,
   stillWanted: () => boolean
 ): Promise<void> => {
+  if (!stillWanted()) {
+    return;
+  }
   await client.setPresence(update).catch(async error => {
     const wait = retryAfterMs(error);
     if (wait === undefined) {
@@ -56,19 +59,29 @@ const subscribeToSetting = (client: MatrixClient | null) => (listener: () => voi
   if (!client) {
     return noop;
   }
-  // Account data that arrived before anything listened, e.g. on a browser with no copy yet.
-  // Absent data is left alone: before the first sync it would undo an offline start.
-  if (client.getAccountData(SHOW_ONLINE_EVENT)) {
+  // A session syncs offline until the setting is known, which is when the first sync is done:
+  // only then does absent account data mean on. Applied at once when that already happened.
+  if (client.isInitialSyncComplete()) {
     apply(client, showOnlineOf(client));
   }
+  const onSync = (state: SyncState) => {
+    if (state === SyncState.Prepared) {
+      apply(client, showOnlineOf(client));
+      listener();
+    }
+  };
   const onAccountData = (event: MatrixEvent) => {
     if (event.getType() === SHOW_ONLINE_EVENT) {
       apply(client, event.getContent().show_online !== false);
       listener();
     }
   };
+  client.on(ClientEvent.Sync, onSync);
   client.on(ClientEvent.AccountData, onAccountData);
-  return () => client.removeListener(ClientEvent.AccountData, onAccountData);
+  return () => {
+    client.removeListener(ClientEvent.Sync, onSync);
+    client.removeListener(ClientEvent.AccountData, onAccountData);
+  };
 };
 
 /** The signed-in user's "Show when I'm online" chat setting, live across devices, and a setter. */
@@ -77,11 +90,16 @@ export const useShowOnlinePreference = () => {
   const readSnapshot = () => showOnlineOf(client);
   const showOnline = useSyncExternalStore(subscribeToSetting(client), readSnapshot, readSnapshot);
 
+  // Counts changes, so a failed offline request from an earlier change cannot undo a newer one.
+  const latestChange = useRef(0);
+
   // Rejects when there is no client or the homeserver refuses the change.
   const setShowOnline = async (value: boolean) => {
     if (!client) {
       throw new Error('Chat is not connected');
     }
+    latestChange.current += 1;
+    const change = latestChange.current;
     // Resolves once sync has echoed the change back, which applies it to this device above.
     await client.setAccountData(SHOW_ONLINE_EVENT, { show_online: value });
     if (!value) {
@@ -91,7 +109,9 @@ export const useShowOnlinePreference = () => {
       // fails the setting goes back on, so it never reads off while the status stays published.
       await setPresenceRetryingOnce(client, { presence: 'offline', status_msg: '' }, () => !showOnlineOf(client)).catch(
         async error => {
-          await client.setAccountData(SHOW_ONLINE_EVENT, { show_online: true });
+          if (change === latestChange.current) {
+            await client.setAccountData(SHOW_ONLINE_EVENT, { show_online: true });
+          }
           throw error;
         }
       );

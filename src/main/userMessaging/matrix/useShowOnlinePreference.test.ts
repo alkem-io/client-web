@@ -1,5 +1,5 @@
-import { act, renderHook } from '@testing-library/react';
-import { ClientEvent } from 'matrix-js-sdk';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { ClientEvent, SyncState } from 'matrix-js-sdk';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { readStoredShowOnline } from '@/core/matrix/showOnlineStorage';
 
@@ -17,10 +17,12 @@ const accountDataEvent = (type: string, content: Record<string, unknown>): FakeE
   getContent: () => content,
 });
 
-const makeClient = (accountData: Record<string, Record<string, unknown>> = {}) => {
-  const handlers = new Map<string, (event: FakeEvent) => void>();
+const makeClient = (accountData: Record<string, Record<string, unknown>> = {}, firstSyncDone = true) => {
+  // biome-ignore lint/suspicious/noExplicitAny: handlers take an account data event or a sync state
+  const handlers = new Map<string, (payload: any) => void>();
   return {
     accountData,
+    isInitialSyncComplete: () => firstSyncDone,
     getSafeUserId: () => '@me:hs',
     getAccountData: (type: string) => (type in accountData ? accountDataEvent(type, accountData[type]) : undefined),
     // As the SDK does: resolves once sync has echoed the change back as an account data event.
@@ -31,9 +33,10 @@ const makeClient = (accountData: Record<string, Record<string, unknown>> = {}) =
     }),
     setSyncPresence: vi.fn(async () => {}),
     setPresence: vi.fn(() => Promise.resolve()),
-    on: vi.fn((name: string, handler: (event: FakeEvent) => void) => handlers.set(name, handler)),
+    // biome-ignore lint/suspicious/noExplicitAny: as above
+    on: vi.fn((name: string, handler: (payload: any) => void) => handlers.set(name, handler)),
     removeListener: vi.fn((name: string) => handlers.delete(name)),
-    emit: (name: string, event: FakeEvent) => handlers.get(name)?.(event),
+    emit: (name: string, payload: FakeEvent | SyncState) => handlers.get(name)?.(payload),
     listening: (name: string) => handlers.has(name),
   };
 };
@@ -47,17 +50,46 @@ describe('useShowOnlinePreference', () => {
     localStorage.clear();
   });
 
-  it('applies account data that arrived before it mounted, and leaves the sync alone while there is none', () => {
+  it('applies the setting at mount when the first sync is already done, absent meaning on', () => {
     const off = makeClient({ [EVENT_TYPE]: { show_online: false } });
     harness.client = off;
     renderHook(() => useShowOnlinePreference());
-    expect(off.setSyncPresence).toHaveBeenCalledWith('offline');
+    expect(off.setSyncPresence).toHaveBeenCalledExactlyOnceWith('offline');
     expect(readStoredShowOnline('@me:hs')).toBe(false);
 
     const none = makeClient();
     harness.client = none;
     renderHook(() => useShowOnlinePreference());
-    expect(none.setSyncPresence).not.toHaveBeenCalled();
+    expect(none.setSyncPresence).toHaveBeenCalledExactlyOnceWith('online');
+    expect(readStoredShowOnline('@me:hs')).toBe(true);
+  });
+
+  it('leaves the offline start alone until the first sync is done, then goes online when nothing is stored', () => {
+    const client = makeClient({}, false);
+    harness.client = client;
+    renderHook(() => useShowOnlinePreference());
+    expect(client.setSyncPresence).not.toHaveBeenCalled();
+    expect(readStoredShowOnline('@me:hs')).toBe(false);
+
+    act(() => client.emit(ClientEvent.Sync, SyncState.Prepared));
+
+    expect(client.setSyncPresence).toHaveBeenCalledExactlyOnceWith('online');
+    expect(readStoredShowOnline('@me:hs')).toBe(true);
+  });
+
+  it('stays offline after the first sync when the setting arrived as off', () => {
+    const client = makeClient({}, false);
+    harness.client = client;
+    const { result } = renderHook(() => useShowOnlinePreference());
+
+    act(() => {
+      client.accountData[EVENT_TYPE] = { show_online: false };
+      client.emit(ClientEvent.AccountData, accountDataEvent(EVENT_TYPE, { show_online: false }));
+      client.emit(ClientEvent.Sync, SyncState.Prepared);
+    });
+
+    expect(result.current.showOnline).toBe(false);
+    expect(client.setSyncPresence).not.toHaveBeenCalledWith('online');
     expect(readStoredShowOnline('@me:hs')).toBe(false);
   });
 
@@ -104,6 +136,7 @@ describe('useShowOnlinePreference', () => {
     const client = makeClient();
     harness.client = client;
     renderHook(() => useShowOnlinePreference());
+    client.setSyncPresence.mockClear();
 
     act(() => {
       client.emit(ClientEvent.AccountData, accountDataEvent('m.direct', {}));
@@ -143,7 +176,13 @@ describe('useShowOnlinePreference', () => {
 
   it('does not retry the offline presence once the setting is back on', async () => {
     const client = makeClient();
-    client.setPresence.mockRejectedValueOnce({ errcode: 'M_LIMIT_EXCEEDED', data: { retry_after_ms: 30 } });
+    let refuse: (error: unknown) => void = () => {};
+    client.setPresence.mockImplementationOnce(
+      () =>
+        new Promise<void>((_, reject) => {
+          refuse = reject;
+        })
+    );
     harness.client = client;
     const { result } = renderHook(() => useShowOnlinePreference());
 
@@ -151,6 +190,10 @@ describe('useShowOnlinePreference', () => {
     act(() => {
       switchingOff = result.current.setShowOnline(false);
     });
+    await waitFor(() => expect(client.setPresence).toHaveBeenCalledOnce());
+    refuse({ errcode: 'M_LIMIT_EXCEEDED', data: { retry_after_ms: 30 } });
+    // Lets the refusal start the wait, so only the check after the wait can stop the retry.
+    await new Promise(resolve => setTimeout(resolve, 0));
     await act(() => result.current.setShowOnline(true));
     await act(() => switchingOff);
 
@@ -170,6 +213,47 @@ describe('useShowOnlinePreference', () => {
     expect(result.current.showOnline).toBe(true);
     expect(client.setSyncPresence).toHaveBeenLastCalledWith('online');
     expect(readStoredShowOnline('@me:hs')).toBe(true);
+  });
+
+  it('a failed presence clear from an earlier switch-off does not undo a later one', async () => {
+    const client = makeClient();
+    let fail: (error: Error) => void = () => {};
+    client.setPresence.mockImplementationOnce(
+      () =>
+        new Promise<void>((_, reject) => {
+          fail = reject;
+        })
+    );
+    harness.client = client;
+    const { result } = renderHook(() => useShowOnlinePreference());
+
+    let first: Promise<void> = Promise.resolve();
+    act(() => {
+      first = result.current.setShowOnline(false);
+    });
+    await waitFor(() => expect(client.setPresence).toHaveBeenCalledOnce());
+    await act(() => result.current.setShowOnline(true));
+    await act(() => result.current.setShowOnline(false));
+    fail(new Error('network down'));
+    await act(() => expect(first).rejects.toThrow('network down'));
+
+    expect(client.setAccountData).toHaveBeenLastCalledWith(EVENT_TYPE, { show_online: false });
+    expect(result.current.showOnline).toBe(false);
+  });
+
+  it('sends no presence clear when the setting is already back on by the time the save returns', async () => {
+    const client = makeClient();
+    // Another device switched it on again before this device's save came back.
+    client.setAccountData.mockImplementationOnce(async (type: string) => {
+      client.accountData[type] = { show_online: true };
+      return {};
+    });
+    harness.client = client;
+    const { result } = renderHook(() => useShowOnlinePreference());
+
+    await act(() => result.current.setShowOnline(false));
+
+    expect(client.setPresence).not.toHaveBeenCalled();
   });
 
   it('switching on saves it and syncs online, without sending presence', async () => {
@@ -192,7 +276,7 @@ describe('useShowOnlinePreference', () => {
     const { result, rerender } = renderHook(() => useShowOnlinePreference());
 
     await expect(result.current.setShowOnline(false)).rejects.toThrow('M_FORBIDDEN');
-    expect(client.setSyncPresence).not.toHaveBeenCalled();
+    expect(client.setSyncPresence).not.toHaveBeenCalledWith('offline');
     expect(client.setPresence).not.toHaveBeenCalled();
     expect(readStoredShowOnline('@me:hs')).toBe(true);
 

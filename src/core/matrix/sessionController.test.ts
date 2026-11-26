@@ -254,9 +254,24 @@ describe('establishSession', () => {
     );
   });
 
-  it('leaves sync presence alone when only another user stored the setting as off', async () => {
+  it('starts the first sync offline when this browser has no copy of the setting for the user', async () => {
     await seedRecord();
-    localStorage.setItem('chatShowOnline:@someone-else:matrix.dev-alkem.io', 'false');
+    localStorage.setItem('chatShowOnline:@someone-else:matrix.dev-alkem.io', 'true');
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+
+    try {
+      await establishSession(ACTOR);
+    } finally {
+      localStorage.clear();
+    }
+
+    expect(client.setSyncPresence).toHaveBeenCalledExactlyOnceWith('offline');
+  });
+
+  it('leaves sync presence alone when this browser stored the setting as on for the user', async () => {
+    await seedRecord();
+    localStorage.setItem(`chatShowOnline:${USER_ID}`, 'true');
     const client = makeClient();
     mockedCreateClient.mockReturnValue(client);
 

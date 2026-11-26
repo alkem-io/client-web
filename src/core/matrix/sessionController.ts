@@ -304,8 +304,9 @@ const establishSession = async (
     setActiveClient(client as unknown as MatrixClient);
     await client.startClient({ initialSyncLimit: INITIAL_SYNC_LIMIT, lazyLoadMembers: true });
     // Account data arrives with the first sync, so the browser's copy of "Show when I'm online"
-    // decides that sync. Not earlier: the sync loop that takes it is created by startClient, and
-    // its first request still waits on the push rules and filter fetches.
+    // decides that sync, and without a copy saying on it is offline: useShowOnlinePreference
+    // applies the real setting once the sync is done. Not earlier: the sync loop that takes it
+    // is created by startClient, and its first request still waits on the push rules and filter fetches.
     if (!readStoredShowOnline(record.userId)) {
       void client.setSyncPresence('offline');
     }
