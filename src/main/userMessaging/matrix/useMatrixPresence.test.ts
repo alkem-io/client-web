@@ -209,6 +209,23 @@ describe('useOwnStatusMessage', () => {
     expect(client.setPresence).toHaveBeenLastCalledWith({ presence: 'online', status_msg: 'New' });
   });
 
+  it('a save waiting on the rate limit is not retried once "Show when I\'m online" is switched off', async () => {
+    const accountData: Record<string, unknown> = {};
+    const client = makeClient({ '@me:hs': reported('online', 'Lunch') }, accountData);
+    client.setPresence.mockRejectedValueOnce({ errcode: 'M_LIMIT_EXCEEDED', data: { retry_after_ms: 20 } });
+    harness.client = client;
+    const { result } = renderHook(() => useOwnStatusMessage());
+
+    let saving: Promise<void> = Promise.resolve();
+    act(() => {
+      saving = result.current.setStatusMessage('In a workshop');
+    });
+    accountData['io.alkemio.chat.presence'] = { show_online: false };
+    await act(() => saving);
+
+    expect(client.setPresence).toHaveBeenCalledOnce();
+  });
+
   it('sends nothing while "Show when I\'m online" is off, since a status message would say online', async () => {
     const client = makeClient({}, { 'io.alkemio.chat.presence': { show_online: false } });
     harness.client = client;

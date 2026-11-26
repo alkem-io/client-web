@@ -94,8 +94,8 @@ export const useOwnStatusMessage = () => {
     const save = latestSave.current;
     setPending(update.status_msg);
     try {
-      // A newer save now owns the value; sending this one late would undo it.
-      await setPresenceRetryingOnce(client, update, () => save === latestSave.current);
+      // A newer save, or switching the setting off, now owns the value; sending this one late would undo it.
+      await setPresenceRetryingOnce(client, update, () => save === latestSave.current && showOnlineOf(client));
     } finally {
       if (save === latestSave.current) {
         setPending(null);

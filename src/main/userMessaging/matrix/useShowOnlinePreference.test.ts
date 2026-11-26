@@ -158,6 +158,20 @@ describe('useShowOnlinePreference', () => {
     expect(client.setSyncPresence).toHaveBeenLastCalledWith('online');
   });
 
+  it('switching off puts the setting back on when the presence clear fails', async () => {
+    const client = makeClient();
+    client.setPresence.mockRejectedValueOnce(new Error('network down'));
+    harness.client = client;
+    const { result } = renderHook(() => useShowOnlinePreference());
+
+    await act(() => expect(result.current.setShowOnline(false)).rejects.toThrow('network down'));
+
+    expect(client.setAccountData).toHaveBeenLastCalledWith(EVENT_TYPE, { show_online: true });
+    expect(result.current.showOnline).toBe(true);
+    expect(client.setSyncPresence).toHaveBeenLastCalledWith('online');
+    expect(readStoredShowOnline('@me:hs')).toBe(true);
+  });
+
   it('switching on saves it and syncs online, without sending presence', async () => {
     const client = makeClient({ [EVENT_TYPE]: { show_online: false } });
     harness.client = client;

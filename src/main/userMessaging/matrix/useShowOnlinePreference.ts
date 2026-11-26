@@ -87,7 +87,14 @@ export const useShowOnlinePreference = () => {
     if (!value) {
       // An offline sync leaves the current presence as it is, and Synapse keeps the
       // status message of a user who goes offline, so both are cleared explicitly.
-      await setPresenceRetryingOnce(client, { presence: 'offline', status_msg: '' }, () => !showOnlineOf(client));
+      // Sending it before the offline sync would let the next sync say online again. When it
+      // fails the setting goes back on, so it never reads off while the status stays published.
+      await setPresenceRetryingOnce(client, { presence: 'offline', status_msg: '' }, () => !showOnlineOf(client)).catch(
+        async error => {
+          await client.setAccountData(SHOW_ONLINE_EVENT, { show_online: true });
+          throw error;
+        }
+      );
     }
   };
 
