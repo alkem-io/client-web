@@ -3,6 +3,7 @@ import { createElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { refetchUserSettingsQuery, useUpdateUserSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { supportedLngs } from '@/core/i18n/config';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
@@ -49,6 +50,8 @@ export function useCrdNavigation() {
   const footerLinks = {
     // a static file every build writes (vite.third-party-licenses.mjs), not a platform-configured location
     thirdPartyLicenses: '/third-party-licenses.html',
+    // the store app and the installed PWA have no tabs and no back control: a new tab is a dead end there
+    thirdPartyLicensesInDialog: isAppMode() || window.matchMedia?.('(display-mode: standalone)').matches === true,
     ...(locations && {
       terms: locations.terms,
       privacy: locations.privacy,

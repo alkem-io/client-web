@@ -130,6 +130,7 @@ const renderPage = dependencies => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
+<base target="_top" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Third-party licenses</title>
 <link rel="icon" href="/favicon.ico" />
@@ -156,7 +157,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.8rem; padding
 <section>
 <h2>Element Call ${escapeHtml(ELEMENT_CALL_VERSION)}</h2>
 <p>The call window is Element Call, served unmodified under <code>/element-call/</code> and licensed AGPL-3.0-only
-(or the Element Commercial License): see <a href="/element-call/SOURCE.html">its license and corresponding source</a>.
+(or the Element Commercial License): see <a href="/element-call/SOURCE.html" target="_self">its license and corresponding source</a>.
 Its prebuilt package carries no notices for the components it bundles; they are listed in the
 <a href="https://github.com/element-hq/element-call/tree/v${escapeHtml(ELEMENT_CALL_VERSION)}" rel="noopener noreferrer">upstream
 element-call source at v${escapeHtml(ELEMENT_CALL_VERSION)}</a>.</p>

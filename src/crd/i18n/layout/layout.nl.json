@@ -33,7 +33,8 @@
     "support": "Ondersteuning",
     "about": "Over ons",
     "thirdPartyLicenses": "Licenties van derden",
-    "opensInNewTab": "opent in een nieuw tabblad"
+    "opensInNewTab": "opent in een nieuw tabblad",
+    "close": "Sluiten"
   },
   "appVersion": {
     "message": "Er is een nieuwe versie van de app beschikbaar.",

@@ -69,6 +69,21 @@ describe('Footer (#10057 — platform attribution logo)', () => {
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
+  test('shows the notices page in a dialog where there are no tabs (store app, installed PWA)', async () => {
+    render(<Footer {...baseProps} links={{ ...baseProps.links, thirdPartyLicensesInDialog: true }} />);
+
+    expect(screen.queryByRole('link', { name: /footer.thirdPartyLicenses/ })).toBeNull();
+    const trigger = screen.getByRole('button', { name: 'footer.thirdPartyLicenses' });
+    await userEvent.click(trigger);
+
+    const dialog = screen.getByRole('dialog', { name: 'footer.thirdPartyLicenses' });
+    expect(within(dialog).getByTitle('footer.thirdPartyLicenses')).toHaveAttribute('src', '/third-party-licenses.html');
+
+    await userEvent.click(within(dialog).getByRole('button', { name: 'footer.close' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(trigger).toHaveFocus();
+  });
+
   test('places the Cookie settings entry after About and before the language picker, and opens the settings', async () => {
     const onCookieSettingsClick = vi.fn();
     render(<Footer {...baseProps} onCookieSettingsClick={onCookieSettingsClick} />);

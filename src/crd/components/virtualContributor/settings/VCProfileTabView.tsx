@@ -27,6 +27,7 @@ export function VCProfileTabView(props: VcProfileViewProps) {
     disabled = false,
     onChange,
     onReferencesChange,
+    referencesKey,
     onReferenceFileUpload,
     referenceUploadAccept,
     onUploadAvatar,
@@ -97,6 +98,7 @@ export function VCProfileTabView(props: VcProfileViewProps) {
           defaultOpen={false}
         >
           <ReferencesEditor
+            key={referencesKey}
             rows={values.references.map(r => ({ id: r.id, name: r.name, uri: r.uri, description: r.description }))}
             onChange={onReferencesChange}
             onFileUpload={onReferenceFileUpload}

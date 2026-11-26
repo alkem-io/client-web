@@ -6,6 +6,7 @@ import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
 import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
 import { MarkdownUploadScope } from '@/main/crdPages/markdown/MarkdownUploadScope';
+import { useUploadGate } from '@/main/crdPages/utils/tabUnsavedChanges';
 import { useCityOptions } from '@/main/crdPages/utils/useCityOptions';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { useSettingsTabUnsavedChanges } from '../../../common/settingsUnsavedChanges';
@@ -61,13 +62,14 @@ const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
   const { t } = useTranslation('crd-contributorSettings');
   const { organizationId } = useOrganizationContext();
   const data = useOrgProfileTabData(organizationId);
-  useSettingsTabUnsavedChanges(data.unsaved);
 
   // Reference file upload (paperclip) — uploads to the organization's storage bucket. The organization
   // already exists, so `useStorageConfig` resolves `temporaryLocation: false` and the upload is
   // permanent (propagated to `file_backup_outbox`, issue #10126).
   const { storageConfig } = useStorageConfig({ locationType: 'organization', organizationId });
   const referenceUpload = useReferenceFileUpload(storageConfig);
+  const withUploadGate = useUploadGate();
+  useSettingsTabUnsavedChanges(withUploadGate(data.unsaved, referenceUpload.uploading));
 
   return (
     <>
@@ -79,6 +81,7 @@ const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
         loading={data.loading}
         disabled={data.unsaved.saving}
         onChange={data.onChange}
+        referencesKey={data.resetGeneration}
         onReferencesChange={data.onReferencesChange}
         onReferenceFileUpload={referenceUpload.onFileUpload}
         referenceUploadAccept={referenceUpload.accept}

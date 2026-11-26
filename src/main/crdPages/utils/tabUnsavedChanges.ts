@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { UnsavedChangesBarState } from '@/crd/components/common/UnsavedChangesBar';
 
 /**
@@ -28,6 +29,16 @@ export const NO_UNSAVED_CHANGES: TabUnsavedChanges = {
   error: null,
   saveAll: async () => true,
   reset: () => {},
+};
+
+/**
+ * The one rule that withholds a form's Save while any of its file uploads runs, and says why.
+ * Returns `withUploadGate(unsaved, uploading)`.
+ */
+export const useUploadGate = () => {
+  const { t } = useTranslation('crd-common');
+  return <Gated extends { canSave: boolean; saveBlockedReason?: string }>(unsaved: Gated, uploading: boolean): Gated =>
+    uploading ? { ...unsaved, canSave: false, saveBlockedReason: t('fileSelection.saveBlocked') } : unsaved;
 };
 
 export function toUnsavedChangesBarState(unsaved: TabUnsavedChanges): UnsavedChangesBarState {

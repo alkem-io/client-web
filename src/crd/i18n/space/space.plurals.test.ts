@@ -29,6 +29,19 @@ beforeAll(async () => {
   });
 });
 
+describe('callout.linksCreateFailed plural forms', () => {
+  test.each(locales)('%s resolves both counts into the one and the many form', (lang, json) => {
+    const t = i18n.getFixedT(lang, 'crd-space');
+    const many = t('callout.linksCreateFailed', { count: 2, total: 3 });
+    const one = t('callout.linksCreateFailed', { count: 1, total: 3 });
+
+    expect(many).toContain('2');
+    expect(many).toContain('3');
+    expect(many).not.toContain('{{');
+    expect(one).toBe(json.callout.linksCreateFailed_one.replace('{{count}}', '1').replace('{{total}}', '3'));
+  });
+});
+
 describe('comments.attachments.errorTooMany plural forms', () => {
   test.each(locales)('%s resolves the count into the many form and the one form on its own', (lang, json) => {
     const t = i18n.getFixedT(lang, 'crd-space');

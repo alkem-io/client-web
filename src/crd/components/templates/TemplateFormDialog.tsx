@@ -18,6 +18,7 @@ export function TemplateFormDialog({
   onCommonChange,
   perTypeFormSlot,
   submitting,
+  uploading,
   onSubmit,
   onCancel,
   isDirty,
@@ -99,7 +100,7 @@ export function TemplateFormDialog({
             <Button
               variant="default"
               onClick={onSubmit}
-              disabled={submitting || (intent === 'edit' && !isDirty)}
+              disabled={submitting || uploading || (intent === 'edit' && !isDirty)}
               aria-busy={submitting}
             >
               {submitting && <Loader2 aria-hidden="true" className="size-4 mr-2 animate-spin" />}

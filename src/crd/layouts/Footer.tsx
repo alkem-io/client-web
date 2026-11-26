@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import type { CrdFooterLinks, CrdLanguageOption } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/crd/primitives/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -81,12 +82,42 @@ export function Footer({
               {t('footer.about')}
             </a>
           )}
-          {links?.thirdPartyLicenses && (
-            <a href={links.thirdPartyLicenses} target="_blank" rel="noopener noreferrer" className={linkClassName}>
-              {t('footer.thirdPartyLicenses')}
-              <span className="sr-only"> ({t('footer.opensInNewTab')})</span>
-            </a>
-          )}
+          {links?.thirdPartyLicenses &&
+            (links.thirdPartyLicensesInDialog ? (
+              // the trigger and the dialog share one root, so closing returns focus to the button
+              <Dialog>
+                <DialogTrigger asChild={true}>
+                  <button
+                    type="button"
+                    className={cn(
+                      linkClassName,
+                      'cursor-pointer bg-transparent border-none p-0 font-inherit text-body'
+                    )}
+                  >
+                    {t('footer.thirdPartyLicenses')}
+                  </button>
+                </DialogTrigger>
+                <DialogContent
+                  className="flex h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl"
+                  closeLabel={t('footer.close')}
+                  aria-describedby={undefined}
+                >
+                  <DialogTitle className="border-b border-border px-6 py-4">
+                    {t('footer.thirdPartyLicenses')}
+                  </DialogTitle>
+                  <iframe
+                    src={links.thirdPartyLicenses}
+                    title={t('footer.thirdPartyLicenses')}
+                    className="w-full flex-1 border-0"
+                  />
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <a href={links.thirdPartyLicenses} target="_blank" rel="noopener noreferrer" className={linkClassName}>
+                {t('footer.thirdPartyLicenses')}
+                <span className="sr-only"> ({t('footer.opensInNewTab')})</span>
+              </a>
+            ))}
           {onCookieSettingsClick && (
             <button
               type="button"

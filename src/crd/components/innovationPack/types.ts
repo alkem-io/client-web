@@ -65,6 +65,8 @@ export type InnovationPackFormProps = {
   onChange: (next: InnovationPackFormValues) => void;
   onSubmit: () => void;
   submitting: boolean;
+  /** True while a reference file is uploading — Save is disabled and a form submit does nothing. */
+  uploading?: boolean;
   /** Whether the form differs from the last-saved server state. The Save button stays disabled while `false`. */
   isDirty: boolean;
   /** The provider organisation's display name — rendered read-only (no picker; mirrors the legacy `InnovationPackForm`). */

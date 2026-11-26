@@ -33,7 +33,8 @@
     "support": "Support",
     "about": "Über uns",
     "thirdPartyLicenses": "Lizenzen Dritter",
-    "opensInNewTab": "öffnet in einem neuen Tab"
+    "opensInNewTab": "öffnet in einem neuen Tab",
+    "close": "Schließen"
   },
   "appVersion": {
     "message": "A new version of the app is available.",
