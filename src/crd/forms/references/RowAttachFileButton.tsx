@@ -8,6 +8,8 @@ type RowAttachFileButtonProps = {
   uploading: boolean;
   ariaLabel: string;
   onFile: (file: File | undefined) => void;
+  /** When given, the picker accepts several files; a pick of two or more goes here instead of `onFile`. */
+  onFiles?: (files: File[]) => void;
 };
 
 /**
@@ -18,18 +20,33 @@ type RowAttachFileButtonProps = {
  * the consumer owns the upload mutation and turns the resolved URL into row
  * state.
  */
-export function RowAttachFileButton({ accept, disabled, uploading, ariaLabel, onFile }: RowAttachFileButtonProps) {
+export function RowAttachFileButton({
+  accept,
+  disabled,
+  uploading,
+  ariaLabel,
+  onFile,
+  onFiles,
+}: RowAttachFileButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    onFile(file);
+    const files = Array.from(event.target.files ?? []);
+    if (onFiles && files.length > 1) onFiles(files);
+    else onFile(files[0]);
     if (inputRef.current) inputRef.current.value = '';
   };
 
   return (
     <>
-      <input ref={inputRef} type="file" accept={accept} className="hidden" onChange={handleChange} />
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        multiple={Boolean(onFiles)}
+        className="hidden"
+        onChange={handleChange}
+      />
       <Button
         type="button"
         variant="outline"

@@ -10,8 +10,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/toolti
 
 export type AddPostModalMode = 'create' | 'edit';
 
-/** Why the footer actions are currently blocked: the title is missing, or the description is over its limit. */
-export type AddPostModalBlockedReason = 'titleRequired' | 'descriptionTooLong';
+/** Why the footer actions are currently blocked: the title is missing, the description is over its limit, or files are still uploading. */
+export type AddPostModalBlockedReason = 'titleRequired' | 'descriptionTooLong' | 'filesUploading';
 
 export type AddPostModalProps = {
   open: boolean;
@@ -92,6 +92,8 @@ export function AddPostModal({
 }: AddPostModalProps) {
   const { t } = useTranslation('crd-space');
   const [moreOpen, setMoreOpen] = useState(false);
+  // Mounted on first expansion and kept mounted after, so a collapse never drops its running uploads.
+  const [moreMounted, setMoreMounted] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const blockedHintId = useId();
 
@@ -100,7 +102,11 @@ export function AddPostModal({
   const primaryLabel = submitLabel ?? (isCreate ? t('forms.publish') : t('forms.save'));
   const blocked = !submitting && blockedReason !== undefined;
   const blockedHint =
-    blockedReason === 'descriptionTooLong' ? t('forms.descriptionTooLongHint') : t('forms.titleRequiredHint');
+    blockedReason === 'descriptionTooLong'
+      ? t('forms.descriptionTooLongHint')
+      : blockedReason === 'filesUploading'
+        ? t('forms.filesUploadingHint')
+        : t('forms.titleRequiredHint');
 
   const { maxLength: titleMaxLength, counterThreshold } = title;
   const titleLength = title.value.length;
@@ -238,7 +244,10 @@ export function AddPostModal({
                 <button
                   type="button"
                   className="w-full flex items-center justify-between p-2 hover:bg-muted/50 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  onClick={() => setMoreOpen(v => !v)}
+                  onClick={() => {
+                    setMoreOpen(v => !v);
+                    setMoreMounted(true);
+                  }}
                   aria-expanded={moreOpen}
                 >
                   <div className="flex items-center gap-2 text-muted-foreground">
@@ -250,7 +259,11 @@ export function AddPostModal({
                     aria-hidden="true"
                   />
                 </button>
-                {moreOpen && <div className="space-y-4 pt-2 px-2">{moreOptionsSlot}</div>}
+                {moreMounted && (
+                  <div hidden={!moreOpen} className="space-y-4 pt-2 px-2">
+                    {moreOptionsSlot}
+                  </div>
+                )}
               </div>
             </>
           )}

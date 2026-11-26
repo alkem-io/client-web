@@ -24,6 +24,8 @@ type CollaboraDocumentTypePickerProps = {
     acceptAttr: string;
     file: File | null;
     onFileChange: (file: File | null) => void;
+    /** When given, the import zone accepts several files and hands two or more to this callback. */
+    onFiles?: (files: File[]) => void;
     onError: (error: DocumentImportError | null) => void;
     error: DocumentImportError | null;
     errorMessage: string | null;
@@ -126,6 +128,7 @@ export function CollaboraDocumentTypePicker({
             acceptAttr={upload.acceptAttr}
             value={upload.file}
             onChange={upload.onFileChange}
+            onFiles={upload.onFiles}
             onError={upload.onError}
             error={upload.error}
             errorMessage={upload.errorMessage}
