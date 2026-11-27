@@ -44,20 +44,20 @@ describe('useShowOnlinePreference', () => {
     harness.client = null;
   });
 
-  it('applies the setting at mount when the first sync is already done, absent meaning on', () => {
-    const off = makeClient({ [EVENT_TYPE]: { show_online: false } });
-    harness.client = off;
+  it('applies the setting at mount when the first sync is already done, absent meaning off', () => {
+    const on = makeClient({ [EVENT_TYPE]: { show_online: true } });
+    harness.client = on;
     renderHook(() => useShowOnlinePreference());
-    expect(off.setSyncPresence).toHaveBeenCalledExactlyOnceWith('offline');
+    expect(on.setSyncPresence).toHaveBeenCalledExactlyOnceWith('online');
 
     const none = makeClient();
     harness.client = none;
     renderHook(() => useShowOnlinePreference());
-    expect(none.setSyncPresence).toHaveBeenCalledExactlyOnceWith('online');
+    expect(none.setSyncPresence).toHaveBeenCalledExactlyOnceWith('offline');
   });
 
-  it('leaves the offline start alone until the first sync is done, then goes online when nothing is stored', () => {
-    const client = makeClient({}, false);
+  it('leaves the offline start alone until the first sync is done, then goes online when the setting is on', () => {
+    const client = makeClient({ [EVENT_TYPE]: { show_online: true } }, false);
     harness.client = client;
     renderHook(() => useShowOnlinePreference());
     expect(client.setSyncPresence).not.toHaveBeenCalled();
@@ -65,6 +65,17 @@ describe('useShowOnlinePreference', () => {
     act(() => client.emit(ClientEvent.Sync, SyncState.Prepared));
 
     expect(client.setSyncPresence).toHaveBeenCalledExactlyOnceWith('online');
+  });
+
+  it('stays offline after the first sync when nothing is stored', () => {
+    const client = makeClient({}, false);
+    harness.client = client;
+    const { result } = renderHook(() => useShowOnlinePreference());
+
+    act(() => client.emit(ClientEvent.Sync, SyncState.Prepared));
+
+    expect(result.current.showOnline).toBe(false);
+    expect(client.setSyncPresence).toHaveBeenCalledExactlyOnceWith('offline');
   });
 
   it('stays offline after the first sync when the setting arrived as off', () => {
@@ -82,19 +93,22 @@ describe('useShowOnlinePreference', () => {
     expect(client.setSyncPresence).not.toHaveBeenCalledWith('online');
   });
 
-  it('is on while the account data is absent or says nothing, and off when it says so', () => {
+  it('is off while the account data is absent, says nothing or says off, and on only when it says so', () => {
     harness.client = makeClient();
-    expect(renderHook(() => useShowOnlinePreference()).result.current.showOnline).toBe(true);
+    expect(renderHook(() => useShowOnlinePreference()).result.current.showOnline).toBe(false);
 
     harness.client = makeClient({ [EVENT_TYPE]: {} });
-    expect(renderHook(() => useShowOnlinePreference()).result.current.showOnline).toBe(true);
+    expect(renderHook(() => useShowOnlinePreference()).result.current.showOnline).toBe(false);
 
     harness.client = makeClient({ [EVENT_TYPE]: { show_online: false } });
     expect(renderHook(() => useShowOnlinePreference()).result.current.showOnline).toBe(false);
+
+    harness.client = makeClient({ [EVENT_TYPE]: { show_online: true } });
+    expect(renderHook(() => useShowOnlinePreference()).result.current.showOnline).toBe(true);
   });
 
-  it('is on without a Matrix client', () => {
-    expect(renderHook(() => useShowOnlinePreference()).result.current.showOnline).toBe(true);
+  it('is off without a Matrix client', () => {
+    expect(renderHook(() => useShowOnlinePreference()).result.current.showOnline).toBe(false);
   });
 
   it('follows a change made on another device into the sync loop, without sending presence', () => {
@@ -200,8 +214,8 @@ describe('useShowOnlinePreference', () => {
     expect(client.setSyncPresence).toHaveBeenLastCalledWith('offline');
   });
 
-  it('a session that starts with the setting off clears presence and status message, once', async () => {
-    const client = makeClient({ [EVENT_TYPE]: { show_online: false } }, false);
+  it('a session that starts with the setting off or absent clears presence and status message, once', async () => {
+    const client = makeClient({}, false);
     harness.client = client;
     renderHook(() => useShowOnlinePreference());
     expect(client.setPresence).not.toHaveBeenCalled();
@@ -214,8 +228,8 @@ describe('useShowOnlinePreference', () => {
     expect(client.setPresence).toHaveBeenCalledExactlyOnceWith({ presence: 'offline', status_msg: '' });
   });
 
-  it('a session that starts with the setting on or absent sends no presence', async () => {
-    const client = makeClient({}, false);
+  it('a session that starts with the setting on sends no presence', async () => {
+    const client = makeClient({ [EVENT_TYPE]: { show_online: true } }, false);
     harness.client = client;
     renderHook(() => useShowOnlinePreference());
 
@@ -254,7 +268,7 @@ describe('useShowOnlinePreference', () => {
   });
 
   it('rejects without changing anything when the homeserver refuses, and without a client', async () => {
-    const client = makeClient();
+    const client = makeClient({ [EVENT_TYPE]: { show_online: true } });
     client.setAccountData.mockRejectedValueOnce(new Error('M_FORBIDDEN'));
     harness.client = client;
     const { result, rerender } = renderHook(() => useShowOnlinePreference());

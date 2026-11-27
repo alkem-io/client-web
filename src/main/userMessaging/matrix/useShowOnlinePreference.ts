@@ -42,9 +42,9 @@ export const setPresenceRetryingOnce = async (
   });
 };
 
-/** The "Show when I'm online" setting from account data; on while absent. */
+/** The "Show when you're online" setting from account data; off until the user turns it on. */
 export const showOnlineOf = (client: MatrixClient | null): boolean =>
-  client?.getAccountData(SHOW_ONLINE_EVENT)?.getContent().show_online !== false;
+  client?.getAccountData(SHOW_ONLINE_EVENT)?.getContent().show_online === true;
 
 // Clients that have finished a first sync, which is when the setting is known. Kept past
 // that sync so a reconnect does not hide everyone's status for a moment.
@@ -81,8 +81,8 @@ const subscribeToSetting = (client: MatrixClient | null) => (listener: () => voi
   if (!client) {
     return noop;
   }
-  // A session syncs offline until the setting is known, which is when the first sync is done:
-  // only then does absent account data mean on. Applied at once when that already happened.
+  // A session syncs offline until the setting is known, which is when the first sync is done.
+  // Applied at once when that already happened.
   if (client.isInitialSyncComplete()) {
     apply(client, showOnlineOf(client));
   }
@@ -100,7 +100,7 @@ const subscribeToSetting = (client: MatrixClient | null) => (listener: () => voi
   };
   const onAccountData = (event: MatrixEvent) => {
     if (event.getType() === SHOW_ONLINE_EVENT) {
-      apply(client, event.getContent().show_online !== false);
+      apply(client, event.getContent().show_online === true);
       listener();
     }
   };

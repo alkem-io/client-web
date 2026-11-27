@@ -95,7 +95,7 @@ export const useOwnStatusMessage = () => {
 
   // Rejects when there is no client or the homeserver refuses the update.
   const setStatusMessage = async (text: string) => {
-    // Until the first sync is done the setting is unknown, and absent would wrongly read as on.
+    // Until the first sync is done the setting is unknown.
     if (!client?.isInitialSyncComplete()) {
       throw new Error('Chat is not connected');
     }

@@ -13,9 +13,10 @@ type FakeUser = { presence: string; events: { presence?: { getContent: () => { s
 type FakeEvent = { getType: () => string };
 const presenceEvent: FakeEvent = { getType: () => 'm.presence' };
 
+// The setting is off until the user turns it on, so most tests start with it on.
 const makeClient = (
   users: Record<string, FakeUser>,
-  accountData: Record<string, unknown> = {},
+  accountData: Record<string, unknown> = { 'io.alkemio.chat.presence': { show_online: true } },
   firstSyncDone = true
 ) => {
   const handlers = new Map<string, (event: FakeEvent) => void>();
@@ -100,7 +101,7 @@ describe('useMatrixPresence', () => {
   });
 
   it('shows nobody a status until the first sync has told us the setting, then shows them', () => {
-    const client = makeClient({ '@a:hs': reported('online', 'Lunch') }, {}, false);
+    const client = makeClient({ '@a:hs': reported('online', 'Lunch') }, undefined, false);
     harness.client = client;
     const { result } = renderHook(() => useMatrixPresence(['a']));
     expect(result.current.get('a')).toEqual({ presence: 'unknown' });
@@ -127,6 +128,12 @@ describe('useMatrixPresence', () => {
       client.emit(ClientEvent.Sync, presenceEvent);
     });
     expect(result.current.get('a')).toEqual({ presence: 'online' });
+  });
+
+  it('shows nobody a status to a user who never turned the setting on', () => {
+    harness.client = makeClient({ '@a:hs': reported('online', 'Lunch') }, {});
+    const { result } = renderHook(() => useMatrixPresence(['a']));
+    expect(result.current.get('a')).toEqual({ presence: 'unknown' });
   });
 
   it('shows nobody a status while the own setting is off, and follows it live', () => {
@@ -271,7 +278,7 @@ describe('useOwnStatusMessage', () => {
   });
 
   it('a save waiting on the rate limit is not retried once "Show when I\'m online" is switched off', async () => {
-    const accountData: Record<string, unknown> = {};
+    const accountData: Record<string, unknown> = { 'io.alkemio.chat.presence': { show_online: true } };
     const client = makeClient({ '@me:hs': reported('online', 'Lunch') }, accountData);
     let refuse: (error: unknown) => void = () => {};
     client.setPresence.mockImplementationOnce(
