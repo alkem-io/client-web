@@ -207,16 +207,14 @@ describe('ChatPanel', () => {
   });
 
   describe('thread header at the collapsed width', () => {
-    test('expand and sound move into the settings menu, and the expand item expands the panel', async () => {
+    test('expand moves into the settings menu, which never lists the sound, and the item expands the panel', async () => {
       const user = userEvent.setup({ pointerEventsCheck: 0 });
-      const onToggleSound = vi.fn();
-      renderPanel({ onBack: vi.fn(), onToggleSound, settingsMenu });
+      renderPanel({ onBack: vi.fn(), settingsMenu });
       expect(headerControlNames()).toEqual(['Back to conversations', 'Notification settings', 'Close chat']);
 
       await user.click(screen.getByRole('button', { name: 'Notification settings' }));
       expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual([
         'Expand chat',
-        'Mute chat sound',
         'Set status',
         'Notification settings',
       ]);
@@ -226,31 +224,19 @@ describe('ChatPanel', () => {
       expect(headerControlNames()).toEqual([
         'Back to conversations',
         'Collapse chat',
-        'Mute chat sound',
         'Notification settings',
         'Close chat',
       ]);
     });
 
-    test('the sound item is named after what a press does and calls the handler', async () => {
-      const user = userEvent.setup({ pointerEventsCheck: 0 });
-      const onToggleSound = vi.fn();
-      renderPanel({ onBack: vi.fn(), onToggleSound, soundMuted: true, settingsMenu });
-
-      await user.click(screen.getByRole('button', { name: 'Notification settings' }));
-      await user.click(screen.getByRole('menuitem', { name: 'Unmute chat sound' }));
-      expect(onToggleSound).toHaveBeenCalledOnce();
-    });
-
-    test('on a small screen the menu gets the sound item but no expand item', async () => {
+    test('on a small screen the menu gets no expand item', async () => {
       screenSize.isSmallScreen = true;
-      renderPanel({ onBack: vi.fn(), onToggleSound: vi.fn(), settingsMenu });
+      renderPanel({ onBack: vi.fn(), settingsMenu });
 
       await userEvent
         .setup({ pointerEventsCheck: 0 })
         .click(screen.getByRole('button', { name: 'Notification settings' }));
       expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual([
-        'Mute chat sound',
         'Set status',
         'Notification settings',
       ]);

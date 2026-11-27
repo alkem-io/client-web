@@ -1,4 +1,4 @@
-import { Bell, Maximize2, Pencil, Settings, Volume2, VolumeX } from 'lucide-react';
+import { Bell, Maximize2, Pencil, Settings } from 'lucide-react';
 import { chatHeaderIconButtonClass, chatHeaderLargeIconClass } from '@/crd/components/chat/CallControls';
 import {
   DropdownMenu,
@@ -9,11 +9,9 @@ import {
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
 
-/** Header toggles the panel hands to the menu when its header has no room for their icons. */
+/** The header toggle the panel hands to the menu when its header has no room for the icon. */
 export type ChatSettingsMenuToggles = {
   expand?: { label: string; onSelect: () => void };
-  /** `label` names what a press does; `muted` is the current state. */
-  sound?: { label: string; muted: boolean; onSelect: () => void };
 };
 
 type ChatSettingsMenuProps = ChatSettingsMenuToggles & {
@@ -29,10 +27,9 @@ type ChatSettingsMenuProps = ChatSettingsMenuToggles & {
   onOpenNotificationSettings: () => void;
 };
 
-/** The gear in the chat header: the panel's expand and sound toggles when given, whether you show as online, your status, and the notification settings. */
+/** The gear in the chat header: the panel's expand toggle when given, whether you show as online, your status, and the notification settings. */
 export function ChatSettingsMenu({
   expand,
-  sound,
   label,
   showOnlineLabel,
   showOnline,
@@ -51,18 +48,14 @@ export function ChatSettingsMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="z-[60] min-w-44">
         {expand && (
-          <DropdownMenuItem onSelect={expand.onSelect}>
-            <Maximize2 aria-hidden="true" />
-            {expand.label}
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem onSelect={expand.onSelect}>
+              <Maximize2 aria-hidden="true" />
+              {expand.label}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
         )}
-        {sound && (
-          <DropdownMenuItem onSelect={sound.onSelect}>
-            {sound.muted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
-            {sound.label}
-          </DropdownMenuItem>
-        )}
-        {(expand || sound) && <DropdownMenuSeparator />}
         <DropdownMenuCheckboxItem checked={showOnline} onCheckedChange={onShowOnlineChange}>
           {showOnlineLabel}
         </DropdownMenuCheckboxItem>

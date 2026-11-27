@@ -592,9 +592,9 @@ export const UnifiedChatPanelConnector = ({
             }}
           />
         )}
-        // The sound is on or off for the whole chat, never per conversation.
+        // The sound is on or off for the whole chat, never per conversation, so only the list offers it.
         onToggleSound={
-          chatSound.setEnabled
+          view === 'list' && chatSound.setEnabled
             ? () => {
                 // A failed save is reported by the global error handler; the toggle stays as it was.
                 chatSound.setEnabled?.(!chatSound.enabled).catch(() => undefined);

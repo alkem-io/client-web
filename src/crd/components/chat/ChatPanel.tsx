@@ -25,7 +25,7 @@ type ChatPanelProps = {
    * with no accessible name (WCAG 2.1 AA 4.1.2). Mandatory labels make that unrepresentable. */
   backLabel: string;
   /** Renders the settings control (e.g. a gear menu), shown in the header just before close. In a thread at the
-   * collapsed width it is given the expand and sound toggles, which then have no header icon of their own. */
+   * collapsed width it is given the expand toggle, which then has no header icon of its own. */
   settingsMenu?: (toggles: ChatSettingsMenuToggles) => ReactNode;
   /** When provided, a mute / unmute toggle for the chat sound is shown in the header. */
   onToggleSound?: () => void;
@@ -105,7 +105,7 @@ export function ChatPanel({
   // bottom of the panel stays above the on-screen keyboard.
   const visibleArea = useVisibleViewportArea(open && isSmallScreen);
   // A thread header at the collapsed width is short of room for the name, so its
-  // expand and sound toggles move into the settings menu.
+  // expand toggle moves into the settings menu.
   const togglesInMenu = Boolean(onBack && settingsMenu) && !isExpanded;
 
   useEffect(() => {
@@ -231,7 +231,7 @@ export function ChatPanel({
                   )}
                 </button>
               )}
-              {onToggleSound && !togglesInMenu && (
+              {onToggleSound && (
                 <button
                   type="button"
                   onClick={onToggleSound}
@@ -246,15 +246,8 @@ export function ChatPanel({
                 </button>
               )}
               {settingsMenu?.(
-                togglesInMenu
-                  ? {
-                      expand: isSmallScreen ? undefined : { label: expandLabel, onSelect: () => setExpanded(true) },
-                      sound: onToggleSound && {
-                        label: soundMuted ? unmuteSoundLabel : muteSoundLabel,
-                        muted: soundMuted,
-                        onSelect: onToggleSound,
-                      },
-                    }
+                togglesInMenu && !isSmallScreen
+                  ? { expand: { label: expandLabel, onSelect: () => setExpanded(true) } }
                   : {}
               )}
               <button type="button" onClick={onClose} aria-label={closeLabel} className={chatHeaderIconButtonClass}>

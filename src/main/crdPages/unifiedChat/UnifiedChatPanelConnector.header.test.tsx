@@ -232,11 +232,10 @@ describe('UnifiedChatPanelConnector header', () => {
   it.each([
     ['a 1:1 chat', 'direct'],
     ['a group chat', 'group'],
-  ])('offers the same whole-chat sound toggle inside %s', (_name, conversationId) => {
+  ])('has no sound toggle inside %s, where it would read as muting that chat', (_name, conversationId) => {
     state.selectedConversationId = conversationId;
     render(<UnifiedChatPanelConnector />);
-    panelProps.onToggleSound?.();
-    expect(chatSound.setEnabled).toHaveBeenCalledExactlyOnceWith(false);
+    expect(panelProps.onToggleSound).toBeUndefined();
   });
 
   it('unmutes when the sound is off, adding no message of its own when the save fails', async () => {
