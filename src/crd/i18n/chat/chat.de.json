@@ -14,7 +14,8 @@
     "reconnecting": "Verbindung wird wiederhergestellt… Neue Nachrichten können verzögert ankommen."
   },
   "actions": {
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "close": "Schließen"
   },
   "newChat": {
     "title": "Neue Nachricht",
@@ -170,9 +171,10 @@
     "edit": "Deinen Status bearbeiten: {{status}}",
     "save": "Status speichern",
     "clear": "Status löschen",
-    "hint": "Personen, mit denen du chattest, sehen ihn an deinem Avatar.",
     "saveError": "Dein Status konnte nicht gespeichert werden. Bitte versuche es erneut.",
-    "showOnline": "Anzeigen, wenn ich online bin",
+    "showOnline": "Anzeigen, wenn du online bist",
+    "showOnlineOn": "An: Personen, mit denen du chattest, sehen, wann du online bist, und deinen Status.",
+    "showOnlineOff": "Aus: Andere sehen weder, dass du online bist, noch deinen Status.",
     "showOnlineSaveError": "Deine Online-Einstellung konnte nicht gespeichert werden. Bitte versuche es erneut."
   }
 }

@@ -115,9 +115,6 @@ vi.mock('@/crd/components/chat/ChatPanel', () => ({
 
 type SettingsMenuProps = {
   label: string;
-  showOnlineLabel: string;
-  showOnline: boolean;
-  onShowOnlineChange: (showOnline: boolean) => void;
   statusLabel: string;
   onEditStatus: () => void;
   notificationSettingsLabel: string;
@@ -131,7 +128,13 @@ vi.mock('@/crd/components/chat/ChatSettingsMenu', () => ({
   },
 }));
 
-type StatusDialogProps = { open: boolean; statusMessage: string; onSave: (statusMessage: string) => void };
+type StatusDialogProps = {
+  open: boolean;
+  statusMessage: string;
+  onSave: (statusMessage: string) => void;
+  showOnline: boolean;
+  onShowOnlineChange: (showOnline: boolean) => void;
+};
 let statusDialogProps: StatusDialogProps | undefined;
 vi.mock('@/crd/components/chat/SetStatusDialog', () => ({
   SetStatusDialog: (props: StatusDialogProps) => {
@@ -302,11 +305,11 @@ describe('UnifiedChatPanelConnector header', () => {
     await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('status.saveError', 'error'));
   });
 
-  it('the gear menu shows the online setting and changes it', async () => {
+  it('the status dialog shows the online setting and changes it', async () => {
     render(<UnifiedChatPanelConnector />);
-    expect(settingsMenuProps).toMatchObject({ showOnlineLabel: 'status.showOnline', showOnline: true });
+    expect(statusDialogProps?.showOnline).toBe(true);
 
-    settingsMenuProps?.onShowOnlineChange(false);
+    statusDialogProps?.onShowOnlineChange(false);
     expect(showOnlinePreference.setShowOnline).toHaveBeenCalledExactlyOnceWith(false);
     await Promise.resolve();
     expect(notify).not.toHaveBeenCalled();
@@ -315,20 +318,20 @@ describe('UnifiedChatPanelConnector header', () => {
   it('a failed change of the online setting is reported once', async () => {
     showOnlinePreference.setShowOnline = vi.fn().mockRejectedValue(new Error('rate limited'));
     render(<UnifiedChatPanelConnector />);
-    settingsMenuProps?.onShowOnlineChange(false);
+    statusDialogProps?.onShowOnlineChange(false);
     await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('status.showOnlineSaveError', 'error'));
   });
 
-  it('while the online setting is off, the header shows no status and the status dialog never opens', () => {
+  it('while the online setting is off, no status is shown anywhere and the dialog still opens to switch it back on', () => {
     showOnlinePreference.showOnline = false;
     ownStatus.statusMessage = 'In a workshop';
     render(<UnifiedChatPanelConnector />);
-    expect(settingsMenuProps?.showOnline).toBe(false);
     expect(panelProps.subtitle).toBeUndefined();
+    expect(settingsMenuProps?.statusLabel).toBe('status.set');
 
     act(() => settingsMenuProps?.onEditStatus());
 
-    expect(statusDialogProps?.open).toBe(false);
+    expect(statusDialogProps).toMatchObject({ open: true, statusMessage: '', showOnline: false });
   });
 
   it.each([

@@ -14,7 +14,8 @@
     "reconnecting": "Reconnexion… Les nouveaux messages peuvent être retardés."
   },
   "actions": {
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "close": "Fermer"
   },
   "newChat": {
     "title": "Nouveau message",
@@ -170,9 +171,10 @@
     "edit": "Modifier votre statut : {{status}}",
     "save": "Enregistrer le statut",
     "clear": "Effacer le statut",
-    "hint": "Les personnes avec qui vous discutez le voient sur votre avatar.",
     "saveError": "Impossible d'enregistrer votre statut. Veuillez réessayer.",
-    "showOnline": "Afficher quand je suis en ligne",
+    "showOnline": "Afficher quand vous êtes en ligne",
+    "showOnlineOn": "Activé : les personnes avec qui vous discutez voient quand vous êtes en ligne, ainsi que votre statut.",
+    "showOnlineOff": "Désactivé : personne ne voit que vous êtes en ligne, ni votre statut.",
     "showOnlineSaveError": "Impossible d'enregistrer votre paramètre de présence. Veuillez réessayer."
   }
 }

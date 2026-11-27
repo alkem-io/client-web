@@ -7,21 +7,56 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-const renderDialog = (statusMessage: string) => {
+const renderDialog = (statusMessage: string, showOnline = true) => {
   const onSave = vi.fn();
   const onOpenChange = vi.fn();
-  render(<SetStatusDialog open={true} onOpenChange={onOpenChange} statusMessage={statusMessage} onSave={onSave} />);
-  return { onSave, onOpenChange };
+  const onShowOnlineChange = vi.fn();
+  render(
+    <SetStatusDialog
+      open={true}
+      onOpenChange={onOpenChange}
+      statusMessage={statusMessage}
+      onSave={onSave}
+      showOnline={showOnline}
+      onShowOnlineChange={onShowOnlineChange}
+    />
+  );
+  return { onSave, onOpenChange, onShowOnlineChange };
 };
 
 describe('SetStatusDialog', () => {
-  test('starts from the current status, focused, with the hint that others see it', () => {
+  test('starts from the current status, focused, with the switch on and described as on', () => {
     renderDialog('Lunch');
     const input = screen.getByRole('textbox', { name: 'status.label' });
     expect(input).toHaveValue('Lunch');
     expect(input).toHaveFocus();
     expect(input).toHaveAttribute('maxLength', '100');
-    expect(screen.getByRole('dialog', { name: 'status.change' })).toHaveAccessibleDescription('status.hint');
+    expect(screen.getByRole('dialog', { name: 'status.change' })).toHaveAccessibleDescription('status.showOnlineOn');
+    expect(screen.getByRole('switch', { name: 'status.showOnline' })).toBeChecked();
+  });
+
+  test('switching off asks for the change at once, without saving or closing', async () => {
+    const { onShowOnlineChange, onSave, onOpenChange } = renderDialog('Lunch');
+    await userEvent.click(screen.getByRole('switch', { name: 'status.showOnline' }));
+
+    expect(onShowOnlineChange).toHaveBeenCalledExactlyOnceWith(false);
+    expect(onSave).not.toHaveBeenCalled();
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  test('while off, the switch is described as off, there is no status to set, and close closes', async () => {
+    const { onShowOnlineChange, onOpenChange } = renderDialog('', false);
+    expect(screen.getByRole('dialog', { name: 'status.set' })).toHaveAccessibleDescription('status.showOnlineOff');
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'status.save' })).not.toBeInTheDocument();
+
+    const toggle = screen.getByRole('switch', { name: 'status.showOnline' });
+    expect(toggle).not.toBeChecked();
+    await userEvent.click(toggle);
+    expect(onShowOnlineChange).toHaveBeenCalledExactlyOnceWith(true);
+
+    await userEvent.click(screen.getByRole('button', { name: 'actions.close' }));
+    expect(onOpenChange).toHaveBeenCalledExactlyOnceWith(false);
   });
 
   test('without a status it is titled to set one and offers no clear', () => {

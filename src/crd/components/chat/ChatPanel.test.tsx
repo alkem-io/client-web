@@ -34,9 +34,6 @@ const settingsMenu: ComponentProps<typeof ChatPanel>['settingsMenu'] = toggles =
   <ChatSettingsMenu
     {...toggles}
     label="Notification settings"
-    showOnlineLabel="Show when I'm online"
-    showOnline={true}
-    onShowOnlineChange={vi.fn()}
     statusLabel="Set status"
     onEditStatus={vi.fn()}
     notificationSettingsLabel="Notification settings"

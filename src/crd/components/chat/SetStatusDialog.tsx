@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
+import { Switch } from '@/crd/primitives/switch';
 
 type SetStatusDialogProps = {
   open: boolean;
@@ -19,10 +20,21 @@ type SetStatusDialogProps = {
   statusMessage: string;
   /** Saves a new status message; an empty one clears it. */
   onSave: (statusMessage: string) => void;
+  /** While off, others never see the user online and there is no status to set. */
+  showOnline: boolean;
+  /** Applied at once, not on save. */
+  onShowOnlineChange: (showOnline: boolean) => void;
 };
 
-/** Sets, edits or clears the signed-in user's status message, which others see on their avatar card. */
-export function SetStatusDialog({ open, onOpenChange, statusMessage, onSave }: SetStatusDialogProps) {
+/** Whether others see the signed-in user online and, while they do, the status message shown on their avatar card. */
+export function SetStatusDialog({
+  open,
+  onOpenChange,
+  statusMessage,
+  onSave,
+  showOnline,
+  onShowOnlineChange,
+}: SetStatusDialogProps) {
   const { t } = useTranslation('crd-chat');
   // Null until the user types, so each opening starts from the current status.
   const [draft, setDraft] = useState<string | null>(null);
@@ -37,7 +49,7 @@ export function SetStatusDialog({ open, onOpenChange, statusMessage, onSave }: S
   };
 
   const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
-    isDirty: draft !== null && draft.trim() !== statusMessage,
+    isDirty: showOnline && draft !== null && draft.trim() !== statusMessage,
     onClose: close,
   });
 
@@ -48,35 +60,52 @@ export function SetStatusDialog({ open, onOpenChange, statusMessage, onSave }: S
         <DialogContent hideClose={true}>
           <DialogHeader>
             <DialogTitle>{statusMessage ? t('status.change') : t('status.set')}</DialogTitle>
-            <DialogDescription>{t('status.hint')}</DialogDescription>
           </DialogHeader>
-          <form
-            className="grid gap-4"
-            onSubmit={event => {
-              event.preventDefault();
-              save(draft ?? statusMessage);
-            }}
-          >
-            <Input
-              value={draft ?? statusMessage}
-              onChange={event => setDraft(event.target.value)}
-              maxLength={100}
-              autoFocus={true}
-              placeholder={t('status.placeholder')}
-              aria-label={t('status.label')}
-            />
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <p className="text-body-emphasis">{t('status.showOnline')}</p>
+              {/* Says what the current position means, so on and off cannot be misread. */}
+              <DialogDescription className="mt-0.5">
+                {showOnline ? t('status.showOnlineOn') : t('status.showOnlineOff')}
+              </DialogDescription>
+            </div>
+            <Switch checked={showOnline} onCheckedChange={onShowOnlineChange} aria-label={t('status.showOnline')} />
+          </div>
+          {showOnline ? (
+            <form
+              className="grid gap-4"
+              onSubmit={event => {
+                event.preventDefault();
+                save(draft ?? statusMessage);
+              }}
+            >
+              <Input
+                value={draft ?? statusMessage}
+                onChange={event => setDraft(event.target.value)}
+                maxLength={100}
+                autoFocus={true}
+                placeholder={t('status.placeholder')}
+                aria-label={t('status.label')}
+              />
+              <DialogFooter>
+                <Button type="button" variant="ghost" onClick={requestClose}>
+                  {t('actions.cancel')}
+                </Button>
+                {statusMessage && (
+                  <Button type="button" variant="outline" onClick={() => save('')}>
+                    {t('status.clear')}
+                  </Button>
+                )}
+                <Button type="submit">{t('status.save')}</Button>
+              </DialogFooter>
+            </form>
+          ) : (
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={requestClose}>
-                {t('actions.cancel')}
+                {t('actions.close')}
               </Button>
-              {statusMessage && (
-                <Button type="button" variant="outline" onClick={() => save('')}>
-                  {t('status.clear')}
-                </Button>
-              )}
-              <Button type="submit">{t('status.save')}</Button>
             </DialogFooter>
-          </form>
+          )}
         </DialogContent>
       </Dialog>
       {guardElement}

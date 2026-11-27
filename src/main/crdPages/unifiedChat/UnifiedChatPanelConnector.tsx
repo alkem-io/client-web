@@ -269,6 +269,7 @@ export const UnifiedChatPanelConnector = ({
   };
   // While off there is no status: switching off clears it, and setting one would say online.
   const { showOnline, setShowOnline } = useShowOnlinePreference();
+  const ownStatusMessage = showOnline ? ownStatus.statusMessage : '';
   const handleShowOnlineChange = (value: boolean) => {
     setShowOnline(value).catch(() => notify(t('status.showOnlineSaveError'), 'error'));
   };
@@ -577,10 +578,7 @@ export const UnifiedChatPanelConnector = ({
           <ChatSettingsMenu
             {...toggles}
             label={t('panel.settings')}
-            showOnlineLabel={t('status.showOnline')}
-            showOnline={showOnline}
-            onShowOnlineChange={handleShowOnlineChange}
-            statusLabel={ownStatus.statusMessage ? t('status.change') : t('status.set')}
+            statusLabel={ownStatusMessage ? t('status.change') : t('status.set')}
             onEditStatus={() => setStatusDialogOpen(true)}
             notificationSettingsLabel={t('panel.settings')}
             onOpenNotificationSettings={() => {
@@ -615,14 +613,14 @@ export const UnifiedChatPanelConnector = ({
             <span className="min-w-0 truncate" title={counterpart.statusMessage}>
               {counterpart.statusMessage}
             </span>
-          ) : view === 'list' && showOnline && ownStatus.statusMessage ? (
+          ) : view === 'list' && ownStatusMessage ? (
             <button
               type="button"
               onClick={() => setStatusDialogOpen(true)}
-              aria-label={t('status.edit', { status: ownStatus.statusMessage })}
+              aria-label={t('status.edit', { status: ownStatusMessage })}
               className="min-w-0 truncate rounded-sm text-left hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {ownStatus.statusMessage}
+              {ownStatusMessage}
             </button>
           ) : undefined
         }
@@ -687,10 +685,12 @@ export const UnifiedChatPanelConnector = ({
       </ChatPanel>
 
       <SetStatusDialog
-        open={showOnline && statusDialogOpen}
+        open={statusDialogOpen}
         onOpenChange={setStatusDialogOpen}
-        statusMessage={ownStatus.statusMessage}
+        statusMessage={ownStatusMessage}
         onSave={handleSaveStatus}
+        showOnline={showOnline}
+        onShowOnlineChange={handleShowOnlineChange}
       />
       <NewChatDialog
         open={newChat.open}

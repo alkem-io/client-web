@@ -14,7 +14,8 @@
     "reconnecting": "Reconnecting… New messages may be delayed."
   },
   "actions": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "close": "Close"
   },
   "newChat": {
     "title": "New message",
@@ -170,9 +171,10 @@
     "edit": "Edit your status: {{status}}",
     "save": "Save status",
     "clear": "Clear status",
-    "hint": "People you chat with see this on your avatar.",
     "saveError": "We couldn't save your status. Please try again.",
-    "showOnline": "Show when I'm online",
+    "showOnline": "Show when you're online",
+    "showOnlineOn": "On: people you chat with can see when you're online, and your status.",
+    "showOnlineOff": "Off: people can't see that you're online or your status.",
     "showOnlineSaveError": "We couldn't save your online setting. Please try again."
   }
 }

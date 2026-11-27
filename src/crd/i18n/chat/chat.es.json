@@ -14,7 +14,8 @@
     "reconnecting": "Reconectando… Los mensajes nuevos pueden retrasarse."
   },
   "actions": {
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "close": "Cerrar"
   },
   "newChat": {
     "title": "Nuevo mensaje",
@@ -170,9 +171,10 @@
     "edit": "Editar tu estado: {{status}}",
     "save": "Guardar estado",
     "clear": "Borrar estado",
-    "hint": "Las personas con las que chateas lo ven en tu avatar.",
     "saveError": "No pudimos guardar tu estado. Inténtalo de nuevo.",
-    "showOnline": "Mostrar cuando estoy en línea",
+    "showOnline": "Mostrar cuando estás en línea",
+    "showOnlineOn": "Activado: las personas con las que chateas ven cuándo estás en línea y tu estado.",
+    "showOnlineOff": "Desactivado: nadie ve que estás en línea ni tu estado.",
     "showOnlineSaveError": "No pudimos guardar tu ajuste de presencia. Inténtalo de nuevo."
   }
 }
