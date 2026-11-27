@@ -39,6 +39,7 @@ import { type CallAction, type CallMedia, callIntentFor } from '@/main/userMessa
 import { storeFor } from '@/main/userMessaging/matrix/conversationSummaryStore';
 import { actorIdOf } from '@/main/userMessaging/matrix/matrixEvents';
 import { useOwnStatusMessage } from '@/main/userMessaging/matrix/useMatrixPresence';
+import { useShowOnlinePreference } from '@/main/userMessaging/matrix/useShowOnlinePreference';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useChatSound } from '@/main/userMessaging/useChatSound';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
@@ -265,6 +266,12 @@ export const UnifiedChatPanelConnector = ({
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const handleSaveStatus = (statusMessage: string) => {
     ownStatus.setStatusMessage(statusMessage).catch(() => notify(t('status.saveError'), 'error'));
+  };
+  // While off there is no status: switching off clears it, and setting one would say online.
+  const { showOnline, setShowOnline } = useShowOnlinePreference();
+  const ownStatusMessage = showOnline ? ownStatus.statusMessage : '';
+  const handleShowOnlineChange = (value: boolean) => {
+    setShowOnline(value).catch(() => notify(t('status.showOnlineSaveError'), 'error'));
   };
 
   const listItems = withActiveCallsFirst(
@@ -571,7 +578,7 @@ export const UnifiedChatPanelConnector = ({
           <ChatSettingsMenu
             {...toggles}
             label={t('panel.settings')}
-            statusLabel={ownStatus.statusMessage ? t('status.change') : t('status.set')}
+            statusLabel={ownStatusMessage ? t('status.change') : t('status.set')}
             onEditStatus={() => setStatusDialogOpen(true)}
             notificationSettingsLabel={t('panel.settings')}
             onOpenNotificationSettings={() => {
@@ -583,9 +590,9 @@ export const UnifiedChatPanelConnector = ({
             }}
           />
         )}
-        // The sound is on or off for the whole chat, never per conversation.
+        // The sound is on or off for the whole chat, never per conversation, so only the list offers it.
         onToggleSound={
-          chatSound.setEnabled
+          view === 'list' && chatSound.setEnabled
             ? () => {
                 // A failed save is reported by the global error handler; the toggle stays as it was.
                 chatSound.setEnabled?.(!chatSound.enabled).catch(() => undefined);
@@ -606,14 +613,14 @@ export const UnifiedChatPanelConnector = ({
             <span className="min-w-0 truncate" title={counterpart.statusMessage}>
               {counterpart.statusMessage}
             </span>
-          ) : view === 'list' && ownStatus.statusMessage ? (
+          ) : view === 'list' && ownStatusMessage ? (
             <button
               type="button"
               onClick={() => setStatusDialogOpen(true)}
-              aria-label={t('status.edit', { status: ownStatus.statusMessage })}
+              aria-label={t('status.edit', { status: ownStatusMessage })}
               className="min-w-0 truncate rounded-sm text-left hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {ownStatus.statusMessage}
+              {ownStatusMessage}
             </button>
           ) : undefined
         }
@@ -680,8 +687,10 @@ export const UnifiedChatPanelConnector = ({
       <SetStatusDialog
         open={statusDialogOpen}
         onOpenChange={setStatusDialogOpen}
-        statusMessage={ownStatus.statusMessage}
+        statusMessage={ownStatusMessage}
         onSave={handleSaveStatus}
+        showOnline={showOnline}
+        onShowOnlineChange={handleShowOnlineChange}
       />
       <NewChatDialog
         open={newChat.open}

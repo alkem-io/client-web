@@ -13,11 +13,21 @@ type FakeUser = { presence: string; events: { presence?: { getContent: () => { s
 type FakeEvent = { getType: () => string };
 const presenceEvent: FakeEvent = { getType: () => 'm.presence' };
 
-const makeClient = (users: Record<string, FakeUser>) => {
+const makeClient = (
+  users: Record<string, FakeUser>,
+  accountData: Record<string, unknown> = {},
+  firstSyncDone = true
+) => {
   const handlers = new Map<string, (event: FakeEvent) => void>();
   return {
     users,
+    accountData,
+    firstSyncDone,
+    isInitialSyncComplete() {
+      return this.firstSyncDone;
+    },
     getUserId: () => '@me:hs',
+    getAccountData: (type: string) => (type in accountData ? { getContent: () => accountData[type] } : undefined),
     getUser: (userId: string) => users[userId] ?? null,
     setPresence: vi.fn(() => Promise.resolve()),
     on: vi.fn((name: string, handler: (event: FakeEvent) => void) => handlers.set(name, handler)),
@@ -87,6 +97,58 @@ describe('useMatrixPresence', () => {
       client.emit(ClientEvent.Event, presenceEvent);
     });
     expect(result.current.get('a')).toEqual({ presence: 'online', statusMessage: 'Lunch' });
+  });
+
+  it('shows nobody a status until the first sync has told us the setting, then shows them', () => {
+    const client = makeClient({ '@a:hs': reported('online', 'Lunch') }, {}, false);
+    harness.client = client;
+    const { result } = renderHook(() => useMatrixPresence(['a']));
+    expect(result.current.get('a')).toEqual({ presence: 'unknown' });
+
+    // A presence event that arrives before the setting is known changes nothing.
+    act(() => client.emit(ClientEvent.Event, presenceEvent));
+    expect(result.current.get('a')).toEqual({ presence: 'unknown' });
+
+    act(() => {
+      client.firstSyncDone = true;
+      client.emit(ClientEvent.Sync, presenceEvent);
+    });
+    expect(result.current.get('a')).toEqual({ presence: 'online', statusMessage: 'Lunch' });
+  });
+
+  it('keeps showing statuses through a reconnect, once the setting is known', () => {
+    const client = makeClient({ '@a:hs': reported('online') });
+    harness.client = client;
+    const { result } = renderHook(() => useMatrixPresence(['a']));
+    expect(result.current.get('a')).toEqual({ presence: 'online' });
+
+    act(() => {
+      client.firstSyncDone = false;
+      client.emit(ClientEvent.Sync, presenceEvent);
+    });
+    expect(result.current.get('a')).toEqual({ presence: 'online' });
+  });
+
+  it('shows nobody a status while the own setting is off, and follows it live', () => {
+    const client = makeClient(
+      { '@a:hs': reported('online', 'Lunch') },
+      { 'io.alkemio.chat.presence': { show_online: false } }
+    );
+    harness.client = client;
+    const { result } = renderHook(() => useMatrixPresence(['a']));
+    expect(result.current.get('a')).toEqual({ presence: 'unknown' });
+
+    act(() => {
+      client.accountData['io.alkemio.chat.presence'] = { show_online: true };
+      client.emit(ClientEvent.AccountData, presenceEvent);
+    });
+    expect(result.current.get('a')).toEqual({ presence: 'online', statusMessage: 'Lunch' });
+
+    act(() => {
+      client.accountData['io.alkemio.chat.presence'] = { show_online: false };
+      client.emit(ClientEvent.AccountData, presenceEvent);
+    });
+    expect(result.current.get('a')).toEqual({ presence: 'unknown' });
   });
 
   it('picks up a person the SDK meets for the first time, once they are in its store', () => {
@@ -206,6 +268,53 @@ describe('useOwnStatusMessage', () => {
     // The rate-limited 'Old' and the accepted 'New': 'Old' is never retried.
     expect(client.setPresence).toHaveBeenCalledTimes(2);
     expect(client.setPresence).toHaveBeenLastCalledWith({ presence: 'online', status_msg: 'New' });
+  });
+
+  it('a save waiting on the rate limit is not retried once "Show when I\'m online" is switched off', async () => {
+    const accountData: Record<string, unknown> = {};
+    const client = makeClient({ '@me:hs': reported('online', 'Lunch') }, accountData);
+    let refuse: (error: unknown) => void = () => {};
+    client.setPresence.mockImplementationOnce(
+      () =>
+        new Promise<void>((_, reject) => {
+          refuse = reject;
+        })
+    );
+    harness.client = client;
+    const { result } = renderHook(() => useOwnStatusMessage());
+
+    let saving: Promise<void> = Promise.resolve();
+    act(() => {
+      saving = result.current.setStatusMessage('In a workshop');
+    });
+    await waitFor(() => expect(client.setPresence).toHaveBeenCalledOnce());
+    refuse({ errcode: 'M_LIMIT_EXCEEDED', data: { retry_after_ms: 20 } });
+    // Lets the refusal start the wait, so only the check after the wait can stop the retry.
+    await new Promise(resolve => setTimeout(resolve, 0));
+    accountData['io.alkemio.chat.presence'] = { show_online: false };
+    await act(() => saving);
+
+    expect(client.setPresence).toHaveBeenCalledOnce();
+  });
+
+  it('sends nothing while "Show when I\'m online" is off, since a status message would say online', async () => {
+    const client = makeClient({}, { 'io.alkemio.chat.presence': { show_online: false } });
+    harness.client = client;
+    const { result } = renderHook(() => useOwnStatusMessage());
+
+    await result.current.setStatusMessage('In a workshop');
+
+    expect(client.setPresence).not.toHaveBeenCalled();
+  });
+
+  it('rejects and sends nothing before the first sync is done, while the setting is still unknown', async () => {
+    const client = makeClient({}, {}, false);
+    harness.client = client;
+    const { result } = renderHook(() => useOwnStatusMessage());
+
+    await expect(result.current.setStatusMessage('In a workshop')).rejects.toThrow('Chat is not connected');
+
+    expect(client.setPresence).not.toHaveBeenCalled();
   });
 
   it('rejects when the homeserver refuses, and without a client', async () => {

@@ -38,6 +38,7 @@ const makeClient = (): FakeClient => {
     stopClient: vi.fn(),
     startClient: vi.fn(async () => {}),
     setAccessToken: vi.fn(),
+    setSyncPresence: vi.fn(async () => {}),
     on: vi.fn((event: string, listener: (state?: string) => void) => handlers.set(event, listener)),
     emit: (event: string, state?: string) => handlers.get(event)?.(state),
   };
