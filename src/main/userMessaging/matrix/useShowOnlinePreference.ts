@@ -46,6 +46,21 @@ export const setPresenceRetryingOnce = async (
 export const showOnlineOf = (client: MatrixClient | null): boolean =>
   client?.getAccountData(SHOW_ONLINE_EVENT)?.getContent().show_online !== false;
 
+// Clients that have finished a first sync, which is when the setting is known. Kept past
+// that sync so a reconnect does not hide everyone's status for a moment.
+const settingKnown = new WeakSet<MatrixClient>();
+
+/** Whether other people's status is shown: only once the setting is known, and only while it is on. Hiding yours hides theirs. */
+export const statusShownOf = (client: MatrixClient | null): boolean => {
+  if (!client) {
+    return false;
+  }
+  if (client.isInitialSyncComplete()) {
+    settingKnown.add(client);
+  }
+  return settingKnown.has(client) && showOnlineOf(client);
+};
+
 // An offline sync leaves the current presence as it is, and Synapse keeps the status
 // message of a user who goes offline, so hiding a user clears both explicitly.
 const OFFLINE_CLEAR = { presence: 'offline', status_msg: '' } as const;

@@ -174,7 +174,7 @@
     "saveError": "We konden je status niet opslaan. Probeer het opnieuw.",
     "showOnline": "Laten zien wanneer je online bent",
     "showOnlineOn": "Aan: mensen met wie je chat zien wanneer je online bent, en je status.",
-    "showOnlineOff": "Uit: mensen zien niet dat je online bent en ook je status niet.",
+    "showOnlineOff": "Uit: mensen zien niet dat je online bent en ook je status niet, en jij ziet die van hen niet.",
     "showOnlineSaveError": "We konden je online-instelling niet opslaan. Probeer het opnieuw."
   }
 }

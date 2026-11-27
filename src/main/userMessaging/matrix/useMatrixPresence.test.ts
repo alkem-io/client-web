@@ -21,7 +21,11 @@ const makeClient = (
   const handlers = new Map<string, (event: FakeEvent) => void>();
   return {
     users,
-    isInitialSyncComplete: () => firstSyncDone,
+    accountData,
+    firstSyncDone,
+    isInitialSyncComplete() {
+      return this.firstSyncDone;
+    },
     getUserId: () => '@me:hs',
     getAccountData: (type: string) => (type in accountData ? { getContent: () => accountData[type] } : undefined),
     getUser: (userId: string) => users[userId] ?? null,
@@ -93,6 +97,58 @@ describe('useMatrixPresence', () => {
       client.emit(ClientEvent.Event, presenceEvent);
     });
     expect(result.current.get('a')).toEqual({ presence: 'online', statusMessage: 'Lunch' });
+  });
+
+  it('shows nobody a status until the first sync has told us the setting, then shows them', () => {
+    const client = makeClient({ '@a:hs': reported('online', 'Lunch') }, {}, false);
+    harness.client = client;
+    const { result } = renderHook(() => useMatrixPresence(['a']));
+    expect(result.current.get('a')).toEqual({ presence: 'unknown' });
+
+    // A presence event that arrives before the setting is known changes nothing.
+    act(() => client.emit(ClientEvent.Event, presenceEvent));
+    expect(result.current.get('a')).toEqual({ presence: 'unknown' });
+
+    act(() => {
+      client.firstSyncDone = true;
+      client.emit(ClientEvent.Sync, presenceEvent);
+    });
+    expect(result.current.get('a')).toEqual({ presence: 'online', statusMessage: 'Lunch' });
+  });
+
+  it('keeps showing statuses through a reconnect, once the setting is known', () => {
+    const client = makeClient({ '@a:hs': reported('online') });
+    harness.client = client;
+    const { result } = renderHook(() => useMatrixPresence(['a']));
+    expect(result.current.get('a')).toEqual({ presence: 'online' });
+
+    act(() => {
+      client.firstSyncDone = false;
+      client.emit(ClientEvent.Sync, presenceEvent);
+    });
+    expect(result.current.get('a')).toEqual({ presence: 'online' });
+  });
+
+  it('shows nobody a status while the own setting is off, and follows it live', () => {
+    const client = makeClient(
+      { '@a:hs': reported('online', 'Lunch') },
+      { 'io.alkemio.chat.presence': { show_online: false } }
+    );
+    harness.client = client;
+    const { result } = renderHook(() => useMatrixPresence(['a']));
+    expect(result.current.get('a')).toEqual({ presence: 'unknown' });
+
+    act(() => {
+      client.accountData['io.alkemio.chat.presence'] = { show_online: true };
+      client.emit(ClientEvent.AccountData, presenceEvent);
+    });
+    expect(result.current.get('a')).toEqual({ presence: 'online', statusMessage: 'Lunch' });
+
+    act(() => {
+      client.accountData['io.alkemio.chat.presence'] = { show_online: false };
+      client.emit(ClientEvent.AccountData, presenceEvent);
+    });
+    expect(result.current.get('a')).toEqual({ presence: 'unknown' });
   });
 
   it('picks up a person the SDK meets for the first time, once they are in its store', () => {

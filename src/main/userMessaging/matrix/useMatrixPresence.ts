@@ -3,7 +3,7 @@ import { useRef, useState, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
 import type { UserPresence } from '../models';
 import { homeserverOf } from './matrixRooms';
-import { setPresenceRetryingOnce, showOnlineOf } from './useShowOnlinePreference';
+import { setPresenceRetryingOnce, showOnlineOf, statusShownOf } from './useShowOnlinePreference';
 
 /** A person's availability and the status message they set, if any. */
 export type UserStatus = { presence: UserPresence; statusMessage?: string };
@@ -13,6 +13,8 @@ const noop = () => {};
 // The client re-emits each m.presence after its User is in the store. The User's
 // own events fire before a newly met User is stored, and Presence only fires when
 // the state changes, so a new status message alone would go unnoticed.
+// The first sync and a change of the "Show when you're online" setting decide whether
+// any status is shown at all, so they notify too.
 const subscribeToPresence = (client: MatrixClient | null) => (listener: () => void) => {
   if (!client) {
     return noop;
@@ -23,7 +25,13 @@ const subscribeToPresence = (client: MatrixClient | null) => (listener: () => vo
     }
   };
   client.on(ClientEvent.Event, onEvent);
-  return () => client.removeListener(ClientEvent.Event, onEvent);
+  client.on(ClientEvent.Sync, listener);
+  client.on(ClientEvent.AccountData, listener);
+  return () => {
+    client.removeListener(ClientEvent.Event, onEvent);
+    client.removeListener(ClientEvent.Sync, listener);
+    client.removeListener(ClientEvent.AccountData, listener);
+  };
 };
 
 // Read from the event itself: the SDK keeps User.presenceStatusMsg when a later
@@ -52,13 +60,18 @@ const statusOf = (user: User | null): UserStatus => {
   return { presence: presenceOf(user), statusMessage: statusMessageOf(user) || undefined };
 };
 
-/** Live Matrix presence and status message per actor id; 'unknown' without a client or a presence event. */
+/**
+ * Live Matrix presence and status message per actor id; 'unknown' without a client or a presence event.
+ * Everyone is 'unknown' until the user's own "Show when you're online" setting is known, and while it is off.
+ */
 export const useMatrixPresence = (actorIds: readonly string[]): ReadonlyMap<string, UserStatus> => {
   const client = useMatrixClient();
   const readSnapshot = () =>
     JSON.stringify(
       actorIds.map(actorId =>
-        client ? statusOf(client.getUser(`@${actorId}:${homeserverOf(client)}`)) : { presence: 'unknown' }
+        client && statusShownOf(client)
+          ? statusOf(client.getUser(`@${actorId}:${homeserverOf(client)}`))
+          : { presence: 'unknown' }
       )
     );
   // A string snapshot compares by value, so an unrelated emit does not re-render.

@@ -174,7 +174,7 @@
     "saveError": "Dein Status konnte nicht gespeichert werden. Bitte versuche es erneut.",
     "showOnline": "Anzeigen, wenn du online bist",
     "showOnlineOn": "An: Personen, mit denen du chattest, sehen, wann du online bist, und deinen Status.",
-    "showOnlineOff": "Aus: Andere sehen weder, dass du online bist, noch deinen Status.",
+    "showOnlineOff": "Aus: Andere sehen weder, dass du online bist, noch deinen Status, und du siehst ihren nicht.",
     "showOnlineSaveError": "Deine Online-Einstellung konnte nicht gespeichert werden. Bitte versuche es erneut."
   }
 }

@@ -174,7 +174,7 @@
     "saveError": "No pudimos guardar tu estado. Inténtalo de nuevo.",
     "showOnline": "Mostrar cuando estás en línea",
     "showOnlineOn": "Activado: las personas con las que chateas ven cuándo estás en línea y tu estado.",
-    "showOnlineOff": "Desactivado: nadie ve que estás en línea ni tu estado.",
+    "showOnlineOff": "Desactivado: nadie ve que estás en línea ni tu estado, y tú no ves los de los demás.",
     "showOnlineSaveError": "No pudimos guardar tu ajuste de presencia. Inténtalo de nuevo."
   }
 }

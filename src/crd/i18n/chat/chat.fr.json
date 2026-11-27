@@ -174,7 +174,7 @@
     "saveError": "Impossible d'enregistrer votre statut. Veuillez réessayer.",
     "showOnline": "Afficher quand vous êtes en ligne",
     "showOnlineOn": "Activé : les personnes avec qui vous discutez voient quand vous êtes en ligne, ainsi que votre statut.",
-    "showOnlineOff": "Désactivé : personne ne voit que vous êtes en ligne, ni votre statut.",
+    "showOnlineOff": "Désactivé : personne ne voit que vous êtes en ligne, ni votre statut, et vous ne voyez pas ceux des autres.",
     "showOnlineSaveError": "Impossible d'enregistrer votre paramètre de présence. Veuillez réessayer."
   }
 }
