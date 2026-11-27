@@ -87,8 +87,10 @@ type GraphQLSender =
   | null
   | undefined;
 
-/** Minimal shape of a GraphQL `MessageAttachment` (feature 013) as selected by
- *  the message documents. Width/height are present for images only. */
+/** The shared input of the GraphQL and Matrix attachment projections: a GraphQL
+ *  `MessageAttachment` (feature 013) as the message documents select it, or a
+ *  media reference parsed from a Matrix event. Width/height are present for
+ *  images only; `voice` is set only by the Matrix projection. */
 type GraphQLMessageAttachment = {
   externalReference?: string | null;
   displayName: string;
@@ -96,6 +98,7 @@ type GraphQLMessageAttachment = {
   size?: number | null;
   width?: number | null;
   height?: number | null;
+  voice?: MessageAttachment['voice'];
 };
 
 type GraphQLReaction =
@@ -176,6 +179,7 @@ export const mapMessageAttachments = (
     size: attachment.size ?? undefined,
     width: attachment.width ?? undefined,
     height: attachment.height ?? undefined,
+    voice: attachment.voice,
   }));
 
 /**
