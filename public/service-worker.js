@@ -1,4 +1,7 @@
 const VERSION_URL = '/meta.json';
+const MAINTENANCE_CACHE = 'alkemio-maintenance';
+const UNEXPECTED_PAGE = '/maintenance/unexpected.html';
+const PAGE_MARKER = 'data-alkemio-maintenance';
 
 // in sync with serviceWorker.ts
 const EventTypes = {
@@ -29,6 +32,11 @@ async function checkVersion(currentVersion) {
 
   try {
     const response = await fetch(`${VERSION_URL}?${Date.now()}`, { cache: 'no-store' });
+    if (response.status === 503) {
+      const windows = await self.clients.matchAll({ type: 'window' });
+      await Promise.all(windows.map(client => client.navigate(client.url).catch(() => {})));
+      return;
+    }
     const data = await response.json();
     const newVersion = data.version;
 
@@ -41,9 +49,25 @@ async function checkVersion(currentVersion) {
   }
 }
 
+// Stores the unexpected page, and only that page: a web pod older than this feature
+// answers the path with the app's index.html and 200 (workspace#126).
+const storeUnexpectedPage = async () => {
+  try {
+    const response = await fetch(UNEXPECTED_PAGE, { cache: 'reload' });
+    if (!response.ok) return;
+    const body = await response.clone().text();
+    if (!body.includes(PAGE_MARKER)) return;
+    const cache = await caches.open(MAINTENANCE_CACHE);
+    await cache.put(UNEXPECTED_PAGE, response);
+  } catch {
+    // nothing stored: a failed navigation then gets the browser's own error, as today
+  }
+};
+
 self.addEventListener('install', event => {
   console.log('[SW] Install');
   self.skipWaiting();
+  event.waitUntil(storeUnexpectedPage());
 });
 
 self.addEventListener('activate', event => {
@@ -172,26 +196,14 @@ self.addEventListener('pushsubscriptionchange', event => {
   event.waitUntil(resubscribe());
 });
 
-/* the following could be used for handling network failures but also caching strategies */
-/* for now we don't want interceptions or caching */
-
-// self.addEventListener('fetch', event => {
-//   event.respondWith(
-//     fetch(event.request).catch(err => {
-//       console.error('[SW] Network failure for:', event.request.url, err);
-//
-//       // Only respond if it's a network failure (e.g. offline)
-//       // Otherwise, don't override the app's own error handling
-//       if (!navigator.onLine) {
-//         return new Response('You appear to be offline.', {
-//           status: 503,
-//           statusText: 'Offline',
-//           headers: { 'Content-Type': 'text/plain' },
-//         });
-//       }
-//
-//       // For non-offline errors, rethrow or skip handling
-//       throw err;
-//     })
-//   );
-// });
+self.addEventListener('fetch', event => {
+  if (event.request.mode !== 'navigate') return;
+  event.respondWith(
+    fetch(event.request).catch(async error => {
+      if (!self.navigator.onLine) throw error;
+      const page = await caches.match(UNEXPECTED_PAGE, { cacheName: MAINTENANCE_CACHE });
+      if (page) return page;
+      throw error;
+    })
+  );
+});
