@@ -5,7 +5,7 @@ const queryRequest = async <TResponseData = unknown>(url: string, queryDocument:
   return axios.post<{ data: TResponseData }>(
     url,
     { query: print(queryDocument) },
-    { responseType: 'json', withCredentials: true }
+    { responseType: 'json', withCredentials: true, timeout: 8000 }
   );
 };
 
