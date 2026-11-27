@@ -107,7 +107,10 @@ describe.each(PAGES)('maintenance page %s', page => {
     expect(links[0]).toMatch(/rel="icon"/);
     expect(links[0]).toMatch(/href="data:/);
 
-    const urls = [...html.matchAll(/\b(?:href|src)="([^"]*)"/g)].map(match => match[1]);
+    const parsed = new DOMParser().parseFromString(html, 'text/html');
+    const urls = [...parsed.querySelectorAll('[href], [src]')].map(
+      element => element.getAttribute('href') ?? element.getAttribute('src') ?? ''
+    );
     expect(urls.length).toBeGreaterThan(0);
     for (const url of urls) {
       expect(url.startsWith('data:') || url === STATUS_URL || url === 'mailto:support@alkem.io').toBe(true);
