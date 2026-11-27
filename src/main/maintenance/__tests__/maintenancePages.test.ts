@@ -108,9 +108,15 @@ describe.each(PAGES)('maintenance page %s', page => {
     expect(links[0]).toMatch(/href="data:/);
 
     const parsed = new DOMParser().parseFromString(html, 'text/html');
-    const urls = [...parsed.querySelectorAll('[href], [src]')].map(
-      element => element.getAttribute('href') ?? element.getAttribute('src') ?? ''
+    // By local name, so an SVG `xlink:href` counts and an element with both attributes has both read.
+    const urls = [...parsed.querySelectorAll('*')].flatMap(element =>
+      [...element.attributes]
+        .filter(attribute => attribute.localName === 'href' || attribute.localName === 'src')
+        .map(attribute => attribute.value)
     );
+    for (const script of parsed.querySelectorAll('script')) {
+      expect(script.textContent).not.toMatch(/\b(?:href|src)\s*=|https?:|\/\//);
+    }
     expect(urls.length).toBeGreaterThan(0);
     for (const url of urls) {
       expect(url.startsWith('data:') || url === STATUS_URL || url === 'mailto:support@alkem.io').toBe(true);
