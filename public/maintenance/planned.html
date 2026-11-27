@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en" data-alkemio-maintenance>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="60">
+<title>Alkemio is offline for planned maintenance</title>
+<link rel="icon" href="data:,">
+<style>
+:root {
+  --background: #fcfdfe; --foreground: #1d384a; --brand: #09bcd4; --brand-wash: #d9f4f8;
+  --muted-foreground: #64748b; --border: #e2e8f0;
+  --font: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--background); color: var(--foreground); font-family: var(--font); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, p { margin: 0; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.page { min-height: 100vh; display: grid; grid-template: "brand art" auto "main art" 1fr "foot art" auto / 1fr 1fr; }
+.brand { grid-area: brand; display: flex; align-items: center; gap: 8px; padding: 36px 48px 0; font-size: 20px; font-weight: 700; line-height: 1.3; }
+.brand svg { width: 28px; height: 28px; }
+main { grid-area: main; align-self: center; display: grid; justify-items: start; gap: 22px; max-width: 600px; padding: 36px 48px; }
+h1 { font-size: 38px; font-weight: 700; line-height: 1.08; letter-spacing: -0.025em; text-wrap: balance; }
+main p { font-size: 16px; line-height: 1.6; color: var(--muted-foreground); text-wrap: pretty; }
+svg.i { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.btn { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding-inline: 18px; border-radius: 6px; background: var(--foreground); color: #fff; font-size: 12px; font-weight: 500; text-transform: uppercase; text-decoration: none; white-space: nowrap; }
+main p.help { font-size: 14px; }
+.help a { font-weight: 500; color: var(--foreground); text-underline-offset: 3px; white-space: nowrap; }
+footer { grid-area: foot; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 48px 36px; color: var(--muted-foreground); }
+footer button { display: inline-flex; align-items: center; gap: 6px; padding: 4px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.art { grid-area: art; position: relative; overflow: hidden; background: var(--brand-wash); }
+.art > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+@media (max-width: 720px) {
+  .page { grid-template: "art" 360px "main" 1fr "foot" auto / 1fr; }
+  .brand { grid-area: art; align-self: start; z-index: 1; padding: 20px; }
+  main { align-self: start; gap: 16px; padding: 24px 20px; }
+  h1 { font-size: 28px; }
+  main p { font-size: 14px; }
+  .btn { display: flex; justify-content: center; width: 100%; }
+  main > div { width: 100%; }
+  footer { padding: 16px 20px; font-size: 12px; }
+  .art > svg { inset: -40px 0 auto; height: 440px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bob { animation: bob 4.5s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(-7px); } }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="brand"><svg viewBox="0 0 63.7 61.1" aria-hidden="true"><path fill="#09BCD4" d="M63.7 0H0V61.1H63.7V0Z"/><path fill="#fff" d="M29.2 25.1C28.1 26.9 26.4 28.1 24.4 28.5H24.3C22.5 29 20.8 30.1 19.8 31.8C18.8 33.5 18.6 35.4 19 37.2C19.6 39.1 19.5 41.3 18.4 43.2C16.3 46.7 11.9 47.8 8.4 45.7C4.9 43.6 3.8 39.2 5.9 35.7C6.5 34.7 7.3 33.9 8.2 33.3C9 33 10 32.6 11 32.4C12.7 31.9 14.2 30.8 15.2 29.2C15.7 28.3 16 27.4 16.2 26.5C16.3 25.6 16.3 24.7 16.1 23.8C15.4 21.9 15.6 19.7 16.7 17.8C18.7 14.3 23.2 13.2 26.7 15.3C30.1 17.2 31.2 21.7 29.2 25.1Z"/><path fill="#fff" d="M58.9 39.8C58.9 43.8 55.7 47 51.7 47C49.6 47 47.7 46.1 46.4 44.7C45.1 43.4 43.3 42.5 41.3 42.5C39.4 42.5 37.6 43.3 36.3 44.5C35 46 33.1 47 30.9 47C26.9 47 23.7 43.8 23.7 39.8C23.7 35.9 26.9 32.6 30.9 32.6C33.1 32.6 35.1 33.6 36.4 35.2C37.7 36.4 39.4 37.1 41.2 37.1C42.2 37.1 43.1 36.9 44 36.5C44.8 36.1 45.6 35.6 46.2 35C47.5 33.5 49.5 32.5 51.6 32.5C55.7 32.6 58.9 35.8 58.9 39.8Z"/><circle fill="#fff" cx="41.6" cy="21.4" r="7.2"/></svg><span>ALKEMIO</span></div>
+  <main>
+    <h1 id="title">Alkemio is offline for planned maintenance</h1>
+    <p id="p1">This work keeps Alkemio running smoothly, and we’ll bring everything back online as soon as it’s done. Our apologies for the inconvenience, and thank you for your patience.</p>
+    <p id="p2">You can follow the progress on our status page.</p>
+    <div><a class="btn" href="https://alkemio.statuspage.io" target="_blank" rel="noopener noreferrer"><span id="status">View status page</span><svg class="i" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></div>
+    <p class="help"><span id="help">Questions? We’re happy to help:</span> <a href="mailto:support@alkem.io">support@alkem.io</a></p>
+  </main>
+  <footer>
+    <span>© <span id="year"></span> Alkemio B.V.</span>
+    <button type="button"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg><span id="switch">Nederlands</span></button>
+  </footer>
+  <div class="art"><svg viewBox="0 0 560 700" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><circle cx="300" cy="330" r="235" fill="#bfeaf1"/><rect x="-800" y="585" width="2200" height="200" fill="#a9e1ea"/><g><path d="M232 238c-10-38-34-52-58-56 2 30 20 54 50 60z" fill="#2f9e6b"/><path d="M240 238c0-46 22-72 52-80 6 38-14 70-44 84z" fill="#3fb57e"/><path d="M236 250c-2-44-8-70-14-96 24 16 34 52 26 96z" fill="#268a5b"/></g><g class="bob"><rect x="308" y="176" width="66" height="66" rx="3" fill="#fde68a" transform="rotate(9 341 209)"/><path d="M324 198l34 5M322 212l24 4" stroke="#b98a16" stroke-width="3" stroke-linecap="round"/></g><rect x="282" y="206" width="56" height="60" rx="3" fill="#fbcfe8" transform="rotate(-8 310 236)"/><path d="M196 248l-34 18 12 12 30-14zM384 248l36 18-12 12-30-14z" fill="#d7a768"/><g transform="translate(190 248)"><rect width="200" height="110" rx="5" fill="#e6bd84"/><rect x="178" width="22" height="110" rx="5" fill="#d7a768"/><rect x="83" width="28" height="30" fill="#f4dcb4"/><g transform="translate(22 58)" fill="none" stroke="#1d384a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h34M4 3v19h28V3M18 22l-8 10M18 22l8 10M11 15l5-5 4 4 6-6"/></g></g><g transform="translate(160 362)"><rect width="150" height="100" rx="5" fill="#e6bd84"/><rect x="128" width="22" height="100" rx="5" fill="#d7a768"/><rect x="58" width="28" height="30" fill="#f4dcb4"/><g transform="translate(22 48)" fill="none" stroke="#1d384a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h30v20H14l-8 7v-7H2z"/><path d="M9 11h16M9 17h10"/></g></g><g transform="translate(314 362)"><rect width="126" height="100" rx="5" fill="#e6bd84"/><rect x="104" width="22" height="100" rx="5" fill="#d7a768"/><rect x="46" width="28" height="30" fill="#f4dcb4"/><g transform="translate(22 48)" fill="none" stroke="#1d384a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1h17l8 8v23H5z"/><path d="M22 1v8h8M11 16h13M11 23h13"/></g></g><g transform="translate(150 466)"><rect width="300" height="94" rx="5" fill="#e6bd84"/><rect x="278" width="22" height="94" rx="5" fill="#d7a768"/><rect x="133" width="28" height="30" fill="#f4dcb4"/></g><g transform="translate(286 486) scale(.95)"><svg width="54" height="52" x="-14" y="0" viewBox="0 0 63.7 61.1" aria-hidden="true"><path fill="#09BCD4" d="M63.7 0H0V61.1H63.7V0Z"/><path fill="#fff" d="M29.2 25.1C28.1 26.9 26.4 28.1 24.4 28.5H24.3C22.5 29 20.8 30.1 19.8 31.8C18.8 33.5 18.6 35.4 19 37.2C19.6 39.1 19.5 41.3 18.4 43.2C16.3 46.7 11.9 47.8 8.4 45.7C4.9 43.6 3.8 39.2 5.9 35.7C6.5 34.7 7.3 33.9 8.2 33.3C9 33 10 32.6 11 32.4C12.7 31.9 14.2 30.8 15.2 29.2C15.7 28.3 16 27.4 16.2 26.5C16.3 25.6 16.3 24.7 16.1 23.8C15.4 21.9 15.6 19.7 16.7 17.8C18.7 14.3 23.2 13.2 26.7 15.3C30.1 17.2 31.2 21.7 29.2 25.1Z"/><path fill="#fff" d="M58.9 39.8C58.9 43.8 55.7 47 51.7 47C49.6 47 47.7 46.1 46.4 44.7C45.1 43.4 43.3 42.5 41.3 42.5C39.4 42.5 37.6 43.3 36.3 44.5C35 46 33.1 47 30.9 47C26.9 47 23.7 43.8 23.7 39.8C23.7 35.9 26.9 32.6 30.9 32.6C33.1 32.6 35.1 33.6 36.4 35.2C37.7 36.4 39.4 37.1 41.2 37.1C42.2 37.1 43.1 36.9 44 36.5C44.8 36.1 45.6 35.6 46.2 35C47.5 33.5 49.5 32.5 51.6 32.5C55.7 32.6 58.9 35.8 58.9 39.8Z"/><circle fill="#fff" cx="41.6" cy="21.4" r="7.2"/></svg></g><path d="M96 190h26l26 372" fill="none" stroke="#1d384a" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><rect x="128" y="560" width="344" height="11" rx="5.5" fill="#1d384a"/><g fill="#1d384a"><circle cx="186" cy="588" r="21"/><circle cx="414" cy="588" r="21"/></g><g fill="#bfeaf1"><circle cx="186" cy="588" r="8"/><circle cx="414" cy="588" r="8"/></g></svg></div>
+</div>
+<script>
+  (function () {
+    const COPY = {
+      en: {
+        "title": "Alkemio is offline for planned maintenance",
+        "p1": "This work keeps Alkemio running smoothly, and we’ll bring everything back online as soon as it’s done. Our apologies for the inconvenience, and thank you for your patience.",
+        "p2": "You can follow the progress on our status page.",
+        "status": "View status page",
+        "help": "Questions? We’re happy to help:",
+        "switch": "Nederlands"
+      },
+      nl: {
+        "title": "Alkemio is offline voor gepland onderhoud",
+        "p1": "Met dit onderhoud zorgen we dat Alkemio soepel blijft werken. Zodra we klaar zijn, zetten we alles weer online. Onze excuses voor het ongemak, en bedankt voor je geduld.",
+        "p2": "Op onze statuspagina kun je de voortgang volgen.",
+        "status": "Bekijk statuspagina",
+        "help": "Vragen? We helpen je graag:",
+        "switch": "English"
+      }
+    };
+    const KEY = 'alkemio-maintenance-lang';
+    let lang;
+    try {
+      lang = localStorage.getItem(KEY);
+    } catch (e) {}
+    if (lang !== 'en' && lang !== 'nl') lang = /^nl/i.test(navigator.language) ? 'nl' : 'en';
+    function render() {
+      for (const id in COPY[lang]) document.getElementById(id).textContent = COPY[lang][id];
+      document.title = COPY[lang].title;
+      document.documentElement.lang = lang;
+    }
+    document.querySelector('footer button').addEventListener('click', function () {
+      lang = lang === 'en' ? 'nl' : 'en';
+      try {
+        localStorage.setItem(KEY, lang);
+      } catch (e) {}
+      render();
+    });
+    document.getElementById('year').textContent = new Date().getFullYear();
+    render();
+  })();
+</script>
+</body>
+</html>

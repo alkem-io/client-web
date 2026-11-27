@@ -1,10 +1,14 @@
 const VERSION_URL = '/meta.json';
+const MAINTENANCE_CACHE = 'alkemio-maintenance';
+const UNEXPECTED_PAGE = '/maintenance/unexpected.html';
+const PAGE_MARKER = 'data-alkemio-maintenance';
 
 // in sync with serviceWorker.ts
 const EventTypes = {
   CLIENT_VERSION: 'CLIENT_VERSION',
   NEW_VERSION_AVAILABLE: 'NEW_VERSION_AVAILABLE',
   CHECK_VERSION: 'CHECK_VERSION',
+  MAINTENANCE: 'MAINTENANCE',
 };
 
 function isMajorOrMinorChanged(oldV, newV) {
@@ -29,6 +33,13 @@ async function checkVersion(currentVersion) {
 
   try {
     const response = await fetch(`${VERSION_URL}?${Date.now()}`, { cache: 'no-store' });
+    if (response.status === 503) {
+      // Planned maintenance. Each page reloads itself: only the page knows its address after
+      // client-side navigation (a client's url here is the one its document was loaded with).
+      const windows = await self.clients.matchAll({ type: 'window' });
+      windows.forEach(client => client.postMessage({ type: EventTypes.MAINTENANCE }));
+      return;
+    }
     const data = await response.json();
     const newVersion = data.version;
 
@@ -36,14 +47,35 @@ async function checkVersion(currentVersion) {
       console.log('[SW] Different version detected: ', currentVersion, newVersion);
       notifyClientsAboutUpdate(newVersion);
     }
+
+    // The platform answers: store the unexpected page now if the install could not.
+    if (!(await caches.match(UNEXPECTED_PAGE, { cacheName: MAINTENANCE_CACHE }))) {
+      await storeUnexpectedPage();
+    }
   } catch (error) {
     console.error('[SW] Version check failed: ', error);
   }
 }
 
+// Stores the unexpected page, and only that page: a web pod older than this feature
+// answers the path with the app's index.html and 200 (workspace#126).
+const storeUnexpectedPage = async () => {
+  try {
+    const response = await fetch(UNEXPECTED_PAGE, { cache: 'reload' });
+    if (!response.ok) return;
+    const body = await response.clone().text();
+    if (!body.includes(PAGE_MARKER)) return;
+    const cache = await caches.open(MAINTENANCE_CACHE);
+    await cache.put(UNEXPECTED_PAGE, response);
+  } catch {
+    // nothing stored: a failed navigation then gets the browser's own error, as today
+  }
+};
+
 self.addEventListener('install', event => {
   console.log('[SW] Install');
   self.skipWaiting();
+  event.waitUntil(storeUnexpectedPage());
 });
 
 self.addEventListener('activate', event => {
@@ -54,12 +86,12 @@ self.addEventListener('activate', event => {
 self.addEventListener('message', event => {
   if (event.data?.type === EventTypes.CLIENT_VERSION && event.data.version) {
     console.log('[SW] CLIENT_VERSION: ', event.data.version);
-    checkVersion(event.data.version);
+    event.waitUntil(checkVersion(event.data.version));
   }
 
   if (event.data?.type === EventTypes.CHECK_VERSION && event.data.version) {
     console.log('[SW] CHECK_VERSION: ', event.data.version);
-    checkVersion(event.data.version);
+    event.waitUntil(checkVersion(event.data.version));
   }
 });
 
@@ -172,26 +204,14 @@ self.addEventListener('pushsubscriptionchange', event => {
   event.waitUntil(resubscribe());
 });
 
-/* the following could be used for handling network failures but also caching strategies */
-/* for now we don't want interceptions or caching */
-
-// self.addEventListener('fetch', event => {
-//   event.respondWith(
-//     fetch(event.request).catch(err => {
-//       console.error('[SW] Network failure for:', event.request.url, err);
-//
-//       // Only respond if it's a network failure (e.g. offline)
-//       // Otherwise, don't override the app's own error handling
-//       if (!navigator.onLine) {
-//         return new Response('You appear to be offline.', {
-//           status: 503,
-//           statusText: 'Offline',
-//           headers: { 'Content-Type': 'text/plain' },
-//         });
-//       }
-//
-//       // For non-offline errors, rethrow or skip handling
-//       throw err;
-//     })
-//   );
-// });
+self.addEventListener('fetch', event => {
+  if (event.request.mode !== 'navigate') return;
+  event.respondWith(
+    fetch(event.request).catch(async error => {
+      if (!self.navigator.onLine) throw error;
+      const page = await caches.match(UNEXPECTED_PAGE, { cacheName: MAINTENANCE_CACHE });
+      if (page) return page;
+      throw error;
+    })
+  );
+});
