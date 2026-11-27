@@ -8,6 +8,7 @@ const EventTypes = {
   CLIENT_VERSION: 'CLIENT_VERSION',
   NEW_VERSION_AVAILABLE: 'NEW_VERSION_AVAILABLE',
   CHECK_VERSION: 'CHECK_VERSION',
+  MAINTENANCE: 'MAINTENANCE',
 };
 
 function isMajorOrMinorChanged(oldV, newV) {
@@ -33,8 +34,10 @@ async function checkVersion(currentVersion) {
   try {
     const response = await fetch(`${VERSION_URL}?${Date.now()}`, { cache: 'no-store' });
     if (response.status === 503) {
+      // Planned maintenance. Each page reloads itself: only the page knows its address after
+      // client-side navigation (a client's url here is the one its document was loaded with).
       const windows = await self.clients.matchAll({ type: 'window' });
-      await Promise.all(windows.map(client => client.navigate(client.url).catch(() => {})));
+      windows.forEach(client => client.postMessage({ type: EventTypes.MAINTENANCE }));
       return;
     }
     const data = await response.json();
@@ -43,6 +46,11 @@ async function checkVersion(currentVersion) {
     if (newVersion !== currentVersion && isMajorOrMinorChanged(currentVersion, newVersion)) {
       console.log('[SW] Different version detected: ', currentVersion, newVersion);
       notifyClientsAboutUpdate(newVersion);
+    }
+
+    // The platform answers: store the unexpected page now if the install could not.
+    if (!(await caches.match(UNEXPECTED_PAGE, { cacheName: MAINTENANCE_CACHE }))) {
+      await storeUnexpectedPage();
     }
   } catch (error) {
     console.error('[SW] Version check failed: ', error);
@@ -78,12 +86,12 @@ self.addEventListener('activate', event => {
 self.addEventListener('message', event => {
   if (event.data?.type === EventTypes.CLIENT_VERSION && event.data.version) {
     console.log('[SW] CLIENT_VERSION: ', event.data.version);
-    checkVersion(event.data.version);
+    event.waitUntil(checkVersion(event.data.version));
   }
 
   if (event.data?.type === EventTypes.CHECK_VERSION && event.data.version) {
     console.log('[SW] CHECK_VERSION: ', event.data.version);
-    checkVersion(event.data.version);
+    event.waitUntil(checkVersion(event.data.version));
   }
 });
 

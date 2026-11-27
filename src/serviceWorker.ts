@@ -3,6 +3,7 @@ const EventTypes = {
   CLIENT_VERSION: 'CLIENT_VERSION',
   NEW_VERSION_AVAILABLE: 'NEW_VERSION_AVAILABLE',
   CHECK_VERSION: 'CHECK_VERSION',
+  MAINTENANCE: 'MAINTENANCE',
 };
 const VERSION_CHECK_INTERVAL = 30 * 1000; // 30 sec
 
@@ -62,6 +63,11 @@ export function onVersionUpdate(callback: VersionUpdateCallback) {
     const handler = (event: MessageEvent) => {
       if (event.data?.type === EventTypes.NEW_VERSION_AVAILABLE) {
         callback(event.data.version);
+      }
+      // The worker's version check got a 503: planned maintenance (workspace#126). Reloading here,
+      // not from the worker, keeps the tab on its own address.
+      if (event.data?.type === EventTypes.MAINTENANCE) {
+        window.location.reload();
       }
     };
 

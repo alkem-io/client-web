@@ -10,7 +10,6 @@ type SwEventListener = (event: unknown) => void;
 
 type WindowClientStub = {
   url: string;
-  navigate: ReturnType<typeof vi.fn>;
   postMessage: ReturnType<typeof vi.fn>;
 };
 
@@ -52,8 +51,6 @@ const loadServiceWorker = () => {
   new Function('self', 'fetch', 'caches', source)(selfStub, fetchStub, cachesStub);
 };
 
-const flush = () => new Promise(resolve => setTimeout(resolve, 0));
-
 const fireFetch = (mode: string) => {
   const respondWith = vi.fn();
   listeners.fetch({ request: { mode, url: 'https://alkem.io/spaces' }, respondWith });
@@ -72,11 +69,20 @@ const fireInstall = () => {
   return pending;
 };
 
-const fireMessage = (type: string, version: string) => listeners.message({ data: { type, version } });
+// Resolves when the work the listener handed to `waitUntil` is done; at once if it handed over nothing.
+const fireMessage = (type: string, version: string) => {
+  let pending: Promise<unknown> = Promise.resolve();
+  listeners.message({
+    data: { type, version },
+    waitUntil: (promise: Promise<unknown>) => {
+      pending = promise;
+    },
+  });
+  return pending;
+};
 
 const windowClient = (url: string): WindowClientStub => ({
   url,
-  navigate: vi.fn(() => Promise.resolve()),
   postMessage: vi.fn(),
 });
 
@@ -166,50 +172,68 @@ describe('service worker install — stores the unexpected page', () => {
   });
 });
 
-describe('service worker messages', () => {
-  it('never opens or writes the cache on a version message', async () => {
-    fetchStub.mockResolvedValue({ status: 200, json: () => Promise.resolve({ version: '1.2.0' }) });
+describe('service worker version check — refills a store the install missed', () => {
+  const sameVersion = { status: 200, json: () => Promise.resolve({ version: '1.1.0' }) };
 
-    fireMessage('CLIENT_VERSION', '1.1.0');
-    fireMessage('CHECK_VERSION', '1.1.0');
-    await flush();
+  it('leaves a stored page alone', async () => {
+    fetchStub.mockResolvedValue(sameVersion);
+    cachesStub.match.mockResolvedValue(new Response('<html data-alkemio-maintenance></html>'));
 
+    await fireMessage('CLIENT_VERSION', '1.1.0');
+    await fireMessage('CHECK_VERSION', '1.1.0');
+
+    expect(cachesStub.match).toHaveBeenCalledWith(UNEXPECTED_PAGE, { cacheName: MAINTENANCE_CACHE });
+    expect(fetchStub).toHaveBeenCalledTimes(2);
+    expect(fetchStub).not.toHaveBeenCalledWith(UNEXPECTED_PAGE, expect.anything());
     expect(cachesStub.open).not.toHaveBeenCalled();
     expect(put).not.toHaveBeenCalled();
+  });
+
+  it('stores the page when nothing is stored yet', async () => {
+    fetchStub
+      .mockResolvedValueOnce(sameVersion)
+      .mockResolvedValueOnce(new Response('<html data-alkemio-maintenance lang="en"></html>'));
+
+    await fireMessage('CHECK_VERSION', '1.1.0');
+
+    expect(fetchStub).toHaveBeenLastCalledWith(UNEXPECTED_PAGE, { cache: 'reload' });
+    expect(put).toHaveBeenCalledTimes(1);
+    expect(put).toHaveBeenCalledWith(UNEXPECTED_PAGE, expect.any(Response));
   });
 });
 
 describe('service worker version check — planned maintenance (US5)', () => {
-  it('reloads every controlled window to its own address on a 503', async () => {
+  it('asks every window to reload itself on a 503, and does nothing else', async () => {
     const json = vi.fn();
     fetchStub.mockResolvedValue({ status: 503, json });
     const spaces = windowClient('https://alkem.io/spaces');
     const home = windowClient('https://alkem.io/home');
-    home.navigate.mockRejectedValue(new TypeError('not controlled'));
     matchAll.mockResolvedValue([spaces, home]);
 
-    fireMessage('CHECK_VERSION', '1.1.0');
-    await vi.waitFor(() => expect(home.navigate).toHaveBeenCalled());
-    await flush();
+    // No flush and no polling: the listener must keep the worker alive until the windows are told.
+    await fireMessage('CHECK_VERSION', '1.1.0');
 
     expect(matchAll).toHaveBeenCalledWith({ type: 'window' });
-    expect(spaces.navigate).toHaveBeenCalledTimes(1);
-    expect(spaces.navigate).toHaveBeenCalledWith('https://alkem.io/spaces');
-    expect(home.navigate).toHaveBeenCalledTimes(1);
-    expect(home.navigate).toHaveBeenCalledWith('https://alkem.io/home');
+    expect(spaces.postMessage).toHaveBeenCalledTimes(1);
+    expect(spaces.postMessage).toHaveBeenCalledWith({ type: 'MAINTENANCE' });
+    expect(home.postMessage).toHaveBeenCalledTimes(1);
+    expect(home.postMessage).toHaveBeenCalledWith({ type: 'MAINTENANCE' });
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(cachesStub.match).not.toHaveBeenCalled();
     expect(json).not.toHaveBeenCalled();
     expect(consoleError).not.toHaveBeenCalled();
   });
 
-  it('still announces a new minor version on a 200 and navigates nothing', async () => {
+  it('still announces a new minor version on a 200 and asks for no reload', async () => {
     fetchStub.mockResolvedValue({ status: 200, json: () => Promise.resolve({ version: '1.2.0' }) });
+    cachesStub.match.mockResolvedValue(new Response('<html data-alkemio-maintenance></html>'));
     const client = windowClient('https://alkem.io/spaces');
     matchAll.mockResolvedValue([client]);
 
     fireMessage('CHECK_VERSION', '1.1.0');
     await vi.waitFor(() => expect(client.postMessage).toHaveBeenCalled());
 
+    expect(client.postMessage).toHaveBeenCalledTimes(1);
     expect(client.postMessage).toHaveBeenCalledWith({ type: 'NEW_VERSION_AVAILABLE', version: '1.2.0' });
-    expect(client.navigate).not.toHaveBeenCalled();
   });
 });
