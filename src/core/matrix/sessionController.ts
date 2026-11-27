@@ -49,6 +49,7 @@ type MatrixClientLike = {
   startClient(opts?: { initialSyncLimit?: number; lazyLoadMembers?: boolean }): Promise<void>;
   on(event: string, listener: (state?: string) => void): unknown;
   setAccessToken(token: string): void;
+  setSyncPresence(presence: 'offline'): Promise<void>;
 };
 
 type SessionHandle = {
@@ -301,6 +302,11 @@ const establishSession = async (
     running = record;
     setActiveClient(client as unknown as MatrixClient);
     await client.startClient({ initialSyncLimit: INITIAL_SYNC_LIMIT, lazyLoadMembers: true });
+    // "Show when I'm online" arrives as account data with the first sync, so that sync is
+    // offline for everyone and useShowOnlinePreference applies the setting once it is done.
+    // Not earlier: the sync loop that takes it is created by startClient, and its first
+    // request still waits on the push rules and filter fetches.
+    void client.setSyncPresence('offline');
   };
 
   const recover = (rejected: CredentialRecord): Promise<void> => transition(() => recoverNow(rejected));

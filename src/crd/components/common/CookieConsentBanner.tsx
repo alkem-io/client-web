@@ -52,11 +52,11 @@ export function CookieConsentBanner({
         </p>
         {error && <CookieSaveError message={error} className="basis-full md:order-first" />}
         <div className="flex basis-full flex-wrap gap-2 md:order-3 md:basis-auto">
-          <Button className={choiceClassName} onClick={onAcceptAll}>
-            {t('cookieConsent.acceptAll')}
-          </Button>
           <Button className={choiceClassName} onClick={onOnlyNecessary}>
             {t('cookieConsent.onlyNecessary')}
+          </Button>
+          <Button className={choiceClassName} onClick={onAcceptAll}>
+            {t('cookieConsent.acceptAll')}
           </Button>
         </div>
       </div>

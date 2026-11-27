@@ -33,6 +33,10 @@ vi.mock('@/main/userMessaging/matrix/useMatrixPresence', async importOriginal =>
   ...(await importOriginal<typeof import('@/main/userMessaging/matrix/useMatrixPresence')>()),
   useOwnStatusMessage: () => ownStatus,
 }));
+const showOnlinePreference = { showOnline: true, setShowOnline: vi.fn() };
+vi.mock('@/main/userMessaging/matrix/useShowOnlinePreference', () => ({
+  useShowOnlinePreference: () => showOnlinePreference,
+}));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { id: 'me' } }),
 }));
@@ -124,7 +128,13 @@ vi.mock('@/crd/components/chat/ChatSettingsMenu', () => ({
   },
 }));
 
-type StatusDialogProps = { open: boolean; statusMessage: string; onSave: (statusMessage: string) => void };
+type StatusDialogProps = {
+  open: boolean;
+  statusMessage: string;
+  onSave: (statusMessage: string) => void;
+  showOnline: boolean;
+  onShowOnlineChange: (showOnline: boolean) => void;
+};
 let statusDialogProps: StatusDialogProps | undefined;
 vi.mock('@/crd/components/chat/SetStatusDialog', () => ({
   SetStatusDialog: (props: StatusDialogProps) => {
@@ -199,6 +209,8 @@ describe('UnifiedChatPanelConnector header', () => {
     navigate.mockClear();
     ownStatus.statusMessage = '';
     ownStatus.setStatusMessage = vi.fn().mockResolvedValue(undefined);
+    showOnlinePreference.showOnline = true;
+    showOnlinePreference.setShowOnline = vi.fn().mockResolvedValue(undefined);
     groupAvatarMembers = undefined;
     confirmations.length = 0;
     openGroupSettings.mockClear();
@@ -223,11 +235,10 @@ describe('UnifiedChatPanelConnector header', () => {
   it.each([
     ['a 1:1 chat', 'direct'],
     ['a group chat', 'group'],
-  ])('offers the same whole-chat sound toggle inside %s', (_name, conversationId) => {
+  ])('has no sound toggle inside %s, where it would read as muting that chat', (_name, conversationId) => {
     state.selectedConversationId = conversationId;
     render(<UnifiedChatPanelConnector />);
-    panelProps.onToggleSound?.();
-    expect(chatSound.setEnabled).toHaveBeenCalledExactlyOnceWith(false);
+    expect(panelProps.onToggleSound).toBeUndefined();
   });
 
   it('unmutes when the sound is off, adding no message of its own when the save fails', async () => {
@@ -292,6 +303,35 @@ describe('UnifiedChatPanelConnector header', () => {
     ownStatus.setStatusMessage = vi.fn().mockRejectedValue(new Error('rate limited'));
     statusDialogProps?.onSave('Lunch');
     await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('status.saveError', 'error'));
+  });
+
+  it('the status dialog shows the online setting and changes it', async () => {
+    render(<UnifiedChatPanelConnector />);
+    expect(statusDialogProps?.showOnline).toBe(true);
+
+    statusDialogProps?.onShowOnlineChange(false);
+    expect(showOnlinePreference.setShowOnline).toHaveBeenCalledExactlyOnceWith(false);
+    await Promise.resolve();
+    expect(notify).not.toHaveBeenCalled();
+  });
+
+  it('a failed change of the online setting is reported once', async () => {
+    showOnlinePreference.setShowOnline = vi.fn().mockRejectedValue(new Error('rate limited'));
+    render(<UnifiedChatPanelConnector />);
+    statusDialogProps?.onShowOnlineChange(false);
+    await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('status.showOnlineSaveError', 'error'));
+  });
+
+  it('while the online setting is off, no status is shown anywhere and the dialog still opens to switch it back on', () => {
+    showOnlinePreference.showOnline = false;
+    ownStatus.statusMessage = 'In a workshop';
+    render(<UnifiedChatPanelConnector />);
+    expect(panelProps.subtitle).toBeUndefined();
+    expect(settingsMenuProps?.statusLabel).toBe('status.set');
+
+    act(() => settingsMenuProps?.onEditStatus());
+
+    expect(statusDialogProps).toMatchObject({ open: true, statusMessage: '', showOnline: false });
   });
 
   it.each([

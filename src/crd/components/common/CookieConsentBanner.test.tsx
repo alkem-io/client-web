@@ -35,6 +35,13 @@ describe('CookieConsentBanner', () => {
     expect(acceptAll).toHaveClass('h-11', 'bg-primary');
   });
 
+  it('puts "Only necessary" before "Accept all"', () => {
+    renderBanner();
+
+    const labels = screen.getAllByRole('button').map(button => button.textContent);
+    expect(labels.indexOf('Only necessary')).toBeLessThan(labels.indexOf('Accept all'));
+  });
+
   it.each([
     ['Accept all', 'onAcceptAll'],
     ['Only necessary', 'onOnlyNecessary'],

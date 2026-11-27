@@ -65,13 +65,12 @@ jobs:
           outputs: type=local,dest=./sourcemaps
           build-args: *build-args
 
-      - name: Upload source maps to Elastic APM
-        env:
-          KIBANA_URL: https://kibana.alkem.io
-          KIBANA_APM_SOURCEMAP_API_KEY: ${{ secrets.KIBANA_APM_SOURCEMAP_API_KEY }}
-          # Any upload problem fails this job (the image is already pushed). Set
-          # the repo variable APM_SOURCEMAPS_STRICT=false to only warn instead.
-          APM_SOURCEMAPS_STRICT: ${{ vars.APM_SOURCEMAPS_STRICT || 'true' }}
-        run: |
-          SERVICE_VERSION="$(jq -r .version package.json)" \
-            ./.build/apm/upload-sourcemaps.sh ./sourcemaps
+      # Picked up by apm-sourcemaps.yml, which starts once this workflow
+      # succeeded and uploads them to Elastic APM off the release path.
+      - name: Store source maps
+        uses: actions/upload-artifact@v7
+        with:
+          name: sourcemaps
+          path: ./sourcemaps
+          if-no-files-found: error
+          retention-days: 7
