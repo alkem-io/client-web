@@ -134,8 +134,6 @@
         "admin": "Admin",
         "owner": "Propietario"
       },
-      "acceptError": "No se pudo aceptar — inténtalo de nuevo",
-      "declineError": "No se pudo rechazar — inténtalo de nuevo",
       "offeredRole": {
         "associate": "Asociado",
         "associateAdmin": "Asociado + Admin",
@@ -232,8 +230,7 @@
       "placeholder": "Describe lo que sabe este Virtual Contributor…",
       "save": "Guardar",
       "cancel": "Cancelar",
-      "saving": "Guardando…",
-      "saveError": "No se pudo guardar la descripción — inténtalo de nuevo."
+      "saving": "Guardando…"
     },
     "empty": {
       "title": "Aún no hay conocimiento",

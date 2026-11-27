@@ -1,5 +1,8 @@
 import type { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { useUpdateCalloutFormMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import type { CalloutFormDetailsModel } from '@/domain/collaboration/callout-form/models/CalloutFormModels';
 import {
   CalloutFormErrorCode,
@@ -34,14 +37,16 @@ export const translateFormDefinitionError = (code: CalloutFormErrorCodeValue | u
 
 export type FormDefinitionSaveResult =
   | { ok: true; form: CalloutFormDetailsModel | undefined }
-  | { ok: false; code: CalloutFormErrorCodeValue | undefined; error: unknown };
+  | { ok: false; code: CalloutFormErrorCodeValue | undefined; error: unknown; message: string };
 
 /**
  * Saves a Form's title, description, definition and settings through `updateCalloutForm` — the only path the definition takes
  * after creation. The Post-level save never carries it. Failures are returned, not thrown, so the caller
- * can keep its dialog open and show the localized reason.
+ * can keep its dialog open and show `message`: the localized form reason, else the server's reason.
  */
 export const useCalloutFormDefinitionSave = () => {
+  const { t } = useTranslation('crd-space');
+  const serverErrorMessage = useServerErrorMessage();
   const [updateCalloutForm] = useUpdateCalloutFormMutation();
 
   const save = async (
@@ -52,11 +57,15 @@ export const useCalloutFormDefinitionSave = () => {
     try {
       const result = await updateCalloutForm({
         variables: { formData: mapFormValuesToUpdateInput(formId, definition, initial) },
-        context: { skipGlobalErrorHandler: true },
+        context: OWN_ERROR_HANDLING,
       });
       return { ok: true, form: result.data?.updateCalloutForm };
     } catch (error) {
-      return { ok: false, code: getCalloutFormErrorCode(error), error };
+      const code = getCalloutFormErrorCode(error);
+      const message = code
+        ? translateFormDefinitionError(code, t)
+        : serverErrorMessage(error, t('formForm.errors.saveFailed'));
+      return { ok: false, code, error, message };
     }
   };
 

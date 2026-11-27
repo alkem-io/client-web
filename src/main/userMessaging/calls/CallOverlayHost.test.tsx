@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const harness = vi.hoisted(() => ({
   client: null as unknown,
@@ -79,6 +79,13 @@ const startCall = async () => {
 };
 
 describe('CallOverlayHost', () => {
+  // The host loads the call frame lazily. Load it once up front so the first test's wait
+  // covers rendering the call, not compiling the frame's modules, which takes over a second
+  // when the whole suite runs in parallel.
+  beforeAll(async () => {
+    await import('./CallWidgetFrame');
+  });
+
   beforeEach(() => {
     harness.client = makeClient();
     harness.isJoinedHere = false;
@@ -327,6 +334,80 @@ describe('CallOverlayHost', () => {
     } finally {
       console.error = original;
     }
+  });
+
+  describe('the call UI’s "Debug tile layout" developer option', () => {
+    const DEBUG_TILE_LAYOUT_KEY = 'matrix-setting-debug-tile-layout';
+    const DEVELOPER_TAB_KEY = 'matrix-setting-developer-settings-tab';
+    const AUDIO_INPUT_KEY = 'matrix-setting-audio-input';
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+      localStorage.clear();
+    });
+
+    it('is switched off before the call UI loads, and the user’s other call settings stay', async () => {
+      localStorage.setItem(DEBUG_TILE_LAYOUT_KEY, 'true');
+      localStorage.setItem(DEVELOPER_TAB_KEY, 'true');
+      localStorage.setItem(AUDIO_INPUT_KEY, '"mic-1"');
+      // Whether the call UI's iframe was already in the page each time the option was removed:
+      // the call UI reads the option once, when its script starts.
+      const frameWasLoading: boolean[] = [];
+      const removeItem = Storage.prototype.removeItem;
+      vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(function (this: Storage, key: string) {
+        if (key === DEBUG_TILE_LAYOUT_KEY) {
+          frameWasLoading.push(document.querySelector('iframe') !== null);
+        }
+        removeItem.call(this, key);
+      });
+
+      render(<CallOverlayHost />);
+      await startCall();
+
+      expect(screen.getByTitle('call.overlayLabel')).toBeInTheDocument();
+      expect(localStorage.getItem(DEBUG_TILE_LAYOUT_KEY)).toBeNull();
+      expect(frameWasLoading.length).toBeGreaterThan(0);
+      expect(frameWasLoading).not.toContain(true);
+      expect(localStorage.getItem(DEVELOPER_TAB_KEY)).toBe('true');
+      expect(localStorage.getItem(AUDIO_INPUT_KEY)).toBe('"mic-1"');
+    });
+
+    it('is switched off again for every call opened in the tab', async () => {
+      render(<CallOverlayHost />);
+      await startCall();
+      // Ticked in the call UI's settings during the first call.
+      localStorage.setItem(DEBUG_TILE_LAYOUT_KEY, 'true');
+
+      act(() => openCall({ matrixRoomId: '!next:hs.example', intent: 'start_call' }));
+      await waitFor(() => expect(harness.apis).toHaveLength(2));
+
+      expect(localStorage.getItem(DEBUG_TILE_LAYOUT_KEY)).toBeNull();
+    });
+
+    it.each([
+      [
+        'refuses to hand out its storage',
+        () =>
+          vi.spyOn(window, 'localStorage', 'get').mockImplementation(() => {
+            throw new DOMException('The operation is insecure.', 'SecurityError');
+          }),
+      ],
+      [
+        'refuses to change its storage',
+        () =>
+          vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {
+            throw new DOMException('The operation is insecure.', 'SecurityError');
+          }),
+      ],
+    ])('still opens the call in a browser that %s', async (_case, blockStorage) => {
+      const blocked = blockStorage();
+
+      render(<CallOverlayHost />);
+      await startCall();
+
+      expect(blocked).toHaveBeenCalled();
+      expect(screen.getByTitle('call.overlayLabel')).toBeInTheDocument();
+    });
   });
 
   it('sends no second leave when the call UI already left before closing', async () => {

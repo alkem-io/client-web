@@ -30,7 +30,7 @@
           "bearerToken": "Bearer token error.",
           "forbidden": "Access denied.",
           "forbiddenLicensePolicy": "License restriction.",
-          "forbiddenPolicy": "You don't have the correct rights.",
+          "forbiddenPolicy": "This is not available. It may not exist, or you may not have access to it.",
           "invalidPolicy": "Invalid authorisation policy.",
           "invalidToken": "Invalid token.",
           "loginFlow": "Login flow error.",
@@ -62,6 +62,7 @@
           "licenseEntitlementNotAvailable": "License entitlement not available.",
           "licenseEntitlementNotSupported": "License entitlement not supported.",
           "messagingNotEnabled": "Messaging not enabled.",
+          "messageSendLimitReached": "You can send up to 20 messages an hour. You can send more later.",
           "noAgentForUser": "No agent for user.",
           "notEnabled": "Feature not enabled.",
           "operationNotAllowed": "Operation not allowed.",
@@ -1056,9 +1057,12 @@
   },
   "delete": "Delete",
   "downNoticeBanner": {
-    "a11yLabel": "Planned maintenance notice",
+    "a11yLabel": "Platform status notice",
     "dismiss": "Dismiss notice",
-    "message": "Planned maintenance Friday 31 July, 21:00 CEST. The platform may be briefly unavailable."
+    "incident": "Ongoing incident: {{name}}",
+    "maintenanceInProgress": "Maintenance in progress: {{name}}",
+    "maintenanceScheduled": "Planned maintenance on {{date}}: {{name}}",
+    "viewStatus": "View status"
   },
   "edit": "Edit",
   "error": "Error",
@@ -1148,7 +1152,6 @@
     "en": "English",
     "es": "Español",
     "fr": "Français",
-    "inContextTool": "In context translation",
     "nl": "Nederlands",
     "pt": "Português (Brasil)",
     "ua": "Українська"
@@ -1181,8 +1184,7 @@
       },
       "innovation-packs": {
         "notifications": {
-          "pack-created": "$t(common.innovationPack) created successfully.",
-          "pack-error": "An error occurred while creating the $t(common.innovationPack)."
+          "pack-created": "$t(common.innovationPack) created successfully."
         }
       },
       "innovationHub": {
@@ -1223,7 +1225,6 @@
           "noTargets": "No other subspaces exist in this space to serve as a parent.",
           "targetLabel": "Move under subspace"
         },
-        "errorMessage": "Failed to convert space.",
         "move": "Move",
         "moveError": "Failed to move space.",
         "moveL1ToL0": {
@@ -1284,7 +1285,6 @@
         "confirmTitle": "Transfer $t(common.customHomepage)?",
         "confirmWarning": "This will transfer the $t(common.customHomepage) to the selected account. Ensure the target account has the necessary privileges.",
         "currentAccount": "Current Account",
-        "errorMessage": "Failed to transfer $t(common.customHomepage).",
         "hubName": "Name",
         "sectionDescription": "Move a $t(common.customHomepage) to a different account. Only the ownership changes — content remains unchanged.",
         "sectionTitle": "Transfer $t(common.customHomepage)",
@@ -1301,7 +1301,6 @@
         "confirmTitle": "Transfer $t(common.innovationPack)?",
         "confirmWarning": "This will transfer the $t(common.innovationPack) to the selected account. Ensure the target account has the necessary privileges.",
         "currentAccount": "Current Account",
-        "errorMessage": "Failed to transfer $t(common.innovationPack).",
         "packName": "Name",
         "sectionDescription": "Move a $t(common.innovationPack) to a different account. Only the ownership changes — templates remain unchanged.",
         "sectionTitle": "Transfer $t(common.innovationPack)",
@@ -1328,7 +1327,6 @@
         "confirmTitle": "Transfer Virtual Contributor?",
         "confirmWarning": "This will transfer the virtual contributor to the selected account. Ensure the target account has the necessary privileges.",
         "currentAccount": "Current Account",
-        "errorMessage": "Failed to transfer virtual contributor.",
         "sectionDescription": "Move a virtual contributor to a different account. Only the ownership changes — configuration remains unchanged.",
         "sectionTitle": "Transfer Virtual Contributor",
         "successMessage": "Virtual contributor transferred successfully.",
@@ -1503,7 +1501,6 @@
   "permissions": {
     "checking": "Checking permissions…",
     "denied": "You don't have permission to change members of this role.",
-    "errorDenied": "You don't have permission to make this change. The change was not saved.",
     "unverifiable": "Permissions could not be verified."
   },
   "pinned": "Pinned",
@@ -1640,6 +1637,19 @@
     "learnMore": "Learn more",
     "contactSupport": "Contact support",
     "mentionUnavailable": "Temporarily unavailable"
+  },
+  "fileSelection": {
+    "uploading": "Uploading…",
+    "notAdded_one": "{{count}} file was not added",
+    "notAdded_other": "{{count}} files were not added",
+    "reason": {
+      "limit": "more than 25 files were selected",
+      "type": "this file type is not accepted",
+      "size": "larger than {{maxMb}} MB",
+      "failed": "the upload failed"
+    },
+    "dismiss": "Dismiss",
+    "saveBlocked": "Wait for the files to finish uploading"
   },
   "appDownload": {
     "failed": "The file could not be downloaded."

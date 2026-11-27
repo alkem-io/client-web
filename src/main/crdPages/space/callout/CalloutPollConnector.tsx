@@ -166,13 +166,7 @@ function CalloutPollConnectorInner({
     });
   }, [poll.options]);
 
-  const {
-    castVote,
-    removeVote,
-    voteRemoved,
-    loading: voteLoading,
-    error: voteError,
-  } = usePollVote({ pollId: poll.id, poll });
+  const { castVote, removeVote, voteRemoved, loading: voteLoading } = usePollVote({ pollId: poll.id, poll });
   const { addOption } = usePollOptionManagement({ pollId: poll.id });
 
   const showResults = poll.canSeeDetailedResults;
@@ -245,8 +239,6 @@ function CalloutPollConnectorInner({
 
   const warningMessage = voteRevoked && !hasVoted && !voteRemoved ? t('poll.subscription.voteRevoked') : undefined;
 
-  const errorMessage = voteError ? t('poll.error.voteFailed') : undefined;
-
   return (
     <>
       <CalloutPoll
@@ -269,7 +261,6 @@ function CalloutPollConnectorInner({
         onRemoveVote={() => setConfirmRemoveOpen(true)}
         statusMessage={statusMessage}
         statusProgress={isDebouncing ? debounceProgress : undefined}
-        errorMessage={errorMessage}
         warningMessage={warningMessage}
       />
       <ConfirmationDialog

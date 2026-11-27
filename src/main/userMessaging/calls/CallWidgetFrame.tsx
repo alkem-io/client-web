@@ -19,6 +19,26 @@ const ALWAYS_ON_SCREEN_ACTION = 'set_always_on_screen';
 /** How long the call UI gets to leave the call before the overlay closes regardless. */
 const HANGUP_TIMEOUT_MS = 5_000;
 
+/**
+ * Where the call UI keeps its developer option "Debug tile layout". The call UI is served from the
+ * platform's own origin, so the option sits in the platform's storage and stays on for every later
+ * call in the browser. With it on, the pinned call UI fails as soon as a participant's tile leaves
+ * or moves, and the running call is replaced by an error screen.
+ */
+const CALL_UI_DEBUG_TILE_LAYOUT_KEY = 'matrix-setting-debug-tile-layout';
+
+/**
+ * Switches that option off. The call UI reads it once, when its script starts, so this has to
+ * happen before the iframe exists. The user's other call settings are left alone.
+ */
+const switchOffCallUiDebugTileLayout = (): void => {
+  try {
+    window.localStorage.removeItem(CALL_UI_DEBUG_TILE_LAYOUT_KEY);
+  } catch {
+    // A browser that blocks storage keeps no option for the call UI to read; the call opens as usual.
+  }
+};
+
 type CallWidgetFrameProps = {
   widgetId: string;
   /** Same-origin address of the call UI for this call. */
@@ -50,7 +70,11 @@ export default function CallWidgetFrame({
 }: CallWidgetFrameProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // The iframe's address is fixed for the life of the call: changing it would reload the call UI.
-  const [frameSrc] = useState(src);
+  // Settled on the first render, ahead of the iframe, which is also when the option has to be off.
+  const [frameSrc] = useState(() => {
+    switchOffCallUiDebugTileLayout();
+    return src;
+  });
 
   useEffect(() => {
     const iframe = iframeRef.current;

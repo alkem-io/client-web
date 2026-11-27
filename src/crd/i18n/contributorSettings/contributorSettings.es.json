@@ -61,8 +61,7 @@
     },
     "chooseCommunity": {
       "intro": "Añade tu Virtual Contributor a una comunidad, u omítelo por ahora.",
-      "skip": "Omitir por ahora",
-      "errorMessage": "No se pudo añadir a la comunidad — inténtalo de nuevo."
+      "skip": "Omitir por ahora"
     },
     "tryVc": {
       "title": "¡{{name}} está listo!",
@@ -71,8 +70,7 @@
       "done": "Hecho"
     },
     "createdVirtualContributor": {
-      "successMessage": "Virtual Contributor '{{name}}' creado correctamente",
-      "errorMessage": "No se pudo crear el Virtual Contributor — inténtalo de nuevo."
+      "successMessage": "Virtual Contributor '{{name}}' creado correctamente"
     }
   },
   "breadcrumbs": {
@@ -139,7 +137,7 @@
       "aboutYou": {
         "title": "Sobre ti",
         "tagline": {
-          "label": "Lema",
+          "label": "Titular",
           "hint": "Una frase corta visible en tu perfil."
         },
         "location": {
@@ -149,7 +147,7 @@
           "countryPlaceholder": "Selecciona un país"
         },
         "bio": {
-          "label": "Biografía",
+          "label": "Acerca de",
           "hint": "Compatible con Markdown."
         },
         "skills": {
@@ -225,8 +223,7 @@
         "dialogTitle": "¿Salir de esta membresía?",
         "dialogDescription": "Estás a punto de salir de «{{spaceName}}». Perderás acceso al contenido exclusivo para miembros y tendrás que volver a solicitar la incorporación.",
         "dialogConfirm": "Salir",
-        "success": "Has salido de la membresía",
-        "error": "No se pudo salir — inténtalo de nuevo"
+        "success": "Has salido de la membresía"
       },
       "pendingApplications": {
         "title": "Solicitudes pendientes",
@@ -329,8 +326,7 @@
           "cancel": "Cancelar",
           "confirm": "Revocar clave",
           "revoking": "Revocando…",
-          "success": "\"{{name}}\" ha sido revocada.",
-          "error": "No se pudo revocar la clave — inténtalo de nuevo."
+          "success": "\"{{name}}\" ha sido revocada."
         },
         "errors": {
           "notFound": "No se pudo encontrar esa clave API.",
@@ -491,8 +487,7 @@
         "allowMessagesLabel": "Permitir que otros usuarios me envíen mensajes directos",
         "allowMessagesDescription": "Cuando esté desactivado, otros usuarios no podrán iniciar una conversación de mensaje directo contigo.",
         "allowEmailContactLabel": "Permitir que otros me contacten por correo electrónico",
-        "allowEmailContactDescription": "Cuando está activado, las personas que no puedan contactarte por chat podrán enviarte un correo electrónico a la dirección de tu cuenta. Tu dirección nunca se les muestra.",
-        "error": "No se pudo guardar la preferencia — inténtalo de nuevo"
+        "allowEmailContactDescription": "Cuando está activado, las personas que no puedan contactarte por chat podrán enviarte un correo electrónico a la dirección de tu cuenta. Tu dirección nunca se les muestra."
       },
       "designSystem": {
         "title": "Sistema de diseño",
@@ -503,15 +498,13 @@
       "language": {
         "title": "Idioma",
         "label": "Idioma de la interfaz",
-        "description": "El idioma que se utiliza en toda la plataforma Alkemio. Los cambios se aplican en todos tus dispositivos.",
-        "error": "No se pudo guardar la preferencia de idioma — inténtalo de nuevo."
+        "description": "El idioma que se utiliza en toda la plataforma Alkemio. Los cambios se aplican en todos tus dispositivos."
       }
     },
     "notifications": {
       "pageTitle": "Notificaciones",
       "helpBanner": "Edita tus preferencias de notificación. Los cambios se guardan automáticamente.",
       "toggleAria": "Alternar notificación {{channel}} para: {{label}}",
-      "toggleError": "No se pudo guardar la preferencia — inténtalo de nuevo",
       "inAppLockedChat": "Los mensajes de chat ya aparecen en directo en el panel de chat, por lo que no se envían notificaciones en la app para esta fila",
       "columns": {
         "activity": "Actividad",
@@ -541,7 +534,7 @@
           "description": "Personaliza las alertas de interacciones como respuestas, menciones e invitaciones."
         },
         "platform": {
-          "title": "Notificaciones de plataforma",
+          "title": "Notificaciones del foro",
           "description": "Mantente al día con las discusiones de la plataforma, nuevas funciones y anuncios."
         },
         "platformAdmin": {
@@ -596,8 +589,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Recibir una notificación cuando una organización decida sobre mi solicitud de asociación"
         },
         "platform": {
-          "forumDiscussionComment": "Recibir una notificación cuando alguien comenta una discusión que he creado",
-          "forumDiscussionCreated": "Recibir una notificación cuando se crea una nueva discusión en la plataforma"
+          "forumDiscussionComment": "Recibir una notificación cuando alguien comenta una discusión que he creado en el foro",
+          "forumDiscussionCreated": "Recibir una notificación cuando se crea una nueva discusión en el foro"
         },
         "platformAdmin": {
           "userProfileCreated": "Recibir una notificación cuando se crea un nuevo perfil de usuario",
@@ -647,8 +640,7 @@
         "dialogTitle": "¿Desasociarse de esta organización?",
         "dialogDescription": "Estás a punto de dejar «{{name}}». Perderás tu rol de asociado y los permisos asociados.",
         "dialogConfirm": "Desasociar",
-        "success": "Desasociado correctamente",
-        "error": "No se pudo desasociar — inténtalo de nuevo"
+        "success": "Desasociado correctamente"
       }
     },
     "account": {
@@ -860,7 +852,7 @@
         "dialogConfirm": "Salir",
         "success": "Se ha salido de la membresía",
         "error": "No se pudo salir — inténtalo de nuevo",
-        "forbidden": "Solo los administradores y propietarios de esta organización pueden salir de un espacio"
+        "forbidden": "No se pudo salir. Puede que el espacio ya no exista, o solo los administradores y propietarios de esta organización pueden salir de él."
       },
       "ledBy": "Liderado por:",
       "ledByAria": "{{count}} líderes de comunidad",
@@ -883,7 +875,6 @@
         "contributionRolesLabel": "Mostrar los roles de contribución públicamente",
         "contributionRolesCaption": "Cuando está activado, las asignaciones de roles de la organización (Administrador, Propietario, Asociado) son visibles en el perfil público."
       },
-      "errorToast": "No se pudo guardar la preferencia — inténtalo de nuevo",
       "security": {
         "requireSecondFactorCaption": "Los propietarios, administradores y asociados de esta organización deben usar un segundo factor al iniciar sesión. Tienen 14 días para configurarlo.",
         "requireSecondFactorLabel": "Exigir la verificación en dos pasos a los miembros",
@@ -910,8 +901,7 @@
       "acceptConfirmAction": "Aceptar invitación",
       "declineConfirmTitle": "¿Rechazar esta invitación?",
       "declineConfirmBody": "Se informará a {{spaceName}} de que su organización ha rechazado. Esta acción no se puede deshacer — un administrador del Space tendría que enviar una nueva invitación.",
-      "declineConfirmAction": "Rechazar invitación",
-      "errorToast": "No se pudo actualizar la invitación — inténtelo de nuevo"
+      "declineConfirmAction": "Rechazar invitación"
     },
     "associates": {
       "title": "Asociados",
@@ -1126,9 +1116,6 @@
       "apiKeyHelper": "Las claves existentes nunca se devuelven. Deja en blanco para mantener la clave actual.",
       "assistantIdLabel": "ID del asistente",
       "modelLabel": "Modelo"
-    },
-    "settings": {
-      "commitErrorToast": "No se pudo guardar la preferencia — inténtalo de nuevo"
     }
   },
   "shared": {
@@ -1178,7 +1165,6 @@
         "heading": "Crear nueva página de inicio"
       },
       "deleteSuccess": "Recurso eliminado",
-      "deleteError": "No se pudo eliminar — inténtalo de nuevo",
       "noEntitlement": {
         "title": "Capacidad alcanzada",
         "description": {

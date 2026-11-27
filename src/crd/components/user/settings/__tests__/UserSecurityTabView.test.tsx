@@ -43,6 +43,7 @@ describe('UserSecurityTabView', () => {
           twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          cookieSettingsSection={null}
         />
       );
 
@@ -57,6 +58,7 @@ describe('UserSecurityTabView', () => {
           twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          cookieSettingsSection={null}
         />
       );
 
@@ -97,6 +99,7 @@ describe('UserSecurityTabView', () => {
           twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          cookieSettingsSection={null}
         />
       );
 
@@ -129,6 +132,7 @@ describe('UserSecurityTabView', () => {
           twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={null}
+          cookieSettingsSection={null}
         />
       );
 
@@ -158,6 +162,7 @@ describe('UserSecurityTabView', () => {
           twoStepVerificationSection={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={<p>connected-accounts-slot</p>}
+          cookieSettingsSection={null}
         />
       );
 
@@ -172,12 +177,36 @@ describe('UserSecurityTabView', () => {
     }
   );
 
+  it('renders the Cookie settings section below the "manage in a web browser" card in the store app', () => {
+    render(
+      <UserSecurityTabView
+        state={{ kind: 'manageInBrowser', address: 'https://alkem.io/home' }}
+        passwordForm={null}
+        webauthnForm={null}
+        twoStepVerificationSection={null}
+        mcpApiKeysCard={null}
+        connectedAccountsSection={null}
+        cookieSettingsSection={<p>cookie-settings-slot</p>}
+      />
+    );
+
+    const manageInBrowser = screen.getByText('user.security.manageInBrowser.description:https://alkem.io/home');
+    const cookieSettings = screen.getByText('cookie-settings-slot');
+    expect(manageInBrowser.compareDocumentPosition(cookieSettings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it('scrolls to the two-step section when the reminder link lands before the section has loaded', async () => {
     const scrollIntoView = vi.fn();
     Element.prototype.scrollIntoView = scrollIntoView;
     globalThis.history.replaceState(null, '', '/user/me/settings/security#two-step-verification');
     const readyState: UserSecurityViewState = { kind: 'ready', hasPassword: true, hasWebauthn: false };
-    const props = { passwordForm: null, webauthnForm: null, mcpApiKeysCard: null, connectedAccountsSection: null };
+    const props = {
+      passwordForm: null,
+      webauthnForm: null,
+      mcpApiKeysCard: null,
+      connectedAccountsSection: null,
+      cookieSettingsSection: null,
+    };
 
     const { rerender } = render(
       <UserSecurityTabView state={readyState} twoStepVerificationSection={null} {...props} />

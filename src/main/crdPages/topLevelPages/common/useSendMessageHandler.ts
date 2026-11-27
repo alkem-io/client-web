@@ -5,8 +5,11 @@ import {
   useSendMessageToOrganizationMutation,
   useSendMessageToUsersMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import type { ContributorPreviewData } from '@/crd/components/contributor/ContributorHoverCard';
 import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
+import { getMessageSendLimitMessage } from '@/main/constants/messageSendLimit';
 import { useStartDirectChat } from '@/main/crdPages/unifiedChat/useStartDirectChat';
 
 export type SendMessageHandlerResult = {
@@ -35,6 +38,7 @@ export const useOpenDirectChatHandler = (params: {
   // Lazily loaded namespace: without useSuspense: false every host suspends on first render; `t` is read only at click time.
   const { t } = useTranslation('crd-profilePages', { useSuspense: false });
   const { startDirectChat } = useStartDirectChat(recipientUserId);
+  const serverErrorMessage = useServerErrorMessage();
 
   const onOpenChat = async (targetUserId: string | undefined = recipientUserId) => {
     if (!targetUserId) {
@@ -47,7 +51,7 @@ export const useOpenDirectChatHandler = (params: {
       toast.error(
         code === AlkemioGraphqlErrorCode.MESSAGING_NOT_ENABLED
           ? t('common.messagePopover.cannotBeReached')
-          : t('common.messagePopover.openChatError')
+          : serverErrorMessage(err, t('common.messagePopover.openChatError'))
       );
     }
   };
@@ -76,7 +80,8 @@ export const useSendEmailToUserHandler = (params: {
 }): SendMessageHandlerResult => {
   const { recipientUserId } = params;
   const { t } = useTranslation('crd-profilePages');
-  const [sendMessageToUsers] = useSendMessageToUsersMutation();
+  // The compose surface shows the rejection inline.
+  const [sendMessageToUsers] = useSendMessageToUsersMutation({ context: OWN_ERROR_HANDLING });
 
   const onSendMessage = async (messageText: string) => {
     if (!recipientUserId) {
@@ -101,20 +106,29 @@ export const useSendMessageToOrganizationHandler = (params: {
 }): SendMessageHandlerResult => {
   const { recipientOrganizationId } = params;
   const { t } = useTranslation('crd-profilePages');
+  const serverErrorMessage = useServerErrorMessage();
   const [sendMessageToOrganization] = useSendMessageToOrganizationMutation();
 
   const onSendMessage = async (messageText: string) => {
     if (!recipientOrganizationId) {
       throw new Error('Recipient organization not loaded.');
     }
-    await sendMessageToOrganization({
-      variables: {
-        messageData: {
-          message: messageText,
-          organizationId: recipientOrganizationId,
+    try {
+      await sendMessageToOrganization({
+        variables: {
+          messageData: {
+            message: messageText,
+            organizationId: recipientOrganizationId,
+          },
         },
-      },
-    });
+        context: OWN_ERROR_HANDLING,
+      });
+    } catch (error) {
+      // The compose surface shows the rejection's message inline.
+      throw new Error(
+        getMessageSendLimitMessage(error) ?? serverErrorMessage(error, t('common.messagePopover.errorTitle'))
+      );
+    }
     toast.success(t('common.messagePopover.successToast'));
   };
 

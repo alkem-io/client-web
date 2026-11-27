@@ -20,13 +20,18 @@ vi.mock('@/main/userMessaging/matrix/matrixRooms', () => ({
   resolveMatrixRoomId: harness.resolve,
 }));
 
-import { useActiveCallRooms, useLiveCalls } from './useActiveCallRooms';
+import { useLiveCalls } from './useActiveCallRooms';
+import type { CallableConversation } from './useCallEligibility';
 
-const membership = (sender: string, ttlMs: number, createdTs = 0) => {
+/** The rooms with a call running. */
+const useActiveCallRooms = (conversations: readonly CallableConversation[]) =>
+  new Set(useLiveCalls(conversations).keys());
+
+const membership = (sender: string, ttlMs: number, createdTs = 0, deviceId = 'D') => {
   const expiresAt = Date.now() + ttlMs;
   return {
     sender,
-    deviceId: 'D',
+    deviceId,
     createdTs: () => createdTs,
     isExpired: () => Date.now() >= expiresAt,
     getMsUntilExpiry: () => expiresAt - Date.now(),
@@ -46,6 +51,7 @@ const makeClient = (sessions: Record<string, FakeSession>) =>
     }),
     getRoom: (roomId: string) => ({ roomId }),
     getUserId: () => '@me:hs',
+    getDeviceId: () => 'MINE',
     syncState: 'SYNCING' as string,
     getSyncState() {
       return this.syncState;
@@ -60,7 +66,7 @@ const conversations = [
   { roomId: 'vc', isGroup: false, isGuidance: false, members: [user, { type: 'VIRTUAL_CONTRIBUTOR' as never }] },
 ];
 
-describe('useActiveCallRooms', () => {
+describe('useLiveCalls', () => {
   beforeEach(() => {
     harness.platformRoles = ['FEATURE_BETA_TESTER'];
     harness.configured = true;
@@ -133,18 +139,67 @@ describe('useActiveCallRooms', () => {
     await waitFor(() => expect([...result.current]).toEqual(['g1']));
   });
 
-  it('describes each running call by its memberships, and whether the user is in it on any device', async () => {
+  it('describes each running call by its memberships, and whether the user is in it on any device or on this one', async () => {
     harness.client = makeClient({
-      '!g1:hs': new FakeSession([membership('@ann:hs', 60_000, 300), membership('@me:hs', 60_000, 100)]),
-      '!g2:hs': new FakeSession([membership('@ann:hs', 60_000, 500)]),
+      '!g1:hs': new FakeSession([membership('@ann:hs', 60_000, 300), membership('@me:hs', 60_000, 100, 'PHONE')]),
+      '!g2:hs': new FakeSession([membership('@ann:hs', 60_000, 500), membership('@me:hs', 60_000, 600, 'MINE')]),
     });
     const { result } = renderHook(() => useLiveCalls(conversations));
     await waitFor(() =>
       expect([...result.current]).toEqual([
-        ['g1', { startedTs: 100, latestTs: 300, withMe: true }],
-        ['g2', { startedTs: 500, latestTs: 500, withMe: false }],
+        [
+          'g1',
+          {
+            matrixRoomId: '!g1:hs',
+            startedTs: 100,
+            latestTs: 300,
+            withMe: true,
+            withMyDevice: false,
+            participants: ['ann', 'me'],
+          },
+        ],
+        [
+          'g2',
+          {
+            matrixRoomId: '!g2:hs',
+            startedTs: 500,
+            latestTs: 600,
+            withMe: true,
+            withMyDevice: true,
+            participants: ['ann', 'me'],
+          },
+        ],
       ])
     );
+  });
+
+  it('reports each person in a call once, by actor id, however many devices they joined from', async () => {
+    harness.client = makeClient({
+      '!g1:hs': new FakeSession([
+        membership('@bob:hs', 60_000),
+        membership('@ann:hs', 60_000),
+        membership('@bob:hs', 60_000),
+      ]),
+    });
+    const { result } = renderHook(() => useLiveCalls(conversations));
+    await waitFor(() => expect(result.current.get('g1')?.participants).toEqual(['ann', 'bob']));
+  });
+
+  it('reports someone joining a running call, and keeps the same value when nothing changed', async () => {
+    const session = new FakeSession([membership('@ann:hs', 60_000)]);
+    harness.client = makeClient({ '!g1:hs': session });
+    const { result } = renderHook(() => useLiveCalls(conversations));
+    await waitFor(() => expect(result.current.get('g1')?.participants).toEqual(['ann']));
+
+    const before = result.current;
+    act(() => session.emit('memberships_changed'));
+    expect(result.current).toBe(before);
+
+    act(() => {
+      session.memberships = [membership('@ann:hs', 60_000), membership('@bob:hs', 60_000)];
+      session.emit('memberships_changed');
+    });
+    expect(result.current.get('g1')?.participants).toEqual(['ann', 'bob']);
   });
 
   it('flags nothing for someone who is not a beta tester, or where calls are off', async () => {

@@ -30,7 +30,7 @@
           "bearerToken": "Fout in bearer-token.",
           "forbidden": "Toegang geweigerd.",
           "forbiddenLicensePolicy": "Licentie beperking.",
-          "forbiddenPolicy": "Je hebt niet de juiste rechten.",
+          "forbiddenPolicy": "Dit is niet beschikbaar. Het bestaat mogelijk niet, of je hebt er geen toegang toe.",
           "invalidPolicy": "Ongeldige autorisatie beleid.",
           "invalidToken": "Ongeldig token.",
           "loginFlow": "Login flow error.",
@@ -62,6 +62,7 @@
           "licenseEntitlementNotAvailable": "Licentierecht niet beschikbaar.",
           "licenseEntitlementNotSupported": "Licentierechten worden niet ondersteund.",
           "messagingNotEnabled": "Berichten niet ingeschakeld.",
+          "messageSendLimitReached": "Je kunt maximaal 20 berichten per uur versturen. Je kunt later weer berichten versturen.",
           "noAgentForUser": "Geen agent voor gebruiker.",
           "notEnabled": "Functionaliteit niet ingeschakeld.",
           "operationNotAllowed": "Handeling niet toegestaan.",
@@ -1056,9 +1057,12 @@
   },
   "delete": "Verwijderen",
   "downNoticeBanner": {
-    "a11yLabel": "Melding over gepland onderhoud",
+    "a11yLabel": "Melding over de platformstatus",
     "dismiss": "Melding sluiten",
-    "message": "Gepland onderhoud vrijdag 31 juli, 21:00 CEST. Het platform kan korte tijd onbereikbaar zijn."
+    "incident": "Lopende storing: {{name}}",
+    "maintenanceInProgress": "Onderhoud bezig: {{name}}",
+    "maintenanceScheduled": "Gepland onderhoud op {{date}}: {{name}}",
+    "viewStatus": "Status bekijken"
   },
   "edit": "Bewerken",
   "error": "Fout",
@@ -1148,7 +1152,6 @@
     "en": "English",
     "es": "Español",
     "fr": "Français",
-    "inContextTool": "In context vertaling",
     "nl": "Nederlands",
     "pt": "Português (Brasil)",
     "ua": "Українська"
@@ -1181,8 +1184,7 @@
       },
       "innovation-packs": {
         "notifications": {
-          "pack-created": "$t(common.innovationPack) succesvol aangemaakt.",
-          "pack-error": "Er is een fout opgetreden tijdens het aanmaken van $t(common.innovationPack)."
+          "pack-created": "$t(common.innovationPack) succesvol aangemaakt."
         }
       },
       "innovationHub": {
@@ -1223,7 +1225,6 @@
           "noTargets": "Er zijn geen andere subspaces binnen deze space die als parent kunnen dienen.",
           "targetLabel": "Verplaats onder subspace"
         },
-        "errorMessage": "Omzetten van de space is mislukt.",
         "move": "Verplaatsen",
         "moveError": "Verplaatsen van Space mislukt.",
         "moveL1ToL0": {
@@ -1284,7 +1285,6 @@
         "confirmTitle": "Transfer $t(common.customHomepage)?",
         "confirmWarning": "Dit zal de $t(common.customHomepage) overdragen aan het geselecteerde account. Zorg ervoor dat het target account de benodigde rechten heeft.",
         "currentAccount": "Huidig Account",
-        "errorMessage": "Transfer naar $t(common.customHomepage) mislukt.",
         "hubName": "Naam",
         "sectionDescription": "Verplaats een $t(common.customHomepage) naar een ander account. Alleen het eigenaarschap verandert — de content blijft ongewijzigd.",
         "sectionTitle": "Transfer $t(common.customHomepage)",
@@ -1301,7 +1301,6 @@
         "confirmTitle": "Transfer $t(common.innovationPack)?",
         "confirmWarning": "Dit zal de $t(common.innovationPack) overdragen aan het geselecteerde account. Zorg ervoor dat het target account de benodigde rechten heeft.",
         "currentAccount": "Huidig Account",
-        "errorMessage": "Transfer naar $t(common.innovationPack) mislukt.",
         "packName": "Naam",
         "sectionDescription": "Verplaats een $t(common.innovationPack) naar een ander account. Alleen het eigenaarschap verandert — templates blijven ongewijzigd.",
         "sectionTitle": "Transfer $t(common.innovationPack)",
@@ -1328,7 +1327,6 @@
         "confirmTitle": "Transfer Virtual Contributor?",
         "confirmWarning": "Dit zal de virtual contributor overdragen aan het geselecteerde account. Zorg ervoor dat het target account de benodigde rechten heeft.",
         "currentAccount": "Huidig Account",
-        "errorMessage": "Transfer van Virtual Contributor mislukt.",
         "sectionDescription": "Verplaats een virtual contributor naar een ander account. Alleen het eigenaarschap verandert — de configuratie blijft ongewijzigd.",
         "sectionTitle": "Transfer Virtual Contributor",
         "successMessage": "Virtual contributor succesvol overgedragen.",
@@ -1503,7 +1501,6 @@
   "permissions": {
     "checking": "Rechten controleren…",
     "denied": "Je hebt geen rechten om de leden van deze rol te wijzigen.",
-    "errorDenied": "Je hebt geen rechten om deze wijziging te maken. De wijziging is niet opgeslagen.",
     "unverifiable": "Rechten konden niet worden geverifieerd."
   },
   "pinned": "Vastgezet",
@@ -1640,6 +1637,19 @@
     "learnMore": "Meer informatie",
     "contactSupport": "Contact opnemen met support",
     "mentionUnavailable": "Tijdelijk niet beschikbaar"
+  },
+  "fileSelection": {
+    "uploading": "Uploaden…",
+    "notAdded_one": "{{count}} bestand is niet toegevoegd",
+    "notAdded_other": "{{count}} bestanden zijn niet toegevoegd",
+    "reason": {
+      "limit": "er zijn meer dan 25 bestanden geselecteerd",
+      "type": "dit bestandstype wordt niet geaccepteerd",
+      "size": "groter dan {{maxMb}} MB",
+      "failed": "het uploaden is mislukt"
+    },
+    "dismiss": "Sluiten",
+    "saveBlocked": "Wacht tot de bestanden klaar zijn met uploaden"
   },
   "appDownload": {
     "failed": "Het bestand kon niet worden gedownload."

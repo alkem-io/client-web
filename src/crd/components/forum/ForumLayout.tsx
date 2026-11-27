@@ -19,7 +19,8 @@ export function ForumLayout({ ribbonNode, bannerNode, sidebarNode, mainNode, cla
         </div>
       </div>
       <div className="grid grid-cols-12 gap-6">
-        <div className="hidden md:col-span-3 md:block lg:col-span-2 lg:col-start-2">{sidebarNode}</div>
+        {/* Never hidden here: the sidebar content picks its own phone and desktop form, so hiding the slot hides both. */}
+        <div className="col-span-12 md:col-span-3 lg:col-span-2 lg:col-start-2">{sidebarNode}</div>
         <div className="col-span-12 md:col-span-9 lg:col-span-8">{mainNode}</div>
       </div>
     </div>

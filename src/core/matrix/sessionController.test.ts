@@ -46,6 +46,7 @@ const makeClient = (): FakeClient => {
     startClient: vi.fn(async () => {}),
     on: vi.fn((event: string, listener: (state?: string) => void) => handlers.set(event, listener)),
     setAccessToken: vi.fn(),
+    setSyncPresence: vi.fn(async () => {}),
     emit: (event: string, state?: string) => handlers.get(event)?.(state),
   };
 };
@@ -233,6 +234,19 @@ describe('establishSession', () => {
     expect(getActiveClient()).toBe(client);
     handle.stop();
     expect(getActiveClient()).toBeNull();
+  });
+
+  it("starts every session's sync offline, once startClient has created the sync loop", async () => {
+    await seedRecord();
+    const client = makeClient();
+    mockedCreateClient.mockReturnValue(client);
+
+    await establishSession(ACTOR);
+
+    expect(client.setSyncPresence).toHaveBeenCalledExactlyOnceWith('offline');
+    expect(vi.mocked(client.setSyncPresence).mock.invocationCallOrder[0]).toBeGreaterThan(
+      vi.mocked(client.startClient).mock.invocationCallOrder[0]
+    );
   });
 
   it('a rejected token clears the stored record, runs one silent SSO and restarts sync once', async () => {

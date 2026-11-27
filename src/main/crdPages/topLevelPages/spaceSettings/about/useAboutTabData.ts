@@ -14,6 +14,8 @@ import {
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { type UpdateSpaceInput, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { ClassificationEntryData, ClassificationTemplateOptionData } from '@/crd/components/classification/types';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
@@ -26,7 +28,7 @@ import type {
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { MAX_BANNER_ASPECT_RATIO, MIN_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
+import { errorMessage, type TabUnsavedChanges, useUploadGate } from '@/main/crdPages/utils/tabUnsavedChanges';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { buildPreviewCard, mapClassificationEntries, mapSpaceToAboutFormValues } from './aboutMapper';
 
@@ -34,6 +36,8 @@ export type { AboutFormValues };
 
 export type UseAboutTabDataResult = {
   values: AboutFormValues | null;
+  /** Incremented by every Discard; keys the references editor so a Discard drops its pending files. */
+  resetGeneration: number;
   previewCard: ReturnType<typeof buildPreviewCard> | null;
   loading: boolean;
   error: Error | null;
@@ -145,16 +149,28 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const { t } = useTranslation('crd-spaceSettings');
+  const withUploadGate = useUploadGate();
   const notify = useNotification();
 
-  const [updateSpace] = useUpdateSpaceMutation();
   const [uploadVisual] = useUploadVisualMutation();
-  const [createReference] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
-  const [addClassificationEntryFromTemplate] = useAddClassificationEntryFromTemplateMutation();
-  const [updateClassificationEntrySelection] = useUpdateClassificationEntrySelectionMutation();
-  const [updateClassificationEntryDisplay] = useUpdateClassificationEntryDisplayMutation();
-  const [deleteClassificationEntry] = useDeleteClassificationEntryMutation();
+  // Save failures show in the unsaved-changes bar and the save-failed dialog, with the server's reason.
+  const serverErrorMessage = useServerErrorMessage();
+  const describeSaveError = (err: unknown) => serverErrorMessage(err, errorMessage(err));
+  const [updateSpace] = useUpdateSpaceMutation({ context: OWN_ERROR_HANDLING });
+  const [createReference] = useCreateReferenceOnProfileMutation({ context: OWN_ERROR_HANDLING });
+  const [deleteReference] = useDeleteReferenceMutation({ context: OWN_ERROR_HANDLING });
+  const [addClassificationEntryFromTemplate] = useAddClassificationEntryFromTemplateMutation({
+    context: OWN_ERROR_HANDLING,
+  });
+  const [updateClassificationEntrySelection] = useUpdateClassificationEntrySelectionMutation({
+    context: OWN_ERROR_HANDLING,
+  });
+  const [updateClassificationEntryDisplay] = useUpdateClassificationEntryDisplayMutation({
+    context: OWN_ERROR_HANDLING,
+  });
+  const [deleteClassificationEntry] = useDeleteClassificationEntryMutation({
+    context: OWN_ERROR_HANDLING,
+  });
 
   // The allowed ratio range is a property of the visual TYPE, so it comes from
   // the platform config rather than from this space's own visual row.
@@ -177,9 +193,11 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   // Reference file upload (paperclip) — the space settings tab is always rendered inside the
   // ambient space StorageConfigContextProvider, so the bucket resolves from context.
-  const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
-    useStorageConfigContext()
-  );
+  const {
+    onFileUpload: onReferenceFileUpload,
+    accept: referenceUploadAccept,
+    uploading: referenceUploading,
+  } = useReferenceFileUpload(useStorageConfigContext());
 
   // Seed once when the query first resolves. Subsequent cache updates are
   // picked up via `saved` (for dirty detection) without overwriting user edits.
@@ -535,7 +553,9 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const saveClassifications = async (): Promise<string | null> => {
     let firstError: string | null = null;
     const fail = (err: unknown) => {
-      firstError ??= isDisplayLabelConflictError(err) ? t('classifications.picker.conflict.title') : errorMessage(err);
+      firstError ??= isDisplayLabelConflictError(err)
+        ? t('classifications.picker.conflict.title')
+        : describeSaveError(err);
     };
 
     // Removals first, so a label freed by a removal is free for an add in the same Save.
@@ -661,7 +681,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
         await updateSpace({ variables: { input: { ID: spaceId, about } } });
       } catch (err) {
         coreFailed = true;
-        firstError ??= errorMessage(err);
+        firstError ??= describeSaveError(err);
       }
     }
 
@@ -676,14 +696,14 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
         });
       } catch (err) {
         failedCreates.push(ref);
-        firstError ??= errorMessage(err);
+        firstError ??= describeSaveError(err);
       }
     }
     for (const ref of removed) {
       try {
         await deleteReference({ variables: { input: { ID: ref.id } } });
       } catch (err) {
-        firstError ??= errorMessage(err);
+        firstError ??= describeSaveError(err);
       }
     }
 
@@ -727,6 +747,8 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   const dismissClassificationConflict = () => setClassificationConflict(null);
 
+  const [resetGeneration, setResetGeneration] = useState(0);
+
   const reset = () => {
     if (saved) {
       setValues(saved);
@@ -734,10 +756,12 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     }
     resetClassifications();
     setSaveError(null);
+    setResetGeneration(generation => generation + 1);
   };
 
   return {
     values,
+    resetGeneration,
     previewCard,
     loading: queryLoading,
     error: queryError ?? null,
@@ -757,14 +781,17 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     onReferenceFileUpload,
     referenceUploadAccept,
     untitledReferenceIds,
-    unsaved: {
-      count: unsavedCount,
-      canSave: untitledReferenceIds.length === 0,
-      saving,
-      error: saveError,
-      saveAll,
-      reset,
-    },
+    unsaved: withUploadGate(
+      {
+        count: unsavedCount,
+        canSave: untitledReferenceIds.length === 0,
+        saving,
+        error: saveError,
+        saveAll,
+        reset,
+      },
+      referenceUploading
+    ),
     classifications,
     unsavedClassificationIds: stagedAdds.map(add => add.tempId),
     addClassificationFromTemplate,

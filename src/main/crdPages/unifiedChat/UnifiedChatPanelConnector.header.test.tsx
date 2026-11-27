@@ -1,9 +1,12 @@
-import { render } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { act, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { ReactElement, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { UserPresencePopover } from '@/crd/components/chat/UserPresencePopover';
+import { buildUserNotificationSettingsUrl } from '@/main/routing/urlBuilders';
 import { UnifiedChatPanelConnector } from './UnifiedChatPanelConnector';
 
-type Member = { id: string; displayName: string; avatarUri?: string };
+type Member = { id: string; displayName: string; avatarUri?: string; presence?: string; statusMessage?: string };
 type Conversation = { id: string; roomId: string; members: Member[]; isGuidance: boolean; isGroup: boolean };
 
 const state: { selectedConversationId: string | null; conversations: Conversation[] } = {
@@ -23,7 +26,17 @@ vi.mock('@/main/userMessaging/useChatSound', () => ({ useChatSound: () => chatSo
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
-vi.mock('@/core/routing/useNavigate', () => ({ default: () => vi.fn() }));
+const navigate = vi.fn();
+vi.mock('@/core/routing/useNavigate', () => ({ default: () => navigate }));
+const ownStatus = { statusMessage: '', setStatusMessage: vi.fn() };
+vi.mock('@/main/userMessaging/matrix/useMatrixPresence', async importOriginal => ({
+  ...(await importOriginal<typeof import('@/main/userMessaging/matrix/useMatrixPresence')>()),
+  useOwnStatusMessage: () => ownStatus,
+}));
+const showOnlinePreference = { showOnline: true, setShowOnline: vi.fn() };
+vi.mock('@/main/userMessaging/matrix/useShowOnlinePreference', () => ({
+  useShowOnlinePreference: () => showOnlinePreference,
+}));
 vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { id: 'me' } }),
 }));
@@ -71,13 +84,15 @@ vi.mock('@/crd/components/chat/NewChatDialog', () => ({ NewChatDialog: () => nul
 vi.mock('@/crd/components/common/ImageCropDialog', () => ({ ImageCropDialog: () => null }));
 
 type PanelProps = {
-  onGoToSettings?: () => void;
+  settingsMenu?: (toggles: object) => ReactNode;
+  subtitle?: ReactNode;
   onToggleSound?: () => void;
   soundMuted?: boolean;
   muteSoundLabel: string;
   unmuteSoundLabel: string;
   onTitleClick?: () => void;
   titleActionLabel?: string;
+  titleAvatar?: ReactNode;
   expandLabel: string;
   collapseLabel: string;
   headerActions?: ReactNode;
@@ -89,10 +104,42 @@ vi.mock('@/crd/components/chat/ChatPanel', () => ({
     panelProps = props;
     return (
       <>
+        {props.subtitle}
         {props.headerActions}
+        {props.settingsMenu?.({})}
         {props.children}
       </>
     );
+  },
+}));
+
+type SettingsMenuProps = {
+  label: string;
+  statusLabel: string;
+  onEditStatus: () => void;
+  notificationSettingsLabel: string;
+  onOpenNotificationSettings: () => void;
+};
+let settingsMenuProps: SettingsMenuProps | undefined;
+vi.mock('@/crd/components/chat/ChatSettingsMenu', () => ({
+  ChatSettingsMenu: (props: SettingsMenuProps) => {
+    settingsMenuProps = props;
+    return null;
+  },
+}));
+
+type StatusDialogProps = {
+  open: boolean;
+  statusMessage: string;
+  onSave: (statusMessage: string) => void;
+  showOnline: boolean;
+  onShowOnlineChange: (showOnline: boolean) => void;
+};
+let statusDialogProps: StatusDialogProps | undefined;
+vi.mock('@/crd/components/chat/SetStatusDialog', () => ({
+  SetStatusDialog: (props: StatusDialogProps) => {
+    statusDialogProps = props;
+    return null;
   },
 }));
 
@@ -134,7 +181,7 @@ const directChat: Conversation = {
   isGuidance: false,
   members: [
     { id: 'me', displayName: 'Me' },
-    { id: 'u1', displayName: 'Ann' },
+    { id: 'u1', displayName: 'Ann', presence: 'online', statusMessage: 'In a workshop' },
   ],
 };
 const groupChat: Conversation = {
@@ -157,6 +204,13 @@ describe('UnifiedChatPanelConnector header', () => {
     state.conversations = [directChat, groupChat];
     state.selectedConversationId = null;
     menuProps = undefined;
+    settingsMenuProps = undefined;
+    statusDialogProps = undefined;
+    navigate.mockClear();
+    ownStatus.statusMessage = '';
+    ownStatus.setStatusMessage = vi.fn().mockResolvedValue(undefined);
+    showOnlinePreference.showOnline = true;
+    showOnlinePreference.setShowOnline = vi.fn().mockResolvedValue(undefined);
     groupAvatarMembers = undefined;
     confirmations.length = 0;
     openGroupSettings.mockClear();
@@ -181,13 +235,13 @@ describe('UnifiedChatPanelConnector header', () => {
   it.each([
     ['a 1:1 chat', 'direct'],
     ['a group chat', 'group'],
-  ])('has no sound toggle inside %s, because the sound is muted for the whole chat', (_name, conversationId) => {
+  ])('has no sound toggle inside %s, where it would read as muting that chat', (_name, conversationId) => {
     state.selectedConversationId = conversationId;
     render(<UnifiedChatPanelConnector />);
     expect(panelProps.onToggleSound).toBeUndefined();
   });
 
-  it('unmutes when the sound is off, and reports a failed save once', async () => {
+  it('unmutes when the sound is off, adding no message of its own when the save fails', async () => {
     chatSound.enabled = false;
     chatSound.setEnabled = vi.fn().mockRejectedValue(new Error('network'));
     render(<UnifiedChatPanelConnector />);
@@ -196,7 +250,8 @@ describe('UnifiedChatPanelConnector header', () => {
     panelProps.onToggleSound?.();
 
     expect(chatSound.setEnabled).toHaveBeenCalledExactlyOnceWith(true);
-    await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('panel.soundToggleError', 'error'));
+    await Promise.resolve();
+    expect(notify).not.toHaveBeenCalled();
   });
 
   it('has no sound toggle when the sound cannot be changed', () => {
@@ -205,9 +260,98 @@ describe('UnifiedChatPanelConnector header', () => {
     expect(panelProps.onToggleSound).toBeUndefined();
   });
 
-  it('keeps the notification-settings gear in the conversation list header', () => {
+  it('the list header gear menu still opens the notification settings', () => {
     render(<UnifiedChatPanelConnector />);
-    expect(panelProps.onGoToSettings).toBeTypeOf('function');
+    expect(settingsMenuProps?.label).toBe('panel.settings');
+    expect(settingsMenuProps?.notificationSettingsLabel).toBe('panel.settings');
+
+    settingsMenuProps?.onOpenNotificationSettings();
+
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(buildUserNotificationSettingsUrl());
+    expect(statusDialogProps?.open).toBe(false);
+  });
+
+  it('without a status, the gear menu offers to set one and opens the status dialog; the header shows no status', () => {
+    render(<UnifiedChatPanelConnector />);
+    expect(panelProps.subtitle).toBeUndefined();
+    expect(settingsMenuProps?.statusLabel).toBe('status.set');
+    expect(statusDialogProps).toMatchObject({ open: false, statusMessage: '' });
+
+    act(() => settingsMenuProps?.onEditStatus());
+
+    expect(statusDialogProps?.open).toBe(true);
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it('with a status, the list header shows it and pressing it opens the status dialog', async () => {
+    ownStatus.statusMessage = 'In a workshop';
+    render(<UnifiedChatPanelConnector />);
+    expect(settingsMenuProps?.statusLabel).toBe('status.change');
+    expect(statusDialogProps?.open).toBe(false);
+
+    await userEvent.click(screen.getByRole('button', { name: 'status.edit' }));
+
+    expect(statusDialogProps).toMatchObject({ open: true, statusMessage: 'In a workshop' });
+  });
+
+  it('saving from the status dialog sets the status, and a failed save is reported once', async () => {
+    render(<UnifiedChatPanelConnector />);
+    statusDialogProps?.onSave('Lunch');
+    expect(ownStatus.setStatusMessage).toHaveBeenCalledExactlyOnceWith('Lunch');
+    expect(notify).not.toHaveBeenCalled();
+
+    ownStatus.setStatusMessage = vi.fn().mockRejectedValue(new Error('rate limited'));
+    statusDialogProps?.onSave('Lunch');
+    await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('status.saveError', 'error'));
+  });
+
+  it('the status dialog shows the online setting and changes it', async () => {
+    render(<UnifiedChatPanelConnector />);
+    expect(statusDialogProps?.showOnline).toBe(true);
+
+    statusDialogProps?.onShowOnlineChange(false);
+    expect(showOnlinePreference.setShowOnline).toHaveBeenCalledExactlyOnceWith(false);
+    await Promise.resolve();
+    expect(notify).not.toHaveBeenCalled();
+  });
+
+  it('a failed change of the online setting is reported once', async () => {
+    showOnlinePreference.setShowOnline = vi.fn().mockRejectedValue(new Error('rate limited'));
+    render(<UnifiedChatPanelConnector />);
+    statusDialogProps?.onShowOnlineChange(false);
+    await vi.waitFor(() => expect(notify).toHaveBeenCalledExactlyOnceWith('status.showOnlineSaveError', 'error'));
+  });
+
+  it('while the online setting is off, no status is shown anywhere and the dialog still opens to switch it back on', () => {
+    showOnlinePreference.showOnline = false;
+    ownStatus.statusMessage = 'In a workshop';
+    render(<UnifiedChatPanelConnector />);
+    expect(panelProps.subtitle).toBeUndefined();
+    expect(settingsMenuProps?.statusLabel).toBe('status.set');
+
+    act(() => settingsMenuProps?.onEditStatus());
+
+    expect(statusDialogProps).toMatchObject({ open: true, statusMessage: '', showOnline: false });
+  });
+
+  it.each([
+    ['a 1:1 chat', 'direct'],
+    ['a group chat', 'group'],
+  ])('%s header does not show your status, and its gear menu still offers to change it', (_name, conversationId) => {
+    ownStatus.statusMessage = 'Out for lunch';
+    state.selectedConversationId = conversationId;
+    render(<UnifiedChatPanelConnector />);
+    expect(screen.queryByText('Out for lunch')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'status.edit' })).not.toBeInTheDocument();
+    expect(settingsMenuProps?.statusLabel).toBe('status.change');
+  });
+
+  it('hands the panel toggles it is given on to the gear menu', () => {
+    state.selectedConversationId = 'direct';
+    render(<UnifiedChatPanelConnector />);
+    const expand = { label: 'panel.expand', onSelect: vi.fn() };
+    render(<div>{panelProps.settingsMenu?.({ expand })}</div>);
+    expect(settingsMenuProps).toMatchObject({ expand, label: 'panel.settings' });
   });
 
   it('passes translated expand / collapse labels to the panel', () => {
@@ -216,18 +360,34 @@ describe('UnifiedChatPanelConnector header', () => {
     expect(panelProps.collapseLabel).toBe('panel.collapse');
   });
 
-  it('a 1:1 chat header has no gear, no options menu and no title action', () => {
+  it('a 1:1 chat header has no options menu and no title action', () => {
     state.selectedConversationId = 'direct';
     render(<UnifiedChatPanelConnector />);
-    expect(panelProps.onGoToSettings).toBeUndefined();
     expect(menuProps).toBeUndefined();
     expect(panelProps.onTitleClick).toBeUndefined();
   });
 
-  it('a group chat header has no gear; its options menu and its title both open the group settings', () => {
+  it('a 1:1 chat header avatar opens the counterpart card with their status message and presence', () => {
+    state.selectedConversationId = 'direct';
+    render(<UnifiedChatPanelConnector />);
+    const titleAvatar = panelProps.titleAvatar as ReactElement<Record<string, unknown>>;
+    expect(titleAvatar.type).toBe(UserPresencePopover);
+    expect(titleAvatar.props).toMatchObject({
+      displayName: 'Ann',
+      statusMessage: 'In a workshop',
+      presence: 'online',
+    });
+  });
+
+  it('a group chat header avatar is the plain conversation avatar', () => {
     state.selectedConversationId = 'group';
     render(<UnifiedChatPanelConnector />);
-    expect(panelProps.onGoToSettings).toBeUndefined();
+    expect((panelProps.titleAvatar as ReactElement).type).not.toBe(UserPresencePopover);
+  });
+
+  it('a group chat header options menu and its title both open the group settings', () => {
+    state.selectedConversationId = 'group';
+    render(<UnifiedChatPanelConnector />);
 
     expect(menuProps?.label).toBe('thread.options');
     menuProps?.onOpenSettings();

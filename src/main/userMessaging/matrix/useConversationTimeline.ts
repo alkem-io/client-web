@@ -1,7 +1,8 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMatrixClient, useMatrixSessionEstablishing } from '@/core/matrix/activeClient';
-import { newestMessageLikeId, type ParsedMessage, projectMessages } from './matrixEvents';
+import { useCallsShown } from '../calls/useCallEligibility';
+import { newestEntryId, type ParsedMessage, projectMessages, ringingUntil } from './matrixEvents';
 import {
   CLIENT_ROOM,
   CLIENT_SYNC,
@@ -44,18 +45,25 @@ const backfill = async (client: MatrixClient, room: Room, isCancelled: () => boo
 /**
  * The open conversation's messages, read from sync: the room is paged back
  * to today's history depth when opened, then follows the live timeline,
- * including reactions and removals.
+ * including reactions and removals. A ring is an entry only in a 1:1
+ * conversation: in a group any member could send one, unattributed.
  */
-const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineState, 'roomKey'> => {
+const useConversationTimeline = (alkemioRoomId: string | null, isGroup: boolean): Omit<TimelineState, 'roomKey'> => {
   const client = useMatrixClient();
   const establishing = useMatrixSessionEstablishing();
   const roomKey = client && alkemioRoomId ? alkemioRoomId : null;
+  const withCalls = useCallsShown();
   const [state, setState] = useState<TimelineState>({
     roomKey: null,
     messages: [],
     readUpToEventId: null,
     isLoading: false,
   });
+  // Read by the subscription's refresh, so showing calls or not re-projects the loaded events in place:
+  // loading them again would blank the thread and lose its scroll position.
+  const withCallsRef = useRef(withCalls);
+  const isGroupRef = useRef(isGroup);
+  const refreshRef = useRef<() => void>(undefined);
 
   useEffect(() => {
     if (!client || !roomKey) {
@@ -64,19 +72,29 @@ const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineSta
     let cancelled = false;
     let loading = true;
     let room: Room | null = null;
+    let ringEnd: ReturnType<typeof setTimeout> | undefined;
     const homeserver = homeserverOf(client);
 
     const refresh = () => {
       if (!cancelled && room) {
+        const withCalls = withCallsRef.current;
+        const inGroup = isGroupRef.current;
         const events = liveEvents(room);
+        const now = Date.now();
         setState({
           roomKey,
-          messages: projectMessages(events, homeserver),
-          readUpToEventId: newestMessageLikeId(events),
+          messages: projectMessages(events, homeserver, { withCalls, inGroup, now }),
+          readUpToEventId: newestEntryId(events, { withCalls, inGroup, now }),
           isLoading: loading,
         });
+        // A ring still ringing shows once it stops, with no further event to say so.
+        clearTimeout(ringEnd);
+        // Only a 1:1 ring waits to become an entry.
+        const until = withCalls && !inGroup ? ringingUntil(events, now) : undefined;
+        ringEnd = until === undefined ? undefined : setTimeout(refresh, until - now);
       }
     };
+    refreshRef.current = refresh;
 
     // Re-projects once per page rather than once per paginated event.
     const load = async () => {
@@ -154,6 +172,7 @@ const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineSta
 
     return () => {
       cancelled = true;
+      clearTimeout(ringEnd);
       client.removeListener(ROOM_TIMELINE as never, onTimeline as never);
       client.removeListener(ROOM_REDACTION as never, onTimeline as never);
       client.removeListener(ROOM_LOCAL_ECHO_UPDATED as never, onLocalEcho as never);
@@ -162,6 +181,12 @@ const useConversationTimeline = (alkemioRoomId: string | null): Omit<TimelineSta
       client.removeListener(CLIENT_SYNC as never, onSync as never);
     };
   }, [client, roomKey]);
+
+  useEffect(() => {
+    withCallsRef.current = withCalls;
+    isGroupRef.current = isGroup;
+    refreshRef.current?.();
+  }, [withCalls, isGroup]);
 
   if (!client) {
     // Without a client the thread waits only while the session is being established

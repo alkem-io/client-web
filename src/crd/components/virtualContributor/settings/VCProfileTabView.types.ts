@@ -73,6 +73,8 @@ export type VcProfileViewProps = {
 
   /** Replace the references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
   onReferencesChange: (rows: ReferenceRow[]) => void;
+  /** Keys the references editor: a new value remounts it, dropping its pending uploads. */
+  referencesKey?: React.Key;
   /** Reference file-upload (paperclip) — passed through to the shared editor. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   referenceUploadAccept?: string;

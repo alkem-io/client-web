@@ -1,8 +1,11 @@
 import * as Sentry from '@sentry/react';
 import { useEffect } from 'react';
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router-dom';
+import { appPlatform, isAppMode } from '@/core/appMode/isAppMode';
+import { hasAnalysisConsent } from '@/main/cookies/useAlkemioCookies';
 
 const DEFAULT_ENVIRONMENT = 'development';
+const CONSENTED_TRACES_SAMPLE_RATE = 0.2;
 
 const reactRouterV6BrowserTracingIntegration = Sentry.reactRouterV6BrowserTracingIntegration({
   useEffect,
@@ -20,9 +23,31 @@ const bootstrap = (sentryEnabled?: boolean, sentryEndpoint?: string, environment
     Sentry.init({
       dsn: sentryEndpoint,
       integrations: [reactRouterV6BrowserTracingIntegration],
-      tracesSampleRate: 1.0,
+      // Tracing, breadcrumbs and sessions need `analysis` consent; error events do not. Each hook
+      // reads the cookie when it runs, so a changed choice applies without a reload.
+      tracesSampler: () => (hasAnalysisConsent() ? CONSENTED_TRACES_SAMPLE_RATE : 0),
+      beforeBreadcrumb: breadcrumb => (hasAnalysisConsent() ? breadcrumb : null),
+      // Breadcrumbs kept while consent was given stay on the scope after a withdrawal.
+      beforeSend: event => (hasAnalysisConsent() ? event : { ...event, breadcrumbs: undefined }),
+      // Sentry 9 has no beforeSendSession, and every session envelope (on load, per navigation, on
+      // an error) leaves through the transport, so the transport drops them without consent. It
+      // also drops a transaction that was sampled before consent was withdrawn. Both travel as
+      // the only item of their envelope.
+      transport: options => {
+        const transport = Sentry.makeFetchTransport(options);
+        return {
+          ...transport,
+          send: envelope => {
+            const type = envelope[1][0]?.[0].type;
+            return !hasAnalysisConsent() && (type === 'session' || type === 'transaction')
+              ? Promise.resolve({})
+              : transport.send(envelope);
+          },
+        };
+      },
       environment: environment ?? DEFAULT_ENVIRONMENT,
       release: `client-web@${import.meta.env.VITE_BUILD_VERSION}`,
+      initialScope: { tags: { app_mode: isAppMode(), app_platform: appPlatform() } },
     });
   }
 };

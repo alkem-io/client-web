@@ -1,6 +1,7 @@
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
-import type { ChatListItem, ChatMessage, GroupMember } from '@/crd/components/chat/types';
+import type { ChatCall, ChatListItem, ChatMessage, GroupMember } from '@/crd/components/chat/types';
 import type { CommentAuthor, CommentReaction } from '@/crd/components/comment/types';
+import type { RingingRing } from '@/main/userMessaging/matrix/matrixEvents';
 import type {
   ConversationMember,
   ConversationMessage,
@@ -11,7 +12,12 @@ import type {
 /** A conversation enriched with unified-chat presentation flags. */
 export type UnifiedConversation = UserConversation & {
   isGuidance: boolean;
+  /** Fixed at the top: the Guidance conversation. */
   pinned: boolean;
+  /** Pinned by the user, from their Matrix favourite tag on the room. */
+  userPinned: boolean;
+  /** The ring from the other person still ringing in a 1:1. */
+  ringing?: RingingRing;
 };
 
 /**
@@ -47,9 +53,13 @@ export const isVirtualContributorChat = (
 ): boolean =>
   members.length <= 2 && members.some(m => m.id !== currentUserId && m.type === ActorType.VirtualContributor);
 
+const activityTime = (conversation: UnifiedConversation): number =>
+  conversation.lastMessage ? conversation.lastMessage.timestamp : conversation.createdDate.getTime();
+
 /**
- * Sorts unified conversations: pinned (guidance) first, then the newly-created
- * conversation, then by most-recent activity (last message, else created date).
+ * Sorts unified conversations: pinned (guidance) first, then the user-pinned
+ * ones, then the newly-created conversation, then the rest. Each group is
+ * ordered by most-recent activity (last message, else created date).
  */
 export const sortUnifiedConversations = <T extends UnifiedConversation>(
   conversations: T[],
@@ -59,26 +69,33 @@ export const sortUnifiedConversations = <T extends UnifiedConversation>(
     if (a.pinned !== b.pinned) {
       return a.pinned ? -1 : 1;
     }
+    if (a.userPinned !== b.userPinned) {
+      return a.userPinned ? -1 : 1;
+    }
+    if (a.userPinned) {
+      return activityTime(b) - activityTime(a);
+    }
     if (a.id === newlyCreatedConversationId) return -1;
     if (b.id === newlyCreatedConversationId) return 1;
-    const aTime = a.lastMessage ? a.lastMessage.timestamp : a.createdDate.getTime();
-    const bTime = b.lastMessage ? b.lastMessage.timestamp : b.createdDate.getTime();
-    return bTime - aTime;
+    return activityTime(b) - activityTime(a);
   });
 
 /**
  * Moves the conversations with a call running to the top, below the pinned
- * one and the newly-created one: a call is their latest activity, though not a
+ * ones and the newly-created one: a call is their latest activity, though not a
  * message. The order is otherwise kept.
  */
-export const withActiveCallsFirst = <T extends { id: string; pinned?: boolean; hasActiveCall?: boolean }>(
+export const withActiveCallsFirst = <
+  T extends { id: string; pinned?: boolean; userPinned?: boolean; hasActiveCall?: boolean },
+>(
   items: T[],
   newlyCreatedConversationId: string | null
 ): T[] => {
   const rank = (item: T) => {
     if (item.pinned) return 0;
-    if (item.id === newlyCreatedConversationId) return 1;
-    return item.hasActiveCall ? 2 : 3;
+    if (item.userPinned) return 1;
+    if (item.id === newlyCreatedConversationId) return 2;
+    return item.hasActiveCall ? 3 : 4;
   };
   return [...items].sort((a, b) => rank(a) - rank(b));
 };
@@ -100,6 +117,8 @@ export const mapMembersToGroupMembers = (
     name: member.displayName,
     avatarUrl: member.avatarUri,
     isCurrentUser: member.id === currentUserId,
+    presence: member.presence,
+    statusMessage: member.statusMessage,
   }));
 
 /**
@@ -131,6 +150,25 @@ export const mapReactionsToCommentReactions = (
   return [...byEmoji.values()];
 };
 
+/** How the viewer reads a call: a ring nobody answered is missed by the person rung, and unanswered for the ringer. */
+const chatCallOf = (message: ConversationMessage, currentUserId: string | undefined): ChatCall | undefined => {
+  const { call } = message;
+  if (!call) {
+    return undefined;
+  }
+  if (call.outcome === 'unanswered') {
+    return { kind: currentUserId && message.sender?.id === currentUserId ? 'noAnswer' : 'missed' };
+  }
+  if (call.outcome === 'declined') {
+    return { kind: 'declined' };
+  }
+  // Answered: a call, with its length once the leave that ended it is loaded.
+  return {
+    kind: 'call',
+    minutes: call.durationMs === undefined ? undefined : Math.max(1, Math.round(call.durationMs / 60_000)),
+  };
+};
+
 type ListItemOptions = {
   currentUserId: string | undefined;
   formatTimestamp: (timestampMs: number) => string;
@@ -152,9 +190,12 @@ export const mapConversationToListItem = (
     // A media-only message carries no body text, so the row needs the attachment
     // count to render something instead of an empty preview line.
     lastMessageAttachmentCount: conv.lastMessage?.attachments.length,
+    lastMessageCall: conv.lastMessage && chatCallOf(conv.lastMessage, currentUserId)?.kind,
     lastMessageTimestamp: conv.lastMessage ? formatTimestamp(conv.lastMessage.timestamp) : undefined,
     unreadCount: conv.unreadCount,
     pinned: conv.pinned,
+    presence: conv.isGroup || conv.isGuidance ? undefined : otherMembers[0]?.presence,
+    userPinned: conv.userPinned,
   };
 };
 
@@ -167,18 +208,23 @@ export const mapMessageToChatMessage = (
   { currentUserId }: MessageOptions
 ): ChatMessage => ({
   id: message.id,
-  author: message.sender
-    ? {
-        id: message.sender.id,
-        name: message.sender.displayName,
-        avatarUrl: message.sender.avatarUri,
-      }
-    : undefined,
+  // A call has no author: it stands alone between the messages around it.
+  author:
+    message.sender && !message.call
+      ? {
+          id: message.sender.id,
+          name: message.sender.displayName,
+          avatarUrl: message.sender.avatarUri,
+          presence: message.sender.presence,
+          statusMessage: message.sender.statusMessage,
+        }
+      : undefined,
   content: message.message,
   timestampMs: message.timestamp,
   reactions: mapReactionsToCommentReactions(message.reactions, currentUserId),
   attachments: message.attachments,
   isOwn: Boolean(currentUserId && message.sender?.id === currentUserId),
+  call: chatCallOf(message, currentUserId),
 });
 
 /** Sentinel id for the synthetic Guidance introduction message. */

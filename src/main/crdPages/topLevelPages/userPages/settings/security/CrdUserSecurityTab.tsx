@@ -17,6 +17,7 @@ import { UserSecurityTabView, type UserSecurityViewState } from '@/crd/component
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { platformBaseAddress } from '@/main/constants/endpoints';
+import { CrdCookieSettingsSection } from '@/main/cookies/CrdCookieSettingsSection';
 import { flowDescriptorAdapter } from '@/main/crdPages/auth/flowDescriptorAdapter';
 import { invokePasskeyTrigger } from '@/main/crdPages/auth/passkeyTrigger';
 import { TwoStepVerification } from '@/main/crdPages/auth/TwoStepVerification';
@@ -86,6 +87,7 @@ const CrdUserSecurityTab = () => {
         twoStepVerificationSection={null}
         mcpApiKeysCard={null}
         connectedAccountsSection={null}
+        cookieSettingsSection={isOwner ? <CrdCookieSettingsSection /> : null}
       />
     );
   }
@@ -259,6 +261,7 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
       twoStepVerificationSection={twoStepVerificationSection}
       mcpApiKeysCard={mcpApiKeysCard}
       connectedAccountsSection={connectedAccountsSection}
+      cookieSettingsSection={<CrdCookieSettingsSection />}
     />
   );
 };

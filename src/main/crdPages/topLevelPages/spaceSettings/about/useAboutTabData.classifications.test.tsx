@@ -6,12 +6,12 @@
  * 2026-10-22. Nothing is written until `unsaved.saveAll()`; `unsaved.reset()` restores the server
  * values; a failed write keeps only that change counted.
  */
-import { InMemoryCache } from '@apollo/client';
-import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
+import { ApolloLink, InMemoryCache } from '@apollo/client';
+import { MockedProvider, type MockedResponse, MockLink } from '@apollo/client/testing';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { FC, PropsWithChildren } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   AddClassificationEntryFromTemplateDocument,
   DeleteClassificationEntryDocument,
@@ -35,6 +35,16 @@ import { useAboutTabData } from './useAboutTabData';
 // with no bucket resolved yet), so stub the context read instead of wiring the real provider.
 vi.mock('@/domain/storage/StorageBucket/StorageConfigContext', () => ({
   useStorageConfigContext: () => undefined,
+}));
+
+const referenceUpload = vi.hoisted(() => ({ uploading: false }));
+vi.mock('@/main/crdPages/utils/useReferenceFileUpload', () => ({
+  useReferenceFileUpload: () => ({
+    onFileUpload: undefined,
+    accept: undefined,
+    canUpload: false,
+    uploading: referenceUpload.uploading,
+  }),
 }));
 
 beforeAll(async () => {
@@ -274,6 +284,94 @@ describe('useAboutTabData — unsaved-changes buffer', () => {
 
     expect(result.current.values?.name).toBe('Test Space');
     expect(result.current.unsaved.count).toBe(0);
+  });
+
+  it('each reset increments resetGeneration', async () => {
+    const { result } = renderAbout([spaceAboutDetailsMock([])]);
+    await waitFor(() => expect(result.current.values).not.toBeNull());
+    const before = result.current.resetGeneration;
+
+    act(() => result.current.unsaved.reset());
+    expect(result.current.resetGeneration).toBe(before + 1);
+    act(() => result.current.unsaved.reset());
+    expect(result.current.resetGeneration).toBe(before + 2);
+  });
+
+  it('shows its own save failure, so its save mutations opt out of the global error handler', async () => {
+    const skipGlobalByOperation = new Map<string, unknown>();
+    const recordContext = new ApolloLink((operation, forward) => {
+      skipGlobalByOperation.set(operation.operationName, operation.getContext().skipGlobalErrorHandler);
+      return forward(operation);
+    });
+    const mocks = [
+      spaceAboutDetailsMock([]),
+      {
+        request: {
+          query: UpdateSpaceDocument,
+          variables: { input: { ID: SPACE_ID, about: { profile: { displayName: 'Renamed' } } } },
+        },
+        result: { data: { updateSpace: { __typename: 'Space', id: SPACE_ID } } },
+      },
+      addClassificationMock('tpl-sdgs', 'SDGs', classificationEntry('entry-1')),
+      updateSelectionMock(
+        'entry-1',
+        ['v-climate'],
+        classificationEntry('entry-1', { selectedValueIDs: ['v-climate'] })
+      ),
+      spaceAboutDetailsMock([classificationEntry('entry-1', { selectedValueIDs: ['v-climate'] })], {
+        displayName: 'Renamed',
+      }),
+    ];
+    const { result } = renderHook(() => useAboutTabData(SPACE_ID, '/space-1', 'L1'), {
+      wrapper: ({ children }) => (
+        <MockedProvider link={ApolloLink.from([recordContext, new MockLink(mocks)])} cache={new InMemoryCache()}>
+          <GlobalStateProvider>
+            <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
+          </GlobalStateProvider>
+        </MockedProvider>
+      ),
+    });
+    await waitFor(() => expect(result.current.values).not.toBeNull());
+
+    act(() => {
+      result.current.onChange({ name: 'Renamed' });
+      result.current.addClassificationFromTemplate(SDGS_TEMPLATE);
+    });
+    act(() => result.current.updateClassificationSelection(result.current.unsavedClassificationIds[0], ['v-climate']));
+    await act(async () => {
+      await result.current.unsaved.saveAll();
+    });
+
+    expect(skipGlobalByOperation.get('updateSpace')).toBe(true);
+    expect(skipGlobalByOperation.get('AddClassificationEntryFromTemplate')).toBe(true);
+    expect(skipGlobalByOperation.get('UpdateClassificationEntrySelection')).toBe(true);
+  });
+});
+
+describe('useAboutTabData — Save while reference files upload', () => {
+  afterEach(() => {
+    referenceUpload.uploading = false;
+  });
+
+  it('withholds Save with the blocked reason while an upload runs', async () => {
+    referenceUpload.uploading = true;
+    const { result } = renderAbout([spaceAboutDetailsMock([])]);
+    await waitFor(() => expect(result.current.values).not.toBeNull());
+
+    act(() => result.current.onChange({ name: 'Renamed' }));
+    expect(result.current.unsaved.canSave).toBe(false);
+    const blockedText = i18n.t('fileSelection.saveBlocked', { ns: 'crd-common' });
+    expect(blockedText).not.toBe('fileSelection.saveBlocked');
+    expect(result.current.unsaved.saveBlockedReason).toBe(blockedText);
+  });
+
+  it('allows Save with no blocked reason when no upload runs', async () => {
+    const { result } = renderAbout([spaceAboutDetailsMock([])]);
+    await waitFor(() => expect(result.current.values).not.toBeNull());
+
+    act(() => result.current.onChange({ name: 'Renamed' }));
+    expect(result.current.unsaved.canSave).toBe(true);
+    expect(result.current.unsaved.saveBlockedReason).toBeUndefined();
   });
 });
 

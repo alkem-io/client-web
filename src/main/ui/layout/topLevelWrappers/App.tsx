@@ -1,5 +1,4 @@
 import { Suspense, useCallback, useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import { Outlet } from 'react-router-dom';
 import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
@@ -7,14 +6,19 @@ import { CrdNotificationHandler } from '@/core/ui/notifications/CrdNotificationH
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { LanguageOfferProvider } from '@/domain/language/LanguageOfferContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { ALKEMIO_COOKIE_NAME, useMigrateConsentCookieToApex } from '@/main/cookies/useAlkemioCookies';
+import {
+  useAlkemioCookies,
+  useCleanUpApmCookie,
+  useMigrateConsentCookieToApex,
+} from '@/main/cookies/useAlkemioCookies';
 
 const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CrdCookieConsent'));
 
 const App = () => {
-  const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
+  const { consent } = useAlkemioCookies();
   // Collapse a pre-fix host-only consent cookie into the shared apex cookie (#9695).
   useMigrateConsentCookieToApex();
+  useCleanUpApmCookie();
   const { userModel } = useCurrentUserContext();
 
   useUserScope(userModel);
@@ -32,9 +36,13 @@ const App = () => {
 
   // Keep useCallback: ref callback that calls setState. Without stable reference, React
   // re-invokes with null then element on every render → setCookieConsentHeight oscillates → infinite loop.
-  const cookieConsentRef = useCallback((element: HTMLDivElement | null) => {
+  // The fixed bottom bars (menu bars, the unsaved-changes bar, the new-version card) sit on
+  // --cookie-banner-height so the banner never covers them.
+  // Set on the root element because one of them is portalled to document.body.
+  const cookieConsentRef = useCallback((element: HTMLElement | null) => {
     const height = element?.getBoundingClientRect().height ?? 0;
     setCookieConsentHeight(height);
+    document.documentElement.style.setProperty('--cookie-banner-height', `${height}px`);
   }, []);
 
   return (
@@ -52,7 +60,8 @@ const App = () => {
           <Outlet />
         </div>
       </div>
-      {!cookies.accepted_cookies && (
+      {/* A malformed consent cookie is no choice, so the banner asks again. */}
+      {!consent.decided && (
         <Suspense fallback={null}>
           <CookieConsent ref={cookieConsentRef} />
         </Suspense>

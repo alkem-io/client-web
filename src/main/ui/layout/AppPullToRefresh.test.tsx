@@ -24,6 +24,11 @@ const pull = (target: Element, dy: number) => {
   fire(target, 'touchend');
 };
 
+const setStandalone = () =>
+  vi
+    .spyOn(window, 'matchMedia')
+    .mockImplementation(query => ({ matches: query === '(display-mode: standalone)', media: query }) as MediaQueryList);
+
 const setOnline = (value: boolean) => Object.defineProperty(navigator, 'onLine', { value, configurable: true });
 
 const setup = () =>
@@ -48,6 +53,7 @@ describe('AppPullToRefresh', () => {
 
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
     delete window.Capacitor;
     setOnline(true);
     document.documentElement.style.overscrollBehaviorY = '';
@@ -86,6 +92,25 @@ describe('AppPullToRefresh', () => {
     act(() => {
       window.dispatchEvent(new Event('offline'));
     });
+    expect(indicator()).toBeNull();
+    expect(document.documentElement.style.overscrollBehaviorY).toBe('auto');
+    pull(content(), 200);
+    expect(client.refetchQueries).not.toHaveBeenCalled();
+  });
+
+  test('(e) in the installed PWA, without Capacitor, a pull refetches the active queries', () => {
+    setStandalone();
+    setup();
+    expect(document.documentElement.style.overscrollBehaviorY).toBe('none');
+    pull(content(), 200);
+    expect(client.refetchQueries).toHaveBeenCalledTimes(1);
+    expect(client.refetchQueries).toHaveBeenCalledWith({ include: 'active' });
+  });
+
+  test('(f) offline in the installed PWA there is no gesture', () => {
+    setStandalone();
+    setOnline(false);
+    setup();
     expect(indicator()).toBeNull();
     expect(document.documentElement.style.overscrollBehaviorY).toBe('auto');
     pull(content(), 200);

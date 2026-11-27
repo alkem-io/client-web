@@ -9,10 +9,12 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import type { UpdateOrganizationInput, UpdateProfileInput } from '@/core/apollo/generated/graphql-schema';
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { SOCIAL_LINK_KINDS } from '@/crd/components/contributor/settings/ProfileFormFields';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { isValidEmailOrEmpty, isValidUrlOrEmpty } from '@/crd/lib/validators';
-import type { TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
+import { errorMessage, type TabUnsavedChanges } from '@/main/crdPages/utils/tabUnsavedChanges';
 import {
   countReferenceChanges,
   diffProfileReferences,
@@ -55,6 +57,8 @@ export type UseOrgProfileTabDataResult = {
   onAvatarCropCancel: () => void;
   /** Every field is buffered and saved through the unsaved-changes bar (spec 097 Session 2026-10-22). */
   unsaved: TabUnsavedChanges;
+  /** Increments on every `unsaved.reset()`; keys the references editor so a Discard drops its pending uploads. */
+  resetGeneration: number;
 };
 
 const PROFILE_FIELDS = ['displayName', 'tagline', 'description', 'city', 'country'] as const;
@@ -93,14 +97,17 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
   const valuesRef = useRef<OrgProfileFormValues | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [resetGeneration, setResetGeneration] = useState(0);
 
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [pendingAvatarCrop, setPendingAvatarCrop] = useState<PendingAvatarCrop | null>(null);
 
-  const [updateOrganization] = useUpdateOrganizationMutation();
-  const [createReference] = useCreateReferenceOnProfileMutation();
-  const [deleteReference] = useDeleteReferenceMutation();
-  const [createTagset] = useCreateTagsetOnProfileMutation();
+  // Save failures show in the unsaved-changes bar, with the server's reason.
+  const serverErrorMessage = useServerErrorMessage();
+  const [updateOrganization] = useUpdateOrganizationMutation({ context: OWN_ERROR_HANDLING });
+  const [createReference] = useCreateReferenceOnProfileMutation({ context: OWN_ERROR_HANDLING });
+  const [deleteReference] = useDeleteReferenceMutation({ context: OWN_ERROR_HANDLING });
+  const [createTagset] = useCreateTagsetOnProfileMutation({ context: OWN_ERROR_HANDLING });
   const [uploadVisual] = useUploadVisualMutation();
 
   useEffect(() => {
@@ -285,6 +292,7 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
           },
         }),
       deleteReference: ref => deleteReference({ variables: { input: { ID: ref.id } } }),
+      describeError: error => serverErrorMessage(error, errorMessage(error)),
     });
 
     // Rebase the buffer on the fresh server values: what saved now matches the server, what
@@ -329,6 +337,7 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
   };
 
   const reset = () => {
+    setResetGeneration(generation => generation + 1);
     if (saved) {
       const next = { ...saved, avatar: valuesRef.current?.avatar ?? saved.avatar };
       valuesRef.current = next;
@@ -350,6 +359,7 @@ export const useOrgProfileTabData = (organizationId: string | undefined): UseOrg
     onAvatarCropComplete,
     onAvatarCropCancel,
     unsaved: { count: unsavedCount, canSave, saving, error: saveError, saveAll, reset },
+    resetGeneration,
   };
 };
 

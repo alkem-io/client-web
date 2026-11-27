@@ -3,8 +3,8 @@ import { createElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { refetchUserSettingsQuery, useUpdateUserSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
+import { isAppMode } from '@/core/appMode/isAppMode';
 import { supportedLngs } from '@/core/i18n/config';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ROUTE_HOME, ROUTE_USER_ME } from '@/domain/platform/routes/constants';
@@ -23,19 +23,11 @@ const STATIC_NAVIGATION_HREFS = {
 
 export function useCrdNavigation() {
   const { t, i18n } = useTranslation();
-  // crd-layout, not crd-contributorSettings: this hook backs the header, so
-  // it mounts on every page load. crd-layout is already eagerly loaded
-  // app-wide; a feature namespace is not — useTranslation triggers its fetch
-  // as soon as this hook mounts (not on every re-render, just once per page
-  // load), pulling in a whole unrelated namespace just to have one
-  // rarely-hit error string ready.
-  const { t: tLayout } = useTranslation('crd-layout');
   const { pathname, search } = useLocation();
   const { locations } = useConfig();
   const canonicalDomain = locations?.domain;
   const { userModel, isAuthenticated } = useCurrentUserContext();
   const [updateUserSettings] = useUpdateUserSettingsMutation();
-  const notify = useNotification();
 
   // When the visitor is on a hub subdomain (e.g. `acme.alkemio.org`), every
   // top-nav / platform link must hop them off the subdomain back to the main
@@ -55,13 +47,20 @@ export function useCrdNavigation() {
     login: absolutise(buildLoginUrl(pathname, search)),
   };
 
-  const footerLinks = locations
-    ? { terms: locations.terms, privacy: locations.privacy, security: locations.security, about: locations.about }
-    : undefined;
+  const footerLinks = {
+    // a static file every build writes (vite.third-party-licenses.mjs), not a platform-configured location
+    thirdPartyLicenses: '/third-party-licenses.html',
+    // the store app and the installed PWA have no tabs and no back control: a new tab is a dead end there
+    thirdPartyLicensesInDialog: isAppMode() || window.matchMedia?.('(display-mode: standalone)').matches === true,
+    ...(locations && {
+      terms: locations.terms,
+      privacy: locations.privacy,
+      security: locations.security,
+      about: locations.about,
+    }),
+  };
 
-  const languages = supportedLngs
-    .filter(lng => lng !== 'inContextTool')
-    .map(lng => ({ code: lng, label: t(`languages.${lng}`) }));
+  const languages = supportedLngs.map(lng => ({ code: lng, label: t(`languages.${lng}`) }));
 
   // Must persist the same way the Account Settings language dropdown does
   // (CrdUserSettingsTab.tsx's onLanguageChange) — otherwise a pick made here
@@ -86,7 +85,7 @@ export function useCrdNavigation() {
       });
       void i18n.changeLanguage(code);
     } catch {
-      notify(tLayout('header.changeLanguageError'), 'error');
+      // Reported by the global error handler, with the server's reason; the display language stays.
     }
   };
 

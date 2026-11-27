@@ -1,52 +1,145 @@
-import { useCookies } from 'react-cookie';
+import { useSyncExternalStore } from 'react';
+import { env } from '@/main/env';
 
-// Versioned per notice: the previous incident banner wrote a 30-day dismissal
-// under `down-notice-banner-dismiss`, so reusing that key would hide this notice
-// from everyone who dismissed the last one.
-export const DOWN_NOTICE_BANNER_DISMISS_COOKIE = 'down-notice-banner-dismiss-2026-07-31';
+export const DOWN_NOTICE_DISMISSED_KEY = 'alkemio_down_notice_dismissed';
 
-/**
- * Midnight on 1 August, CEST — the zone the notice itself quotes. The banner
- * announces a single dated window, so it hard-expires here instead of relying
- * on every user dismissing it: once it is 1 August in CEST, nobody sees it.
- */
-export const DOWN_NOTICE_BANNER_END = Date.parse('2026-07-31T22:00:00Z');
+/** A planned maintenance is announced from this long before it starts. */
+const MAINTENANCE_LEAD_TIME_MS = 48 * 60 * 60 * 1000;
+const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 
-/** Exported for tests — `now` is epoch ms. */
-export function isDownNoticeExpired(now: number): boolean {
-  return now >= DOWN_NOTICE_BANNER_END;
+type StatuspageEvent = {
+  id: string;
+  name: string;
+  status: string;
+  shortlink?: string;
+  scheduled_for?: string;
+};
+
+/** The part of Statuspage's `summary.json` the notice reads. */
+export type StatuspageSummary = {
+  page?: { url?: string };
+  /** Unresolved incidents only. */
+  incidents?: StatuspageEvent[];
+  /** Upcoming and running maintenances only. */
+  scheduled_maintenances?: StatuspageEvent[];
+};
+
+export type DownNotice = {
+  /** Identifies what was dismissed: a status change brings the notice back. */
+  key: string;
+  kind: 'incident' | 'maintenanceScheduled' | 'maintenanceInProgress';
+  /** The title as typed into Statuspage. Not translated. */
+  name: string;
+  href?: string;
+  scheduledFor?: Date;
+};
+
+/** An incident wins over a maintenance. Exported for tests — `now` is epoch ms. */
+export function pickDownNotice(summary: StatuspageSummary | undefined, now: number): DownNotice | undefined {
+  const toNotice = (event: StatuspageEvent, kind: DownNotice['kind']): DownNotice => ({
+    key: `${event.id}:${event.status}`,
+    kind,
+    name: event.name,
+    // Built from the page's current address: a `shortlink` keeps pointing at the
+    // address the page had when the event was created, and breaks if it is renamed.
+    href: summary?.page?.url ? `${summary.page.url}/incidents/${event.id}` : event.shortlink,
+    scheduledFor: event.scheduled_for ? new Date(event.scheduled_for) : undefined,
+  });
+
+  const incident = summary?.incidents?.[0];
+  if (incident) return toNotice(incident, 'incident');
+
+  for (const maintenance of summary?.scheduled_maintenances ?? []) {
+    const startsAt = Date.parse(maintenance.scheduled_for ?? '');
+    // The status is set by hand on Statuspage and may run ahead of the window (an
+    // update posted as "verifying" days before): only `in_progress` says it started early.
+    if (maintenance.status === 'in_progress' || !(startsAt > now)) {
+      return toNotice(maintenance, 'maintenanceInProgress');
+    }
+    if (startsAt - now <= MAINTENANCE_LEAD_TIME_MS) return toNotice(maintenance, 'maintenanceScheduled');
+  }
+  return undefined;
 }
 
+// One fetch for the whole app: the layout renders the notice, and page layouts
+// read `visible` to keep the hero overlay from sliding over it.
+type Snapshot = { summary?: StatuspageSummary; dismissedKey: string | null };
+
+// The layout renders this hook on every page: storage a browser refuses must not take the page down.
+const readDismissed = (): string | null => {
+  try {
+    return localStorage.getItem(DOWN_NOTICE_DISMISSED_KEY);
+  } catch {
+    return null;
+  }
+};
+
+let snapshot: Snapshot = { dismissedKey: readDismissed() };
+const listeners = new Set<() => void>();
+let timer: ReturnType<typeof setInterval> | undefined;
+
+const publish = (next: Partial<Snapshot>) => {
+  snapshot = { ...snapshot, ...next };
+  for (const listener of listeners) listener();
+};
+
+const refresh = async (apiUrl: string) => {
+  if (document.visibilityState === 'hidden') return;
+  try {
+    const response = await fetch(`${apiUrl}/summary.json`, { headers: { Accept: 'application/json' } });
+    if (response.ok) publish({ summary: await response.json() });
+  } catch {
+    // Statuspage unreachable: keep what we had. A status notice never becomes an error itself.
+  }
+};
+
+const subscribe = (listener: () => void) => {
+  listeners.add(listener);
+  const apiUrl = env?.VITE_APP_STATUSPAGE_API_URL;
+  if (apiUrl && !timer) {
+    void refresh(apiUrl);
+    timer = setInterval(() => void refresh(apiUrl), REFRESH_INTERVAL_MS);
+  }
+  return () => {
+    listeners.delete(listener);
+    if (listeners.size === 0) {
+      clearInterval(timer);
+      timer = undefined;
+    }
+  };
+};
+
+const getSnapshot = () => snapshot;
+
 type UseDownNoticeBannerResult = {
-  /** Whether the maintenance banner should currently be shown. */
+  /** Whether a notice should currently be shown. */
   visible: boolean;
-  /** Dismiss the banner and persist the choice in a cookie. */
+  notice: DownNotice | undefined;
+  /** Dismiss the current notice and remember it in this browser. */
   dismiss: () => void;
 };
 
 /**
- * Shared state for the site-wide planned-maintenance notice. The banner is
- * rendered once (by `CrdLayoutWrapper`); page layouts also read `visible` to
- * suppress the decorative hero overlay so the hero doesn't slide up over the
- * notice.
- *
- * The expiry is evaluated per render rather than on a timer — a session left
- * open across the cut-over keeps the banner until its next navigation or
- * reload, which is fine for a one-off notice.
+ * Site-wide notice for an ongoing incident or a planned maintenance, read from
+ * the public Statuspage API named by `VITE_APP_STATUSPAGE_API_URL` (unset = no
+ * notice). The banner is rendered once (by `CrdLayoutWrapper`); page layouts
+ * also read `visible` to suppress the decorative hero overlay so the hero
+ * doesn't slide up over the notice.
  */
 export function useDownNoticeBanner(): UseDownNoticeBannerResult {
-  const [cookies, setCookie] = useCookies([DOWN_NOTICE_BANNER_DISMISS_COOKIE]);
-  // react-cookie (universal-cookie) JSON-parses the stored value on read, so a
-  // written `'true'` comes back as the boolean `true`. Compare on truthiness.
-  const visible = !isDownNoticeExpired(Date.now()) && !cookies[DOWN_NOTICE_BANNER_DISMISS_COOKIE];
+  const { summary, dismissedKey } = useSyncExternalStore(subscribe, getSnapshot);
+  const notice = pickDownNotice(summary, Date.now());
+  const visible = notice !== undefined && notice.key !== dismissedKey;
 
   const dismiss = () => {
-    setCookie(DOWN_NOTICE_BANNER_DISMISS_COOKIE, 'true', {
-      path: '/',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 30,
-    });
+    if (!notice) return;
+    try {
+      localStorage.setItem(DOWN_NOTICE_DISMISSED_KEY, notice.key);
+    } catch {
+      // Dismissed for this page's life only.
+    }
+    publish({ dismissedKey: notice.key });
   };
 
-  return { visible, dismiss };
+  return { visible, notice, dismiss };
 }

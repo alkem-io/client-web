@@ -12,7 +12,6 @@ import type {
 // Do not import the i18n singleton directly — it runs side-effects on import
 // that break tests. Use i18nInstance from useTranslation() instead.
 // supportedLngs is pulled from i18nInstance.options.supportedLngs at runtime.
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import { UserSettingsTabView } from '@/crd/components/user/settings/UserSettingsTabView';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
@@ -20,8 +19,6 @@ import useUserPageRouteContext from '../../useUserPageRouteContext';
 import { mapUserSettings } from './userSettingsMapper';
 
 const CrdUserSettingsTab = () => {
-  const { t } = useTranslation('crd-contributorSettings');
-  const notify = useNotification();
   const { userId } = useUserPageRouteContext();
 
   const { language: languageConfig } = useConfig();
@@ -33,6 +30,7 @@ const CrdUserSettingsTab = () => {
   });
   const mapped = mapUserSettings(data);
 
+  // A failed save is reported by the global error handler, with the server's reason.
   const [updateUserSettings] = useUpdateUserSettingsMutation();
   const [messagesOverride, setMessagesOverride] = useState<boolean | null>(null);
   // Email-contact toggle temporarily disabled client-side (chat-only).
@@ -56,7 +54,7 @@ const CrdUserSettingsTab = () => {
         awaitRefetchQueries: true,
       });
     } catch {
-      notify(t('user.settings.communication.error'), 'error');
+      // Reported by the global error handler.
     } finally {
       rollback();
       setCommunicationSaving(false);
@@ -87,7 +85,7 @@ const CrdUserSettingsTab = () => {
     ? (i18nInstance.options.supportedLngs as string[])
     : [];
   const availableLanguages = supportedLngsRaw
-    .filter(lng => lng !== 'inContextTool' && lng !== 'cimode')
+    .filter(lng => lng !== 'cimode')
     // biome-ignore lint/suspicious/noExplicitAny: dynamic key — lng is a supported language code
     .map(lng => ({ code: lng, label: String((i18nInstance as any).t(`languages.${lng}`)) }));
 
@@ -110,7 +108,6 @@ const CrdUserSettingsTab = () => {
       // to avoid importing the config singleton (side-effects in tests).
       void i18nInstance.changeLanguage(languageCode);
     } catch {
-      notify(t('user.settings.language.error'), 'error');
       // Revert the optimistic override on error.
       setLanguageOverride(null);
     } finally {

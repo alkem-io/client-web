@@ -183,7 +183,6 @@
     "replaceFlow": {
       "button": "Remplacer le flux d'innovation",
       "loading": "Chargement du nouveau flux…",
-      "error": "Le remplacement du flux d'innovation a échoué. Le flux est inchangé — veuillez réessayer.",
       "applyDialog": {
         "title": "Appliquer un nouveau modèle",
         "description": "Vous êtes sur le point d'appliquer un nouveau modèle. Cette action supprimera définitivement votre flux d'innovation actuel. Cependant, les publications existantes liées aux différentes phases seront conservées et regroupées sous la première phase de la nouvelle configuration.<br/><br/>Veuillez choisir l'une des options suivantes :",
@@ -930,7 +929,6 @@
       "title": "Zone de danger",
       "description": "Supprimer définitivement cet espace et tout son contenu.",
       "delete": "Supprimer cet espace",
-      "deleteError": "L'espace n'a pas pu être supprimé. Veuillez réessayer.",
       "deleteDialog": {
         "title": "Supprimer l'espace",
         "description": "Cela supprimera définitivement cet espace et tout son contenu. Cette action ne peut pas être annulée.",

@@ -2,6 +2,7 @@ import type { FileId } from '@excalidraw-yjs/excalidraw/element/types';
 import type { AssetAdapter, BinaryFileData } from '@excalidraw-yjs/excalidraw/types';
 import { useEffect, useRef, useState } from 'react';
 import { useUploadFileMutation, useWhiteboardAssetDocumentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { encodeToBase64 } from '@/core/utils/encodeToBase64';
 import { resolveWhiteboardGuestIdentity } from '@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity';
 import { dataUrlToFile, fetchFileToDataURL } from '../fileStore/fileConverters';
@@ -102,7 +103,8 @@ export function useWhiteboardAssetAdapter({
           const { data } = await Promise.race([
             deps.uploadFile({
               variables: { file: upload, uploadData: { storageBucketId: deps.storageBucketId } },
-              context: { fetchOptions: { signal: controller.signal } },
+              // The host reports `uploadError` itself.
+              context: { fetchOptions: { signal: controller.signal }, ...OWN_ERROR_HANDLING },
             }),
             deadline,
           ]);

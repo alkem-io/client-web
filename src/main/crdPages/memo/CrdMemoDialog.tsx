@@ -15,6 +15,7 @@ import {
   LicenseEntitlementType,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
@@ -166,12 +167,15 @@ export function CrdMemoDialog({
     memoId,
     requestDurability: () => provider?.requestDurability() ?? Promise.reject(new Error('Memo is not connected')),
     prepare: async id => {
-      const result = (await prepareMemoSigning({ variables: { memoID: id } })).data?.prepareMemoSigning;
+      // A failed signing step is shown as the signing dialog's error stage, which names the next step.
+      const result = (await prepareMemoSigning({ variables: { memoID: id }, context: OWN_ERROR_HANDLING })).data
+        ?.prepareMemoSigning;
       if (!result) throw new Error('Memo signing preparation returned no result');
       return result;
     },
     continueSigning: async attemptID => {
-      const result = (await continueMemoSigning({ variables: { attemptID } })).data?.continueMemoSigning;
+      const result = (await continueMemoSigning({ variables: { attemptID }, context: OWN_ERROR_HANDLING })).data
+        ?.continueMemoSigning;
       if (!result) throw new Error('Memo signing continuation returned no result');
       return result.authorizeUrl;
     },

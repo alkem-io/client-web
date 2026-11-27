@@ -64,4 +64,16 @@ describe('soundPlayer', () => {
     await Promise.resolve();
     expect(playMock).toHaveBeenCalledTimes(1);
   });
+
+  it('stops a playing sound and rewinds it; stopping one never played does nothing', async () => {
+    const pauseMock = vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => {});
+    const { playSound, stopSound } = await import('./soundPlayer');
+
+    stopSound('call');
+    expect(pauseMock).not.toHaveBeenCalled();
+
+    playSound('call');
+    stopSound('call');
+    expect(pauseMock).toHaveBeenCalledTimes(1);
+  });
 });

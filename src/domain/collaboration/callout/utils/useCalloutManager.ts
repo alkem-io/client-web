@@ -16,6 +16,7 @@ type useCalloutEditProvided = {
   deleteCallout: (callout: Identifiable) => Promise<void>;
 };
 
+// A failed visibility change or delete is reported by the global error handler, with the server's reason.
 export const useCalloutManager = (): useCalloutEditProvided => {
   const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
 

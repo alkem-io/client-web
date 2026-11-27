@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useDialogTitle } from '@/core/routing/useDialogTitle';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import { CrdFullscreenButton } from '@/crd/components/common/CrdFullscreenButton';
 import { cn } from '@/crd/lib/utils';
@@ -15,6 +16,11 @@ type TaskBoardDialogProps = {
   onOpenChange: (open: boolean) => void;
   /** Opens a task (post) on top of the board — the connector fires this per card. */
   onOpenTask?: (contributionId: string) => void;
+  /**
+   * Where focus goes when the dialog closes. It has no trigger of its own, so
+   * without this focus is left on the page body.
+   */
+  onCloseAutoFocus?: (event: Event) => void;
 };
 
 /**
@@ -25,9 +31,17 @@ type TaskBoardDialogProps = {
  * like the whiteboard/memo experience; the shell also stretches to `inset-0`
  * while fullscreen so the board uses the whole viewport.
  */
-export function TaskBoardDialog({ calloutId, title, open, onOpenChange, onOpenTask }: TaskBoardDialogProps) {
+export function TaskBoardDialog({
+  calloutId,
+  title,
+  open,
+  onOpenChange,
+  onOpenTask,
+  onCloseAutoFocus,
+}: TaskBoardDialogProps) {
   const { t } = useTranslation('crd-common');
   const { fullscreen, setFullscreen } = useFullscreen();
+  useDialogTitle(title, open);
 
   const handleOpenChange = (next: boolean) => {
     // Leaving the dialog must also leave the browser's fullscreen — otherwise
@@ -52,6 +66,7 @@ export function TaskBoardDialog({ calloutId, title, open, onOpenChange, onOpenTa
             : 'w-full sm:max-w-6xl h-[85vh] rounded-xl'
         )}
         aria-describedby="task-board-dialog-description"
+        onCloseAutoFocus={onCloseAutoFocus}
       >
         <div className="h-14 shrink-0 flex items-center justify-between px-6 border-b border-border">
           <DialogTitle className="min-w-0 truncate text-section-title text-foreground">{title}</DialogTitle>

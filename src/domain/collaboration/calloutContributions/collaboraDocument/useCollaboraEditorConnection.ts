@@ -16,6 +16,8 @@ import { useProactiveTokenRefresh } from './useProactiveTokenRefresh';
 const TERMINAL_CODE_REASONS: Record<string, CollaboraTerminalReason> = {
   ENTITY_NOT_FOUND: 'notFound',
   RELATIONSHIP_NOT_FOUND: 'notFound',
+  // Missing or not accessible — the "no longer available" copy is true for both.
+  FORBIDDEN_POLICY: 'notFound',
   FORBIDDEN: 'forbidden',
 };
 

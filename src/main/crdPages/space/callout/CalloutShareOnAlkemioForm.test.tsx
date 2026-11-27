@@ -3,13 +3,18 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 
 // ---- Mocks ----
 
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+vi.mock('react-i18next', async importOriginal => ({
+  ...(await importOriginal<typeof import('react-i18next')>()),
+  useTranslation: () => ({ t: (key: string) => key, i18n: { exists: () => false } }),
 }));
 
 const sendDirectMessageMock = vi.fn();
+const sendDirectMessageOptions = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useSendDirectMessageToUsersMutation: () => [sendDirectMessageMock, { loading: false }],
+  useSendDirectMessageToUsersMutation: (options: unknown) => {
+    sendDirectMessageOptions(options);
+    return [sendDirectMessageMock, { loading: false }];
+  },
   useUserSelectorQuery: () => ({ data: undefined, loading: false }),
 }));
 
@@ -85,6 +90,10 @@ vi.mock('@/crd/components/chat/SendConfirmationDialog', () => ({
     ) : null,
 }));
 
+import { ApolloError } from '@apollo/client';
+import { GraphQLError } from 'graphql';
+import '@/core/i18n/config';
+import commonEN from '@/crd/i18n/common/common.en.json';
 import { CalloutShareOnAlkemioForm } from './CalloutShareOnAlkemioForm';
 
 describe('CalloutShareOnAlkemioForm (US2 — Share on Alkemio → individual chats)', () => {
@@ -182,5 +191,67 @@ describe('CalloutShareOnAlkemioForm (US2 — Share on Alkemio → individual cha
     // Single recipient → that conversation is focused; share dialog closes.
     expect(setSelectedConversationIdMock).not.toHaveBeenCalledWith(null);
     expect(onClose).toHaveBeenCalled();
+  });
+});
+
+describe('CalloutShareOnAlkemioForm — hourly message allowance used up', () => {
+  const send = async () => {
+    render(<CalloutShareOnAlkemioForm url="https://alkem.io/x" entityLabel="post" />);
+    fireEvent.click(screen.getByText('add-alice'));
+    fireEvent.click(screen.getByText('share.alkemio.send'));
+    await vi.waitFor(() => expect(sendDirectMessageMock).toHaveBeenCalledTimes(1));
+  };
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  test('sends without the global error handler', async () => {
+    sendDirectMessageMock.mockResolvedValue({ data: { sendDirectMessageToUsers: [] } });
+
+    await send();
+
+    expect(sendDirectMessageMock.mock.calls[0][0].context).toEqual({ skipGlobalErrorHandler: true });
+  });
+
+  test('a limit refusal raises exactly one notification, with the limit text', async () => {
+    sendDirectMessageMock.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [new GraphQLError('refused', { extensions: { code: 'MESSAGE_SEND_LIMIT_REACHED' } })],
+      })
+    );
+
+    await send();
+
+    await vi.waitFor(() => expect(notifyMock).toHaveBeenCalled());
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(notifyMock).toHaveBeenCalledWith(
+      commonEN.apollo.errors.userMessages.operations.messageSendLimitReached,
+      'error'
+    );
+  });
+
+  test("another refusal raises exactly one notification, with the server's reason", async () => {
+    sendDirectMessageMock.mockRejectedValue(
+      new ApolloError({
+        graphQLErrors: [new GraphQLError('Something failed', { extensions: { code: 'OPERATION_NOT_ALLOWED' } })],
+      })
+    );
+
+    await send();
+
+    await vi.waitFor(() => expect(notifyMock).toHaveBeenCalled());
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(notifyMock).toHaveBeenCalledWith('apollo.errors.generic-with-code Something failed', 'error');
+  });
+
+  test('a failure without a server answer raises exactly one notification, with the send-failed text', async () => {
+    sendDirectMessageMock.mockRejectedValue(new ApolloError({ networkError: new Error('Failed to fetch') }));
+
+    await send();
+
+    await vi.waitFor(() => expect(notifyMock).toHaveBeenCalled());
+    expect(notifyMock).toHaveBeenCalledTimes(1);
+    expect(notifyMock).toHaveBeenCalledWith('share.alkemio.errors.sendFailed', 'error');
   });
 });

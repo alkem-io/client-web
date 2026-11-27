@@ -82,7 +82,12 @@ import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCal
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
-import { formQuestionErrors, referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
+import {
+  type CalloutFormValues,
+  formQuestionErrors,
+  referenceRowErrors,
+  useCrdCalloutForm,
+} from '../hooks/useCrdCalloutForm';
 import { useCrdSpaceContributors } from '../hooks/useCrdSpaceContributors';
 import {
   formDefinitionChanged,
@@ -102,7 +107,7 @@ import { type FormEditContext, FramingEditorConnector } from './FramingEditorCon
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
 import { useAccountSpaceCandidates } from './useAccountSpaceCandidates';
-import { translateFormDefinitionError, useCalloutFormDefinitionSave } from './useCalloutFormDefinitionSave';
+import { useCalloutFormDefinitionSave } from './useCalloutFormDefinitionSave';
 import { omitIneligibleIds, useSelectionCandidates } from './useSelectionCandidates';
 
 /**
@@ -271,7 +276,18 @@ function CalloutFormConnectorInner({
   const showFramingComments = mode !== 'create' || !restrictions?.disableFramingComments;
   const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
   const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
-  const { values, errors, setField, setValues, validate, reset, prefill, dirty } = form;
+  const { values, errors, setField, setValues, validate, reset: resetForm, prefill: prefillForm, dirty } = form;
+  // Keys the row editors that upload files, so replacing or resetting the form content remounts them
+  // and their unmount discards uploads still running for the replaced content.
+  const [contentGeneration, setContentGeneration] = useState(0);
+  const prefill = (data: Partial<CalloutFormValues>) => {
+    prefillForm(data);
+    setContentGeneration(generation => generation + 1);
+  };
+  const reset = () => {
+    resetForm();
+    setContentGeneration(generation => generation + 1);
+  };
 
   const framingWhiteboardDraft = useWhiteboardDraft({
     scope: { type: 'calloutsSet', id: calloutsSetId },
@@ -411,6 +427,7 @@ function CalloutFormConnectorInner({
   const referenceUpload = useReferenceFileUpload(ambientStorageConfig, { temporaryLocation: temporaryUpload });
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
+  // Edit-path failures are reported by the global error handler, with the server's reason.
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
 
   // Inline-rename state for the framing Collabora document, owned here (not in the
@@ -577,6 +594,7 @@ function CalloutFormConnectorInner({
     creating || updating || mediaGalleryUploading || framingWhiteboardDraft.loading || defaultWhiteboardDraft.loading;
 
   const createAndUpload = async (visibility: CalloutVisibility) => {
+    if (referenceUpload.uploading) return;
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
@@ -676,7 +694,6 @@ function CalloutFormConnectorInner({
       );
     } catch (err) {
       logError(new Error('Poll status change failed', { cause: err as Error }));
-      notify(t('pollForm.statusChange.failed'), 'error');
     }
   };
 
@@ -710,7 +727,7 @@ function CalloutFormConnectorInner({
   };
 
   const saveEdit = async () => {
-    if (!calloutId) return;
+    if (!calloutId || referenceUpload.uploading) return;
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
@@ -744,7 +761,7 @@ function CalloutFormConnectorInner({
       );
       if (!outcome.ok) {
         logError(new Error('Form definition save failed', { cause: outcome.error as Error }));
-        notify(translateFormDefinitionError(outcome.code, t), 'error');
+        notify(outcome.message, 'error');
         void refetchFormResponses();
         return;
       }
@@ -786,7 +803,6 @@ function CalloutFormConnectorInner({
         }
       } catch (err) {
         logError(new Error('Callout reference creation failed', { cause: err as Error }));
-        notify(t('callout.referencesSaveFailed'), 'error');
         return;
       }
     }
@@ -805,7 +821,6 @@ function CalloutFormConnectorInner({
         }
       } catch (err) {
         logError(new Error('Callout reference deletion failed', { cause: err as Error }));
-        notify(t('callout.referencesSaveFailed'), 'error');
         return;
       }
     }
@@ -879,9 +894,7 @@ function CalloutFormConnectorInner({
       });
     } catch (err) {
       logError(new Error('Callout update mutation failed', { cause: err as Error }));
-      // Surface the failure so the admin knows the save did not go through (T005
-      // mid-race rejection recovery / spec Edge Case 'Concurrent churn').
-      notify(t('callout.updateFailed'), 'error');
+      // The global error handler tells the admin the save did not go through, with the server's reason.
       // Reload the candidate data so any concurrent change (e.g. a member who
       // left, or a space moved out of the account, between load and save) is
       // reflected.
@@ -943,7 +956,6 @@ function CalloutFormConnectorInner({
       await runPollOptionDiff();
     } catch (err) {
       logError(new Error('Poll option save failed', { cause: err as Error }));
-      notify(t('callout.pollOptionsSaveFailed'), 'error');
       return;
     }
 
@@ -999,7 +1011,13 @@ function CalloutFormConnectorInner({
   const descriptionError =
     errors.description ??
     (descriptionOverLimit ? t('crd-common:components.wysiwyg-editor.validation.maxLength') : undefined);
-  const blockedReason = !canSubmit ? 'titleRequired' : descriptionOverLimit ? 'descriptionTooLong' : undefined;
+  const blockedReason = referenceUpload.uploading
+    ? 'filesUploading'
+    : !canSubmit
+      ? 'titleRequired'
+      : descriptionOverLimit
+        ? 'descriptionTooLong'
+        : undefined;
   const notifySwitch =
     mode === 'create' && canSubmit ? (
       <div className="flex items-center gap-2">
@@ -1227,6 +1245,7 @@ function CalloutFormConnectorInner({
               locked={mode === 'edit'}
             />
             <ResponsePanel
+              key={contentGeneration}
               type={values.responseType}
               allowedActors={values.allowedActors}
               onAllowedActorsChange={v => setField('allowedActors', v)}
@@ -1276,6 +1295,7 @@ function CalloutFormConnectorInner({
               />
             )}
             <ReferencesEditor
+              key={contentGeneration}
               rows={values.referenceRows}
               onChange={rows => setField('referenceRows', rows)}
               errors={referenceRowErrors(errors)}

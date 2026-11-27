@@ -20,7 +20,6 @@
     "pendingMemberships": "Openstaande lidmaatschappen",
     "administration": "Administratie",
     "changeLanguage": "Taal wijzigen",
-    "changeLanguageError": "Taalvoorkeur kon niet worden opgeslagen — probeer het opnieuw.",
     "getHelp": "Hulp krijgen",
     "refresh": "Vernieuwen",
     "showGrid": "Raster tonen",
@@ -32,7 +31,10 @@
     "privacy": "Privacy",
     "security": "Beveiliging",
     "support": "Ondersteuning",
-    "about": "Over ons"
+    "about": "Over ons",
+    "thirdPartyLicenses": "Licenties van derden",
+    "opensInNewTab": "opent in een nieuw tabblad",
+    "close": "Sluiten"
   },
   "appVersion": {
     "message": "Er is een nieuwe versie van de app beschikbaar.",
@@ -51,13 +53,24 @@
     "home": "Home"
   },
   "cookieConsent": {
-    "consent": "Door op \"Accepteer Alle Cookies\" te klikken, ga je ermee akkoord dat er cookies op je apparaat worden opgeslagen die bijdragen aan de website navigatie en het analyseren van website gebruik.",
-    "settingsIntro": "Bij het bezoeken van een website kan informatie worden opgeslagen in je browser in de vorm van cookies. Deze informatie kan over jou, je voorkeuren en je apparaat gaan. Meestal wordt deze informatie gebruikt om de website zo goed mogelijk te laten werken. Sommige websites gebruiken de cookies ook voor marketingdoeleinden. Aangezien Alkemio geen advertenties toestaat op de website, maken wij slechts onderscheid tussen twee soorten cookies.",
-    "technical": "Technisch noodzakelijke cookies: maken het mogelijk op de website te navigeren en je voorkeuren op te slaan.",
-    "analysis": "Analytische cookies: staan ons toe vast te stellen hoe gebruikers onze dienst gebruiken om de gebruikerservaring te verbeteren.",
-    "settings": "instellingen",
-    "acceptAll": "Accepteer Alle Cookies",
-    "confirmChoice": "Bevestig keuze"
+    "title": "Cookies",
+    "text": "We gebruiken noodzakelijke cookies. Met jouw toestemming meten we ook de snelheid van pagina's en het gebruik van de app. Dat staat uit, tenzij je akkoord gaat.",
+    "settings": "Instellingen",
+    "acceptAll": "Alles accepteren",
+    "onlyNecessary": "Alleen noodzakelijke",
+    "settingsTitle": "Cookie-instellingen",
+    "sectionDescription": "Wat Alkemio op dit apparaat mag opslaan en meten.",
+    "close": "Sluiten",
+    "necessary": "Noodzakelijk",
+    "necessaryDescription": "Houdt je ingelogd en veilig, meldt fouten zodat we ze kunnen oplossen, en onthoudt je cookie-instellingen.",
+    "alwaysOn": "Altijd aan",
+    "analytics": "Analyse",
+    "analyticsDescription": "Meet de snelheid van pagina's en het gebruik van de app. Staat uit, tenzij je het aanzet.",
+    "cookiePolicy": "Cookiebeleid",
+    "privacyPolicy": "Privacybeleid",
+    "saveSettings": "Instellingen opslaan",
+    "saved": "Cookie-instellingen opgeslagen.",
+    "saveFailed": "We konden je cookie-instellingen niet opslaan. Mogelijk blokkeert je browser cookies voor deze site."
   },
   "secondFactorReminder": {
     "action": "Nu instellen",

@@ -30,7 +30,7 @@
           "bearerToken": "Bearer token error.",
           "forbidden": "Access denied.",
           "forbiddenLicensePolicy": "License restriction.",
-          "forbiddenPolicy": "You don't have the correct rights.",
+          "forbiddenPolicy": "Това не е налично. Възможно е да не съществува или да нямате достъп до него.",
           "invalidPolicy": "Invalid authorization policy.",
           "invalidToken": "Invalid token.",
           "loginFlow": "Login flow error.",
@@ -62,6 +62,7 @@
           "licenseEntitlementNotAvailable": "License entitlement not available.",
           "licenseEntitlementNotSupported": "License entitlement not supported.",
           "messagingNotEnabled": "Messaging not enabled.",
+          "messageSendLimitReached": "Можете да изпращате до 20 съобщения на час. По-късно ще можете да изпращате отново.",
           "noAgentForUser": "No agent for user.",
           "notEnabled": "Feature not enabled.",
           "operationNotAllowed": "Operation not allowed.",
@@ -1056,9 +1057,12 @@
   },
   "delete": "Изтрий",
   "downNoticeBanner": {
-    "a11yLabel": "Съобщение за планирана поддръжка",
+    "a11yLabel": "Съобщение за състоянието на платформата",
     "dismiss": "Затвори съобщението",
-    "message": "Планирана поддръжка в петък, 31 юли, 21:00 ч. CEST. Платформата може да е недостъпна за кратко."
+    "incident": "Текущ инцидент: {{name}}",
+    "maintenanceInProgress": "Поддръжката е в ход: {{name}}",
+    "maintenanceScheduled": "Планирана поддръжка на {{date}}: {{name}}",
+    "viewStatus": "Виж състоянието"
   },
   "edit": "Редактирай",
   "error": "Грешка",
@@ -1148,7 +1152,6 @@
     "en": "English",
     "es": "Español",
     "fr": "Français",
-    "inContextTool": "Контекстно превеждане",
     "nl": "Nederlands",
     "pt": "Português (Brasil)",
     "ua": "Українська"
@@ -1181,8 +1184,7 @@
       },
       "innovation-packs": {
         "notifications": {
-          "pack-created": "$t(common.innovationPack) е създаден успешно.",
-          "pack-error": "Възникна грешка при създаването на $t(common.innovationPack)."
+          "pack-created": "$t(common.innovationPack) е създаден успешно."
         }
       },
       "innovationHub": {
@@ -1223,7 +1225,6 @@
           "noTargets": "No other subspaces exist in this space to serve as a parent.",
           "targetLabel": "Move under subspace"
         },
-        "errorMessage": "Failed to convert space.",
         "move": "Move",
         "moveError": "Failed to move space.",
         "moveL1ToL0": {
@@ -1284,7 +1285,6 @@
         "confirmTitle": "Transfer $t(common.customHomepage)?",
         "confirmWarning": "This will transfer the $t(common.customHomepage) to the selected account. Ensure the target account has the necessary privileges.",
         "currentAccount": "Current Account",
-        "errorMessage": "Failed to transfer $t(common.customHomepage).",
         "hubName": "Name",
         "sectionDescription": "Move a $t(common.customHomepage) to a different account. Only the ownership changes — content remains unchanged.",
         "sectionTitle": "Transfer $t(common.customHomepage)",
@@ -1301,7 +1301,6 @@
         "confirmTitle": "Transfer $t(common.innovationPack)?",
         "confirmWarning": "This will transfer the $t(common.innovationPack) to the selected account. Ensure the target account has the necessary privileges.",
         "currentAccount": "Current Account",
-        "errorMessage": "Failed to transfer $t(common.innovationPack).",
         "packName": "Name",
         "sectionDescription": "Move a $t(common.innovationPack) to a different account. Only the ownership changes — templates remain unchanged.",
         "sectionTitle": "Transfer $t(common.innovationPack)",
@@ -1328,7 +1327,6 @@
         "confirmTitle": "Transfer Virtual Contributor?",
         "confirmWarning": "This will transfer the virtual contributor to the selected account. Ensure the target account has the necessary privileges.",
         "currentAccount": "Current Account",
-        "errorMessage": "Failed to transfer virtual contributor.",
         "sectionDescription": "Move a virtual contributor to a different account. Only the ownership changes — configuration remains unchanged.",
         "sectionTitle": "Transfer Virtual Contributor",
         "successMessage": "Virtual contributor transferred successfully.",
@@ -1503,7 +1501,6 @@
   "permissions": {
     "checking": "Проверка на правата…",
     "denied": "Нямате права да променяте членовете на тази роля.",
-    "errorDenied": "Нямате права да направите тази промяна. Промяната не беше запазена.",
     "unverifiable": "Правата не можаха да бъдат проверени."
   },
   "pinned": "Закрепено",
@@ -1640,6 +1637,19 @@
     "learnMore": "Научете повече",
     "contactSupport": "Свържете се с поддръжката",
     "mentionUnavailable": "Временно недостъпно"
+  },
+  "fileSelection": {
+    "uploading": "Качване…",
+    "notAdded_one": "{{count}} файл не беше добавен",
+    "notAdded_other": "{{count}} файла не бяха добавени",
+    "reason": {
+      "limit": "избрани са повече от 25 файла",
+      "type": "този тип файл не се приема",
+      "size": "по-голям от {{maxMb}} MB",
+      "failed": "качването не успя"
+    },
+    "dismiss": "Затвори",
+    "saveBlocked": "Изчакайте файловете да се качат"
   },
   "appDownload": {
     "failed": "Файлът не можа да бъде изтеглен."

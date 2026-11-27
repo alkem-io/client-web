@@ -61,8 +61,7 @@
     },
     "chooseCommunity": {
       "intro": "Ajoutez votre Virtual Contributor à une communauté, ou passez pour l’instant.",
-      "skip": "Passer pour l’instant",
-      "errorMessage": "Impossible d’ajouter à la communauté — réessayez."
+      "skip": "Passer pour l’instant"
     },
     "tryVc": {
       "title": "{{name}} est prêt !",
@@ -71,8 +70,7 @@
       "done": "Terminé"
     },
     "createdVirtualContributor": {
-      "successMessage": "Virtual Contributor '{{name}}' created successfully",
-      "errorMessage": "Impossible de créer le Virtual Contributor — réessayez."
+      "successMessage": "Virtual Contributor '{{name}}' created successfully"
     }
   },
   "breadcrumbs": {
@@ -139,7 +137,7 @@
       "aboutYou": {
         "title": "À propos de vous",
         "tagline": {
-          "label": "Slogan",
+          "label": "Titre",
           "hint": "Une courte ligne affichée sur votre profil."
         },
         "location": {
@@ -149,7 +147,7 @@
           "countryPlaceholder": "Sélectionnez un pays"
         },
         "bio": {
-          "label": "Biographie",
+          "label": "À propos",
           "hint": "Markdown pris en charge."
         },
         "skills": {
@@ -225,8 +223,7 @@
         "dialogTitle": "Quitter cette adhésion ?",
         "dialogDescription": "Vous êtes sur le point de quitter « {{spaceName}} ». Vous perdrez l'accès aux contenus réservés aux membres et devrez postuler à nouveau pour revenir.",
         "dialogConfirm": "Quitter",
-        "success": "Adhésion quittée",
-        "error": "Échec — réessayez"
+        "success": "Adhésion quittée"
       },
       "pendingApplications": {
         "title": "Candidatures en attente",
@@ -329,8 +326,7 @@
           "cancel": "Annuler",
           "confirm": "Révoquer la clé",
           "revoking": "Révocation…",
-          "success": "\"{{name}}\" a été révoquée.",
-          "error": "Impossible de révoquer la clé — réessayez."
+          "success": "\"{{name}}\" a été révoquée."
         },
         "errors": {
           "notFound": "Cette clé API est introuvable.",
@@ -491,8 +487,7 @@
         "allowMessagesLabel": "Autoriser d'autres utilisateurs à m'envoyer des messages directs",
         "allowMessagesDescription": "Lorsque désactivé, les autres utilisateurs ne pourront pas démarrer une conversation par message direct avec vous.",
         "allowEmailContactLabel": "Autoriser les autres à me contacter par e-mail",
-        "allowEmailContactDescription": "Lorsque activé, les personnes qui ne peuvent pas vous joindre par messagerie peuvent vous envoyer un e-mail à l'adresse de votre compte. Votre adresse ne leur est jamais montrée.",
-        "error": "Impossible d'enregistrer la préférence — réessayez"
+        "allowEmailContactDescription": "Lorsque activé, les personnes qui ne peuvent pas vous joindre par messagerie peuvent vous envoyer un e-mail à l'adresse de votre compte. Votre adresse ne leur est jamais montrée."
       },
       "designSystem": {
         "title": "Système de design",
@@ -503,15 +498,13 @@
       "language": {
         "title": "Langue",
         "label": "Langue de l'interface",
-        "description": "La langue utilisée dans toute la plateforme Alkemio. Les modifications s'appliquent sur tous vos appareils.",
-        "error": "Impossible d'enregistrer la préférence de langue — veuillez réessayer."
+        "description": "La langue utilisée dans toute la plateforme Alkemio. Les modifications s'appliquent sur tous vos appareils."
       }
     },
     "notifications": {
       "pageTitle": "Notifications",
       "helpBanner": "Modifiez vos préférences de notification. Les changements sont enregistrés automatiquement.",
       "toggleAria": "Activer/désactiver la notification {{channel}} pour : {{label}}",
-      "toggleError": "Impossible d'enregistrer la préférence — réessayez",
       "inAppLockedChat": "Les messages de chat s'affichent déjà en direct dans le panneau de chat, aucune notification dans l'app n'est donc envoyée pour cette ligne",
       "columns": {
         "activity": "Activité",
@@ -541,7 +534,7 @@
           "description": "Personnalisez les alertes pour les interactions — réponses, mentions et invitations."
         },
         "platform": {
-          "title": "Notifications de plateforme",
+          "title": "Notifications du forum",
           "description": "Restez informé des discussions de la plateforme, des nouvelles fonctionnalités et des annonces."
         },
         "platformAdmin": {
@@ -596,8 +589,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Recevoir une notification lorsqu’une organisation statue sur ma candidature d’association"
         },
         "platform": {
-          "forumDiscussionComment": "Recevoir une notification lorsque quelqu'un commente une discussion que j'ai créée",
-          "forumDiscussionCreated": "Recevoir une notification lorsqu'une nouvelle discussion de plateforme est créée"
+          "forumDiscussionComment": "Recevoir une notification lorsque quelqu'un commente une discussion que j'ai créée dans le forum",
+          "forumDiscussionCreated": "Recevoir une notification lorsqu'une nouvelle discussion du forum est créée"
         },
         "platformAdmin": {
           "userProfileCreated": "Recevoir une notification lorsqu'un nouveau profil utilisateur est créé",
@@ -647,8 +640,7 @@
         "dialogTitle": "Vous désassocier de cette organisation ?",
         "dialogDescription": "Vous êtes sur le point de quitter « {{name}} ». Vous perdrez votre rôle d'associé et les permissions associées.",
         "dialogConfirm": "Se désassocier",
-        "success": "Désassociation réussie",
-        "error": "Échec — réessayez"
+        "success": "Désassociation réussie"
       }
     },
     "account": {
@@ -860,7 +852,7 @@
         "dialogConfirm": "Quitter",
         "success": "Adhésion quittée",
         "error": "Échec — réessayez",
-        "forbidden": "Seuls les administrateurs et propriétaires de cette organisation peuvent quitter un espace"
+        "forbidden": "Impossible de quitter. L'espace n'existe peut-être plus, ou seuls les administrateurs et propriétaires de cette organisation peuvent le quitter."
       },
       "ledBy": "Animé par :",
       "ledByAria": "{{count}} animateurs de communauté",
@@ -883,7 +875,6 @@
         "contributionRolesLabel": "Afficher publiquement les rôles de contribution",
         "contributionRolesCaption": "Lorsque activé, les attributions de rôles de l'organisation (Administrateur, Propriétaire, Associé) sont visibles sur le profil public."
       },
-      "errorToast": "Échec de l'enregistrement de la préférence — réessayez",
       "security": {
         "requireSecondFactorCaption": "Les propriétaires, administrateurs et associés de cette organisation doivent utiliser un second facteur à la connexion. Ils ont 14 jours pour le configurer.",
         "requireSecondFactorLabel": "Exiger la validation en deux étapes pour les membres",
@@ -910,8 +901,7 @@
       "acceptConfirmAction": "Accepter l'invitation",
       "declineConfirmTitle": "Refuser cette invitation ?",
       "declineConfirmBody": "{{spaceName}} sera informé que votre organisation a refusé. Cette action est irréversible — un administrateur du Space devrait envoyer une nouvelle invitation.",
-      "declineConfirmAction": "Refuser l'invitation",
-      "errorToast": "Impossible de mettre à jour l'invitation — réessayez"
+      "declineConfirmAction": "Refuser l'invitation"
     },
     "associates": {
       "title": "Associés",
@@ -1126,9 +1116,6 @@
       "apiKeyHelper": "Les clés existantes ne sont jamais renvoyées. Laissez vide pour conserver la clé actuelle.",
       "assistantIdLabel": "ID de l'assistant",
       "modelLabel": "Modèle"
-    },
-    "settings": {
-      "commitErrorToast": "Échec de l'enregistrement de la préférence — réessayez"
     }
   },
   "shared": {
@@ -1178,7 +1165,6 @@
         "heading": "Créer une nouvelle page d'accueil"
       },
       "deleteSuccess": "Ressource supprimée",
-      "deleteError": "Échec de la suppression — réessayez",
       "noEntitlement": {
         "title": "Capacité atteinte",
         "description": {

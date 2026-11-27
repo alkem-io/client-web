@@ -9,13 +9,13 @@
     "settings": "Notification settings",
     "muteSound": "Mute chat sound",
     "unmuteSound": "Unmute chat sound",
-    "soundToggleError": "We couldn't save the chat sound setting. Please try again.",
     "expand": "Expand chat",
     "collapse": "Collapse chat",
     "reconnecting": "Reconnecting… New messages may be delayed."
   },
   "actions": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "close": "Close"
   },
   "newChat": {
     "title": "New message",
@@ -63,7 +63,12 @@
     "loading": "Loading conversations",
     "draft": "Draft:",
     "attachmentPreview_one": "{{count}} attachment",
-    "attachmentPreview_other": "{{count}} attachments"
+    "attachmentPreview_other": "{{count}} attachments",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinned": "Pinned",
+    "rowOptions": "Options for {{name}}",
+    "pinError": "Couldn't update the pin. Please try again."
   },
   "guidance": {
     "beta": "Beta",
@@ -114,11 +119,19 @@
   "call": {
     "startAudio": "Start audio call",
     "startVideo": "Start video call",
-    "active": "Call active",
     "join": "Join",
     "joinVideo": "Join with video",
     "joinAudio": "Join with audio only",
     "joinedOnThisDevice": "Already joined on this device",
+    "banner": {
+      "inProgress": "Call in progress",
+      "participantsTwo": "{{first}} and {{second}}",
+      "participantsMore_one": "{{first}}, {{second}} and {{count}} more",
+      "participantsMore_other": "{{first}}, {{second}} and {{count}} more",
+      "calling": "{{name}} is calling you",
+      "answer": "Answer",
+      "decline": "Decline call"
+    },
     "preparing": "Preparing your call… It will start in a moment.",
     "dropped": "Couldn't start the call. Please try again.",
     "overlayLabel": "Call",
@@ -132,8 +145,36 @@
       "confirm": "Leave call",
       "cancel": "Stay in call"
     },
-    "listBadge": "Call active",
+    "listJoin": "Join call: {{name}}",
     "callingYou": "{{name}} is calling you",
-    "groupCall": "Call in {{name}}"
+    "groupCall": "Call in {{name}}",
+    "row": {
+      "missed": "Missed call",
+      "noAnswer": "No answer",
+      "declined": "Declined",
+      "call": "Call",
+      "minutes": "{{count}} min",
+      "callBack": "Call back"
+    }
+  },
+  "presence": {
+    "online": "Online",
+    "away": "Away",
+    "offline": "Offline",
+    "busy": "In a call"
+  },
+  "status": {
+    "set": "Set status",
+    "change": "Edit status",
+    "label": "Your status",
+    "placeholder": "What are you up to?",
+    "edit": "Edit your status: {{status}}",
+    "save": "Save status",
+    "clear": "Clear status",
+    "saveError": "We couldn't save your status. Please try again.",
+    "showOnline": "Show when you're online",
+    "showOnlineOn": "On: people you chat with can see when you're online, and your status.",
+    "showOnlineOff": "Off: people can't see that you're online or your status, and you can't see theirs.",
+    "showOnlineSaveError": "We couldn't save your online setting. Please try again."
   }
 }

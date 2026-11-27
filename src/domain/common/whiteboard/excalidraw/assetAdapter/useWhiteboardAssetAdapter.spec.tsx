@@ -55,6 +55,17 @@ describe('useWhiteboardAssetAdapter', () => {
     expect(result.current.uploadError).toBeUndefined();
   });
 
+  it('store uploads without the global error handler, since the host reports uploadError itself', async () => {
+    mockUpload.mockResolvedValue({ data: { uploadFileOnStorageBucket: { id: 'doc-1' } } });
+    const { result } = renderHook(() => useWhiteboardAssetAdapter({ storageBucketId: 'sb-1' }));
+
+    await act(async () => {
+      await result.current.assetAdapter.store(FILE);
+    });
+
+    expect(mockUpload.mock.calls[0][0].context.skipGlobalErrorHandler).toBe(true);
+  });
+
   it('store throws and records uploadError when the upload returns no id', async () => {
     mockUpload.mockResolvedValue({ data: { uploadFileOnStorageBucket: null } });
     const { result } = renderHook(() => useWhiteboardAssetAdapter({ storageBucketId: 'sb-1' }));

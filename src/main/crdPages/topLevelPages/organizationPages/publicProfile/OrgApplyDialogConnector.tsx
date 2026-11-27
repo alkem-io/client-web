@@ -2,6 +2,8 @@ import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useApplyForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
+import { OWN_ERROR_HANDLING } from '@/core/apollo/graphqlLinks/ownErrorHandling';
+import { useServerErrorMessage } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   type ApplicationAnswer,
@@ -50,6 +52,7 @@ export function OrgApplyDialogConnector({
 }: OrgApplyDialogConnectorProps) {
   const { t } = useTranslation('crd-profilePages');
   const notify = useNotification();
+  const serverErrorMessage = useServerErrorMessage();
   const formQuestions: ApplicationQuestion[] = (applicationForm?.questions ?? []).map(q => ({
     question: q.question,
     required: q.required,
@@ -74,7 +77,7 @@ export function OrgApplyDialogConnector({
           questions: answers.map(a => ({ name: a.name, value: a.value, sortOrder: a.sortOrder })),
         },
         // The failure is reported right below; the global error link must not add a second toast.
-        context: { skipGlobalErrorHandler: true },
+        context: OWN_ERROR_HANDLING,
       });
       setSubmitted(true);
       onSubmitted();
@@ -83,7 +86,7 @@ export function OrgApplyDialogConnector({
       notify(
         code === AlkemioGraphqlErrorCode.ROLESET_APPLICATIONS_NOT_ACCEPTED
           ? t('orgProfile.associate.closed')
-          : t('orgProfile.applyDialog.error'),
+          : serverErrorMessage(error, t('orgProfile.applyDialog.error')),
         'error'
       );
     }

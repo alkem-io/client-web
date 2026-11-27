@@ -234,6 +234,7 @@ export function CrdPostContributionDialog({
   const [createPost, { loading: creating }] = useCreatePostOnCalloutMutation();
   const [updatePost, { loading: updating }] = useUpdatePostMutation();
   const [deleteContribution] = useDeleteContributionMutation();
+  // A failed reference change or move is reported by the global error handler, with the server's reason.
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
 
@@ -307,7 +308,6 @@ export function CrdPostContributionDialog({
             }
           } catch (err) {
             logError(new Error('Post reference creation failed', { cause: err as Error }));
-            notify(t('callout.referencesSaveFailed'), 'error');
           }
         }
         onCreated?.({ id: created.id });
@@ -359,7 +359,6 @@ export function CrdPostContributionDialog({
         }
       } catch (err) {
         logError(new Error('Post reference CRUD failed', { cause: err as Error }));
-        notify(t('callout.referencesSaveFailed'), 'error');
       }
 
       await updatePost({
@@ -395,7 +394,6 @@ export function CrdPostContributionDialog({
           notify(t('postLocation.moved'), 'success');
         } catch (err) {
           logError(new Error('Post move failed', { cause: err as Error }));
-          notify(t('postLocation.moveFailed'), 'error');
         }
       }
 
@@ -622,7 +620,11 @@ export function CrdPostContributionDialog({
               <Button variant="ghost" onClick={requestClose} disabled={submitting || deleting}>
                 {t('dialogs.cancel')}
               </Button>
-              <Button onClick={handleSubmit} disabled={submitting || deleting} aria-busy={submitting}>
+              <Button
+                onClick={handleSubmit}
+                disabled={submitting || deleting || referenceUpload.uploading}
+                aria-busy={submitting}
+              >
                 {submitting && <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />}
                 {mode === 'create'
                   ? isTaskBoard

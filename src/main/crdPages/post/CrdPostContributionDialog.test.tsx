@@ -14,6 +14,8 @@ const state = vi.hoisted(() => ({
   deleteReference: vi.fn(),
   moveContribution: vi.fn(),
   notify: vi.fn(),
+  uploading: false,
+  mutationHookOptions: vi.fn(),
 }));
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
@@ -44,9 +46,18 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCreatePostOnCalloutMutation: () => [state.createPost, { loading: false }],
   useUpdatePostMutation: () => [state.updatePost, { loading: false }],
   useDeleteContributionMutation: () => [state.deleteContribution],
-  useCreateReferenceOnProfileMutation: () => [state.createReference],
-  useDeleteReferenceMutation: () => [state.deleteReference],
-  useMoveContributionToCalloutMutation: () => [state.moveContribution],
+  useCreateReferenceOnProfileMutation: (options: unknown) => {
+    state.mutationHookOptions('createReference', options);
+    return [state.createReference];
+  },
+  useDeleteReferenceMutation: (options: unknown) => {
+    state.mutationHookOptions('deleteReference', options);
+    return [state.deleteReference];
+  },
+  useMoveContributionToCalloutMutation: (options: unknown) => {
+    state.mutationHookOptions('moveContribution', options);
+    return [state.moveContribution];
+  },
 }));
 
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => state.notify }));
@@ -66,7 +77,7 @@ vi.mock('@/main/crdPages/markdown/useMarkdownEditorIntegration', () => ({
   useMarkdownEditorIntegration: () => ({ onImageUpload: vi.fn(), iframeAllowedUrls: [], onError: vi.fn() }),
 }));
 vi.mock('@/main/crdPages/utils/useReferenceFileUpload', () => ({
-  useReferenceFileUpload: () => ({ onFileUpload: vi.fn(), accept: '' }),
+  useReferenceFileUpload: () => ({ onFileUpload: vi.fn(), accept: '', canUpload: true, uploading: state.uploading }),
 }));
 
 const editProps = {
@@ -83,6 +94,7 @@ const createProps = {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  state.uploading = false;
   state.updatePost.mockResolvedValue({ data: {} });
   state.createPost.mockResolvedValue({
     data: { createContributionOnCallout: { post: { id: 'post-new', profile: { id: 'profile-new' } } } },
@@ -149,6 +161,14 @@ describe('CrdPostContributionDialog — save closes the dialog', () => {
     expect(state.updatePost).not.toHaveBeenCalled();
     expect(onOpenChange).not.toHaveBeenCalled();
     expect(state.notify).not.toHaveBeenCalled();
+  });
+
+  test("edit mode: a refused reference change or move is left to the global error handler, which shows the server's reason", () => {
+    render(<CrdPostContributionDialog {...editProps} open={true} onOpenChange={vi.fn()} />);
+
+    for (const name of ['createReference', 'deleteReference', 'moveContribution']) {
+      expect(state.mutationHookOptions).toHaveBeenCalledWith(name, undefined);
+    }
   });
 });
 
@@ -220,6 +240,25 @@ describe('CrdPostContributionDialog — notify members switch (create mode)', ()
     await waitFor(() => expect(state.updatePost).toHaveBeenCalledTimes(1));
     expect(state.updatePost.mock.calls[0][0].variables).not.toHaveProperty('sendNotification');
     expect(state.updatePost.mock.calls[0][0].variables.input).not.toHaveProperty('sendNotification');
+  });
+});
+
+describe('CrdPostContributionDialog — no save while files upload', () => {
+  test('edit mode: Save is disabled and Cancel enabled while a reference file uploads', async () => {
+    state.uploading = true;
+    render(<CrdPostContributionDialog {...editProps} open={true} onOpenChange={vi.fn()} />);
+
+    await screen.findByDisplayValue('Original title');
+    expect(screen.getByRole('button', { name: 'callout.postSave' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'dialogs.cancel' })).toBeEnabled();
+  });
+
+  test('create mode: Create is disabled and Cancel enabled while a reference file uploads', async () => {
+    state.uploading = true;
+    render(<CrdPostContributionDialog {...createProps} open={true} onOpenChange={vi.fn()} />);
+
+    expect(await screen.findByRole('button', { name: 'callout.postCreate' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'dialogs.cancel' })).toBeEnabled();
   });
 });
 

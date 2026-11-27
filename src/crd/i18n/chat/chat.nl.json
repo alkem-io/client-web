@@ -9,13 +9,13 @@
     "settings": "Meldingsinstellingen",
     "muteSound": "Chatgeluid dempen",
     "unmuteSound": "Chatgeluid aanzetten",
-    "soundToggleError": "We konden de instelling voor het chatgeluid niet opslaan. Probeer het opnieuw.",
     "expand": "Chat vergroten",
     "collapse": "Chat verkleinen",
     "reconnecting": "Opnieuw verbinden… Nieuwe berichten kunnen vertraagd zijn."
   },
   "actions": {
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "close": "Sluiten"
   },
   "newChat": {
     "title": "Nieuw bericht",
@@ -63,7 +63,12 @@
     "loading": "Gesprekken laden",
     "draft": "Concept:",
     "attachmentPreview_one": "{{count}} bijlage",
-    "attachmentPreview_other": "{{count}} bijlagen"
+    "attachmentPreview_other": "{{count}} bijlagen",
+    "pin": "Vastzetten",
+    "unpin": "Losmaken",
+    "pinned": "Vastgezet",
+    "rowOptions": "Opties voor {{name}}",
+    "pinError": "Kon het vastzetten niet bijwerken. Probeer het opnieuw."
   },
   "guidance": {
     "beta": "Bèta",
@@ -114,11 +119,19 @@
   "call": {
     "startAudio": "Audiogesprek starten",
     "startVideo": "Videogesprek starten",
-    "active": "Gesprek actief",
     "join": "Deelnemen",
     "joinVideo": "Deelnemen met video",
     "joinAudio": "Alleen met audio deelnemen",
     "joinedOnThisDevice": "Al deelgenomen op dit apparaat",
+    "banner": {
+      "inProgress": "Gesprek bezig",
+      "participantsTwo": "{{first}} en {{second}}",
+      "participantsMore_one": "{{first}}, {{second}} en {{count}} andere",
+      "participantsMore_other": "{{first}}, {{second}} en {{count}} anderen",
+      "calling": "{{name}} belt je",
+      "answer": "Opnemen",
+      "decline": "Gesprek weigeren"
+    },
     "preparing": "Gesprek wordt voorbereid… Het start zo meteen.",
     "dropped": "Kon het gesprek niet starten. Probeer het opnieuw.",
     "overlayLabel": "Gesprek",
@@ -132,8 +145,36 @@
       "confirm": "Gesprek verlaten",
       "cancel": "In gesprek blijven"
     },
-    "listBadge": "Gesprek actief",
+    "listJoin": "Deelnemen aan gesprek: {{name}}",
     "callingYou": "{{name}} belt je",
-    "groupCall": "Gesprek in {{name}}"
+    "groupCall": "Gesprek in {{name}}",
+    "row": {
+      "missed": "Gemiste oproep",
+      "noAnswer": "Geen antwoord",
+      "declined": "Geweigerd",
+      "call": "Gesprek",
+      "minutes": "{{count}} min",
+      "callBack": "Terugbellen"
+    }
+  },
+  "presence": {
+    "online": "Online",
+    "away": "Afwezig",
+    "offline": "Offline",
+    "busy": "In gesprek"
+  },
+  "status": {
+    "set": "Status instellen",
+    "change": "Status bewerken",
+    "label": "Je status",
+    "placeholder": "Waar ben je mee bezig?",
+    "edit": "Je status bewerken: {{status}}",
+    "save": "Status opslaan",
+    "clear": "Status wissen",
+    "saveError": "We konden je status niet opslaan. Probeer het opnieuw.",
+    "showOnline": "Laten zien wanneer je online bent",
+    "showOnlineOn": "Aan: mensen met wie je chat zien wanneer je online bent, en je status.",
+    "showOnlineOff": "Uit: mensen zien niet dat je online bent en ook je status niet, en jij ziet die van hen niet.",
+    "showOnlineSaveError": "We konden je online-instelling niet opslaan. Probeer het opnieuw."
   }
 }

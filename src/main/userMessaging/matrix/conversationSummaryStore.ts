@@ -1,20 +1,31 @@
 import type { MatrixClient, MatrixEvent, Room } from 'matrix-js-sdk';
 import { useEffect, useSyncExternalStore } from 'react';
 import { useMatrixClient } from '@/core/matrix/activeClient';
-import { lastMessageOf, type ParsedMessage, type RawEvent } from './matrixEvents';
+import {
+  lastMessageOf,
+  newestRingAt,
+  type ParsedMessage,
+  type RawEvent,
+  type RingingRing,
+  ringingRingOf,
+  ringingUntil,
+} from './matrixEvents';
 import {
   CLIENT_ROOM,
   CLIENT_SYNC,
+  FAVOURITE_TAG,
   FULLY_READ,
   fetchBackward,
   fullyReadEventId,
   homeserverOf,
+  isFavourite,
   liveEvents,
   notificationCount,
   ownUserId,
   ROOM_ACCOUNT_DATA,
   ROOM_LOCAL_ECHO_UPDATED,
   ROOM_REDACTION,
+  ROOM_TAGS,
   ROOM_TIMELINE,
   resolveMatrixRoomId,
 } from './matrixRooms';
@@ -23,6 +34,12 @@ import { BATCH_SIZES, computeUnreadCount } from './unreadCount';
 type RoomSummary = {
   readonly lastMessage?: ParsedMessage;
   readonly unreadCount: number;
+  /** The user has pinned the conversation (its room carries their favourite tag). */
+  readonly pinned: boolean;
+  /** The ring from someone else still ringing there; only where a ring is an entry. */
+  readonly ringing?: RingingRing;
+  /** When the newest ring from someone else was sent, ringing or not; only where a ring is an entry. */
+  readonly ringAt?: number;
 };
 
 type Summaries = ReadonlyMap<string, RoomSummary>;
@@ -31,10 +48,10 @@ type Summaries = ReadonlyMap<string, RoomSummary>;
 const MAX_CONCURRENT_ROOMS = 10;
 
 /**
- * Per-conversation latest message and unread count, computed from sync for
- * the rooms some hook currently watches. A room is computed once when first
- * watched (or once its Matrix room appears), then again only when its own
- * timeline or read marker changes.
+ * Per-conversation latest message, unread count and pin, computed from sync
+ * for the rooms some hook currently watches. A room is computed once when
+ * first watched (or once its Matrix room appears), then again only when its
+ * own timeline or read marker changes. The pin follows the room's tags.
  */
 class ConversationSummaryStore {
   private readonly watchers = new Map<string, number>();
@@ -48,6 +65,13 @@ class ConversationSummaryStore {
   private readonly dirty = new Set<string>();
   // Rooms that changed while nobody watched them.
   private readonly stale = new Set<string>();
+  // Rooms with a pin write in flight, and whether their tags changed meanwhile.
+  private readonly pinWrites = new Map<string, boolean>();
+  // The rooms where a ring counts as an entry (the latest one, and a missed one as unread).
+  private ringRooms: ReadonlySet<string> = new Set();
+  private groupCallRooms: ReadonlySet<string> = new Set();
+  // Rooms with a ring still ringing, computed again once it stops.
+  private readonly ringEnds = new Map<string, ReturnType<typeof setTimeout>>();
 
   constructor(private readonly client: MatrixClient) {
     client.on(
@@ -78,6 +102,19 @@ class ConversationSummaryStore {
         }
       }) as never
     );
+    // A pin made on any of the user's devices arrives as a tags change on sync.
+    client.on(
+      ROOM_TAGS as never,
+      ((_event: MatrixEvent, room: Room) => {
+        const alkemioRoomId = this.alkemioByMatrixId.get(room.roomId);
+        if (alkemioRoomId) {
+          if (this.pinWrites.has(alkemioRoomId)) {
+            this.pinWrites.set(alkemioRoomId, true);
+          }
+          this.setPinned(alkemioRoomId, isFavourite(room));
+        }
+      }) as never
+    );
     // A watched room may resolve before the client has it (first sync, or a
     // conversation created after sync started).
     client.on(
@@ -102,6 +139,23 @@ class ConversationSummaryStore {
         }
       }) as never
     );
+  }
+
+  /**
+   * Sets the conversations where a call counts as an entry while calls show: the user's 1:1
+   * conversations, where the entry is a ring, and their groups, where it is a call that took place.
+   * None otherwise. Every summary computed the other way is computed again.
+   */
+  setRingRooms(ringRooms: ReadonlySet<string>, groupCallRooms: ReadonlySet<string> = new Set()): void {
+    const previous = new Set([...this.ringRooms, ...this.groupCallRooms]);
+    this.ringRooms = ringRooms;
+    this.groupCallRooms = groupCallRooms;
+    // Also a room whose first summary is still being computed: it read the previous set.
+    for (const alkemioRoomId of new Set([...this.summaries.keys(), ...this.inFlight])) {
+      if (previous.has(alkemioRoomId) !== (ringRooms.has(alkemioRoomId) || groupCallRooms.has(alkemioRoomId))) {
+        this.invalidate(alkemioRoomId);
+      }
+    }
   }
 
   /** The Alkemio room id of a watched conversation's Matrix room, if any. */
@@ -146,6 +200,56 @@ class ConversationSummaryStore {
     };
   }
 
+  /**
+   * Pins or unpins at once, then writes the user's favourite tag. Rejects, with
+   * the pin back as it was, when the room is not known yet or the
+   * write fails. A toggle during a write is ignored, so two writes can never
+   * reach the homeserver out of order.
+   */
+  async togglePin(alkemioRoomId: string): Promise<void> {
+    const matrixRoomId = this.matrixByAlkemioId.get(alkemioRoomId);
+    const room = matrixRoomId ? this.client.getRoom(matrixRoomId) : null;
+    const summary = this.summaries.get(alkemioRoomId);
+    if (!matrixRoomId || !room || !summary) {
+      throw new Error(`No Matrix room for conversation room ${alkemioRoomId}`);
+    }
+    if (this.pinWrites.has(alkemioRoomId)) {
+      return;
+    }
+    const pinned = !summary.pinned;
+    this.pinWrites.set(alkemioRoomId, false);
+    this.setPinned(alkemioRoomId, pinned);
+    try {
+      await (pinned
+        ? this.client.setRoomTag(matrixRoomId, FAVOURITE_TAG)
+        : this.client.deleteRoomTag(matrixRoomId, FAVOURITE_TAG));
+    } catch (error) {
+      // Back to the pin before this toggle: the room's own tags may not have
+      // caught up with an earlier write yet. Tags that changed meanwhile win.
+      this.setPinned(alkemioRoomId, this.pinWrites.get(alkemioRoomId) ? isFavourite(room) : summary.pinned);
+      throw error;
+    } finally {
+      this.pinWrites.delete(alkemioRoomId);
+    }
+  }
+
+  private setPinned(alkemioRoomId: string, pinned: boolean): void {
+    const summary = this.summaries.get(alkemioRoomId);
+    if (!summary || summary.pinned === pinned) {
+      return;
+    }
+    this.publish(alkemioRoomId, { ...summary, pinned });
+  }
+
+  private publish(alkemioRoomId: string, summary: RoomSummary): void {
+    const next = new Map(this.summaries);
+    next.set(alkemioRoomId, summary);
+    this.summaries = next;
+    for (const listener of this.listeners) {
+      listener();
+    }
+  }
+
   private async resolve(alkemioRoomId: string): Promise<void> {
     const matrixRoomId = await resolveMatrixRoomId(this.client, alkemioRoomId);
     if (!matrixRoomId || !this.watchers.has(alkemioRoomId)) {
@@ -158,9 +262,12 @@ class ConversationSummaryStore {
 
   private touchMatrixRoom(matrixRoomId: string): void {
     const alkemioRoomId = this.alkemioByMatrixId.get(matrixRoomId);
-    if (!alkemioRoomId) {
-      return;
+    if (alkemioRoomId) {
+      this.invalidate(alkemioRoomId);
     }
+  }
+
+  private invalidate(alkemioRoomId: string): void {
     if (this.watchers.has(alkemioRoomId)) {
       this.schedule(alkemioRoomId);
     } else {
@@ -208,21 +315,37 @@ class ConversationSummaryStore {
       const homeserver = homeserverOf(this.client);
       const fetchBatch = fetchBackward(this.client, matrixRoomId);
       const loaded = liveEvents(room);
+      // A ring rings, is missed and counts as unread only in a 1:1; a group call is just an entry.
+      const withRings = this.ringRooms.has(alkemioRoomId);
+      const inGroup = this.groupCallRooms.has(alkemioRoomId);
+      // Read before the history is fetched: a ring that stops ringing meanwhile still gets its timer below.
+      const now = Date.now();
       const [lastMessage, unreadCount] = await Promise.all([
-        this.findLastMessage(loaded, fetchBatch, homeserver),
+        this.findLastMessage(loaded, fetchBatch, homeserver, { withCalls: withRings || inGroup, inGroup }),
         computeUnreadCount({
           markerEventId: fullyReadEventId(room),
           ownUserId: ownUserId(this.client),
           loadedNewestFirst: [...loaded].reverse(),
           fetchBatch,
           notificationCount: () => notificationCount(room),
+          withCalls: withRings,
         }),
       ]);
-      const next = new Map(this.summaries);
-      next.set(alkemioRoomId, { lastMessage, unreadCount });
-      this.summaries = next;
-      for (const listener of this.listeners) {
-        listener();
+      // An existing pin is kept: tags changes and the user's own toggle own it.
+      const pinned = this.summaries.get(alkemioRoomId)?.pinned ?? isFavourite(room);
+      const ringing = withRings ? ringingRingOf(loaded, ownUserId(this.client), now) : undefined;
+      const ringAt = withRings ? newestRingAt(loaded, ownUserId(this.client)) : undefined;
+      this.publish(alkemioRoomId, { lastMessage, unreadCount, pinned, ringing, ringAt });
+      // A ring is no preview or unread while it rings, and no event arrives when it stops.
+      clearTimeout(this.ringEnds.get(alkemioRoomId));
+      const until = withRings ? ringingUntil(loaded, now) : undefined;
+      if (until === undefined) {
+        this.ringEnds.delete(alkemioRoomId);
+      } else {
+        this.ringEnds.set(
+          alkemioRoomId,
+          setTimeout(() => this.invalidate(alkemioRoomId), Math.max(0, until - Date.now()))
+        );
       }
     } catch {
       // Left as it was; the room's next change recomputes it.
@@ -232,16 +355,20 @@ class ConversationSummaryStore {
   private async findLastMessage(
     live: RawEvent[],
     fetchBatch: ReturnType<typeof fetchBackward>,
-    homeserver: string
+    homeserver: string,
+    options: { withCalls: boolean; inGroup: boolean }
   ): Promise<ParsedMessage | undefined> {
-    const local = lastMessageOf(live, homeserver);
+    const local = lastMessageOf(live, homeserver, options);
     if (local) {
       return local;
     }
     let from: string | undefined;
+    // Oldest first: a ring found further back is judged by everything newer already scanned.
+    let scanned = live;
     for (const batchSize of BATCH_SIZES) {
       const { events, end } = await fetchBatch(from, batchSize);
-      const found = lastMessageOf([...events].reverse(), homeserver);
+      scanned = [...[...events].reverse(), ...scanned];
+      const found = lastMessageOf(scanned, homeserver, options);
       if (found) {
         return found;
       }
@@ -269,7 +396,7 @@ const EMPTY: Summaries = new Map();
 const noSubscription = () => () => {};
 
 /**
- * Latest message and unread count per Alkemio room id, from sync. Undefined
+ * Latest message, unread count and pin per Alkemio room id, from sync. Undefined
  * while no Matrix client is established.
  */
 const useConversationSummaries = (alkemioRoomIds: readonly string[]): Summaries | undefined => {

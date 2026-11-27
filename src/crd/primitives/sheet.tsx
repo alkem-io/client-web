@@ -37,14 +37,17 @@ function SheetContent({
   children,
   side = 'right',
   closeLabel = 'Close',
+  overlayClassName,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: 'top' | 'right' | 'bottom' | 'left';
   closeLabel?: string;
+  /** Lets a sheet that must cover a higher layer raise its overlay together with its content. */
+  overlayClassName?: string;
 }) {
   return (
     <SheetPortal>
-      <SheetOverlay />
+      <SheetOverlay className={overlayClassName} />
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(

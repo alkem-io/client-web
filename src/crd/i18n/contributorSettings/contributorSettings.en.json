@@ -61,8 +61,7 @@
     },
     "chooseCommunity": {
       "intro": "Add your Virtual Contributor to a community, or skip for now.",
-      "skip": "Skip for now",
-      "errorMessage": "Couldn't add to the community — try again."
+      "skip": "Skip for now"
     },
     "tryVc": {
       "title": "{{name}} is ready!",
@@ -71,8 +70,7 @@
       "done": "Done"
     },
     "createdVirtualContributor": {
-      "successMessage": "Virtual Contributor '{{name}}' created successfully",
-      "errorMessage": "Couldn't create the Virtual Contributor — try again."
+      "successMessage": "Virtual Contributor '{{name}}' created successfully"
     }
   },
   "breadcrumbs": {
@@ -139,7 +137,7 @@
       "aboutYou": {
         "title": "About You",
         "tagline": {
-          "label": "Tagline",
+          "label": "Headline",
           "hint": "A short line shown on your profile."
         },
         "location": {
@@ -149,7 +147,7 @@
           "countryPlaceholder": "Select a country"
         },
         "bio": {
-          "label": "Bio",
+          "label": "About",
           "hint": "Markdown supported."
         },
         "skills": {
@@ -225,8 +223,7 @@
         "dialogTitle": "Leave this membership?",
         "dialogDescription": "You're about to leave \"{{spaceName}}\". You'll lose access to its members-only content and will need to re-apply to rejoin.",
         "dialogConfirm": "Leave",
-        "success": "Membership left",
-        "error": "Couldn't leave — try again"
+        "success": "Membership left"
       },
       "pendingApplications": {
         "title": "Pending Applications",
@@ -329,8 +326,7 @@
           "cancel": "Cancel",
           "confirm": "Revoke key",
           "revoking": "Revoking…",
-          "success": "\"{{name}}\" has been revoked.",
-          "error": "Couldn't revoke the key — try again."
+          "success": "\"{{name}}\" has been revoked."
         },
         "errors": {
           "notFound": "That API key could not be found.",
@@ -491,8 +487,7 @@
         "allowMessagesLabel": "Allow other users to send me direct messages",
         "allowMessagesDescription": "When off, other users won't be able to start a direct-message conversation with you.",
         "allowEmailContactLabel": "Allow others to contact me by email",
-        "allowEmailContactDescription": "When on, people who can't reach you by chat can send you an email at your account address. Your address is never shown to them.",
-        "error": "Couldn't save preference — try again"
+        "allowEmailContactDescription": "When on, people who can't reach you by chat can send you an email at your account address. Your address is never shown to them."
       },
       "designSystem": {
         "title": "Design System",
@@ -503,15 +498,13 @@
       "language": {
         "title": "Language",
         "label": "Interface language",
-        "description": "The language used throughout Alkemio. Changing this affects all your devices.",
-        "error": "Couldn't save language preference — please try again."
+        "description": "The language used throughout Alkemio. Changing this affects all your devices."
       }
     },
     "notifications": {
       "pageTitle": "Notifications",
       "helpBanner": "Edit your notification preferences. Changes are saved automatically.",
       "toggleAria": "Toggle {{channel}} notification for: {{label}}",
-      "toggleError": "Couldn't save preference — try again",
       "inAppLockedChat": "Chat messages already appear live in the chat panel, so in-app notifications aren't sent for this row",
       "columns": {
         "activity": "Activity",
@@ -541,7 +534,7 @@
           "description": "Personalise alerts for interactions like replies, mentions, and invites."
         },
         "platform": {
-          "title": "Platform Notifications",
+          "title": "Forum Notifications",
           "description": "Stay updated on platform-level discussions, new features, and announcements."
         },
         "platformAdmin": {
@@ -596,8 +589,8 @@
           "membershipOrganizationAssociateApplicationDecided": "Receive a notification when an organisation decides on my application to associate"
         },
         "platform": {
-          "forumDiscussionComment": "Receive a notification when someone comments on a discussion I created",
-          "forumDiscussionCreated": "Receive a notification when a new platform discussion is created"
+          "forumDiscussionComment": "Receive a notification when someone comments on a discussion I created in the forum",
+          "forumDiscussionCreated": "Receive a notification when a new forum discussion is created"
         },
         "platformAdmin": {
           "userProfileCreated": "Receive a notification when a new user profile is created",
@@ -647,8 +640,7 @@
         "dialogTitle": "Disassociate from this organisation?",
         "dialogDescription": "You're about to leave \"{{name}}\". You'll lose your associate role and any related permissions.",
         "dialogConfirm": "Disassociate",
-        "success": "Disassociated successfully",
-        "error": "Couldn't disassociate — try again"
+        "success": "Disassociated successfully"
       }
     },
     "account": {
@@ -860,7 +852,7 @@
         "dialogConfirm": "Leave",
         "success": "Membership left",
         "error": "Couldn't leave — try again",
-        "forbidden": "Only this organisation's admins and owners can leave a Space"
+        "forbidden": "Couldn't leave. The Space may no longer exist, or only this organisation's admins and owners can leave it."
       },
       "ledBy": "Led by:",
       "ledByAria": "{{count}} community leads",
@@ -883,7 +875,6 @@
         "contributionRolesLabel": "Show contribution roles publicly",
         "contributionRolesCaption": "When enabled, the organisation's role assignments (Admin, Owner, Associate) are visible on its public profile."
       },
-      "errorToast": "Couldn't save preference — try again",
       "security": {
         "requireSecondFactorCaption": "Owners, admins and associates of this organisation must use a second factor when they sign in. They have 14 days to set one up.",
         "requireSecondFactorLabel": "Require two-step verification for members",
@@ -910,8 +901,7 @@
       "acceptConfirmAction": "Accept invitation",
       "declineConfirmTitle": "Decline this invitation?",
       "declineConfirmBody": "{{spaceName}} will be told your organisation declined. This cannot be undone — a Space admin would have to send a new invitation.",
-      "declineConfirmAction": "Decline invitation",
-      "errorToast": "Couldn't update the invitation — try again"
+      "declineConfirmAction": "Decline invitation"
     },
     "associates": {
       "title": "Associates",
@@ -1126,9 +1116,6 @@
       "apiKeyHelper": "Existing keys are never echoed back. Leave blank to keep the current key.",
       "assistantIdLabel": "Assistant ID",
       "modelLabel": "Model"
-    },
-    "settings": {
-      "commitErrorToast": "Couldn't save preference — try again"
     }
   },
   "shared": {
@@ -1178,7 +1165,6 @@
         "heading": "Create New Homepage"
       },
       "deleteSuccess": "Resource deleted",
-      "deleteError": "Couldn't delete resource — try again",
       "noEntitlement": {
         "title": "Capacity reached",
         "description": {
